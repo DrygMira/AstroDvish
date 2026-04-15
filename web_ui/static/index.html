@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Astro Web UI</title>
+  <style>
+    :root {
+      --bg1: #f7fbff;
+      --bg2: #ecf4ff;
+      --card: #ffffff;
+      --accent: #0f766e;
+      --accent2: #2563eb;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #dbe7f5;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top right, #d9edff 0, #f2f8ff 35%, #f8fbff 100%);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
+      margin-bottom: 16px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    label { display: block; font-size: 13px; margin-bottom: 4px; }
+    input, select, textarea, button {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: #fff;
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    .row { display: flex; gap: 8px; }
+    .row > * { flex: 1; }
+    .actions { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn.secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .hint {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .hidden { display: none; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+    .modal.active { display: flex; }
+    .modal-box {
+      width: min(980px, 100%);
+      max-height: 90vh;
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    .close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .modal-body {
+      overflow: auto;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .bigbox {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      max-height: 280px;
+      overflow: auto;
+      background: #f8fbff;
+    }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Тестовая веб-морда астросервиса</h1>
+      <div class="muted">UI работает на порту 8014 и отправляет расчёт в API на 8013 (или любой другой адрес).</div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label>Адрес API</label>
+          <input id="apiBaseUrl" value="http://127.0.0.1:8013" />
+          <div class="hint">Например, http://127.0.0.1:8013</div>
+        </div>
+        <div>
+          <label>Режим координат</label>
+          <select id="coordMode">
+            <option value="city">Поиск по городу</option>
+            <option value="manual">Ручной ввод координат</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="cityBlock" class="grid" style="margin-top:10px;">
+        <div>
+          <label>Город</label>
+          <div class="row">
+            <input id="cityQuery" placeholder="Минск, Москва, Berlin..." />
+            <button id="searchCityBtn" class="btn secondary" type="button">Поиск</button>
+          </div>
+        </div>
+        <div>
+          <label>Результат поиска</label>
+          <select id="cityResults"></select>
+          <div class="hint">Выберите вариант, координаты заполнятся автоматически.</div>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:10px;">
+        <div>
+          <label>Latitude</label>
+          <input id="latitude" type="number" step="0.000001" value="53.9006" />
+        </div>
+        <div>
+          <label>Longitude</label>
+          <input id="longitude" type="number" step="0.000001" value="27.5590" />
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:10px;">
+        <div>
+          <label>Локальная дата/время</label>
+          <input id="datetimeLocal" type="datetime-local" />
+        </div>
+        <div>
+          <label>Часовой пояс (offset)</label>
+          <select id="timezoneOffset"></select>
+          <div class="hint">Это смещение локального времени относительно UTC.</div>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:10px;">
+        <div>
+          <label>Рассчитанное UTC</label>
+          <input id="datetimeUtcPreview" readonly />
+          <div class="hint">Это значение будет отправлено в API как <code>datetime_utc</code>.</div>
+        </div>
+        <div></div>
+      </div>
+
+      <div class="grid" style="margin-top:10px;">
+        <div>
+          <label>House system</label>
+          <select id="houseSystem">
+            <option value="P">P (Placidus)</option>
+            <option value="K">K (Koch)</option>
+            <option value="O">O (Porphyry)</option>
+          </select>
+        </div>
+        <div>
+          <label>Zodiac mode</label>
+          <select id="zodiacMode">
+            <option value="tropical">tropical</option>
+            <option value="sidereal">sidereal</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:10px;">
+        <div>
+          <label>Sidereal mode</label>
+          <select id="siderealMode">
+            <option value="">null</option>
+            <option value="lahiri">lahiri</option>
+            <option value="fagan_bradley">fagan_bradley</option>
+            <option value="krishnamurti">krishnamurti</option>
+          </select>
+        </div>
+        <div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Текст промта</label>
+      <textarea id="promptText"></textarea>
+      <div class="actions" style="margin-top:10px;">
+        <button id="generateBtn" class="btn" type="button">Сделать</button>
+        <button id="closeModalBtn2" class="btn secondary hidden" type="button">Закрыть результат</button>
+      </div>
+      <div id="status" class="hint"></div>
+    </div>
+  </div>
+
+  <div id="resultModal" class="modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>Результат</div>
+        <button id="closeModalBtn" class="close-btn" type="button">×</button>
+      </div>
+      <div class="modal-body">
+        <div><strong>Гороскоп</strong></div>
+        <div id="horoscopeBox" class="bigbox"></div>
+        <button id="toggleApiRawBtn" class="btn secondary" type="button">Показать ответ API целиком</button>
+        <div id="apiRawWrap" class="hidden">
+          <div><strong>Ответ API целиком</strong></div>
+          <div id="apiRawBox" class="bigbox"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const timezoneOffsetEl = document.getElementById("timezoneOffset");
+    const datetimeLocalEl = document.getElementById("datetimeLocal");
+    const datetimeUtcPreviewEl = document.getElementById("datetimeUtcPreview");
+    const coordModeEl = document.getElementById("coordMode");
+    const cityBlockEl = document.getElementById("cityBlock");
+    const cityResultsEl = document.getElementById("cityResults");
+    const statusEl = document.getElementById("status");
+    const siderealModeEl = document.getElementById("siderealMode");
+    const zodiacModeEl = document.getElementById("zodiacMode");
+    const modalEl = document.getElementById("resultModal");
+    const horoscopeBoxEl = document.getElementById("horoscopeBox");
+    const apiRawWrapEl = document.getElementById("apiRawWrap");
+    const apiRawBoxEl = document.getElementById("apiRawBox");
+    const toggleApiRawBtnEl = document.getElementById("toggleApiRawBtn");
+
+    function fillOffsets() {
+      for (let h = -12; h <= 14; h++) {
+        const sign = h >= 0 ? "+" : "-";
+        const abs = Math.abs(h).toString().padStart(2, "0");
+        const val = `${sign}${abs}:00`;
+        const opt = document.createElement("option");
+        opt.value = val;
+        opt.textContent = val;
+        timezoneOffsetEl.appendChild(opt);
+      }
+      timezoneOffsetEl.value = "+03:00";
+    }
+
+    function nowLocalInputValue() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      return now.toISOString().slice(0, 16);
+    }
+
+    function calculateUtcPreview() {
+      if (!datetimeLocalEl.value) {
+        datetimeUtcPreviewEl.value = "";
+        return;
+      }
+      const dt = new Date(datetimeLocalEl.value);
+      const offset = timezoneOffsetEl.value;
+      const sign = offset.startsWith("+") ? 1 : -1;
+      const hours = Number(offset.slice(1, 3));
+      const mins = Number(offset.slice(4, 6));
+      const deltaMs = sign * (hours * 60 + mins) * 60 * 1000;
+      const utc = new Date(dt.getTime() - deltaMs);
+      datetimeUtcPreviewEl.value = utc.toISOString().replace(".000", "");
+    }
+
+    function setStatus(text) {
+      statusEl.textContent = text || "";
+    }
+
+    function closeModal() {
+      modalEl.classList.remove("active");
+    }
+
+    function toggleRawApi() {
+      const hiddenNow = apiRawWrapEl.classList.toggle("hidden");
+      toggleApiRawBtnEl.textContent = hiddenNow
+        ? "Показать ответ API целиком"
+        : "Скрыть ответ API";
+    }
+
+    async function loadPrompt() {
+      const res = await fetch("/api/prompt");
+      const data = await res.json();
+      document.getElementById("promptText").value = data.prompt_text || "";
+    }
+
+    async function searchCity() {
+      const query = document.getElementById("cityQuery").value.trim();
+      if (!query) return;
+      setStatus("Ищем город...");
+      const res = await fetch("/api/geocode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+      const data = await res.json();
+      cityResultsEl.innerHTML = "";
+      const results = data.results || [];
+      if (!results.length) {
+        setStatus("Город не найден.");
+        return;
+      }
+      results.forEach((item, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        const label = [item.name, item.admin1, item.country].filter(Boolean).join(", ");
+        opt.textContent = `${label} [${item.latitude}, ${item.longitude}] ${item.timezone || ""}`;
+        opt.dataset.latitude = item.latitude;
+        opt.dataset.longitude = item.longitude;
+        cityResultsEl.appendChild(opt);
+      });
+      cityResultsEl.dispatchEvent(new Event("change"));
+      setStatus("Город найден. Координаты обновлены.");
+    }
+
+    async function generate() {
+      setStatus("Выполняем расчёт...");
+      const zodiacMode = zodiacModeEl.value;
+      const sidMode = siderealModeEl.value || null;
+      const body = {
+        api_base_url: document.getElementById("apiBaseUrl").value.trim(),
+        datetime_local: datetimeLocalEl.value,
+        timezone_offset: timezoneOffsetEl.value,
+        latitude: Number(document.getElementById("latitude").value),
+        longitude: Number(document.getElementById("longitude").value),
+        house_system: document.getElementById("houseSystem").value,
+        zodiac_mode: zodiacMode,
+        sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,
+        prompt_text: document.getElementById("promptText").value || "Сделай гороскоп по этим данным.",
+      };
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setStatus("Ошибка: " + JSON.stringify(data));
+        return;
+      }
+      horoscopeBoxEl.textContent = data.horoscope_text;
+      apiRawBoxEl.textContent = JSON.stringify(data.chart_response, null, 2);
+      apiRawWrapEl.classList.add("hidden");
+      toggleApiRawBtnEl.textContent = "Показать ответ API целиком";
+      modalEl.classList.add("active");
+      setStatus(`Готово. UTC: ${data.datetime_utc}`);
+    }
+
+    coordModeEl.addEventListener("change", () => {
+      cityBlockEl.classList.toggle("hidden", coordModeEl.value !== "city");
+    });
+    document.getElementById("searchCityBtn").addEventListener("click", searchCity);
+    cityResultsEl.addEventListener("change", () => {
+      const option = cityResultsEl.options[cityResultsEl.selectedIndex];
+      if (!option) return;
+      document.getElementById("latitude").value = option.dataset.latitude || "";
+      document.getElementById("longitude").value = option.dataset.longitude || "";
+    });
+    document.getElementById("generateBtn").addEventListener("click", generate);
+    document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+    document.getElementById("closeModalBtn2").addEventListener("click", closeModal);
+    toggleApiRawBtnEl.addEventListener("click", toggleRawApi);
+    timezoneOffsetEl.addEventListener("change", calculateUtcPreview);
+    datetimeLocalEl.addEventListener("input", calculateUtcPreview);
+    zodiacModeEl.addEventListener("change", () => {
+      const sidereal = zodiacModeEl.value === "sidereal";
+      siderealModeEl.disabled = !sidereal;
+      if (!sidereal) siderealModeEl.value = "";
+    });
+    window.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
+
+    fillOffsets();
+    datetimeLocalEl.value = nowLocalInputValue();
+    calculateUtcPreview();
+    loadPrompt().catch(() => setStatus("Не удалось загрузить PROMPT.md"));
+  </script>
+</body>
+</html>

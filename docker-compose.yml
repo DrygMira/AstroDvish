@@ -1,0 +1,12 @@
+services:
+  astro-ephemeris-service:
+    build: .
+    container_name: astro-ephemeris-service
+    env_file:
+      - .env
+    ports:
+      - "8013:8013"
+    volumes:
+      - ./ephe:/opt/ephe
+    restart: unless-stopped
+

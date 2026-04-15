@@ -1,0 +1,2 @@
+"""Web UI application package."""
+
