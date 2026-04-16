@@ -175,6 +175,10 @@ astro-bot-API/
 ./scripts/test_api_local.sh
 ```
 
+Скрипт поднимает API на отдельном порту `18013` (можно переопределить через `TEST_API_PORT`)
+и прогоняет HTTP smoke-тесты по endpoint-ам `/api/v1/chart` и
+`/api/v1/rectification/asc-sign-intervals`.
+
 ## Запуск через Docker
 
 ```bash

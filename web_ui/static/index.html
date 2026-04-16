@@ -7,13 +7,14 @@
   <style>
     :root {
       --bg1: #f7fbff;
-      --bg2: #ecf4ff;
       --card: #ffffff;
       --accent: #0f766e;
       --accent2: #2563eb;
       --text: #0f172a;
       --muted: #475569;
       --border: #dbe7f5;
+      --assistant-bg: #f0f9ff;
+      --user-bg: #ecfeff;
     }
     body {
       margin: 0;
@@ -22,7 +23,7 @@
       background: radial-gradient(circle at top right, #d9edff 0, #f2f8ff 35%, #f8fbff 100%);
     }
     .wrap {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 24px auto;
       padding: 0 16px;
     }
@@ -56,22 +57,38 @@
       padding: 10px 12px;
       font-size: 14px;
       background: #fff;
+      color: var(--text);
     }
     textarea { min-height: 110px; resize: vertical; }
     .row { display: flex; gap: 8px; }
     .row > * { flex: 1; }
-    .actions { display: flex; gap: 10px; align-items: center; }
+    .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .btn {
+      width: auto;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: #fff;
       border: none;
       cursor: pointer;
       font-weight: 600;
+      padding: 10px 14px;
     }
     .btn.secondary {
       background: #fff;
       color: var(--text);
       border: 1px solid var(--border);
+    }
+    .btn.option {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      text-align: left;
+      font-weight: 500;
+      width: 100%;
+    }
+    .btn.option.active {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
     }
     .hint {
       margin-top: 4px;
@@ -123,6 +140,44 @@
       font-size: 13px;
       max-height: 360px;
       overflow: auto;
+    }
+    .chat-box {
+      display: grid;
+      gap: 10px;
+      max-height: 420px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .msg {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 14px;
+      background: #fff;
+    }
+    .msg.assistant { background: var(--assistant-bg); }
+    .msg.user { background: var(--user-bg); }
+    .msg-head {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .usage-mini {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      background: #fff;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 6px;
+    }
+    .final-result {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 10px;
+      font-size: 14px;
     }
 
     .modal {
@@ -179,10 +234,31 @@
       overflow: auto;
       background: #f8fbff;
     }
+    .llm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1200;
+    }
+    .llm-overlay.active { display: flex; }
+    .llm-overlay-box {
+      width: min(520px, 100%);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 12px 36px rgba(2, 6, 23, 0.18);
+      text-align: center;
+    }
     @media (max-width: 860px) {
       .grid { grid-template-columns: 1fr; }
       .tabs { flex-direction: column; }
       .tab-btn { width: 100%; }
+      .btn { width: 100%; }
     }
   </style>
 </head>
@@ -196,6 +272,7 @@
     <div class="card tabs">
       <button id="tabChartBtn" class="tab-btn active" type="button">Обычный расчёт</button>
       <button id="tabRectBtn" class="tab-btn" type="button">Ректификация: интервалы восходящих знаков</button>
+      <button id="tabRectDialogBtn" class="tab-btn" type="button">Ректификация: диалог по восходящему знаку</button>
     </div>
 
     <section id="chartPanel" class="tab-panel active">
@@ -219,7 +296,7 @@
           <div>
             <label>Город</label>
             <div class="row">
-              <input id="cityQuery" placeholder="Минск, Москва, Berlin..." />
+              <input id="cityQuery" value="Уфа" placeholder="Уфа, Москва, Berlin..." />
               <button id="searchCityBtn" class="btn secondary" type="button">Поиск</button>
             </div>
           </div>
@@ -233,11 +310,11 @@
         <div class="grid" style="margin-top:10px;">
           <div>
             <label>Latitude</label>
-            <input id="latitude" type="number" step="0.000001" value="53.9006" />
+            <input id="latitude" type="number" step="0.000001" value="54.7388" />
           </div>
           <div>
             <label>Longitude</label>
-            <input id="longitude" type="number" step="0.000001" value="27.5590" />
+            <input id="longitude" type="number" step="0.000001" value="55.9721" />
           </div>
         </div>
 
@@ -325,7 +402,7 @@
           <div>
             <label>Город</label>
             <div class="row">
-              <input id="rectCityQuery" placeholder="Минск, Москва, Berlin..." />
+              <input id="rectCityQuery" value="Уфа" placeholder="Уфа, Москва, Berlin..." />
               <button id="rectSearchCityBtn" class="btn secondary" type="button">Поиск</button>
             </div>
           </div>
@@ -338,11 +415,11 @@
         <div class="grid" style="margin-top:10px;">
           <div>
             <label>Latitude</label>
-            <input id="rectLatitude" type="number" step="0.000001" value="53.9006" />
+            <input id="rectLatitude" type="number" step="0.000001" value="54.7388" />
           </div>
           <div>
             <label>Longitude</label>
-            <input id="rectLongitude" type="number" step="0.000001" value="27.5590" />
+            <input id="rectLongitude" type="number" step="0.000001" value="55.9721" />
           </div>
         </div>
 
@@ -393,6 +470,144 @@
         <div id="rectJsonBox" class="json-box"></div>
       </div>
     </section>
+
+    <section id="rectDialogPanel" class="tab-panel">
+      <div class="card">
+        <div class="grid">
+          <div>
+            <label>Адрес API</label>
+            <input id="rdApiBaseUrl" value="http://127.0.0.1:8013" />
+          </div>
+          <div>
+            <label>Режим координат</label>
+            <select id="rdCoordMode">
+              <option value="city">Поиск по городу</option>
+              <option value="manual">Ручной ввод координат</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="rdCityBlock" class="grid" style="margin-top:10px;">
+          <div>
+            <label>Город</label>
+            <div class="row">
+              <input id="rdCityQuery" value="Уфа" placeholder="Уфа, Москва, Berlin..." />
+              <button id="rdSearchCityBtn" class="btn secondary" type="button">Поиск</button>
+            </div>
+          </div>
+          <div>
+            <label>Результат поиска</label>
+            <select id="rdCityResults"></select>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Latitude</label>
+            <input id="rdLatitude" type="number" step="0.000001" value="54.7388" />
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input id="rdLongitude" type="number" step="0.000001" value="55.9721" />
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Дата рождения (локальная)</label>
+            <input id="rdBirthDate" type="date" />
+          </div>
+          <div>
+            <label>House system</label>
+            <select id="rdHouseSystem">
+              <option value="P">P (Placidus)</option>
+              <option value="K">K (Koch)</option>
+              <option value="O">O (Porphyry)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Zodiac mode</label>
+            <select id="rdZodiacMode">
+              <option value="tropical">tropical</option>
+              <option value="sidereal">sidereal</option>
+            </select>
+          </div>
+          <div>
+            <label>Sidereal mode</label>
+            <select id="rdSiderealMode">
+              <option value="">null</option>
+              <option value="lahiri">lahiri</option>
+              <option value="fagan_bradley">fagan_bradley</option>
+              <option value="krishnamurti">krishnamurti</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>Краткий текст о себе / о рождении (опционально)</label>
+          <textarea id="rdUserProfileNote" style="min-height:90px;" placeholder="Например: я интроверт, в детстве часто переезжали..."></textarea>
+        </div>
+
+        <div class="actions" style="margin-top:10px;">
+          <button id="rdStartBtn" class="btn" type="button">Начать ректификацию</button>
+          <button id="rdResetBtn" class="btn secondary" type="button">Сбросить диалог</button>
+        </div>
+        <div id="rdStatus" class="hint"></div>
+      </div>
+
+      <div class="card">
+        <strong>Текущий вопрос</strong>
+        <div id="rdCurrentQuestionWrap" class="hidden" style="margin-top:8px;">
+          <div id="rdProbabilityText" class="hint"></div>
+          <div id="rdQuestionText" style="margin-top:8px;font-weight:600;"></div>
+          <div id="rdOptionsWrap" class="interval-list"></div>
+        </div>
+        <div id="rdNoQuestionText" class="hint" style="margin-top:8px;">Вопрос пока не получен.</div>
+      </div>
+
+      <div class="card">
+        <strong>История диалога</strong>
+        <div id="rdHistory" class="chat-box" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="card">
+        <strong>Финальный результат</strong>
+        <div id="rdFinalResult" class="final-result" style="margin-top:10px;">Финальный результат пока не получен.</div>
+      </div>
+
+      <div class="card">
+        <div class="grid">
+          <div>
+            <strong>Raw rectification JSON</strong>
+            <div id="rdRectJsonBox" class="json-box"></div>
+          </div>
+          <div>
+            <strong>Raw last LLM JSON</strong>
+            <div id="rdLastLlmJsonBox" class="json-box"></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;"><strong>Usage summary (суммарно за сессию)</strong></div>
+        <div id="rdUsageSummaryBox" class="json-box"></div>
+      </div>
+
+      <div class="card">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
+          <input id="rdShowPromptToggle" type="checkbox" style="width:auto;" />
+          Показать системный промпт
+        </label>
+        <div id="rdPromptWrap" class="hidden" style="margin-top:10px;">
+          <div class="actions" style="justify-content:space-between;">
+            <strong>Системный prompt для ректификации</strong>
+            <button id="rdReloadPromptBtn" class="btn secondary" type="button">Перезагрузить из файла</button>
+          </div>
+          <textarea id="rdPromptText" style="min-height:240px;"></textarea>
+          <div class="hint">Изменения prompt действуют только в текущей странице и не сохраняются в файл.</div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div id="resultModal" class="modal">
@@ -413,11 +628,20 @@
     </div>
   </div>
 
+  <div id="llmOverlay" class="llm-overlay">
+    <div class="llm-overlay-box">
+      <div id="llmOverlayMessage"><strong>Запрос в нейросеть отправлен, ждите...</strong></div>
+      <div id="llmOverlayElapsed" class="hint" style="margin-top:8px;">0 сек</div>
+    </div>
+  </div>
+
   <script>
     const tabChartBtnEl = document.getElementById("tabChartBtn");
     const tabRectBtnEl = document.getElementById("tabRectBtn");
+    const tabRectDialogBtnEl = document.getElementById("tabRectDialogBtn");
     const chartPanelEl = document.getElementById("chartPanel");
     const rectPanelEl = document.getElementById("rectPanel");
+    const rectDialogPanelEl = document.getElementById("rectDialogPanel");
 
     const timezoneOffsetEl = document.getElementById("timezoneOffset");
     const datetimeLocalEl = document.getElementById("datetimeLocal");
@@ -443,12 +667,57 @@
     const rectIntervalsListEl = document.getElementById("rectIntervalsList");
     const rectJsonBoxEl = document.getElementById("rectJsonBox");
 
+    const rdCoordModeEl = document.getElementById("rdCoordMode");
+    const rdCityBlockEl = document.getElementById("rdCityBlock");
+    const rdCityResultsEl = document.getElementById("rdCityResults");
+    const rdStatusEl = document.getElementById("rdStatus");
+    const rdZodiacModeEl = document.getElementById("rdZodiacMode");
+    const rdSiderealModeEl = document.getElementById("rdSiderealMode");
+    const rdShowPromptToggleEl = document.getElementById("rdShowPromptToggle");
+    const rdPromptWrapEl = document.getElementById("rdPromptWrap");
+    const rdPromptTextEl = document.getElementById("rdPromptText");
+    const rdHistoryEl = document.getElementById("rdHistory");
+    const rdCurrentQuestionWrapEl = document.getElementById("rdCurrentQuestionWrap");
+    const rdNoQuestionTextEl = document.getElementById("rdNoQuestionText");
+    const rdProbabilityTextEl = document.getElementById("rdProbabilityText");
+    const rdQuestionTextEl = document.getElementById("rdQuestionText");
+    const rdOptionsWrapEl = document.getElementById("rdOptionsWrap");
+    const rdFinalResultEl = document.getElementById("rdFinalResult");
+    const rdRectJsonBoxEl = document.getElementById("rdRectJsonBox");
+    const rdLastLlmJsonBoxEl = document.getElementById("rdLastLlmJsonBox");
+    const rdUsageSummaryBoxEl = document.getElementById("rdUsageSummaryBox");
+    const llmOverlayEl = document.getElementById("llmOverlay");
+    const llmOverlayMessageEl = document.getElementById("llmOverlayMessage");
+    const llmOverlayElapsedEl = document.getElementById("llmOverlayElapsed");
+
+    let llmOverlayTimerId = null;
+    let llmOverlayStartedAt = 0;
+
+    const rectDialogState = {
+      rectificationDocument: null,
+      dialogHistory: [],
+      stepCount: 0,
+      currentQuestion: null,
+      selectedOption: null,
+      lastLlmRaw: null,
+      isBusy: false,
+      usageSteps: [],
+      usageTotal: {
+        input_tokens: 0,
+        output_tokens: 0,
+        total_tokens: 0,
+        cached_input_tokens: 0,
+        reasoning_tokens: 0,
+      },
+    };
+
     function setTab(tabName) {
-      const isChart = tabName === "chart";
-      tabChartBtnEl.classList.toggle("active", isChart);
-      tabRectBtnEl.classList.toggle("active", !isChart);
-      chartPanelEl.classList.toggle("active", isChart);
-      rectPanelEl.classList.toggle("active", !isChart);
+      tabChartBtnEl.classList.toggle("active", tabName === "chart");
+      tabRectBtnEl.classList.toggle("active", tabName === "rect");
+      tabRectDialogBtnEl.classList.toggle("active", tabName === "rect-dialog");
+      chartPanelEl.classList.toggle("active", tabName === "chart");
+      rectPanelEl.classList.toggle("active", tabName === "rect");
+      rectDialogPanelEl.classList.toggle("active", tabName === "rect-dialog");
     }
 
     function fillOffsets() {
@@ -461,7 +730,7 @@
         opt.textContent = val;
         timezoneOffsetEl.appendChild(opt);
       }
-      timezoneOffsetEl.value = "+03:00";
+      timezoneOffsetEl.value = "+05:00";
     }
 
     function nowLocalInputValue() {
@@ -499,6 +768,10 @@
       rectStatusEl.textContent = text || "";
     }
 
+    function setRdStatus(text) {
+      rdStatusEl.textContent = text || "";
+    }
+
     function closeModal() {
       modalEl.classList.remove("active");
     }
@@ -521,28 +794,271 @@
       return JSON.stringify(payload, null, 2);
     }
 
+    function formatElapsedDuration(seconds) {
+      if (seconds < 60) {
+        return `${seconds} сек`;
+      }
+      const minutes = Math.floor(seconds / 60);
+      const restSeconds = seconds % 60;
+      return `${minutes} мин ${restSeconds} сек`;
+    }
+
+    function showLlmOverlay(message) {
+      llmOverlayStartedAt = Date.now();
+      llmOverlayMessageEl.innerHTML = `<strong>${message || "Запрос в нейросеть отправлен, ждите..."}</strong>`;
+      llmOverlayElapsedEl.textContent = "0 сек";
+      llmOverlayEl.classList.add("active");
+
+      if (llmOverlayTimerId) {
+        clearInterval(llmOverlayTimerId);
+      }
+      llmOverlayTimerId = setInterval(() => {
+        const elapsedSeconds = Math.floor((Date.now() - llmOverlayStartedAt) / 1000);
+        llmOverlayElapsedEl.textContent = formatElapsedDuration(elapsedSeconds);
+      }, 1000);
+    }
+
+    function hideLlmOverlay() {
+      if (llmOverlayTimerId) {
+        clearInterval(llmOverlayTimerId);
+        llmOverlayTimerId = null;
+      }
+      llmOverlayEl.classList.remove("active");
+    }
+
+    function formatUsage(usage) {
+      return {
+        input_tokens: usage?.input_tokens ?? null,
+        output_tokens: usage?.output_tokens ?? null,
+        total_tokens: usage?.total_tokens ?? null,
+        cached_input_tokens: usage?.cached_input_tokens ?? null,
+        reasoning_tokens: usage?.reasoning_tokens ?? null,
+      };
+    }
+
+    function addUsageToTotals(usage) {
+      if (!usage) return;
+      const keys = ["input_tokens", "output_tokens", "total_tokens", "cached_input_tokens", "reasoning_tokens"];
+      keys.forEach((key) => {
+        const value = usage[key];
+        if (typeof value === "number" && Number.isFinite(value)) {
+          rectDialogState.usageTotal[key] += value;
+        }
+      });
+      rectDialogState.usageSteps.push(formatUsage(usage));
+    }
+
+    function renderUsageSummary() {
+      rdUsageSummaryBoxEl.textContent = JSON.stringify(
+        {
+          total: rectDialogState.usageTotal,
+          steps: rectDialogState.usageSteps,
+        },
+        null,
+        2
+      );
+    }
+
+    function resetRectDialogState() {
+      rectDialogState.rectificationDocument = null;
+      rectDialogState.dialogHistory = [];
+      rectDialogState.stepCount = 0;
+      rectDialogState.currentQuestion = null;
+      rectDialogState.selectedOption = null;
+      rectDialogState.lastLlmRaw = null;
+      rectDialogState.isBusy = false;
+      rectDialogState.usageSteps = [];
+      rectDialogState.usageTotal = {
+        input_tokens: 0,
+        output_tokens: 0,
+        total_tokens: 0,
+        cached_input_tokens: 0,
+        reasoning_tokens: 0,
+      };
+
+      rdHistoryEl.innerHTML = "";
+      rdFinalResultEl.textContent = "Финальный результат пока не получен.";
+      rdRectJsonBoxEl.textContent = "";
+      rdLastLlmJsonBoxEl.textContent = "";
+      rdProbabilityTextEl.textContent = "";
+      rdQuestionTextEl.textContent = "";
+      rdOptionsWrapEl.innerHTML = "";
+      rdCurrentQuestionWrapEl.classList.add("hidden");
+      rdNoQuestionTextEl.classList.remove("hidden");
+      renderUsageSummary();
+    }
+
+    function appendAssistantMessage(llmJson, usage) {
+      const entry = {
+        role: "assistant",
+        ...llmJson,
+        usage: formatUsage(usage),
+      };
+      rectDialogState.dialogHistory.push(entry);
+
+      if (llmJson.type === "ask_question") {
+        rectDialogState.currentQuestion = llmJson;
+        rectDialogState.selectedOption = null;
+      } else {
+        rectDialogState.currentQuestion = null;
+      }
+    }
+
+    function renderDialogHistory() {
+      rdHistoryEl.innerHTML = "";
+      if (!rectDialogState.dialogHistory.length) {
+        rdHistoryEl.innerHTML = "<div class='hint'>История пока пуста.</div>";
+        return;
+      }
+
+      let uiStep = 1;
+      for (let i = 0; i < rectDialogState.dialogHistory.length; i++) {
+        const item = rectDialogState.dialogHistory[i];
+        if (item.role !== "assistant") {
+          continue;
+        }
+
+        if (item.type === "ask_question") {
+          const userItem = rectDialogState.dialogHistory[i + 1]?.role === "user"
+            ? rectDialogState.dialogHistory[i + 1]
+            : null;
+
+          const msg = document.createElement("div");
+          msg.className = "msg assistant";
+          msg.innerHTML =
+            `<div class="msg-head">Шаг ${uiStep}</div>` +
+            `<div><strong>Вопрос:</strong> ${item.question_text || "-"}</div>` +
+            `<div style="margin-top:6px;"><strong>Ответ:</strong> ${userItem?.selected_option_text || "ожидается"}</div>` +
+            `<div class="usage-mini">` +
+            `Тестовая оценка: ${item.debug_probability_text || "-"}<br/>` +
+            `Токены: input=${item.usage?.input_tokens ?? "null"}, output=${item.usage?.output_tokens ?? "null"}, ` +
+            `cached=${item.usage?.cached_input_tokens ?? "null"}, reasoning=${item.usage?.reasoning_tokens ?? "null"}, ` +
+            `total=${item.usage?.total_tokens ?? "null"}` +
+            `</div>`;
+          rdHistoryEl.appendChild(msg);
+
+          if (userItem) {
+            i += 1;
+          }
+          uiStep += 1;
+          continue;
+        }
+
+        if (item.type === "final_result") {
+          const p = item.primary_candidate || {};
+          const msg = document.createElement("div");
+          msg.className = "msg assistant";
+          msg.innerHTML =
+            `<div class="msg-head">Финальный шаг</div>` +
+            `<div><strong>Итог:</strong> ${p.sign_name_ru || ""} (${p.sign_name_en || ""})</div>` +
+            `<div>Интервал: ${p.time_range_local?.start || ""} → ${p.time_range_local?.end || ""}</div>` +
+            `<div>Вероятность: ${p.probability ?? "n/a"}</div>` +
+            `<div style="margin-top:6px;">${item.summary_text || ""}</div>` +
+            `<div class="usage-mini">Токены: input=${item.usage?.input_tokens ?? "null"}, output=${item.usage?.output_tokens ?? "null"}, ` +
+            `cached=${item.usage?.cached_input_tokens ?? "null"}, reasoning=${item.usage?.reasoning_tokens ?? "null"}, total=${item.usage?.total_tokens ?? "null"}</div>`;
+          rdHistoryEl.appendChild(msg);
+        }
+      }
+    }
+
+    function renderCurrentQuestion() {
+      const q = rectDialogState.currentQuestion;
+      if (!q || q.type !== "ask_question") {
+        rdCurrentQuestionWrapEl.classList.add("hidden");
+        rdNoQuestionTextEl.classList.remove("hidden");
+        return;
+      }
+
+      rdCurrentQuestionWrapEl.classList.remove("hidden");
+      rdNoQuestionTextEl.classList.add("hidden");
+      rdProbabilityTextEl.textContent = q.debug_probability_text || "";
+      rdQuestionTextEl.textContent = q.question_text || "";
+      rdOptionsWrapEl.innerHTML = "";
+
+      (q.options || []).forEach((option) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn option";
+        if (rectDialogState.selectedOption?.id === option.id) {
+          btn.classList.add("active");
+        }
+        btn.disabled = rectDialogState.isBusy;
+        btn.textContent = `${option.id}. ${option.text}`;
+        btn.addEventListener("click", async () => {
+          if (rectDialogState.isBusy) return;
+          rectDialogState.selectedOption = { id: option.id, text: option.text };
+          renderCurrentQuestion();
+          await continueRectificationDialogWithOption(rectDialogState.selectedOption);
+        });
+        rdOptionsWrapEl.appendChild(btn);
+      });
+    }
+
+    function renderFinalResult() {
+      const lastAssistant = [...rectDialogState.dialogHistory]
+        .reverse()
+        .find((x) => x.role === "assistant" && x.type === "final_result");
+
+      if (!lastAssistant) {
+        rdFinalResultEl.textContent = "Финальный результат пока не получен.";
+        return;
+      }
+
+      const primary = lastAssistant.primary_candidate || {};
+      const secondary = (lastAssistant.secondary_candidates || [])
+        .map((x) => `${x.sign_name_ru} (${x.sign_name_en}) — ${x.probability}`)
+        .join("; ");
+      rdFinalResultEl.innerHTML =
+        `<div><strong>Основной кандидат:</strong> ${primary.sign_name_ru || ""} (${primary.sign_name_en || ""})</div>` +
+        `<div><strong>Интервал:</strong> ${primary.time_range_local?.start || ""} → ${primary.time_range_local?.end || ""}</div>` +
+        `<div><strong>Вероятность:</strong> ${primary.probability ?? "n/a"}</div>` +
+        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>` +
+        `<div style="margin-top:8px;">${lastAssistant.summary_text || ""}</div>`;
+    }
+
+    function renderRectDialogAll() {
+      rdRectJsonBoxEl.textContent = rectDialogState.rectificationDocument
+        ? JSON.stringify(rectDialogState.rectificationDocument, null, 2)
+        : "";
+      rdLastLlmJsonBoxEl.textContent = rectDialogState.lastLlmRaw
+        ? JSON.stringify(rectDialogState.lastLlmRaw, null, 2)
+        : "";
+      renderDialogHistory();
+      renderCurrentQuestion();
+      renderFinalResult();
+      renderUsageSummary();
+    }
+
     async function loadPrompt() {
       const res = await fetch("/api/prompt");
       const data = await res.json();
       document.getElementById("promptText").value = data.prompt_text || "";
     }
 
-    async function searchCity() {
-      const query = document.getElementById("cityQuery").value.trim();
-      if (!query) return;
-      setStatus("Ищем город...");
+    async function loadRectificationPrompt() {
+      const res = await fetch("/api/rectification/prompt");
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(extractErrorText(data));
+      }
+      rdPromptTextEl.value = data.prompt_text || "";
+    }
+
+    async function geocodeSearch(query) {
       const res = await fetch("/api/geocode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       });
       const data = await res.json();
-      cityResultsEl.innerHTML = "";
-      const results = data.results || [];
-      if (!results.length) {
-        setStatus("Город не найден.");
-        return;
+      if (!res.ok) {
+        throw new Error(extractErrorText(data));
       }
+      return data.results || [];
+    }
+
+    function fillCitySelect(selectEl, results) {
+      selectEl.innerHTML = "";
       results.forEach((item, idx) => {
         const opt = document.createElement("option");
         opt.value = idx;
@@ -550,39 +1066,60 @@
         opt.textContent = `${label} [${item.latitude}, ${item.longitude}] ${item.timezone || ""}`;
         opt.dataset.latitude = item.latitude;
         opt.dataset.longitude = item.longitude;
-        cityResultsEl.appendChild(opt);
+        selectEl.appendChild(opt);
       });
-      cityResultsEl.dispatchEvent(new Event("change"));
-      setStatus("Город найден. Координаты обновлены.");
+      selectEl.dispatchEvent(new Event("change"));
+    }
+
+    async function searchCity() {
+      const query = document.getElementById("cityQuery").value.trim();
+      if (!query) return;
+      setStatus("Ищем город...");
+      try {
+        const results = await geocodeSearch(query);
+        if (!results.length) {
+          setStatus("Город не найден.");
+          return;
+        }
+        fillCitySelect(cityResultsEl, results);
+        setStatus("Город найден. Координаты обновлены.");
+      } catch (err) {
+        setStatus("Ошибка: " + err.message);
+      }
     }
 
     async function searchCityRect() {
       const query = document.getElementById("rectCityQuery").value.trim();
       if (!query) return;
       setRectStatus("Ищем город...");
-      const res = await fetch("/api/geocode", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
-      });
-      const data = await res.json();
-      rectCityResultsEl.innerHTML = "";
-      const results = data.results || [];
-      if (!results.length) {
-        setRectStatus("Город не найден.");
-        return;
+      try {
+        const results = await geocodeSearch(query);
+        if (!results.length) {
+          setRectStatus("Город не найден.");
+          return;
+        }
+        fillCitySelect(rectCityResultsEl, results);
+        setRectStatus("Город найден. Координаты обновлены.");
+      } catch (err) {
+        setRectStatus("Ошибка: " + err.message);
       }
-      results.forEach((item, idx) => {
-        const opt = document.createElement("option");
-        opt.value = idx;
-        const label = [item.name, item.admin1, item.country].filter(Boolean).join(", ");
-        opt.textContent = `${label} [${item.latitude}, ${item.longitude}] ${item.timezone || ""}`;
-        opt.dataset.latitude = item.latitude;
-        opt.dataset.longitude = item.longitude;
-        rectCityResultsEl.appendChild(opt);
-      });
-      rectCityResultsEl.dispatchEvent(new Event("change"));
-      setRectStatus("Город найден. Координаты обновлены.");
+    }
+
+    async function searchCityRectDialog() {
+      const query = document.getElementById("rdCityQuery").value.trim();
+      if (!query) return;
+      setRdStatus("Ищем город...");
+      try {
+        const results = await geocodeSearch(query);
+        if (!results.length) {
+          setRdStatus("Город не найден.");
+          return;
+        }
+        fillCitySelect(rdCityResultsEl, results);
+        setRdStatus("Город найден. Координаты обновлены.");
+      } catch (err) {
+        setRdStatus("Ошибка: " + err.message);
+      }
     }
 
     async function generate() {
@@ -624,7 +1161,6 @@
         rectIntervalsListEl.innerHTML = "<div class='interval-item'>Интервалы не найдены.</div>";
         return;
       }
-
       intervals.forEach((item) => {
         const block = document.createElement("div");
         block.className = "interval-item";
@@ -647,7 +1183,6 @@
         zodiac_mode: zodiacMode,
         sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,
       };
-
       const res = await fetch("/api/rectification/asc-sign-intervals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -660,14 +1195,132 @@
         rectJsonBoxEl.textContent = "";
         return;
       }
-
       renderRectIntervals(data.asc_sign_intervals || []);
       rectJsonBoxEl.textContent = JSON.stringify(data, null, 2);
       setRectStatus(`Готово. Найдено интервалов: ${(data.asc_sign_intervals || []).length}`);
     }
 
+    async function startRectificationDialog() {
+      if (rectDialogState.isBusy) {
+        return;
+      }
+      rectDialogState.isBusy = true;
+      setRdStatus("Запуск ректификации...");
+      showLlmOverlay("Запрос в нейросеть отправлен, ждите...");
+      const zodiacMode = rdZodiacModeEl.value;
+      const sidMode = rdSiderealModeEl.value || null;
+      const body = {
+        api_base_url: document.getElementById("rdApiBaseUrl").value.trim(),
+        birth_date_local: document.getElementById("rdBirthDate").value,
+        latitude: Number(document.getElementById("rdLatitude").value),
+        longitude: Number(document.getElementById("rdLongitude").value),
+        house_system: document.getElementById("rdHouseSystem").value,
+        zodiac_mode: zodiacMode,
+        sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,
+        prompt_text: rdPromptTextEl.value,
+        user_profile_note: document.getElementById("rdUserProfileNote").value.trim() || null,
+      };
+
+      try {
+        const res = await fetch("/api/rectification/dialog/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setRdStatus("Ошибка: " + extractErrorText(data));
+          return;
+        }
+
+        resetRectDialogState();
+        rectDialogState.rectificationDocument = data.rectification_document;
+        rectDialogState.lastLlmRaw = data.openai_raw_response || data.llm_json;
+        rectDialogState.stepCount = data.step_count || 0;
+        addUsageToTotals(data.usage);
+        appendAssistantMessage(data.llm_json, data.usage);
+        renderRectDialogAll();
+
+        setRdStatus(data.llm_json?.type === "final_result" ? "Получен финальный результат." : "Ректификация запущена.");
+      } finally {
+        rectDialogState.isBusy = false;
+        hideLlmOverlay();
+      }
+    }
+
+    async function continueRectificationDialogWithOption(selectedOption) {
+      if (!rectDialogState.rectificationDocument) {
+        setRdStatus("Сначала нажмите 'Начать ректификацию'.");
+        return;
+      }
+      if (!rectDialogState.currentQuestion || rectDialogState.currentQuestion.type !== "ask_question") {
+        setRdStatus("Сейчас нет активного вопроса.");
+        return;
+      }
+      if (!selectedOption) {
+        setRdStatus("Выберите вариант ответа.");
+        return;
+      }
+      if (rectDialogState.isBusy) {
+        return;
+      }
+
+      rectDialogState.isBusy = true;
+      renderCurrentQuestion();
+
+      const userResponse = {
+        selected_option_id: selectedOption.id,
+        selected_option_text: selectedOption.text,
+        free_text: null,
+      };
+      const body = {
+        prompt_text: rdPromptTextEl.value,
+        rectification_document: rectDialogState.rectificationDocument,
+        dialog_history: rectDialogState.dialogHistory,
+        step_count: rectDialogState.stepCount,
+        mode: "next_question",
+        user_profile_note: document.getElementById("rdUserProfileNote").value.trim() || null,
+        user_response: userResponse,
+      };
+
+      setRdStatus("Переходим к следующему вопросу...");
+      showLlmOverlay("Запрос в нейросеть отправлен, ждите...");
+      try {
+        const res = await fetch("/api/rectification/dialog/continue", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setRdStatus("Ошибка: " + extractErrorText(data));
+          return;
+        }
+
+        rectDialogState.dialogHistory.push({
+          role: "user",
+          selected_option_id: userResponse.selected_option_id,
+          selected_option_text: userResponse.selected_option_text,
+          free_text: null,
+        });
+
+        rectDialogState.lastLlmRaw = data.openai_raw_response || data.llm_json;
+        rectDialogState.stepCount = data.step_count || rectDialogState.stepCount;
+        addUsageToTotals(data.usage);
+        appendAssistantMessage(data.llm_json, data.usage);
+        renderRectDialogAll();
+
+        setRdStatus(data.llm_json?.type === "final_result" ? "Получен финальный результат." : "Новый вопрос получен.");
+      } finally {
+        rectDialogState.isBusy = false;
+        hideLlmOverlay();
+        renderCurrentQuestion();
+      }
+    }
+
     tabChartBtnEl.addEventListener("click", () => setTab("chart"));
     tabRectBtnEl.addEventListener("click", () => setTab("rect"));
+    tabRectDialogBtnEl.addEventListener("click", () => setTab("rect-dialog"));
 
     coordModeEl.addEventListener("change", () => {
       cityBlockEl.classList.toggle("hidden", coordModeEl.value !== "city");
@@ -675,9 +1328,13 @@
     rectCoordModeEl.addEventListener("change", () => {
       rectCityBlockEl.classList.toggle("hidden", rectCoordModeEl.value !== "city");
     });
+    rdCoordModeEl.addEventListener("change", () => {
+      rdCityBlockEl.classList.toggle("hidden", rdCoordModeEl.value !== "city");
+    });
 
     document.getElementById("searchCityBtn").addEventListener("click", searchCity);
     document.getElementById("rectSearchCityBtn").addEventListener("click", searchCityRect);
+    document.getElementById("rdSearchCityBtn").addEventListener("click", searchCityRectDialog);
 
     cityResultsEl.addEventListener("change", () => {
       const option = cityResultsEl.options[cityResultsEl.selectedIndex];
@@ -691,9 +1348,32 @@
       document.getElementById("rectLatitude").value = option.dataset.latitude || "";
       document.getElementById("rectLongitude").value = option.dataset.longitude || "";
     });
+    rdCityResultsEl.addEventListener("change", () => {
+      const option = rdCityResultsEl.options[rdCityResultsEl.selectedIndex];
+      if (!option) return;
+      document.getElementById("rdLatitude").value = option.dataset.latitude || "";
+      document.getElementById("rdLongitude").value = option.dataset.longitude || "";
+    });
 
     document.getElementById("generateBtn").addEventListener("click", generate);
     document.getElementById("rectRunBtn").addEventListener("click", runRectification);
+    document.getElementById("rdStartBtn").addEventListener("click", startRectificationDialog);
+    document.getElementById("rdResetBtn").addEventListener("click", () => {
+      resetRectDialogState();
+      setRdStatus("Диалог сброшен.");
+    });
+    document.getElementById("rdReloadPromptBtn").addEventListener("click", async () => {
+      try {
+        await loadRectificationPrompt();
+        setRdStatus("Prompt перезагружен из файла.");
+      } catch (err) {
+        setRdStatus("Ошибка загрузки prompt: " + err.message);
+      }
+    });
+    rdShowPromptToggleEl.addEventListener("change", () => {
+      rdPromptWrapEl.classList.toggle("hidden", !rdShowPromptToggleEl.checked);
+    });
+
     document.getElementById("closeModalBtn").addEventListener("click", closeModal);
     document.getElementById("closeModalBtn2").addEventListener("click", closeModal);
     toggleApiRawBtnEl.addEventListener("click", toggleRawApi);
@@ -710,6 +1390,11 @@
       rectSiderealModeEl.disabled = !sidereal;
       if (!sidereal) rectSiderealModeEl.value = "";
     });
+    rdZodiacModeEl.addEventListener("change", () => {
+      const sidereal = rdZodiacModeEl.value === "sidereal";
+      rdSiderealModeEl.disabled = !sidereal;
+      if (!sidereal) rdSiderealModeEl.value = "";
+    });
 
     window.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
 
@@ -717,10 +1402,15 @@
     datetimeLocalEl.value = nowLocalInputValue();
     calculateUtcPreview();
     document.getElementById("rectBirthDate").value = todayLocalDateValue();
+    document.getElementById("rdBirthDate").value = todayLocalDateValue();
     siderealModeEl.disabled = true;
     rectSiderealModeEl.disabled = true;
+    rdSiderealModeEl.disabled = true;
     rectJsonBoxEl.textContent = "";
+    resetRectDialogState();
+
     loadPrompt().catch(() => setStatus("Не удалось загрузить PROMPT.md"));
+    loadRectificationPrompt().catch(() => setRdStatus("Не удалось загрузить PROMPT_RECTIFICATION_STAGE1.md"));
   </script>
 </body>
 </html>
