@@ -9,9 +9,11 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.api.routes import router as chart_router
+from app.api.rectification_routes import router as rectification_router
 from app.bootstrap_ephe import bootstrap_ephemeris
 from app.config import Settings, get_settings
 from app.core.errors import AppError
+from app.services.asc_sign_intervals_service import AscSignIntervalsService
 from app.core.logging import configure_logging
 from app.services.ephemeris_service import EphemerisService
 
@@ -29,6 +31,7 @@ def _build_lifespan(settings: Settings):
                 report.missing_files,
             )
         app.state.ephemeris_service = EphemerisService(str(settings.sweph_ephe_path))
+        app.state.asc_sign_intervals_service = AscSignIntervalsService(str(settings.sweph_ephe_path))
         logger.info("Application startup completed")
         yield
         logger.info("Application shutdown completed")
@@ -50,6 +53,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(chart_router)
+    app.include_router(rectification_router)
 
     @app.exception_handler(RequestValidationError)
     async def request_validation_handler(

@@ -38,3 +38,22 @@ class EphemerisCalculationError(AppError):
             details=details,
         )
 
+
+class TimezoneLookupError(AppError):
+    def __init__(self, message: str, *, details: Any | None = None) -> None:
+        super().__init__(
+            message,
+            status_code=422,
+            code="timezone_lookup_error",
+            details=details,
+        )
+
+
+class RectificationCalculationError(AppError):
+    def __init__(self, message: str, *, details: Any | None = None) -> None:
+        super().__init__(
+            message,
+            status_code=500,
+            code="rectification_calculation_error",
+            details=details,
+        )

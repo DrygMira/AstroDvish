@@ -15,8 +15,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY app /app/app
 COPY scripts /app/scripts
 
-RUN chmod +x /app/scripts/run_local.sh
+RUN chmod +x /app/scripts/start_api_local.sh
 
 EXPOSE 8013
 
-CMD ["/app/scripts/run_local.sh"]
+CMD ["/app/scripts/start_api_local.sh"]

@@ -24,9 +24,10 @@ fi
 
 mkdir -p ephe
 
-if ! "${PYTHON_BIN}" -c "import fastapi, uvicorn, swisseph, httpx, pytest" >/dev/null 2>&1; then
+if ! "${PYTHON_BIN}" -c "import fastapi, uvicorn, swisseph, httpx, pytest, timezonefinder" >/dev/null 2>&1; then
   "${PYTHON_BIN}" -m pip install -r requirements.txt
 fi
 
-echo "${PYTHON_BIN}"
-
+export SWEPH_AUTO_DOWNLOAD=false
+export APP_LOG_LEVEL=DEBUG
+exec "${PYTHON_BIN}" -m uvicorn app.main:app --host "${APP_HOST:-0.0.0.0}" --port "${APP_PORT:-8013}"

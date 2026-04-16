@@ -12,6 +12,5 @@
 
 Тестовый запуск API (без веб-морды, с отключённой автозагрузкой эфемерид):
 ```bash
-../scripts/start_api_test_mode.sh
+../scripts/test_api_local.sh
 ```
-

@@ -46,9 +46,8 @@ astro-bot-API/
   tests/                      # Тесты API
   PROMPT.md
   scripts/start_api_local.sh
-  scripts/start_api_test_mode.sh
   scripts/start_web_ui.sh
-  scripts/run_tests.sh
+  scripts/test_api_local.sh
   requirements.txt
   Dockerfile
   docker-compose.yml
@@ -173,7 +172,7 @@ astro-bot-API/
 ## Тестовый запуск API без веб-морды
 
 ```bash
-./scripts/start_api_test_mode.sh
+./scripts/test_api_local.sh
 ```
 
 ## Запуск через Docker
@@ -186,7 +185,7 @@ docker compose up -d --build
 ## Тесты
 
 ```bash
-./scripts/run_tests.sh
+.venv/bin/python -m pytest -q
 ```
 
 Покрыты сценарии:

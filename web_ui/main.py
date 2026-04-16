@@ -35,6 +35,16 @@ class GenerateRequest(BaseModel):
     prompt_text: str = "Сделай гороскоп по этим данным."
 
 
+class RectificationIntervalsRequest(BaseModel):
+    api_base_url: str = "http://127.0.0.1:8013"
+    birth_date_local: str
+    latitude: float
+    longitude: float
+    house_system: str = "P"
+    zodiac_mode: str = "tropical"
+    sidereal_mode: str | None = None
+
+
 def _load_prompt() -> str:
     if not PROMPT_PATH.exists():
         return "Сделай гороскоп по этим данным."
@@ -232,6 +242,35 @@ def generate(payload: GenerateRequest) -> JSONResponse:
             "chart_response": chart_response,
         }
     )
+
+
+@app.post("/api/rectification/asc-sign-intervals")
+def rectification_asc_sign_intervals(payload: RectificationIntervalsRequest) -> JSONResponse:
+    api_url = payload.api_base_url.rstrip("/") + "/api/v1/rectification/asc-sign-intervals"
+    api_payload = {
+        "birth_date_local": payload.birth_date_local,
+        "latitude": payload.latitude,
+        "longitude": payload.longitude,
+        "house_system": payload.house_system,
+        "zodiac_mode": payload.zodiac_mode,
+        "sidereal_mode": payload.sidereal_mode,
+    }
+    try:
+        response = httpx.post(api_url, json=api_payload, timeout=120)
+    except httpx.HTTPError as exc:
+        raise HTTPException(status_code=502, detail=f"API request failed: {exc}") from exc
+
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": "Rectification API returned non-200 status",
+                "status_code": response.status_code,
+                "body": response.text[:2000],
+            },
+        )
+
+    return JSONResponse(response.json())
 
 
 @app.get("/static/{filename}")

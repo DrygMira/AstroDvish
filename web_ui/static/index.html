@@ -79,6 +79,51 @@
       color: var(--muted);
     }
     .hidden { display: none; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      width: auto;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tab-btn.active {
+      border-color: transparent;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .interval-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .interval-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 10px;
+      font-size: 14px;
+    }
+    .json-box {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 10px;
+      white-space: pre-wrap;
+      font-size: 13px;
+      max-height: 360px;
+      overflow: auto;
+    }
 
     .modal {
       position: fixed;
@@ -134,120 +179,220 @@
       overflow: auto;
       background: #f8fbff;
     }
-    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+      .tabs { flex-direction: column; }
+      .tab-btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
       <h1>Тестовая веб-морда астросервиса</h1>
-      <div class="muted">UI работает на порту 8014 и отправляет расчёт в API на 8013 (или любой другой адрес).</div>
+      <div class="muted">UI работает на порту 8014 и отправляет расчёты в API на 8013 (или любой другой адрес).</div>
     </div>
 
-    <div class="card">
-      <div class="grid">
-        <div>
-          <label>Адрес API</label>
-          <input id="apiBaseUrl" value="http://127.0.0.1:8013" />
-          <div class="hint">Например, http://127.0.0.1:8013</div>
-        </div>
-        <div>
-          <label>Режим координат</label>
-          <select id="coordMode">
-            <option value="city">Поиск по городу</option>
-            <option value="manual">Ручной ввод координат</option>
-          </select>
-        </div>
-      </div>
+    <div class="card tabs">
+      <button id="tabChartBtn" class="tab-btn active" type="button">Обычный расчёт</button>
+      <button id="tabRectBtn" class="tab-btn" type="button">Ректификация: интервалы восходящих знаков</button>
+    </div>
 
-      <div id="cityBlock" class="grid" style="margin-top:10px;">
-        <div>
-          <label>Город</label>
-          <div class="row">
-            <input id="cityQuery" placeholder="Минск, Москва, Berlin..." />
-            <button id="searchCityBtn" class="btn secondary" type="button">Поиск</button>
+    <section id="chartPanel" class="tab-panel active">
+      <div class="card">
+        <div class="grid">
+          <div>
+            <label>Адрес API</label>
+            <input id="apiBaseUrl" value="http://127.0.0.1:8013" />
+            <div class="hint">Например, http://127.0.0.1:8013</div>
+          </div>
+          <div>
+            <label>Режим координат</label>
+            <select id="coordMode">
+              <option value="city">Поиск по городу</option>
+              <option value="manual">Ручной ввод координат</option>
+            </select>
           </div>
         </div>
-        <div>
-          <label>Результат поиска</label>
-          <select id="cityResults"></select>
-          <div class="hint">Выберите вариант, координаты заполнятся автоматически.</div>
+
+        <div id="cityBlock" class="grid" style="margin-top:10px;">
+          <div>
+            <label>Город</label>
+            <div class="row">
+              <input id="cityQuery" placeholder="Минск, Москва, Berlin..." />
+              <button id="searchCityBtn" class="btn secondary" type="button">Поиск</button>
+            </div>
+          </div>
+          <div>
+            <label>Результат поиска</label>
+            <select id="cityResults"></select>
+            <div class="hint">Выберите вариант, координаты заполнятся автоматически.</div>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Latitude</label>
+            <input id="latitude" type="number" step="0.000001" value="53.9006" />
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input id="longitude" type="number" step="0.000001" value="27.5590" />
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Локальная дата/время</label>
+            <input id="datetimeLocal" type="datetime-local" />
+          </div>
+          <div>
+            <label>Часовой пояс (offset)</label>
+            <select id="timezoneOffset"></select>
+            <div class="hint">Это смещение локального времени относительно UTC.</div>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Рассчитанное UTC</label>
+            <input id="datetimeUtcPreview" readonly />
+            <div class="hint">Это значение будет отправлено в API как <code>datetime_utc</code>.</div>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>House system</label>
+            <select id="houseSystem">
+              <option value="P">P (Placidus)</option>
+              <option value="K">K (Koch)</option>
+              <option value="O">O (Porphyry)</option>
+            </select>
+          </div>
+          <div>
+            <label>Zodiac mode</label>
+            <select id="zodiacMode">
+              <option value="tropical">tropical</option>
+              <option value="sidereal">sidereal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Sidereal mode</label>
+            <select id="siderealMode">
+              <option value="">null</option>
+              <option value="lahiri">lahiri</option>
+              <option value="fagan_bradley">fagan_bradley</option>
+              <option value="krishnamurti">krishnamurti</option>
+            </select>
+          </div>
+          <div></div>
         </div>
       </div>
 
-      <div class="grid" style="margin-top:10px;">
-        <div>
-          <label>Latitude</label>
-          <input id="latitude" type="number" step="0.000001" value="53.9006" />
+      <div class="card">
+        <label>Текст промта</label>
+        <textarea id="promptText"></textarea>
+        <div class="actions" style="margin-top:10px;">
+          <button id="generateBtn" class="btn" type="button">Сделать</button>
+          <button id="closeModalBtn2" class="btn secondary hidden" type="button">Закрыть результат</button>
         </div>
-        <div>
-          <label>Longitude</label>
-          <input id="longitude" type="number" step="0.000001" value="27.5590" />
+        <div id="status" class="hint"></div>
+      </div>
+    </section>
+
+    <section id="rectPanel" class="tab-panel">
+      <div class="card">
+        <div class="grid">
+          <div>
+            <label>Адрес API</label>
+            <input id="rectApiBaseUrl" value="http://127.0.0.1:8013" />
+          </div>
+          <div>
+            <label>Режим координат</label>
+            <select id="rectCoordMode">
+              <option value="city">Поиск по городу</option>
+              <option value="manual">Ручной ввод координат</option>
+            </select>
+          </div>
         </div>
+
+        <div id="rectCityBlock" class="grid" style="margin-top:10px;">
+          <div>
+            <label>Город</label>
+            <div class="row">
+              <input id="rectCityQuery" placeholder="Минск, Москва, Berlin..." />
+              <button id="rectSearchCityBtn" class="btn secondary" type="button">Поиск</button>
+            </div>
+          </div>
+          <div>
+            <label>Результат поиска</label>
+            <select id="rectCityResults"></select>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Latitude</label>
+            <input id="rectLatitude" type="number" step="0.000001" value="53.9006" />
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input id="rectLongitude" type="number" step="0.000001" value="27.5590" />
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Дата рождения (локальная)</label>
+            <input id="rectBirthDate" type="date" />
+          </div>
+          <div>
+            <label>House system</label>
+            <select id="rectHouseSystem">
+              <option value="P">P (Placidus)</option>
+              <option value="K">K (Koch)</option>
+              <option value="O">O (Porphyry)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Zodiac mode</label>
+            <select id="rectZodiacMode">
+              <option value="tropical">tropical</option>
+              <option value="sidereal">sidereal</option>
+            </select>
+          </div>
+          <div>
+            <label>Sidereal mode</label>
+            <select id="rectSiderealMode">
+              <option value="">null</option>
+              <option value="lahiri">lahiri</option>
+              <option value="fagan_bradley">fagan_bradley</option>
+              <option value="krishnamurti">krishnamurti</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions" style="margin-top:10px;">
+          <button id="rectRunBtn" class="btn" type="button">Построить интервалы</button>
+        </div>
+        <div id="rectStatus" class="hint"></div>
       </div>
 
-      <div class="grid" style="margin-top:10px;">
-        <div>
-          <label>Локальная дата/время</label>
-          <input id="datetimeLocal" type="datetime-local" />
-        </div>
-        <div>
-          <label>Часовой пояс (offset)</label>
-          <select id="timezoneOffset"></select>
-          <div class="hint">Это смещение локального времени относительно UTC.</div>
-        </div>
+      <div class="card">
+        <div><strong>Интервалы восходящих знаков</strong></div>
+        <div id="rectIntervalsList" class="interval-list"></div>
+        <div style="margin-top:14px;"><strong>Полный ответ JSON</strong></div>
+        <div id="rectJsonBox" class="json-box"></div>
       </div>
-
-      <div class="grid" style="margin-top:10px;">
-        <div>
-          <label>Рассчитанное UTC</label>
-          <input id="datetimeUtcPreview" readonly />
-          <div class="hint">Это значение будет отправлено в API как <code>datetime_utc</code>.</div>
-        </div>
-        <div></div>
-      </div>
-
-      <div class="grid" style="margin-top:10px;">
-        <div>
-          <label>House system</label>
-          <select id="houseSystem">
-            <option value="P">P (Placidus)</option>
-            <option value="K">K (Koch)</option>
-            <option value="O">O (Porphyry)</option>
-          </select>
-        </div>
-        <div>
-          <label>Zodiac mode</label>
-          <select id="zodiacMode">
-            <option value="tropical">tropical</option>
-            <option value="sidereal">sidereal</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid" style="margin-top:10px;">
-        <div>
-          <label>Sidereal mode</label>
-          <select id="siderealMode">
-            <option value="">null</option>
-            <option value="lahiri">lahiri</option>
-            <option value="fagan_bradley">fagan_bradley</option>
-            <option value="krishnamurti">krishnamurti</option>
-          </select>
-        </div>
-        <div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <label>Текст промта</label>
-      <textarea id="promptText"></textarea>
-      <div class="actions" style="margin-top:10px;">
-        <button id="generateBtn" class="btn" type="button">Сделать</button>
-        <button id="closeModalBtn2" class="btn secondary hidden" type="button">Закрыть результат</button>
-      </div>
-      <div id="status" class="hint"></div>
-    </div>
+    </section>
   </div>
 
   <div id="resultModal" class="modal">
@@ -269,6 +414,11 @@
   </div>
 
   <script>
+    const tabChartBtnEl = document.getElementById("tabChartBtn");
+    const tabRectBtnEl = document.getElementById("tabRectBtn");
+    const chartPanelEl = document.getElementById("chartPanel");
+    const rectPanelEl = document.getElementById("rectPanel");
+
     const timezoneOffsetEl = document.getElementById("timezoneOffset");
     const datetimeLocalEl = document.getElementById("datetimeLocal");
     const datetimeUtcPreviewEl = document.getElementById("datetimeUtcPreview");
@@ -283,6 +433,23 @@
     const apiRawWrapEl = document.getElementById("apiRawWrap");
     const apiRawBoxEl = document.getElementById("apiRawBox");
     const toggleApiRawBtnEl = document.getElementById("toggleApiRawBtn");
+
+    const rectCoordModeEl = document.getElementById("rectCoordMode");
+    const rectCityBlockEl = document.getElementById("rectCityBlock");
+    const rectCityResultsEl = document.getElementById("rectCityResults");
+    const rectStatusEl = document.getElementById("rectStatus");
+    const rectZodiacModeEl = document.getElementById("rectZodiacMode");
+    const rectSiderealModeEl = document.getElementById("rectSiderealMode");
+    const rectIntervalsListEl = document.getElementById("rectIntervalsList");
+    const rectJsonBoxEl = document.getElementById("rectJsonBox");
+
+    function setTab(tabName) {
+      const isChart = tabName === "chart";
+      tabChartBtnEl.classList.toggle("active", isChart);
+      tabRectBtnEl.classList.toggle("active", !isChart);
+      chartPanelEl.classList.toggle("active", isChart);
+      rectPanelEl.classList.toggle("active", !isChart);
+    }
 
     function fillOffsets() {
       for (let h = -12; h <= 14; h++) {
@@ -301,6 +468,12 @@
       const now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       return now.toISOString().slice(0, 16);
+    }
+
+    function todayLocalDateValue() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      return now.toISOString().slice(0, 10);
     }
 
     function calculateUtcPreview() {
@@ -322,6 +495,10 @@
       statusEl.textContent = text || "";
     }
 
+    function setRectStatus(text) {
+      rectStatusEl.textContent = text || "";
+    }
+
     function closeModal() {
       modalEl.classList.remove("active");
     }
@@ -331,6 +508,17 @@
       toggleApiRawBtnEl.textContent = hiddenNow
         ? "Показать ответ API целиком"
         : "Скрыть ответ API";
+    }
+
+    function extractErrorText(payload) {
+      if (!payload) return "Неизвестная ошибка";
+      if (typeof payload === "string") return payload;
+      if (payload.detail) {
+        if (typeof payload.detail === "string") return payload.detail;
+        return JSON.stringify(payload.detail, null, 2);
+      }
+      if (payload.error && payload.error.message) return payload.error.message;
+      return JSON.stringify(payload, null, 2);
     }
 
     async function loadPrompt() {
@@ -368,6 +556,35 @@
       setStatus("Город найден. Координаты обновлены.");
     }
 
+    async function searchCityRect() {
+      const query = document.getElementById("rectCityQuery").value.trim();
+      if (!query) return;
+      setRectStatus("Ищем город...");
+      const res = await fetch("/api/geocode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+      const data = await res.json();
+      rectCityResultsEl.innerHTML = "";
+      const results = data.results || [];
+      if (!results.length) {
+        setRectStatus("Город не найден.");
+        return;
+      }
+      results.forEach((item, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        const label = [item.name, item.admin1, item.country].filter(Boolean).join(", ");
+        opt.textContent = `${label} [${item.latitude}, ${item.longitude}] ${item.timezone || ""}`;
+        opt.dataset.latitude = item.latitude;
+        opt.dataset.longitude = item.longitude;
+        rectCityResultsEl.appendChild(opt);
+      });
+      rectCityResultsEl.dispatchEvent(new Event("change"));
+      setRectStatus("Город найден. Координаты обновлены.");
+    }
+
     async function generate() {
       setStatus("Выполняем расчёт...");
       const zodiacMode = zodiacModeEl.value;
@@ -390,7 +607,7 @@
       });
       const data = await res.json();
       if (!res.ok) {
-        setStatus("Ошибка: " + JSON.stringify(data));
+        setStatus("Ошибка: " + extractErrorText(data));
         return;
       }
       horoscopeBoxEl.textContent = data.horoscope_text;
@@ -401,32 +618,108 @@
       setStatus(`Готово. UTC: ${data.datetime_utc}`);
     }
 
+    function renderRectIntervals(intervals) {
+      rectIntervalsListEl.innerHTML = "";
+      if (!intervals || !intervals.length) {
+        rectIntervalsListEl.innerHTML = "<div class='interval-item'>Интервалы не найдены.</div>";
+        return;
+      }
+
+      intervals.forEach((item) => {
+        const block = document.createElement("div");
+        block.className = "interval-item";
+        const sign = `${item.sign_name_ru || item.sign_name_en} (${item.sign_name_en})`;
+        block.textContent = `#${item.interval_index}: ${sign} | ${item.start_local} → ${item.end_local} | ${item.duration_minutes} мин`;
+        rectIntervalsListEl.appendChild(block);
+      });
+    }
+
+    async function runRectification() {
+      setRectStatus("Считаем интервалы...");
+      const zodiacMode = rectZodiacModeEl.value;
+      const sidMode = rectSiderealModeEl.value || null;
+      const body = {
+        api_base_url: document.getElementById("rectApiBaseUrl").value.trim(),
+        birth_date_local: document.getElementById("rectBirthDate").value,
+        latitude: Number(document.getElementById("rectLatitude").value),
+        longitude: Number(document.getElementById("rectLongitude").value),
+        house_system: document.getElementById("rectHouseSystem").value,
+        zodiac_mode: zodiacMode,
+        sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,
+      };
+
+      const res = await fetch("/api/rectification/asc-sign-intervals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setRectStatus("Ошибка: " + extractErrorText(data));
+        rectIntervalsListEl.innerHTML = "";
+        rectJsonBoxEl.textContent = "";
+        return;
+      }
+
+      renderRectIntervals(data.asc_sign_intervals || []);
+      rectJsonBoxEl.textContent = JSON.stringify(data, null, 2);
+      setRectStatus(`Готово. Найдено интервалов: ${(data.asc_sign_intervals || []).length}`);
+    }
+
+    tabChartBtnEl.addEventListener("click", () => setTab("chart"));
+    tabRectBtnEl.addEventListener("click", () => setTab("rect"));
+
     coordModeEl.addEventListener("change", () => {
       cityBlockEl.classList.toggle("hidden", coordModeEl.value !== "city");
     });
+    rectCoordModeEl.addEventListener("change", () => {
+      rectCityBlockEl.classList.toggle("hidden", rectCoordModeEl.value !== "city");
+    });
+
     document.getElementById("searchCityBtn").addEventListener("click", searchCity);
+    document.getElementById("rectSearchCityBtn").addEventListener("click", searchCityRect);
+
     cityResultsEl.addEventListener("change", () => {
       const option = cityResultsEl.options[cityResultsEl.selectedIndex];
       if (!option) return;
       document.getElementById("latitude").value = option.dataset.latitude || "";
       document.getElementById("longitude").value = option.dataset.longitude || "";
     });
+    rectCityResultsEl.addEventListener("change", () => {
+      const option = rectCityResultsEl.options[rectCityResultsEl.selectedIndex];
+      if (!option) return;
+      document.getElementById("rectLatitude").value = option.dataset.latitude || "";
+      document.getElementById("rectLongitude").value = option.dataset.longitude || "";
+    });
+
     document.getElementById("generateBtn").addEventListener("click", generate);
+    document.getElementById("rectRunBtn").addEventListener("click", runRectification);
     document.getElementById("closeModalBtn").addEventListener("click", closeModal);
     document.getElementById("closeModalBtn2").addEventListener("click", closeModal);
     toggleApiRawBtnEl.addEventListener("click", toggleRawApi);
     timezoneOffsetEl.addEventListener("change", calculateUtcPreview);
     datetimeLocalEl.addEventListener("input", calculateUtcPreview);
+
     zodiacModeEl.addEventListener("change", () => {
       const sidereal = zodiacModeEl.value === "sidereal";
       siderealModeEl.disabled = !sidereal;
       if (!sidereal) siderealModeEl.value = "";
     });
+    rectZodiacModeEl.addEventListener("change", () => {
+      const sidereal = rectZodiacModeEl.value === "sidereal";
+      rectSiderealModeEl.disabled = !sidereal;
+      if (!sidereal) rectSiderealModeEl.value = "";
+    });
+
     window.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
 
     fillOffsets();
     datetimeLocalEl.value = nowLocalInputValue();
     calculateUtcPreview();
+    document.getElementById("rectBirthDate").value = todayLocalDateValue();
+    siderealModeEl.disabled = true;
+    rectSiderealModeEl.disabled = true;
+    rectJsonBoxEl.textContent = "";
     loadPrompt().catch(() => setStatus("Не удалось загрузить PROMPT.md"));
   </script>
 </body>
