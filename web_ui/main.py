@@ -68,122 +68,122 @@ DOCKER_COMPOSE_API_BASE_URL = _env("DOCKER_COMPOSE_API_BASE_URL", "http://astrod
 QUESTION_BANK: list[dict[str, Any]] = [
     {
         "question_id": "q_first_impression_01",
-        "question_text": "How are you usually perceived at first contact?",
+        "question_text": "Как вас чаще всего воспринимают в самом начале общения?",
         "options": [
-            {"id": "A", "text": "Soft and diplomatic"},
-            {"id": "B", "text": "Bright and direct"},
-            {"id": "C", "text": "Reserved and serious"},
-            {"id": "D", "text": "Light and talkative"},
-            {"id": "E", "text": "Independent and unusual"},
-            {"id": "X", "text": "Hard to answer"},
+            {"id": "A", "text": "мягкий и дипломатичный"},
+            {"id": "B", "text": "яркий и прямой"},
+            {"id": "C", "text": "сдержанный и серьёзный"},
+            {"id": "D", "text": "лёгкий и разговорчивый"},
+            {"id": "E", "text": "необычный и независимый"},
+            {"id": "X", "text": "не знаю / сложно сказать"},
         ],
     },
     {
         "question_id": "q_social_entry_02",
-        "question_text": "How do you usually enter a new social group?",
+        "question_text": "Как вы обычно входите в новый коллектив?",
         "options": [
-            {"id": "A", "text": "Observe first"},
-            {"id": "B", "text": "Join quickly"},
-            {"id": "C", "text": "Build 1-2 close contacts first"},
-            {"id": "D", "text": "Take initiative"},
-            {"id": "E", "text": "Stay independent"},
-            {"id": "X", "text": "Depends on context"},
+            {"id": "A", "text": "сначала наблюдаю и действую осторожно"},
+            {"id": "B", "text": "быстро включаюсь и знакомлюсь"},
+            {"id": "C", "text": "ищу 1-2 близких контакта, не иду в центр сразу"},
+            {"id": "D", "text": "беру инициативу и задаю тон"},
+            {"id": "E", "text": "держусь независимо и на своей волне"},
+            {"id": "X", "text": "по-разному, зависит от ситуации"},
         ],
     },
     {
         "question_id": "q_communication_style_03",
-        "question_text": "Which communication style is most natural for you?",
+        "question_text": "Какой стиль общения вам ближе всего?",
         "options": [
-            {"id": "A", "text": "Diplomatic and careful"},
-            {"id": "B", "text": "Direct and fast"},
-            {"id": "C", "text": "Structured and practical"},
-            {"id": "D", "text": "Emotional and expressive"},
-            {"id": "E", "text": "Flexible and humorous"},
-            {"id": "X", "text": "Hard to choose"},
+            {"id": "A", "text": "мягкий, дипломатичный, аккуратный"},
+            {"id": "B", "text": "прямой и быстрый"},
+            {"id": "C", "text": "структурный и по делу"},
+            {"id": "D", "text": "эмоциональный и выразительный"},
+            {"id": "E", "text": "живой, подвижный, с юмором"},
+            {"id": "X", "text": "затрудняюсь выбрать"},
         ],
     },
     {
         "question_id": "q_reaction_tempo_04",
-        "question_text": "What is your typical reaction tempo in new situations?",
+        "question_text": "Какой у вас типичный темп реакции в новой ситуации?",
         "options": [
-            {"id": "A", "text": "Very fast"},
-            {"id": "B", "text": "Balanced"},
-            {"id": "C", "text": "Deliberate and steady"},
-            {"id": "D", "text": "Variable"},
-            {"id": "E", "text": "Depends on people"},
-            {"id": "X", "text": "Hard to define"},
+            {"id": "A", "text": "очень быстрый, решаю на ходу"},
+            {"id": "B", "text": "средний, сначала оцениваю контекст"},
+            {"id": "C", "text": "неторопливый, предпочитаю устойчивость"},
+            {"id": "D", "text": "скачкообразный: то быстро, то пауза"},
+            {"id": "E", "text": "зависит от людей и атмосферы"},
+            {"id": "X", "text": "сложно определить"},
         ],
     },
     {
         "question_id": "q_conflict_style_05",
-        "question_text": "How do you usually behave in conflict?",
+        "question_text": "В конфликте вы чаще действуете как?",
         "options": [
-            {"id": "A", "text": "Seek compromise"},
-            {"id": "B", "text": "Address directly"},
-            {"id": "C", "text": "Keep distance and logic"},
-            {"id": "D", "text": "Defend boundaries strongly"},
-            {"id": "E", "text": "Defuse with humor"},
-            {"id": "X", "text": "Depends on situation"},
+            {"id": "A", "text": "сглаживаю и ищу компромисс"},
+            {"id": "B", "text": "иду прямо в обсуждение, не избегаю остроты"},
+            {"id": "C", "text": "держу дистанцию и холодную логику"},
+            {"id": "D", "text": "защищаю границы жёстко, если нужно"},
+            {"id": "E", "text": "перевожу в шутку или в лёгкий формат"},
+            {"id": "X", "text": "по-разному"},
         ],
     },
     {
         "question_id": "q_visual_presence_06",
-        "question_text": "What do people most often notice in your visual presence?",
+        "question_text": "Что чаще замечают в вашей внешней подаче?",
         "options": [
-            {"id": "A", "text": "Harmony and neatness"},
-            {"id": "B", "text": "Energy and drive"},
-            {"id": "C", "text": "Discipline and composure"},
-            {"id": "D", "text": "Brightness and visibility"},
-            {"id": "E", "text": "Originality"},
-            {"id": "X", "text": "Hard to answer"},
+            {"id": "A", "text": "гармоничность и аккуратность"},
+            {"id": "B", "text": "энергичность и напор"},
+            {"id": "C", "text": "строгость и собранность"},
+            {"id": "D", "text": "яркость и заметность"},
+            {"id": "E", "text": "нестандартность и оригинальность"},
+            {"id": "X", "text": "затрудняюсь ответить"},
         ],
     },
     {
         "question_id": "q_lead_or_balance_07",
-        "question_text": "What role is closer to you in group dynamics?",
+        "question_text": "Что вам ближе в групповой динамике?",
         "options": [
-            {"id": "A", "text": "Lead and decide"},
-            {"id": "B", "text": "Coordinate and balance"},
-            {"id": "C", "text": "Keep stability"},
-            {"id": "D", "text": "Generate ideas"},
-            {"id": "E", "text": "Stay independent"},
-            {"id": "X", "text": "Mixed style"},
+            {"id": "A", "text": "вести и принимать решения"},
+            {"id": "B", "text": "координировать и балансировать позиции"},
+            {"id": "C", "text": "поддерживать стабильность процесса"},
+            {"id": "D", "text": "генерировать идеи и быстро переключаться"},
+            {"id": "E", "text": "сохранять независимую позицию"},
+            {"id": "X", "text": "смешанный стиль"},
         ],
     },
     {
         "question_id": "q_energy_signature_08",
-        "question_text": "Which quality best describes your base energy signature?",
+        "question_text": "Какая характеристика лучше описывает вашу базовую подачу энергии?",
         "options": [
-            {"id": "A", "text": "Contact and diplomacy"},
-            {"id": "B", "text": "Intensity and will"},
-            {"id": "C", "text": "Reliability and stability"},
-            {"id": "D", "text": "Mobility and adaptability"},
-            {"id": "E", "text": "Sensitivity and empathy"},
-            {"id": "X", "text": "Hard to choose"},
+            {"id": "A", "text": "дипломатичность и контактность"},
+            {"id": "B", "text": "интенсивность и воля"},
+            {"id": "C", "text": "надёжность и устойчивость"},
+            {"id": "D", "text": "подвижность и адаптивность"},
+            {"id": "E", "text": "чувствительность и эмпатичность"},
+            {"id": "X", "text": "сложно выбрать"},
         ],
     },
     {
         "question_id": "q_new_people_effect_09",
-        "question_text": "What effect do you often create with new people?",
+        "question_text": "Когда вы знакомитесь с новыми людьми, какой эффект чаще возникает?",
         "options": [
-            {"id": "A", "text": "Calm and easy contact"},
-            {"id": "B", "text": "Fast dynamics"},
-            {"id": "C", "text": "Reserved but reliable"},
-            {"id": "D", "text": "Strong or polar response"},
-            {"id": "E", "text": "Flexible and sociable"},
-            {"id": "X", "text": "No stable pattern"},
+            {"id": "A", "text": "со мной легко и спокойно"},
+            {"id": "B", "text": "я быстро задаю динамику"},
+            {"id": "C", "text": "я кажусь закрытым, но надёжным"},
+            {"id": "D", "text": "я вызываю сильный интерес или полярные реакции"},
+            {"id": "E", "text": "я воспринимаюсь как гибкий и разговорчивый"},
+            {"id": "X", "text": "не замечал(а) устойчивого эффекта"},
         ],
     },
     {
         "question_id": "q_decision_mode_10",
-        "question_text": "How do you usually make everyday decisions?",
+        "question_text": "Как вы чаще принимаете решения в повседневности?",
         "options": [
-            {"id": "A", "text": "Quick impulse"},
-            {"id": "B", "text": "Balance pros and cons"},
-            {"id": "C", "text": "Risk and stability check"},
-            {"id": "D", "text": "Intuitive image"},
-            {"id": "E", "text": "Discuss and compare"},
-            {"id": "X", "text": "No single pattern"},
+            {"id": "A", "text": "быстро, опираясь на импульс"},
+            {"id": "B", "text": "через баланс плюсов и минусов"},
+            {"id": "C", "text": "через проверку рисков и устойчивости"},
+            {"id": "D", "text": "через интуитивный образ и настроение"},
+            {"id": "E", "text": "через обсуждение и обмен идеями"},
+            {"id": "X", "text": "нет одного шаблона"},
         ],
     },
 ]
@@ -462,7 +462,7 @@ def _build_safe_question(*, dialog_history: list[dict[str, Any]], step_count: in
         "type": "ask_question",
         "step_index": step_count + 1,
         "should_continue": True,
-        "debug_probability_text": "Fallback question: deterministic recovery mode.",
+        "debug_probability_text": "Задаю уточняющий вопрос из резервного сценария.",
         "question_id": fallback_question["question_id"],
         "question_text": fallback_question["question_text"],
         "options": fallback_question["options"],
@@ -538,8 +538,8 @@ def _build_safe_final_result(
             },
             "secondary_candidates": secondary,
             "summary_text": (
-                "Stage 1 preliminary result returned in deterministic safe mode "
-                f"({reason}). Confidence is intentionally low."
+                "Предварительный результат Stage 1 сформирован в резервном безопасном режиме "
+                f"({reason}). Уверенность намеренно снижена."
             ),
         }
 
@@ -562,8 +562,8 @@ def _build_safe_final_result(
         },
         "secondary_candidates": [],
         "summary_text": (
-            "Stage 1 preliminary result returned in deterministic safe mode. "
-            f"No usable intervals were found ({reason})."
+            "Предварительный результат Stage 1 сформирован в резервном безопасном режиме. "
+            f"Не найдено пригодных интервалов ({reason})."
         ),
     }
 
@@ -1302,4 +1302,3 @@ def static_files(filename: str) -> FileResponse:
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Not found")
     return FileResponse(file_path)
-

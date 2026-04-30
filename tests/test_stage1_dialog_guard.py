@@ -123,6 +123,9 @@ def test_bad_json_from_llm_falls_back_to_safe_question(client: TestClient, monke
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["options"]
+    assert body["llm_json"]["debug_probability_text"] == "Задаю уточняющий вопрос из резервного сценария."
+    assert body["llm_json"]["question_text"] == web_main.QUESTION_BANK[0]["question_text"]
+    assert body["llm_json"]["options"] == web_main.QUESTION_BANK[0]["options"]
     assert "llm_request_failed" in body["warnings"]
 
 
@@ -153,6 +156,7 @@ def test_ask_question_without_options_uses_fallback(client: TestClient, monkeypa
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["options"]
+    assert body["llm_json"]["debug_probability_text"] == "Задаю уточняющий вопрос из резервного сценария."
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -182,6 +186,7 @@ def test_final_result_without_primary_candidate_falls_back(client: TestClient, m
 
     assert body["llm_json"]["type"] == "final_result"
     assert body["llm_json"]["primary_candidate"]["sign_name_en"]
+    assert "Предварительный результат Stage 1 сформирован" in body["llm_json"]["summary_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -217,6 +222,7 @@ def test_probability_out_of_range_falls_back(client: TestClient, monkeypatch: py
 
     assert body["llm_json"]["type"] == "final_result"
     assert body["llm_json"]["primary_candidate"]["probability"] <= 1
+    assert "Предварительный результат Stage 1 сформирован" in body["llm_json"]["summary_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -296,6 +302,56 @@ def test_repeated_question_id_uses_fallback_question(client: TestClient, monkeyp
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["question_id"] != "q_first_impression_01"
+    assert body["llm_json"]["debug_probability_text"] == "Задаю уточняющий вопрос из резервного сценария."
+    assert "llm_json_failed_guard" in body["warnings"]
+
+
+def test_stage1_user_visible_text_is_russian_in_safe_paths(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    def _raise_http_error(**kwargs: Any) -> dict[str, Any]:
+        raise HTTPException(status_code=502, detail={"message": "LLM output is not valid JSON"})
+
+    monkeypatch.setattr(web_main, "_call_rectification_llm", _raise_http_error)
+    response = client.post("/api/rectification/dialog/start", json=_start_payload())
+    assert response.status_code == 200
+    body = response.json()
+    assert "How are you usually perceived at first contact?" not in body["llm_json"]["question_text"]
+    assert "Fallback question: deterministic recovery mode." not in body["llm_json"]["debug_probability_text"]
+
+    response_finalize = client.post(
+        "/api/rectification/dialog/continue",
+        json=_continue_payload(step_count=web_main.RECT_MAX_STEPS, mode="next_question"),
+    )
+    assert response_finalize.status_code == 200
+    finalize_body = response_finalize.json()
+    assert "Stage 1 preliminary result returned in deterministic safe mode" not in finalize_body["llm_json"]["summary_text"]
+
+
+def test_stage1_rejects_stage2_event_question_and_uses_bank_fallback(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        web_main,
+        "_call_rectification_llm",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "ask_question",
+                "step_index": 1,
+                "should_continue": True,
+                "debug_probability_text": "test",
+                "question_id": "q_stage2_event_01",
+                "question_text": "Назовите дату важного жизненного события",
+                "options": [{"id": "A", "text": "2008"}],
+                "allow_free_text": False,
+            },
+            "llm_text": "{}",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        },
+    )
+    response = client.post("/api/rectification/dialog/start", json=_start_payload())
+    assert response.status_code == 200
+    body = response.json()
+    assert body["llm_json"]["type"] == "ask_question"
+    assert body["llm_json"]["question_id"] == web_main.QUESTION_BANK[0]["question_id"]
+    assert body["llm_json"]["question_text"] == web_main.QUESTION_BANK[0]["question_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
