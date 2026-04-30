@@ -60,10 +60,16 @@ def test_chart_success_endpoint(monkeypatch, tmp_path) -> None:
         assert 0 <= obj["absolute_degree_0_360"] <= 360
         assert -90 <= obj["latitude_deg"] <= 90
         assert 0 <= obj["sign_index"] <= 11
+        assert "house" in obj
 
     assert len(data["houses"]["cusps"]) == 12
     for value in data["houses"]["cusps"].values():
         assert 0 <= value <= 360
+    assert len(data["houses"]["cusp_details"]) == 12
+    for cusp in data["houses"]["cusp_details"].values():
+        assert 0 <= cusp["absolute_degree_0_360"] <= 360
+        assert 0 <= cusp["sign_index"] <= 11
+        assert isinstance(cusp["sign_name_en"], str)
 
     assert "asc" in data["angles"]
     assert "mc" in data["angles"]
@@ -79,6 +85,10 @@ def test_chart_success_endpoint(monkeypatch, tmp_path) -> None:
         assert "actual_angle" in aspect
         assert "orb" in aspect
         assert aspect["applying"] is None
+
+    node_defs = data["meta"]["node_definitions"]
+    assert node_defs["true_node"]["calculation_type"] == "true_node"
+    assert node_defs["mean_node"]["calculation_type"] == "mean_node"
 
 
 def test_chart_returns_real_calculation_output(monkeypatch, tmp_path) -> None:
@@ -106,3 +116,4 @@ def test_chart_returns_real_calculation_output(monkeypatch, tmp_path) -> None:
     assert body["houses"]["system"] == "K"
     assert body["meta"]["zodiac_mode"] == "sidereal"
     assert body["meta"]["sidereal_mode"] == "lahiri"
+    assert body["objects"]["true_node"]["longitude_deg"] != body["objects"]["mean_node"]["longitude_deg"]

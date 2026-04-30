@@ -377,7 +377,7 @@ def test_generate_keeps_calculation_and_interpretation_separate(client: TestClie
             }
 
     monkeypatch.setattr(web_main, "_post_to_api_with_fallback", lambda **kwargs: _FakeResponse())
-    monkeypatch.setattr(web_main, "_render_horoscope_via_openai", lambda prompt_text, chart: "INTERPRETATION")
+    monkeypatch.setattr(web_main, "_render_horoscope_via_openai", lambda prompt_text, chart, core_identity: "INTERPRETATION")
 
     response = client.post(
         "/api/generate",

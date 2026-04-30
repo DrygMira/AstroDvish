@@ -15,6 +15,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, ValidationError
 
+from app.utils.timezone_lookup import resolve_timezone_name
+
 PROMPT_PATH = Path(__file__).resolve().parent.parent / "PROMPT.md"
 PROMPT_RECTIFICATION_STAGE1_PATH = (
     Path(__file__).resolve().parent.parent / "PROMPT_RECTIFICATION_STAGE1.md"
@@ -198,7 +200,8 @@ class GeocodeRequest(BaseModel):
 class GenerateRequest(BaseModel):
     api_base_url: str = "http://127.0.0.1:8013"
     datetime_local: str
-    timezone_offset: str
+    timezone_mode: Literal["auto", "manual"] = "auto"
+    timezone_offset: str = ""
     timezone_name: str | None = None
     latitude: float
     longitude: float
@@ -761,6 +764,109 @@ def _to_utc_iso(local_dt_str: str, tz_offset: str, timezone_name: str | None = N
     return dt_with_tz.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def _format_offset(local_aware: datetime) -> str:
+    offset = local_aware.utcoffset()
+    if offset is None:
+        raise HTTPException(status_code=422, detail="Could not resolve timezone offset for datetime_local")
+    total_minutes = int(offset.total_seconds() // 60)
+    sign = "+" if total_minutes >= 0 else "-"
+    abs_minutes = abs(total_minutes)
+    hours = abs_minutes // 60
+    minutes = abs_minutes % 60
+    return f"{sign}{hours:02d}:{minutes:02d}"
+
+
+def _resolve_timezone_context(payload: GenerateRequest) -> tuple[dict[str, Any], list[str]]:
+    try:
+        local_naive = datetime.fromisoformat(payload.datetime_local)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="Invalid datetime_local format") from exc
+
+    warnings: list[str] = []
+    timezone_mode = payload.timezone_mode
+
+    if timezone_mode == "auto":
+        timezone_name = (payload.timezone_name or "").strip()
+        timezone_source = "auto_by_coordinates"
+        if not timezone_name:
+            try:
+                timezone_name = resolve_timezone_name(latitude=payload.latitude, longitude=payload.longitude)
+            except Exception as exc:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Could not auto-detect timezone for coordinates: {exc}",
+                ) from exc
+
+        try:
+            timezone_info = ZoneInfo(timezone_name)
+        except ZoneInfoNotFoundError as exc:
+            raise HTTPException(status_code=422, detail="Invalid timezone_name") from exc
+
+        local_aware = local_naive.replace(tzinfo=timezone_info)
+        auto_offset = _format_offset(local_aware)
+        if payload.timezone_offset and payload.timezone_offset != auto_offset:
+            warnings.append("manual_offset_ignored_in_auto_timezone_mode")
+
+        datetime_utc = local_aware.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        return (
+            {
+                "mode": "auto",
+                "timezone_name": timezone_name,
+                "timezone_offset": auto_offset,
+                "timezone_source": timezone_source,
+                "datetime_local": payload.datetime_local,
+                "datetime_utc": datetime_utc,
+            },
+            warnings,
+        )
+
+    if not TZ_OFFSET_PATTERN.match(payload.timezone_offset):
+        raise HTTPException(status_code=422, detail="Invalid timezone_offset format. Use +03:00")
+
+    sign = 1 if payload.timezone_offset[0] == "+" else -1
+    hours = int(payload.timezone_offset[1:3])
+    minutes = int(payload.timezone_offset[4:6])
+    offset = timedelta(hours=hours, minutes=minutes) * sign
+    dt_with_tz = local_naive.replace(tzinfo=timezone(offset))
+    datetime_utc = dt_with_tz.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    warnings.append("manual_timezone_offset_used")
+    return (
+        {
+            "mode": "manual",
+            "timezone_name": payload.timezone_name,
+            "timezone_offset": payload.timezone_offset,
+            "timezone_source": "manual_offset",
+            "datetime_local": payload.datetime_local,
+            "datetime_utc": datetime_utc,
+        },
+        warnings,
+    )
+
+
+def _build_core_identity_block(chart: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    warnings: list[str] = []
+    objects = chart.get("objects") if isinstance(chart, dict) else None
+    angles = chart.get("angles") if isinstance(chart, dict) else None
+
+    sun = objects.get("sun") if isinstance(objects, dict) else None
+    moon = objects.get("moon") if isinstance(objects, dict) else None
+    asc = angles.get("asc") if isinstance(angles, dict) else None
+
+    if not isinstance(sun, dict):
+        warnings.append("core_identity_missing_sun")
+    if not isinstance(moon, dict):
+        warnings.append("core_identity_missing_moon")
+    if not isinstance(asc, (int, float)):
+        warnings.append("core_identity_missing_asc")
+
+    core_identity = {
+        "sun": sun if isinstance(sun, dict) else None,
+        "moon": moon if isinstance(moon, dict) else None,
+        "asc": asc if isinstance(asc, (int, float)) else None,
+    }
+    return core_identity, warnings
+
+
 def _is_localhost_base_url(base_url: str) -> bool:
     try:
         parsed = urlparse(base_url)
@@ -874,14 +980,18 @@ def _call_openrouter_chat(
     }
 
 
-def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any]) -> str:
+def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_identity: dict[str, Any]) -> str:
     system_prompt = (
         "Ты астрологический ассистент. Пиши по-русски. "
         "Дай структурированный и понятный разбор без мистификации, "
-        "используя только переданные расчётные данные."
+        "используя только переданные расчётные данные. "
+        "Первый блок трактовки всегда обязан включать в явном виде: Солнце, Луну и Asc. "
+        "Нельзя заменять Луну или Asc на узлы. Узлы допустимы только после базового блока."
     )
     user_prompt = (
         f"{prompt_text.strip()}\n\n"
+        "Обязательный базовый блок (используй как основу для первого раздела):\n"
+        f"{json.dumps(core_identity, ensure_ascii=False)}\n\n"
         "Ниже JSON с расчётом натальной карты. "
         "Сделай связный текстовый гороскоп: личность, эмоции, "
         "отношения, работа/реализация, сильные стороны и риски.\n\n"
@@ -1123,6 +1233,7 @@ def geocode_city(payload: GeocodeRequest) -> JSONResponse:
             "latitude": item.get("latitude"),
             "longitude": item.get("longitude"),
             "timezone": item.get("timezone"),
+            "timezone_name": item.get("timezone"),
             "timezone_source": "geocoder",
         }
         for item in results
@@ -1132,11 +1243,8 @@ def geocode_city(payload: GeocodeRequest) -> JSONResponse:
 
 @app.post("/api/generate")
 def generate(payload: GenerateRequest) -> JSONResponse:
-    datetime_utc = _to_utc_iso(
-        payload.datetime_local,
-        payload.timezone_offset,
-        payload.timezone_name,
-    )
+    timezone_context, timezone_warnings = _resolve_timezone_context(payload)
+    datetime_utc = timezone_context["datetime_utc"]
 
     chart_payload = {
         "datetime_utc": datetime_utc,
@@ -1169,10 +1277,15 @@ def generate(payload: GenerateRequest) -> JSONResponse:
         )
 
     chart_response = response.json()
-    horoscope_text = _render_horoscope_via_openai(payload.prompt_text, chart_response)
+    core_identity, core_identity_warnings = _build_core_identity_block(chart_response)
+    horoscope_text = _render_horoscope_via_openai(payload.prompt_text, chart_response, core_identity)
+    warnings = timezone_warnings + core_identity_warnings
     return JSONResponse(
         {
             "datetime_utc": datetime_utc,
+            "timezone": timezone_context,
+            "warnings": warnings,
+            "core_identity": core_identity,
             "horoscope_text": horoscope_text,
             "chart_response": chart_response,
         }

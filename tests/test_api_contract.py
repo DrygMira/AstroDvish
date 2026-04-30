@@ -37,6 +37,12 @@ def test_contract_chart_response_is_stable_and_computation_only(monkeypatch, tmp
     assert response.headers.get("X-Request-ID") == request_id
     body = response.json()
     assert set(body.keys()) == {"input", "normalized", "objects", "aspects", "houses", "angles", "meta"}
+    assert len(body["houses"]["cusps"]) == 12
+    assert len(body["houses"]["cusp_details"]) == 12
+    assert "node_definitions" in body["meta"]
+    assert body["meta"]["node_definitions"]["true_node"]["calculation_type"] == "true_node"
+    assert body["meta"]["node_definitions"]["mean_node"]["calculation_type"] == "mean_node"
+    assert all("house" in item for item in body["objects"].values())
     assert isinstance(body["aspects"], list)
     for aspect in body["aspects"]:
         assert set(aspect.keys()) == {

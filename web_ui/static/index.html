@@ -234,6 +234,36 @@
       overflow: auto;
       background: #f8fbff;
     }
+    .expert-wrap {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: #f8fbff;
+      display: grid;
+      gap: 10px;
+    }
+    .expert-section {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+    }
+    .expert-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .expert-table th,
+    .expert-table td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .expert-table th {
+      background: #eef6ff;
+      font-weight: 700;
+    }
     .llm-overlay {
       position: fixed;
       inset: 0;
@@ -325,11 +355,28 @@
             <input id="datetimeLocal" type="datetime-local" />
           </div>
           <div>
+            <label>Режим timezone</label>
+            <select id="timezoneMode">
+              <option value="auto">auto (по городу/координатам)</option>
+              <option value="manual">manual (ручной offset)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Timezone name</label>
+            <input id="timezoneName" readonly />
+            <div class="hint">Для auto режима. Например: Europe/Moscow.</div>
+          </div>
+          <div>
             <label>Часовой пояс (offset)</label>
             <select id="timezoneOffset"></select>
             <div class="hint">Это смещение локального времени относительно UTC.</div>
           </div>
         </div>
+
+        <div id="timezoneStatus" class="hint" style="margin-top:6px;"></div>
 
         <div class="grid" style="margin-top:10px;">
           <div>
@@ -696,6 +743,42 @@
       <div class="modal-body">
         <div><strong>Гороскоп</strong></div>
         <div id="horoscopeBox" class="bigbox"></div>
+        <div class="actions">
+          <button id="toggleExpertBtn" class="btn secondary" type="button">Показать экспертную таблицу</button>
+        </div>
+        <div id="expertWrap" class="expert-wrap hidden">
+          <div><strong>Экспертная проверка карты</strong></div>
+
+          <div class="expert-section">
+            <strong>1. Планеты и объекты</strong>
+            <div id="expertObjects"></div>
+          </div>
+
+          <div class="expert-section">
+            <strong>2. Узлы (разные типы расчёта)</strong>
+            <div id="expertNodes"></div>
+          </div>
+
+          <div class="expert-section">
+            <strong>3. Углы карты</strong>
+            <div id="expertAngles"></div>
+          </div>
+
+          <div class="expert-section">
+            <strong>4. Куспиды домов</strong>
+            <div id="expertCusps"></div>
+          </div>
+
+          <div class="expert-section">
+            <strong>5. Аспекты</strong>
+            <div id="expertAspects"></div>
+          </div>
+
+          <div class="expert-section">
+            <strong>6. Timezone</strong>
+            <div id="expertTimezone"></div>
+          </div>
+        </div>
         <button id="toggleApiRawBtn" class="btn secondary" type="button">Показать ответ API целиком</button>
         <div id="apiRawWrap" class="hidden">
           <div><strong>Ответ API целиком</strong></div>
@@ -723,6 +806,9 @@
     const rectEventsPanelEl = document.getElementById("rectEventsPanel");
 
     const timezoneOffsetEl = document.getElementById("timezoneOffset");
+    const timezoneModeEl = document.getElementById("timezoneMode");
+    const timezoneNameEl = document.getElementById("timezoneName");
+    const timezoneStatusEl = document.getElementById("timezoneStatus");
     const datetimeLocalEl = document.getElementById("datetimeLocal");
     const datetimeUtcPreviewEl = document.getElementById("datetimeUtcPreview");
     const coordModeEl = document.getElementById("coordMode");
@@ -733,6 +819,14 @@
     const zodiacModeEl = document.getElementById("zodiacMode");
     const modalEl = document.getElementById("resultModal");
     const horoscopeBoxEl = document.getElementById("horoscopeBox");
+    const toggleExpertBtnEl = document.getElementById("toggleExpertBtn");
+    const expertWrapEl = document.getElementById("expertWrap");
+    const expertObjectsEl = document.getElementById("expertObjects");
+    const expertNodesEl = document.getElementById("expertNodes");
+    const expertAnglesEl = document.getElementById("expertAngles");
+    const expertCuspsEl = document.getElementById("expertCusps");
+    const expertAspectsEl = document.getElementById("expertAspects");
+    const expertTimezoneEl = document.getElementById("expertTimezone");
     const apiRawWrapEl = document.getElementById("apiRawWrap");
     const apiRawBoxEl = document.getElementById("apiRawBox");
     const toggleApiRawBtnEl = document.getElementById("toggleApiRawBtn");
@@ -852,6 +946,10 @@
         datetimeUtcPreviewEl.value = "";
         return;
       }
+      if (timezoneModeEl.value === "auto") {
+        datetimeUtcPreviewEl.value = "auto (расчёт на сервере по timezone_name)";
+        return;
+      }
       const dt = new Date(datetimeLocalEl.value);
       const offset = timezoneOffsetEl.value;
       const sign = offset.startsWith("+") ? 1 : -1;
@@ -860,6 +958,21 @@
       const deltaMs = sign * (hours * 60 + mins) * 60 * 1000;
       const utc = new Date(dt.getTime() - deltaMs);
       datetimeUtcPreviewEl.value = utc.toISOString().replace(".000", "");
+    }
+
+    function updateTimezoneUiState() {
+      const isAuto = timezoneModeEl.value === "auto";
+      timezoneOffsetEl.disabled = isAuto;
+      if (isAuto) {
+        if (timezoneNameEl.value) {
+          timezoneStatusEl.textContent = `Часовой пояс определён автоматически: ${timezoneNameEl.value}`;
+        } else {
+          timezoneStatusEl.textContent = "Часовой пояс будет определён автоматически по координатам.";
+        }
+      } else {
+        timezoneStatusEl.textContent = `Часовой пояс указан вручную: ${timezoneOffsetEl.value}`;
+      }
+      calculateUtcPreview();
     }
 
     function setStatus(text) {
@@ -898,6 +1011,8 @@
 
     function closeModal() {
       modalEl.classList.remove("active");
+      expertWrapEl.classList.add("hidden");
+      toggleExpertBtnEl.textContent = "Показать экспертную таблицу";
     }
 
     function toggleRawApi() {
@@ -905,6 +1020,157 @@
       toggleApiRawBtnEl.textContent = hiddenNow
         ? "Показать ответ API целиком"
         : "Скрыть ответ API";
+    }
+
+    function toggleExpertTable() {
+      const hiddenNow = expertWrapEl.classList.toggle("hidden");
+      toggleExpertBtnEl.textContent = hiddenNow
+        ? "Показать экспертную таблицу"
+        : "Скрыть экспертную таблицу";
+    }
+
+    function formatNum(value, digits = 2) {
+      if (typeof value !== "number" || Number.isNaN(value)) return "—";
+      return value.toFixed(digits);
+    }
+
+    function toSignDegreeText(item) {
+      if (!item || typeof item !== "object") return "—";
+      const sign = item.sign_name_en || "—";
+      const degree = typeof item.sign_degree === "number" ? `${item.sign_degree.toFixed(2)}°` : "—";
+      return `${sign} ${degree}`;
+    }
+
+    function angleToSignDegree(angleAbs) {
+      if (typeof angleAbs !== "number" || Number.isNaN(angleAbs)) {
+        return { signName: "—", signDegree: "—" };
+      }
+      const signs = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+      let normalized = angleAbs % 360;
+      if (normalized < 0) normalized += 360;
+      const signIndex = Math.floor(normalized / 30);
+      const signDegree = normalized - signIndex * 30;
+      return { signName: signs[signIndex], signDegree: `${signDegree.toFixed(2)}°` };
+    }
+
+    function renderTable(headers, rows) {
+      if (!rows.length) {
+        return "<div class='hint'>Нет данных.</div>";
+      }
+      const th = headers.map((h) => `<th>${h}</th>`).join("");
+      const tr = rows
+        .map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`)
+        .join("");
+      return `<table class="expert-table"><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
+    }
+
+    function renderExpertTables(chartResponse, timezonePayload, warnings) {
+      const objects = chartResponse?.objects || {};
+      const houses = chartResponse?.houses || {};
+      const aspects = Array.isArray(chartResponse?.aspects) ? chartResponse.aspects : [];
+      const angles = chartResponse?.angles || {};
+      const cuspDetails = houses.cusp_details || {};
+
+      const objectOrder = [
+        "sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","true_node","mean_node","chiron"
+      ];
+      const objectRows = objectOrder
+        .filter((key) => objects[key])
+        .map((key) => {
+          const obj = objects[key];
+          return [
+            key,
+            obj.sign_name_en || "—",
+            typeof obj.sign_degree === "number" ? `${obj.sign_degree.toFixed(2)}°` : "—",
+            typeof obj.absolute_degree_0_360 === "number" ? `${obj.absolute_degree_0_360.toFixed(2)}°` : "—",
+            obj.house ?? "—",
+            obj.retrograde ? "R" : "D",
+          ];
+        });
+      expertObjectsEl.innerHTML = renderTable(
+        ["Объект / планета", "Знак", "Градус в знаке", "Абсолютный градус 0–360", "Дом", "Ретроградность"],
+        objectRows
+      );
+
+      const nodeRows = ["true_node", "mean_node"]
+        .filter((key) => objects[key])
+        .map((key) => {
+          const obj = objects[key];
+          const nodeLabel = key === "true_node"
+            ? "Истинный Северный узел (true_node)"
+            : "Средний Северный узел (mean_node)";
+          return [
+            nodeLabel,
+            obj.sign_name_en || "—",
+            typeof obj.sign_degree === "number" ? `${obj.sign_degree.toFixed(2)}°` : "—",
+            obj.house ?? "—",
+            typeof obj.absolute_degree_0_360 === "number" ? `${obj.absolute_degree_0_360.toFixed(2)}°` : "—",
+          ];
+        });
+      expertNodesEl.innerHTML = renderTable(
+        ["Узел", "Знак", "Градус", "Дом", "Абсолютный градус"],
+        nodeRows
+      );
+
+      const angleMap = [["asc", "Asc"], ["mc", "MC"], ["desc", "Desc"], ["ic", "IC"]];
+      const angleRows = angleMap
+        .filter(([key]) => typeof angles[key] === "number")
+        .map(([key, label]) => {
+          const abs = angles[key];
+          const signData = angleToSignDegree(abs);
+          return [label, signData.signName, signData.signDegree, `${abs.toFixed(2)}°`];
+        });
+      expertAnglesEl.innerHTML = renderTable(
+        ["Угол", "Знак", "Градус", "Абсолютный градус"],
+        angleRows
+      );
+
+      const cuspRows = Array.from({ length: 12 }, (_, i) => String(i + 1))
+        .map((houseNo) => {
+          const cusp = cuspDetails[houseNo];
+          if (!cusp) {
+            return [houseNo, "—", "—", "—"];
+          }
+          return [
+            houseNo,
+            cusp.sign_name_en || "—",
+            typeof cusp.sign_degree === "number" ? `${cusp.sign_degree.toFixed(2)}°` : "—",
+            typeof cusp.absolute_degree_0_360 === "number" ? `${cusp.absolute_degree_0_360.toFixed(2)}°` : "—",
+          ];
+        });
+      expertCuspsEl.innerHTML = renderTable(
+        ["Дом", "Знак куспида", "Градус в знаке", "Абсолютный градус"],
+        cuspRows
+      );
+
+      const aspectRows = aspects.map((aspect) => [
+        aspect.object_a || "—",
+        aspect.aspect_type || "—",
+        aspect.object_b || "—",
+        formatNum(aspect.exact_angle),
+        formatNum(aspect.actual_angle),
+        formatNum(aspect.orb),
+        aspect.applying === true ? "applying" : (aspect.applying === false ? "separating" : "—"),
+      ]);
+      expertAspectsEl.innerHTML = renderTable(
+        ["Объект A", "Аспект", "Объект B", "Точный угол", "Фактический угол", "Орбис", "Applying/Separating"],
+        aspectRows
+      );
+
+      const warningText = Array.isArray(warnings) && warnings.length ? warnings.join(", ") : "—";
+      const timezoneRows = [[
+        timezonePayload?.mode || "—",
+        timezonePayload?.timezone_name || "—",
+        timezonePayload?.timezone_offset || "—",
+        timezonePayload?.timezone_source || "—",
+        timezonePayload?.datetime_local || "—",
+        timezonePayload?.datetime_utc || "—",
+        warningText,
+      ]];
+      expertTimezoneEl.innerHTML = renderTable(
+        ["timezone mode", "timezone name", "timezone offset", "timezone source", "datetime local", "datetime UTC", "warnings"],
+        timezoneRows
+      );
     }
 
     function extractErrorText(payload) {
@@ -1319,9 +1585,11 @@
         const opt = document.createElement("option");
         opt.value = idx;
         const label = [item.name, item.admin1, item.country].filter(Boolean).join(", ");
-        opt.textContent = `${label} [${item.latitude}, ${item.longitude}] ${item.timezone || ""}`;
+        const tzName = item.timezone_name || item.timezone || "";
+        opt.textContent = `${label} [${item.latitude}, ${item.longitude}] ${tzName}`;
         opt.dataset.latitude = item.latitude;
         opt.dataset.longitude = item.longitude;
+        opt.dataset.timezoneName = tzName;
         selectEl.appendChild(opt);
       });
       selectEl.dispatchEvent(new Event("change"));
@@ -1385,7 +1653,9 @@
       const body = {
         api_base_url: document.getElementById("apiBaseUrl").value.trim(),
         datetime_local: datetimeLocalEl.value,
+        timezone_mode: timezoneModeEl.value,
         timezone_offset: timezoneOffsetEl.value,
+        timezone_name: timezoneNameEl.value || null,
         latitude: Number(document.getElementById("latitude").value),
         longitude: Number(document.getElementById("longitude").value),
         house_system: document.getElementById("houseSystem").value,
@@ -1404,11 +1674,21 @@
         return;
       }
       horoscopeBoxEl.textContent = data.horoscope_text;
+      renderExpertTables(data.chart_response, data.timezone, data.warnings);
+      expertWrapEl.classList.add("hidden");
+      toggleExpertBtnEl.textContent = "Показать экспертную таблицу";
       apiRawBoxEl.textContent = JSON.stringify(data.chart_response, null, 2);
       apiRawWrapEl.classList.add("hidden");
       toggleApiRawBtnEl.textContent = "Показать ответ API целиком";
       modalEl.classList.add("active");
-      setStatus(`Готово. UTC: ${data.datetime_utc}`);
+      const tz = data.timezone || {};
+      const tzInfo = tz.timezone_source === "manual_offset"
+        ? `Часовой пояс указан вручную: ${tz.timezone_offset || body.timezone_offset}`
+        : `Часовой пояс определён автоматически: ${tz.timezone_name || timezoneNameEl.value || "n/a"}, ${tz.timezone_offset || ""}`;
+      const warnText = Array.isArray(data.warnings) && data.warnings.length
+        ? ` [warnings: ${data.warnings.join(", ")}]`
+        : "";
+      setStatus(`Готово. UTC: ${data.datetime_utc}. ${tzInfo}${warnText}`);
     }
 
     function renderRectIntervals(intervals) {
@@ -1742,6 +2022,8 @@
       if (!option) return;
       document.getElementById("latitude").value = option.dataset.latitude || "";
       document.getElementById("longitude").value = option.dataset.longitude || "";
+      timezoneNameEl.value = option.dataset.timezoneName || "";
+      updateTimezoneUiState();
     });
     rectCityResultsEl.addEventListener("change", () => {
       const option = rectCityResultsEl.options[rectCityResultsEl.selectedIndex];
@@ -1792,9 +2074,11 @@
 
     document.getElementById("closeModalBtn").addEventListener("click", closeModal);
     document.getElementById("closeModalBtn2").addEventListener("click", closeModal);
+    toggleExpertBtnEl.addEventListener("click", toggleExpertTable);
     toggleApiRawBtnEl.addEventListener("click", toggleRawApi);
-    timezoneOffsetEl.addEventListener("change", calculateUtcPreview);
+    timezoneOffsetEl.addEventListener("change", updateTimezoneUiState);
     datetimeLocalEl.addEventListener("input", calculateUtcPreview);
+    timezoneModeEl.addEventListener("change", updateTimezoneUiState);
 
     zodiacModeEl.addEventListener("change", () => {
       const sidereal = zodiacModeEl.value === "sidereal";
@@ -1816,7 +2100,8 @@
 
     fillOffsets();
     datetimeLocalEl.value = nowLocalInputValue();
-    calculateUtcPreview();
+    timezoneModeEl.value = "auto";
+    updateTimezoneUiState();
     document.getElementById("rectBirthDate").value = todayLocalDateValue();
     document.getElementById("rdBirthDate").value = todayLocalDateValue();
     siderealModeEl.disabled = true;
@@ -1831,4 +2116,3 @@
   </script>
 </body>
 </html>
-

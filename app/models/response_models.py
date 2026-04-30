@@ -19,6 +19,15 @@ class ObjectResponse(BaseModel):
     sign_degree: float
     sign_degree_dms: str
     absolute_degree_0_360: float
+    house: int | None = None
+
+
+class CuspResponse(BaseModel):
+    absolute_degree_0_360: float
+    sign_index: int
+    sign_name_en: str
+    sign_degree: float
+    sign_degree_dms: str
 
 
 class InputEchoResponse(BaseModel):
@@ -37,6 +46,7 @@ class NormalizedResponse(BaseModel):
 class HousesResponse(BaseModel):
     system: str
     cusps: dict[str, float]
+    cusp_details: dict[str, CuspResponse] = Field(default_factory=dict)
 
 
 class MetaResponse(BaseModel):
@@ -45,6 +55,10 @@ class MetaResponse(BaseModel):
     sidereal_mode: SiderealMode | None
     object_constants: dict[str, int] = Field(
         description="Swiss Ephemeris constant mapping for every computed object"
+    )
+    node_definitions: dict[str, dict[str, str]] = Field(
+        default_factory=dict,
+        description="Definitions for lunar node calculation types returned in objects"
     )
 
 
