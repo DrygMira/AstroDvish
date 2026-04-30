@@ -1,0 +1,24 @@
+{
+  "dialog_history": [
+    {
+      "role": "assistant",
+      "step_index": 1,
+      "question_id": "ev_children_birth_01",
+      "event_type": "children_birth",
+      "event": null,
+      "user_skipped": null,
+      "raw_answer": null
+    }
+  ],
+  "last_answer": {
+    "question_id": "ev_children_birth_01",
+    "event_type": "children_birth",
+    "title": "Рождение ребёнка",
+    "date_text": "2018-09",
+    "impact_level": 5,
+    "reversibility": null,
+    "life_area": null,
+    "notes": "Сильный жизненный перелом",
+    "user_skipped": false
+  }
+}

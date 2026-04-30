@@ -1,0 +1,82 @@
+{
+  "input": {
+    "datetime_utc": "1984-11-13T11:35:00Z",
+    "latitude": 53.9006,
+    "longitude": 27.559,
+    "house_system": "P",
+    "zodiac_mode": "tropical",
+    "sidereal_mode": null
+  },
+  "normalized": {
+    "julian_day_ut": 2446017.982638889
+  },
+  "objects": {
+    "sun": {
+      "name": "sun",
+      "longitude_deg": 231.123456,
+      "latitude_deg": 0.000123,
+      "distance_au": 0.989123456,
+      "speed_longitude_deg_per_day": 0.987654,
+      "retrograde": false,
+      "sign_index": 7,
+      "sign_name_en": "Scorpio",
+      "sign_degree": 21.123456,
+      "sign_degree_dms": "21°07'24\"",
+      "absolute_degree_0_360": 231.123456
+    },
+    "moon": {
+      "name": "moon",
+      "longitude_deg": 351.456789,
+      "latitude_deg": -2.123456,
+      "distance_au": 0.002456789,
+      "speed_longitude_deg_per_day": 12.456789,
+      "retrograde": false,
+      "sign_index": 11,
+      "sign_name_en": "Pisces",
+      "sign_degree": 21.456789,
+      "sign_degree_dms": "21°27'24\"",
+      "absolute_degree_0_360": 351.456789
+    }
+  },
+  "aspects": [
+    {
+      "object_a": "Sun",
+      "object_b": "Moon",
+      "aspect_type": "trine",
+      "exact_angle": 120.0,
+      "actual_angle": 118.4,
+      "orb": 1.6,
+      "applying": null
+    }
+  ],
+  "houses": {
+    "system": "P",
+    "cusps": {
+      "1": 123.123456,
+      "2": 145.234567,
+      "3": 171.345678,
+      "4": 201.456789,
+      "5": 230.567891,
+      "6": 255.678912,
+      "7": 303.123456,
+      "8": 325.234567,
+      "9": 351.345678,
+      "10": 21.456789,
+      "11": 50.567891,
+      "12": 75.678912
+    }
+  },
+  "angles": {
+    "asc": 123.123456,
+    "mc": 21.456789
+  },
+  "meta": {
+    "ephemeris_source": "swisseph",
+    "zodiac_mode": "tropical",
+    "sidereal_mode": null,
+    "object_constants": {
+      "sun": 0,
+      "moon": 1
+    }
+  }
+}

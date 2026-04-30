@@ -1,0 +1,36 @@
+{
+  "status": "ask_question",
+  "step_index": 1,
+  "events_collected_count": 0,
+  "warnings": [],
+  "question": {
+    "question_id": "ev_children_birth_01",
+    "event_type": "children_birth",
+    "question_text": "Было ли рождение ребенка (или детей), которое сильно изменило вашу жизнь?",
+    "options": [
+      {
+        "id": "yes",
+        "text": "Да"
+      },
+      {
+        "id": "no",
+        "text": "Нет"
+      },
+      {
+        "id": "skip",
+        "text": "Пропустить"
+      }
+    ]
+  },
+  "dialog_history": [
+    {
+      "role": "assistant",
+      "step_index": 1,
+      "question_id": "ev_children_birth_01",
+      "event_type": "children_birth",
+      "event": null,
+      "user_skipped": null,
+      "raw_answer": null
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "status": "finalized",
+  "step_index": 6,
+  "events_collected_count": 4,
+  "warnings": [],
+  "events": [
+    {
+      "event_id": "0f4bba31-57e5-4fe8-b3e7-c78530fdcb9f",
+      "event_type": "children_birth",
+      "title": "Рождение ребёнка",
+      "date_text": "2018-09",
+      "date_precision": "month",
+      "start_date": "2018-09-01",
+      "end_date": "2018-09-30",
+      "impact_level": 5,
+      "reversibility": "irreversible",
+      "life_area": "relationships",
+      "notes": "Сильный жизненный перелом",
+      "user_skipped": false
+    },
+    {
+      "event_id": "e6dd2dfe-d796-4f77-a9dc-9504e7ac14cb",
+      "event_type": "relocation_emigration",
+      "title": "Переезд в другую страну",
+      "date_text": "2020",
+      "date_precision": "year",
+      "start_date": "2020-01-01",
+      "end_date": "2020-12-31",
+      "impact_level": 4,
+      "reversibility": "reversible",
+      "life_area": "home",
+      "notes": "",
+      "user_skipped": false
+    }
+  ],
+  "events_count": 4,
+  "strong_events_count": 3,
+  "confidence_preliminary": "low",
+  "dialog_history": []
+}

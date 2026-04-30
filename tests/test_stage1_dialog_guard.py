@@ -1,0 +1,366 @@
+﻿from __future__ import annotations
+
+from typing import Any
+
+import pytest
+from fastapi import HTTPException
+from fastapi.testclient import TestClient
+
+import web_ui.main as web_main
+
+
+SAMPLE_RECTIFICATION_DOCUMENT: dict[str, Any] = {
+    "mode": "asc_sign_intervals",
+    "version": "1.0",
+    "day_window": {
+        "start_local": "2000-04-16T00:00:00",
+        "end_local": "2000-04-16T23:59:59",
+    },
+    "asc_sign_intervals": [
+        {
+            "interval_index": 1,
+            "sign_name_ru": "Весы",
+            "sign_name_en": "Libra",
+            "start_local": "2000-04-16T01:48:00",
+            "end_local": "2000-04-16T03:37:00",
+            "duration_minutes": 109,
+        },
+        {
+            "interval_index": 2,
+            "sign_name_ru": "Дева",
+            "sign_name_en": "Virgo",
+            "start_local": "2000-04-16T00:20:00",
+            "end_local": "2000-04-16T01:47:00",
+            "duration_minutes": 87,
+        },
+        {
+            "interval_index": 3,
+            "sign_name_ru": "Скорпион",
+            "sign_name_en": "Scorpio",
+            "start_local": "2000-04-16T03:38:00",
+            "end_local": "2000-04-16T05:03:00",
+            "duration_minutes": 85,
+        },
+    ],
+}
+
+
+def _start_payload() -> dict[str, Any]:
+    return {
+        "api_base_url": "http://127.0.0.1:8013",
+        "birth_date_local": "2000-04-16",
+        "latitude": 53.9,
+        "longitude": 27.56667,
+        "house_system": "P",
+        "zodiac_mode": "tropical",
+        "sidereal_mode": None,
+        "prompt_text": "stage1 prompt",
+        "user_profile_note": None,
+    }
+
+
+def _continue_payload(**overrides: Any) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "prompt_text": "stage1 prompt",
+        "rectification_document": SAMPLE_RECTIFICATION_DOCUMENT,
+        "dialog_history": [],
+        "step_count": 0,
+        "mode": "next_question",
+        "user_profile_note": None,
+        "user_response": None,
+    }
+    payload.update(overrides)
+    return payload
+
+
+@pytest.fixture
+def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+    monkeypatch.setattr(web_main, "_fetch_rectification_document", lambda payload: SAMPLE_RECTIFICATION_DOCUMENT)
+    with TestClient(web_main.app) as test_client:
+        yield test_client
+
+
+def test_valid_ask_question_from_llm(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        web_main,
+        "_call_rectification_llm",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "ask_question",
+                "step_index": 1,
+                "should_continue": True,
+                "debug_probability_text": "test",
+                "question_id": "q_first_impression_01",
+                "question_text": "How are you perceived?",
+                "options": [{"id": "A", "text": "Soft"}],
+                "allow_free_text": True,
+            },
+            "llm_text": "{}",
+            "usage": {"input_tokens": 10, "output_tokens": 20, "total_tokens": 30, "cached_input_tokens": 0, "reasoning_tokens": 0},
+            "openai_raw_response": {"ok": True},
+        },
+    )
+
+    response = client.post("/api/rectification/dialog/start", json=_start_payload())
+    assert response.status_code == 200
+    body = response.json()
+
+    assert body["llm_json"]["type"] == "ask_question"
+    assert body["llm_json"]["allow_free_text"] is False
+    assert body["warnings"] == []
+    assert body["step_count"] == 1
+
+
+def test_bad_json_from_llm_falls_back_to_safe_question(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    def _raise_http_error(**kwargs: Any) -> dict[str, Any]:
+        raise HTTPException(status_code=502, detail={"message": "LLM output is not valid JSON"})
+
+    monkeypatch.setattr(web_main, "_call_rectification_llm", _raise_http_error)
+
+    response = client.post("/api/rectification/dialog/start", json=_start_payload())
+    assert response.status_code == 200
+    body = response.json()
+
+    assert body["llm_json"]["type"] == "ask_question"
+    assert body["llm_json"]["options"]
+    assert "llm_request_failed" in body["warnings"]
+
+
+def test_ask_question_without_options_uses_fallback(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        web_main,
+        "_call_rectification_llm",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "ask_question",
+                "step_index": 1,
+                "should_continue": True,
+                "debug_probability_text": "test",
+                "question_id": "q_first_impression_01",
+                "question_text": "Bad question",
+                "options": [],
+                "allow_free_text": False,
+            },
+            "llm_text": "{}",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        },
+    )
+
+    response = client.post("/api/rectification/dialog/start", json=_start_payload())
+    assert response.status_code == 200
+    body = response.json()
+
+    assert body["llm_json"]["type"] == "ask_question"
+    assert body["llm_json"]["options"]
+    assert "llm_json_failed_guard" in body["warnings"]
+
+
+def test_final_result_without_primary_candidate_falls_back(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        web_main,
+        "_call_rectification_llm",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "final_result",
+                "should_continue": False,
+                "secondary_candidates": [],
+                "summary_text": "incomplete",
+            },
+            "llm_text": "{}",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        },
+    )
+
+    response = client.post(
+        "/api/rectification/dialog/continue",
+        json=_continue_payload(step_count=3, mode="finalize_now"),
+    )
+    assert response.status_code == 200
+    body = response.json()
+
+    assert body["llm_json"]["type"] == "final_result"
+    assert body["llm_json"]["primary_candidate"]["sign_name_en"]
+    assert "llm_json_failed_guard" in body["warnings"]
+
+
+def test_probability_out_of_range_falls_back(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        web_main,
+        "_call_rectification_llm",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "final_result",
+                "should_continue": False,
+                "primary_candidate": {
+                    "sign_name_ru": "Весы",
+                    "sign_name_en": "Libra",
+                    "time_range_local": {"start": "2000-04-16T01:48:00", "end": "2000-04-16T03:37:00"},
+                    "probability": 2.0,
+                },
+                "secondary_candidates": [],
+                "summary_text": "invalid probability",
+            },
+            "llm_text": "{}",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        },
+    )
+
+    response = client.post(
+        "/api/rectification/dialog/continue",
+        json=_continue_payload(step_count=3, mode="finalize_now"),
+    )
+    assert response.status_code == 200
+    body = response.json()
+
+    assert body["llm_json"]["type"] == "final_result"
+    assert body["llm_json"]["primary_candidate"]["probability"] <= 1
+    assert "llm_json_failed_guard" in body["warnings"]
+
+
+def test_max_steps_leads_to_safe_finalization_without_llm_call(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    called = {"value": False}
+
+    def _call_llm(**kwargs: Any) -> dict[str, Any]:
+        called["value"] = True
+        return {
+            "llm_json": {
+                "type": "ask_question",
+                "step_index": 11,
+                "should_continue": True,
+                "debug_probability_text": "test",
+                "question_id": "q_first_impression_01",
+                "question_text": "Q",
+                "options": [{"id": "A", "text": "Soft"}],
+                "allow_free_text": False,
+            },
+            "llm_text": "{}",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        }
+
+    monkeypatch.setattr(web_main, "_call_rectification_llm", _call_llm)
+
+    response = client.post(
+        "/api/rectification/dialog/continue",
+        json=_continue_payload(step_count=web_main.RECT_MAX_STEPS, mode="next_question"),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["llm_json"]["type"] == "final_result"
+    assert "max_steps_reached_safe_finalization" in body["warnings"]
+    assert called["value"] is False
+
+
+def test_repeated_question_id_uses_fallback_question(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        web_main,
+        "_call_rectification_llm",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "ask_question",
+                "step_index": 2,
+                "should_continue": True,
+                "debug_probability_text": "test",
+                "question_id": "q_first_impression_01",
+                "question_text": "Repeated",
+                "options": [{"id": "A", "text": "Soft"}],
+                "allow_free_text": False,
+            },
+            "llm_text": "{}",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        },
+    )
+
+    dialog_history = [
+        {
+            "role": "assistant",
+            "type": "ask_question",
+            "question_id": "q_first_impression_01",
+            "question_text": "How are you perceived?",
+            "options": [{"id": "A", "text": "Soft"}],
+        },
+        {"role": "user", "selected_option_id": "A", "selected_option_text": "Soft", "free_text": None},
+    ]
+
+    response = client.post(
+        "/api/rectification/dialog/continue",
+        json=_continue_payload(dialog_history=dialog_history, step_count=1, mode="next_question"),
+    )
+    assert response.status_code == 200
+    body = response.json()
+
+    assert body["llm_json"]["type"] == "ask_question"
+    assert body["llm_json"]["question_id"] != "q_first_impression_01"
+    assert "llm_json_failed_guard" in body["warnings"]
+
+
+def test_web_ui_health(client: TestClient) -> None:
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok", "service": "astrodvish-web-ui"}
+
+
+def test_generate_keeps_calculation_and_interpretation_separate(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FakeResponse:
+        status_code = 200
+
+        @staticmethod
+        def json() -> dict[str, Any]:
+            return {
+                "input": {"datetime_utc": "1984-11-13T11:35:00Z", "latitude": 53.9, "longitude": 27.55, "house_system": "P", "zodiac_mode": "tropical", "sidereal_mode": None},
+                "normalized": {"julian_day_ut": 2446017.9},
+                "objects": {"sun": {"longitude_deg": 231.0}},
+                "houses": {"system": "P", "cusps": {"1": 145.0}},
+                "angles": {"asc": 145.0, "mc": 58.0},
+                "meta": {"ephemeris_source": "swisseph", "zodiac_mode": "tropical", "sidereal_mode": None, "object_constants": {"sun": 0}},
+            }
+
+    monkeypatch.setattr(web_main, "_post_to_api_with_fallback", lambda **kwargs: _FakeResponse())
+    monkeypatch.setattr(web_main, "_render_horoscope_via_openai", lambda prompt_text, chart: "INTERPRETATION")
+
+    response = client.post(
+        "/api/generate",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "datetime_local": "1984-11-13T14:35:00",
+            "timezone_offset": "+03:00",
+            "latitude": 53.9,
+            "longitude": 27.55,
+            "house_system": "P",
+            "zodiac_mode": "tropical",
+            "sidereal_mode": None,
+            "prompt_text": "prompt",
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["horoscope_text"] == "INTERPRETATION"
+    assert isinstance(body["chart_response"], dict)
+    assert "horoscope_text" not in body["chart_response"]
+
+
+def test_calculation_endpoint_is_computation_only(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    def _raise_if_called(*args: Any, **kwargs: Any) -> str:
+        raise AssertionError("LLM layer must not be used by pure calculation endpoint")
+
+    monkeypatch.setattr(web_main, "_render_horoscope_via_openai", _raise_if_called)
+
+    payload = {
+        "birth_date_local": "2000-04-16",
+        "latitude": 53.9,
+        "longitude": 27.56667,
+        "house_system": "P",
+        "zodiac_mode": "tropical",
+        "sidereal_mode": None,
+        "api_base_url": "http://127.0.0.1:8013",
+    }
+    response = client.post("/api/rectification/asc-sign-intervals", json=payload)
+
+    assert response.status_code == 200
+    assert response.json()["mode"] == "asc_sign_intervals"

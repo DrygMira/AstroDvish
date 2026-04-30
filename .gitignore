@@ -1,0 +1,34 @@
+# Python virtual env / caches
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.py[cod]
+*.pyo
+
+# Local env / secrets
+.env
+secrets.txt
+
+# IDE / editor files
+.idea/
+.vscode/
+*.iml
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Build / reports
+build/
+dist/
+htmlcov/
+.coverage*
+
+# Runtime artifacts
+*.log
+
+# Local ephemeris data (keep directory placeholder only)
+ephe/*
+!ephe/.gitkeep

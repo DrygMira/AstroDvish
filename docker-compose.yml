@@ -1,0 +1,40 @@
+services:
+  astrodvish-api:
+    build: .
+    container_name: astrodvish-api
+    env_file:
+      - .env
+    ports:
+      - "8013:8013"
+    volumes:
+      - ./ephe:/opt/ephe
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8013/health', timeout=5).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  astrodvish-web-ui:
+    build: .
+    container_name: astrodvish-web-ui
+    env_file:
+      - .env
+    environment:
+      WEB_UI_HOST: "0.0.0.0"
+      WEB_UI_PORT: "8014"
+      DOCKER_COMPOSE_API_BASE_URL: "http://astrodvish-api:8013"
+    command: ["/app/scripts/start_web_ui.sh"]
+    depends_on:
+      astrodvish-api:
+        condition: service_healthy
+    ports:
+      - "8014:8014"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8014/health', timeout=5).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped

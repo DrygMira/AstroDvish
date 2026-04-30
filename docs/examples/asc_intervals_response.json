@@ -1,0 +1,69 @@
+{
+  "mode": "asc_sign_intervals",
+  "version": "1.0",
+  "generated_at_utc": "2026-04-29T10:00:00Z",
+  "birth_context": {
+    "birth_date_local": "2000-04-16",
+    "latitude": 53.9,
+    "longitude": 27.56667,
+    "timezone": "Europe/Minsk",
+    "timezone_source": "coordinates",
+    "house_system": "P",
+    "zodiac_mode": "tropical",
+    "sidereal_mode": null
+  },
+  "day_window": {
+    "start_local": "2000-04-16T00:00:00",
+    "end_local": "2000-04-16T23:59:59"
+  },
+  "day_window_utc": {
+    "start_utc": "2000-04-15T21:00:00Z",
+    "end_utc": "2000-04-16T20:59:59Z"
+  },
+  "shared_day_summary": {
+    "sun_sign": "Aries",
+    "moon_sign_start": "Cancer",
+    "moon_sign_end": "Leo",
+    "moon_changes_sign_today": true,
+    "mercury_sign": "Aries",
+    "venus_sign": "Taurus",
+    "mars_sign": "Gemini",
+    "jupiter_sign": "Taurus",
+    "saturn_sign": "Taurus"
+  },
+  "asc_sign_intervals": [
+    {
+      "interval_index": 1,
+      "sign_index": 0,
+      "sign_name_en": "Aries",
+      "sign_name_ru": "Овен",
+      "start_local": "2000-04-15T23:44:00",
+      "end_local": "2000-04-16T01:39:00",
+      "duration_minutes": 115,
+      "sample_points": {
+        "p15": {
+          "local_time": "2000-04-16T00:01:00",
+          "asc_degree_in_sign": 4.2,
+          "moon_sign": "Cancer",
+          "mc_sign": "Capricorn"
+        },
+        "p50": {
+          "local_time": "2000-04-16T00:41:00",
+          "asc_degree_in_sign": 14.9,
+          "moon_sign": "Cancer",
+          "mc_sign": "Aquarius"
+        },
+        "p85": {
+          "local_time": "2000-04-16T01:21:00",
+          "asc_degree_in_sign": 26.1,
+          "moon_sign": "Cancer",
+          "mc_sign": "Aquarius"
+        }
+      },
+      "changing_features_within_interval": [
+        "asc_degree_change",
+        "mc_sign_change"
+      ]
+    }
+  ]
+}
