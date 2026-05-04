@@ -314,6 +314,33 @@
       font-size: 13px;
       font-weight: 600;
     }
+    .wizard-progress {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .wizard-step {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 10px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+    .wizard-step.active {
+      border-color: #93c5fd;
+      background: #eef6ff;
+    }
+    .wizard-step.done {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+    .wizard-step small {
+      color: var(--muted);
+    }
     @media (max-width: 860px) {
       .grid { grid-template-columns: 1fr; }
       .tabs { flex-direction: column; }
@@ -347,11 +374,140 @@
     </div>
 
     <div class="card tabs">
+      <button id="tabWizardBtn" class="tab-btn" type="button">Ректификация рождения</button>
       <button id="tabChartBtn" class="tab-btn active" type="button">Обычный расчёт</button>
       <button id="tabRectBtn" class="tab-btn" type="button">Ректификация: интервалы восходящих знаков</button>
       <button id="tabRectDialogBtn" class="tab-btn" type="button">Ректификация: диалог по восходящему знаку</button>
       <button id="tabRectEventsBtn" class="tab-btn" type="button">Уточнить время по событиям жизни</button>
     </div>
+
+    <section id="wizardPanel" class="tab-panel">
+      <div class="card">
+        <strong>Ректификация рождения — мастер-сценарий</strong>
+        <div class="hint">Основной путь для тестирования. Старые вкладки ниже остаются как технический режим модулей.</div>
+        <div id="wzProgressText" class="hint" style="margin-top:8px;"></div>
+        <div id="wzProgress" class="wizard-progress">
+          <div id="wzStepBadge1" class="wizard-step"><span>Шаг 1 из 5 — Дата и место</span><small id="wzStepHint1"></small></div>
+          <div id="wzStepBadge2" class="wizard-step"><span>Шаг 2 из 5 — Asc-интервалы</span><small id="wzStepHint2"></small></div>
+          <div id="wzStepBadge3" class="wizard-step"><span>Шаг 3 из 5 — Диалог по Asc</span><small id="wzStepHint3"></small></div>
+          <div id="wzStepBadge4" class="wizard-step"><span>Шаг 4 из 5 — События жизни</span><small id="wzStepHint4"></small></div>
+          <div id="wzStepBadge5" class="wizard-step"><span>Шаг 5 из 5 — Pro-ректификация</span><small id="wzStepHint5"></small></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <strong>Шаг 1. Дата и место рождения</strong>
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Адрес API</label>
+            <input id="wzApiBaseUrl" value="http://127.0.0.1:8013" />
+          </div>
+          <div>
+            <label>Дата рождения (локальная)</label>
+            <input id="wzBirthDate" type="date" />
+          </div>
+        </div>
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Город / место</label>
+            <div class="row">
+              <input id="wzCityQuery" value="Уфа" />
+              <button id="wzSearchCityBtn" class="btn secondary" type="button">Поиск</button>
+            </div>
+          </div>
+          <div>
+            <label>Результат поиска</label>
+            <select id="wzCityResults"></select>
+          </div>
+        </div>
+        <div class="grid" style="margin-top:10px;">
+          <div><label>Latitude</label><input id="wzLatitude" type="number" step="0.000001" value="54.7388" /></div>
+          <div><label>Longitude</label><input id="wzLongitude" type="number" step="0.000001" value="55.9721" /></div>
+        </div>
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Режим timezone</label>
+            <select id="wzTimezoneMode">
+              <option value="auto">auto</option>
+              <option value="manual">manual</option>
+            </select>
+          </div>
+          <div>
+            <label>Timezone name</label>
+            <input id="wzTimezoneName" readonly />
+          </div>
+        </div>
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Timezone offset</label>
+            <select id="wzTimezoneOffset"></select>
+          </div>
+          <div>
+            <label>House system</label>
+            <select id="wzHouseSystem">
+              <option value="P">P (Placidus)</option>
+              <option value="K">K (Koch)</option>
+              <option value="O">O (Porphyry)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label>Zodiac mode</label>
+            <select id="wzZodiacMode">
+              <option value="tropical">tropical</option>
+              <option value="sidereal">sidereal</option>
+            </select>
+          </div>
+          <div>
+            <label>Sidereal mode</label>
+            <select id="wzSiderealMode">
+              <option value="">null</option>
+              <option value="lahiri">lahiri</option>
+              <option value="fagan_bradley">fagan_bradley</option>
+              <option value="krishnamurti">krishnamurti</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions" style="margin-top:10px;">
+          <button id="wzCalcAscBtn" class="btn" type="button">Рассчитать Asc-интервалы</button>
+          <button id="wzResetBtn" class="btn secondary" type="button">Сбросить мастер-сценарий</button>
+        </div>
+        <div id="wzStatus" class="hint"></div>
+      </div>
+
+      <div class="card">
+        <strong>Шаг 2. Интервалы восходящих знаков</strong>
+        <div id="wzIntervalsList" class="interval-list"></div>
+        <div class="actions" style="margin-top:10px;">
+          <button id="wzToStage1Btn" class="btn secondary" type="button">Перейти к диалогу по Asc</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <strong>Шаг 3. Диалог по восходящему знаку</strong>
+        <div id="wzStage1Summary" class="final-result" style="margin-top:10px;">Stage 1 ещё не завершён.</div>
+        <div class="actions" style="margin-top:10px;">
+          <button id="wzOpenStage1Btn" class="btn secondary" type="button">Открыть шаг 3 (Stage 1 модуль)</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <strong>Шаг 4. События жизни</strong>
+        <div id="wzStage2Context" class="final-result" style="margin-top:10px;"></div>
+        <div class="actions" style="margin-top:10px;">
+          <button id="wzOpenStage2Btn" class="btn secondary" type="button">Открыть шаг 4 (Stage 2 модуль)</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <strong>Шаг 5. Pro-ректификация</strong>
+        <div class="actions" style="margin-top:10px;">
+          <button id="wzRunProBtn" class="btn" type="button">Запустить Pro-ректификацию</button>
+        </div>
+        <div id="wzProStatus" class="hint"></div>
+      </div>
+    </section>
 
     <section id="chartPanel" class="tab-panel active">
       <div class="card">
@@ -490,6 +646,7 @@
 
     <section id="rectPanel" class="tab-panel">
       <div class="card">
+        <div class="hint">Технический режим / отдельные модули. Для полного теста используйте вкладку «Ректификация рождения».</div>
         <div class="grid">
           <div>
             <label>Адрес API</label>
@@ -579,6 +736,7 @@
 
     <section id="rectDialogPanel" class="tab-panel">
       <div class="card">
+        <div class="hint">Технический режим / отдельные модули. Для полного теста используйте вкладку «Ректификация рождения».</div>
         <div class="grid">
           <div>
             <label>Адрес API</label>
@@ -718,6 +876,7 @@
 
     <section id="rectEventsPanel" class="tab-panel">
       <div class="card">
+        <div class="hint">Технический режим / отдельные модули. Для полного теста используйте вкладку «Ректификация рождения».</div>
         <div class="grid">
           <div>
             <label>Адрес API</label>
@@ -877,11 +1036,13 @@
   </div>
 
   <script>
+    const tabWizardBtnEl = document.getElementById("tabWizardBtn");
     const tabChartBtnEl = document.getElementById("tabChartBtn");
     const tabRectBtnEl = document.getElementById("tabRectBtn");
     const tabRectDialogBtnEl = document.getElementById("tabRectDialogBtn");
     const tabRectEventsBtnEl = document.getElementById("tabRectEventsBtn");
     const chartPanelEl = document.getElementById("chartPanel");
+    const wizardPanelEl = document.getElementById("wizardPanel");
     const rectPanelEl = document.getElementById("rectPanel");
     const rectDialogPanelEl = document.getElementById("rectDialogPanel");
     const rectEventsPanelEl = document.getElementById("rectEventsPanel");
@@ -972,6 +1133,28 @@
     let llmOverlayTimerId = null;
     let llmOverlayStartedAt = 0;
 
+    const wzApiBaseUrlEl = document.getElementById("wzApiBaseUrl");
+    const wzBirthDateEl = document.getElementById("wzBirthDate");
+    const wzCityQueryEl = document.getElementById("wzCityQuery");
+    const wzCityResultsEl = document.getElementById("wzCityResults");
+    const wzLatitudeEl = document.getElementById("wzLatitude");
+    const wzLongitudeEl = document.getElementById("wzLongitude");
+    const wzTimezoneModeEl = document.getElementById("wzTimezoneMode");
+    const wzTimezoneNameEl = document.getElementById("wzTimezoneName");
+    const wzTimezoneOffsetEl = document.getElementById("wzTimezoneOffset");
+    const wzHouseSystemEl = document.getElementById("wzHouseSystem");
+    const wzZodiacModeEl = document.getElementById("wzZodiacMode");
+    const wzSiderealModeEl = document.getElementById("wzSiderealMode");
+    const wzStatusEl = document.getElementById("wzStatus");
+    const wzProStatusEl = document.getElementById("wzProStatus");
+    const wzIntervalsListEl = document.getElementById("wzIntervalsList");
+    const wzStage1SummaryEl = document.getElementById("wzStage1Summary");
+    const wzStage2ContextEl = document.getElementById("wzStage2Context");
+    const wzProgressTextEl = document.getElementById("wzProgressText");
+
+    const wzStepBadgeEls = [1,2,3,4,5].map((idx) => document.getElementById(`wzStepBadge${idx}`));
+    const wzStepHintEls = [1,2,3,4,5].map((idx) => document.getElementById(`wzStepHint${idx}`));
+
     const rectDialogState = {
       rectificationDocument: null,
       dialogHistory: [],
@@ -998,15 +1181,208 @@
       isBusy: false,
     };
 
+    const rectificationWizardState = {
+      birthDateLocal: null,
+      birthTimeKnown: false,
+      birthPlace: null,
+      latitude: null,
+      longitude: null,
+      timezoneMode: "auto",
+      timezoneName: null,
+      timezoneOffset: null,
+      ascIntervals: null,
+      stage1: {
+        started: false,
+        completed: false,
+        primaryCandidate: null,
+        secondaryCandidates: [],
+        timeRangesLocal: [],
+        elementScores: null,
+        signScores: null,
+      },
+      stage2: {
+        started: false,
+        completed: false,
+        events: [],
+        eventCards: [],
+      },
+      pro: {
+        started: false,
+        completed: false,
+        result: null,
+      },
+    };
+
     function setTab(tabName) {
+      tabWizardBtnEl.classList.toggle("active", tabName === "wizard");
       tabChartBtnEl.classList.toggle("active", tabName === "chart");
       tabRectBtnEl.classList.toggle("active", tabName === "rect");
       tabRectDialogBtnEl.classList.toggle("active", tabName === "rect-dialog");
       tabRectEventsBtnEl.classList.toggle("active", tabName === "rect-events");
+      wizardPanelEl.classList.toggle("active", tabName === "wizard");
       chartPanelEl.classList.toggle("active", tabName === "chart");
       rectPanelEl.classList.toggle("active", tabName === "rect");
       rectDialogPanelEl.classList.toggle("active", tabName === "rect-dialog");
       rectEventsPanelEl.classList.toggle("active", tabName === "rect-events");
+    }
+
+    function setWzStatus(text) {
+      wzStatusEl.textContent = text || "";
+    }
+
+    function setWzProStatus(text) {
+      wzProStatusEl.textContent = text || "";
+    }
+
+    function applyWizardBirthDataFromUi() {
+      rectificationWizardState.birthDateLocal = wzBirthDateEl.value || null;
+      rectificationWizardState.birthPlace = wzCityQueryEl.value.trim() || null;
+      rectificationWizardState.latitude = Number(wzLatitudeEl.value);
+      rectificationWizardState.longitude = Number(wzLongitudeEl.value);
+      rectificationWizardState.timezoneMode = wzTimezoneModeEl.value;
+      rectificationWizardState.timezoneName = wzTimezoneNameEl.value || null;
+      rectificationWizardState.timezoneOffset = wzTimezoneOffsetEl.value || null;
+    }
+
+    function resetWizardDerivedState() {
+      rectificationWizardState.ascIntervals = null;
+      rectificationWizardState.stage1 = {
+        started: false,
+        completed: false,
+        primaryCandidate: null,
+        secondaryCandidates: [],
+        timeRangesLocal: [],
+        elementScores: null,
+        signScores: null,
+      };
+      rectificationWizardState.stage2 = {
+        started: false,
+        completed: false,
+        events: [],
+        eventCards: [],
+      };
+      rectificationWizardState.pro = {
+        started: false,
+        completed: false,
+        result: null,
+      };
+      wzIntervalsListEl.innerHTML = "<div class='interval-item'>Сначала рассчитайте интервалы на шаге 1.</div>";
+      wzStage1SummaryEl.textContent = "Stage 1 ещё не завершён.";
+      rpBestCandidatesEl.innerHTML = "";
+      rpConfidenceEl.textContent = "Pro-ректификация ещё не запускалась.";
+      rpMethodsSummaryEl.textContent = "";
+      rpWarningsEl.textContent = "";
+      rpRawBoxEl.textContent = "";
+      setWzProStatus("");
+    }
+
+    function resetWizardScenario() {
+      resetWizardDerivedState();
+      updateWizardContextFromCurrentStates();
+      renderWizardProgress();
+      setWzStatus("Мастер-сценарий сброшен.");
+    }
+
+    function getWizardCurrentStep() {
+      if (!Array.isArray(rectificationWizardState.ascIntervals) || !rectificationWizardState.ascIntervals.length) return 1;
+      if (!rectificationWizardState.stage1.completed) return 3;
+      if (!rectificationWizardState.stage2.completed) return 4;
+      if (!rectificationWizardState.pro.completed) return 5;
+      return 5;
+    }
+
+    function renderWizardProgress() {
+      const activeStep = getWizardCurrentStep();
+      const doneMap = [
+        !!(Array.isArray(rectificationWizardState.ascIntervals) && rectificationWizardState.ascIntervals.length),
+        !!(Array.isArray(rectificationWizardState.ascIntervals) && rectificationWizardState.ascIntervals.length),
+        !!rectificationWizardState.stage1.completed,
+        !!rectificationWizardState.stage2.completed,
+        !!rectificationWizardState.pro.completed,
+      ];
+      wzStepBadgeEls.forEach((el, idx) => {
+        if (!el) return;
+        const step = idx + 1;
+        el.classList.toggle("active", step === activeStep);
+        el.classList.toggle("done", doneMap[idx] && step < activeStep + 1);
+      });
+
+      wzStepHintEls[0].textContent = doneMap[0] ? "готово" : "заполните дату и место";
+      wzStepHintEls[1].textContent = doneMap[1] ? `${(rectificationWizardState.ascIntervals || []).length} интервалов` : "ожидает расчёт";
+      wzStepHintEls[2].textContent = doneMap[2] ? "завершён" : "нужен финал Stage 1";
+      wzStepHintEls[3].textContent = doneMap[3] ? `${rectificationWizardState.stage2.events.length} событий` : "нужен финал Stage 2";
+      wzStepHintEls[4].textContent = doneMap[4] ? "готово" : "ожидает запуск";
+      wzProgressTextEl.textContent = `Шаг ${activeStep} из 5`;
+    }
+
+    function renderWizardStage1Summary() {
+      if (!rectificationWizardState.stage1.completed || !rectificationWizardState.stage1.primaryCandidate) {
+        wzStage1SummaryEl.textContent = "Stage 1 ещё не завершён.";
+        return;
+      }
+      const p = rectificationWizardState.stage1.primaryCandidate || {};
+      const ranges = Array.isArray(p.time_ranges_local) && p.time_ranges_local.length
+        ? p.time_ranges_local
+        : rectificationWizardState.stage1.timeRangesLocal;
+      const rangesHtml = ranges.length
+        ? ranges.map((r, i) => `<div>${i + 1}) ${formatIntervalLine(r.start, r.end)}</div>`).join("")
+        : "<div>Интервалы не определены.</div>";
+      const secondary = rectificationWizardState.stage1.secondaryCandidates
+        .map((x) => `${x.sign_name_ru || x.sign_name_en} — ${x.probability ?? "n/a"}`)
+        .join("; ");
+      wzStage1SummaryEl.innerHTML =
+        `<div><strong>Основной кандидат:</strong> ${p.sign_name_ru || ""} (${p.sign_name_en || ""})</div>` +
+        `<div style="margin-top:6px;"><strong>Вероятность:</strong> ${p.probability ?? "n/a"}</div>` +
+        `<div style="margin-top:6px;"><strong>Интервалы:</strong>${rangesHtml}</div>` +
+        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>`;
+    }
+
+    function renderWizardStage2Context() {
+      const p = rectificationWizardState.stage1.primaryCandidate || {};
+      const ranges = Array.isArray(p.time_ranges_local) && p.time_ranges_local.length
+        ? p.time_ranges_local
+        : rectificationWizardState.stage1.timeRangesLocal;
+      const rangeText = ranges.length
+        ? ranges.map((r, i) => `${i + 1}) ${formatIntervalLine(r.start, r.end)}`).join("<br/>")
+        : "не определены";
+      const eventsCount = rectificationWizardState.stage2.events.length;
+      wzStage2ContextEl.innerHTML =
+        `<div><strong>Контекст ректификации:</strong></div>` +
+        `<div>Дата рождения: ${rectificationWizardState.birthDateLocal || "—"}</div>` +
+        `<div>Место рождения: ${rectificationWizardState.birthPlace || "—"}</div>` +
+        `<div>Основной Asc-кандидат: ${p.sign_name_ru || p.sign_name_en || "—"}</div>` +
+        `<div>Интервалы:<br/>${rangeText}</div>` +
+        `<div>Собрано событий: ${eventsCount} / желательно 5–7</div>`;
+    }
+
+    function updateWizardContextFromCurrentStates() {
+      const lastFinal = [...rectDialogState.dialogHistory]
+        .reverse()
+        .find((x) => x.role === "assistant" && x.type === "final_result");
+      if (lastFinal) {
+        rectificationWizardState.stage1.started = true;
+        rectificationWizardState.stage1.completed = true;
+        rectificationWizardState.stage1.primaryCandidate = lastFinal.primary_candidate || null;
+        rectificationWizardState.stage1.secondaryCandidates = Array.isArray(lastFinal.secondary_candidates)
+          ? lastFinal.secondary_candidates
+          : [];
+        const ranges = Array.isArray(lastFinal.primary_candidate?.time_ranges_local) && lastFinal.primary_candidate.time_ranges_local.length
+          ? lastFinal.primary_candidate.time_ranges_local
+          : (lastFinal.primary_candidate?.time_range_local ? [lastFinal.primary_candidate.time_range_local] : []);
+        rectificationWizardState.stage1.timeRangesLocal = ranges;
+        rectificationWizardState.stage1.elementScores = lastFinal.element_scores || null;
+        rectificationWizardState.stage1.signScores = lastFinal.sign_scores || null;
+      }
+
+      if (rectEventsState.finalized && Array.isArray(rectEventsState.finalized.events)) {
+        rectificationWizardState.stage2.started = true;
+        rectificationWizardState.stage2.completed = true;
+        rectificationWizardState.stage2.events = rectEventsState.finalized.events;
+        rectificationWizardState.stage2.eventCards = rectEventsState.finalized.events;
+      }
+      renderWizardStage1Summary();
+      renderWizardStage2Context();
+      renderWizardProgress();
     }
 
     function fillOffsets() {
@@ -1842,6 +2218,45 @@
       }
     }
 
+    async function searchCityWizard() {
+      const query = wzCityQueryEl.value.trim();
+      if (!query) return;
+      setWzStatus("Ищем город...");
+      try {
+        const results = await geocodeSearch(query);
+        if (!results.length) {
+          setWzStatus("Город не найден.");
+          return;
+        }
+        fillCitySelect(wzCityResultsEl, results);
+        setWzStatus("Город найден. Координаты обновлены.");
+      } catch (err) {
+        setWzStatus("Ошибка: " + err.message);
+      }
+    }
+
+    function syncWizardToModuleFields() {
+      document.getElementById("rectApiBaseUrl").value = wzApiBaseUrlEl.value.trim();
+      document.getElementById("rdApiBaseUrl").value = wzApiBaseUrlEl.value.trim();
+      document.getElementById("reApiBaseUrl").value = wzApiBaseUrlEl.value.trim();
+      document.getElementById("rectBirthDate").value = wzBirthDateEl.value;
+      document.getElementById("rdBirthDate").value = wzBirthDateEl.value;
+      document.getElementById("rectLatitude").value = wzLatitudeEl.value;
+      document.getElementById("rdLatitude").value = wzLatitudeEl.value;
+      document.getElementById("rectLongitude").value = wzLongitudeEl.value;
+      document.getElementById("rdLongitude").value = wzLongitudeEl.value;
+      document.getElementById("rectHouseSystem").value = wzHouseSystemEl.value;
+      document.getElementById("rdHouseSystem").value = wzHouseSystemEl.value;
+      rectZodiacModeEl.value = wzZodiacModeEl.value;
+      rdZodiacModeEl.value = wzZodiacModeEl.value;
+      rectSiderealModeEl.value = wzZodiacModeEl.value === "sidereal" ? (wzSiderealModeEl.value || "") : "";
+      rdSiderealModeEl.value = wzZodiacModeEl.value === "sidereal" ? (wzSiderealModeEl.value || "") : "";
+      timezoneModeEl.value = wzTimezoneModeEl.value;
+      timezoneOffsetEl.value = wzTimezoneOffsetEl.value;
+      timezoneNameEl.value = wzTimezoneNameEl.value;
+      updateTimezoneUiState();
+    }
+
     async function generate() {
       setStatus("Выполняем расчёт...");
       const zodiacMode = zodiacModeEl.value;
@@ -1933,6 +2348,21 @@
       setRectStatus(`Готово. Найдено интервалов: ${(data.asc_sign_intervals || []).length}`);
     }
 
+    async function runWizardStep1() {
+      applyWizardBirthDataFromUi();
+      syncWizardToModuleFields();
+      await runRectification();
+      try {
+        const parsed = rectJsonBoxEl.textContent ? JSON.parse(rectJsonBoxEl.textContent) : null;
+        rectificationWizardState.ascIntervals = parsed?.asc_sign_intervals || [];
+      } catch {
+        rectificationWizardState.ascIntervals = [];
+      }
+      wzIntervalsListEl.innerHTML = rectIntervalsListEl.innerHTML || "<div class='interval-item'>Интервалы не найдены.</div>";
+      renderWizardProgress();
+      setWzStatus(`Asc-интервалы рассчитаны: ${(rectificationWizardState.ascIntervals || []).length}`);
+    }
+
     async function startRectificationDialog() {
       if (rectDialogState.isBusy) {
         return;
@@ -1973,6 +2403,7 @@
         addUsageToTotals(data.usage);
         appendAssistantMessage(data.llm_json, data.usage);
         renderRectDialogAll();
+        updateWizardContextFromCurrentStates();
 
         setRdStatus(
           (data.llm_json?.type === "final_result" ? "Получен финальный результат." : "Ректификация запущена.") +
@@ -2047,6 +2478,7 @@
         addUsageToTotals(data.usage);
         appendAssistantMessage(data.llm_json, data.usage);
         renderRectDialogAll();
+        updateWizardContextFromCurrentStates();
 
         setRdStatus(
           (data.llm_json?.type === "final_result" ? "Получен финальный результат." : "Новый вопрос получен.") +
@@ -2089,6 +2521,7 @@
         }
 
         applyRectEventsResponse(jsonPayload);
+        updateWizardContextFromCurrentStates();
         const eventsCount = jsonPayload.events_collected_count ?? 0;
         if (jsonPayload.status === "finalized") {
           setReStatus(`Сбор завершён. Событий: ${jsonPayload.events_count ?? 0}`);
@@ -2137,6 +2570,7 @@
         }
 
         applyRectEventsResponse(jsonPayload);
+        updateWizardContextFromCurrentStates();
         if (jsonPayload.status === "ask_question") {
           resetRectEventsInputs();
           const warnings = Array.isArray(jsonPayload.warnings) ? jsonPayload.warnings : [];
@@ -2185,6 +2619,7 @@
         }
 
         applyRectEventsResponse(jsonPayload);
+        updateWizardContextFromCurrentStates();
         setReStatus(`Сбор завершён. Событий: ${jsonPayload.events_count ?? 0}`);
       } catch (err) {
         setReStatus("Ошибка: " + (err?.message || "network error"));
@@ -2287,16 +2722,25 @@
     async function runProRectification() {
       if (rectEventsState.isBusy || rectDialogState.isBusy) {
         setRpStatus("Дождитесь завершения текущего шага.");
+        setWzProStatus("Дождитесь завершения текущего шага.");
+        return;
+      }
+      if (!rectificationWizardState.stage1.completed || !rectificationWizardState.stage2.completed) {
+        const msg = "Сначала завершите диалог по Asc и сбор событий жизни.";
+        setRpStatus(msg);
+        setWzProStatus(msg);
         return;
       }
       const ascWindows = buildProAscWindowsFromStage1();
       if (!ascWindows.length) {
         setRpStatus("Сначала запустите Stage 1 (Asc-окна).");
+        setWzProStatus("Сначала завершите Stage 1 и получите интервалы кандидатов.");
         return;
       }
       const events = buildProEventsFromStage2();
       if (!events.length) {
         setRpStatus("Сначала соберите события Stage 2 и завершите их.");
+        setWzProStatus("Сначала завершите сбор событий Stage 2.");
         return;
       }
 
@@ -2321,6 +2765,7 @@
       };
 
       setRpStatus("Запускаем Pro-ректификацию...");
+      setWzProStatus("Запускаем Pro-ректификацию...");
       showLlmOverlay("Запуск Pro-ректификации...");
       try {
         const res = await fetch("/api/rectification/pro/run", {
@@ -2340,13 +2785,20 @@
         }
         renderProResult(jsonPayload);
         setRpStatus(`Готово. confidence=${jsonPayload.confidence?.level || "n/a"}`);
+        rectificationWizardState.pro.started = true;
+        rectificationWizardState.pro.completed = true;
+        rectificationWizardState.pro.result = jsonPayload;
+        setWzProStatus(`Готово. confidence=${jsonPayload.confidence?.level || "n/a"}`);
+        renderWizardProgress();
       } catch (err) {
         setRpStatus("Ошибка: " + (err?.message || "network error"));
+        setWzProStatus("Ошибка: " + (err?.message || "network error"));
       } finally {
         hideLlmOverlay();
       }
     }
 
+    tabWizardBtnEl.addEventListener("click", () => setTab("wizard"));
     tabChartBtnEl.addEventListener("click", () => setTab("chart"));
     tabRectBtnEl.addEventListener("click", () => setTab("rect"));
     tabRectDialogBtnEl.addEventListener("click", () => setTab("rect-dialog"));
@@ -2363,6 +2815,7 @@
     });
 
     document.getElementById("searchCityBtn").addEventListener("click", searchCity);
+    document.getElementById("wzSearchCityBtn").addEventListener("click", searchCityWizard);
     document.getElementById("rectSearchCityBtn").addEventListener("click", searchCityRect);
     document.getElementById("rdSearchCityBtn").addEventListener("click", searchCityRectDialog);
 
@@ -2373,6 +2826,15 @@
       document.getElementById("longitude").value = option.dataset.longitude || "";
       timezoneNameEl.value = option.dataset.timezoneName || "";
       updateTimezoneUiState();
+    });
+    wzCityResultsEl.addEventListener("change", () => {
+      const option = wzCityResultsEl.options[wzCityResultsEl.selectedIndex];
+      if (!option) return;
+      wzLatitudeEl.value = option.dataset.latitude || "";
+      wzLongitudeEl.value = option.dataset.longitude || "";
+      wzTimezoneNameEl.value = option.dataset.timezoneName || "";
+      applyWizardBirthDataFromUi();
+      setWzStatus("Координаты и timezone_name обновлены.");
     });
     rectCityResultsEl.addEventListener("change", () => {
       const option = rectCityResultsEl.options[rectCityResultsEl.selectedIndex];
@@ -2389,6 +2851,33 @@
 
     document.getElementById("generateBtn").addEventListener("click", generate);
     document.getElementById("rectRunBtn").addEventListener("click", runRectification);
+    document.getElementById("wzCalcAscBtn").addEventListener("click", runWizardStep1);
+    document.getElementById("wzResetBtn").addEventListener("click", resetWizardScenario);
+    document.getElementById("wzToStage1Btn").addEventListener("click", () => {
+      if (!Array.isArray(rectificationWizardState.ascIntervals) || !rectificationWizardState.ascIntervals.length) {
+        setWzStatus("Сначала завершите шаг 1 и рассчитайте Asc-интервалы.");
+        return;
+      }
+      syncWizardToModuleFields();
+      setTab("rect-dialog");
+      setWzStatus("Перешли к шагу 3. Запустите Stage 1.");
+    });
+    document.getElementById("wzOpenStage1Btn").addEventListener("click", () => {
+      if (!Array.isArray(rectificationWizardState.ascIntervals) || !rectificationWizardState.ascIntervals.length) {
+        setWzStatus("Сначала завершите шаг 2: нужны Asc-интервалы.");
+        return;
+      }
+      syncWizardToModuleFields();
+      setTab("rect-dialog");
+    });
+    document.getElementById("wzOpenStage2Btn").addEventListener("click", () => {
+      if (!rectificationWizardState.stage1.completed) {
+        setWzStatus("Сначала завершите диалог по Asc.");
+        return;
+      }
+      setTab("rect-events");
+    });
+    document.getElementById("wzRunProBtn").addEventListener("click", runProRectification);
     document.getElementById("rdStartBtn").addEventListener("click", startRectificationDialog);
     document.getElementById("rdResetBtn").addEventListener("click", () => {
       resetRectDialogState();
@@ -2409,6 +2898,7 @@
     document.getElementById("reStartBtn").addEventListener("click", startRectEventsFlow);
     document.getElementById("reResetBtn").addEventListener("click", () => {
       resetRectEventsState();
+      updateWizardContextFromCurrentStates();
       setReStatus("Stage 2 сброшен.");
     });
     document.getElementById("reAnswerBtn").addEventListener("click", () => continueRectEventsFlow(false));
@@ -2459,18 +2949,62 @@
     window.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
 
     fillOffsets();
+    for (let i = 0; i < timezoneOffsetEl.options.length; i++) {
+      wzTimezoneOffsetEl.appendChild(timezoneOffsetEl.options[i].cloneNode(true));
+    }
+    wzTimezoneOffsetEl.value = "+05:00";
     datetimeLocalEl.value = nowLocalInputValue();
     timezoneModeEl.value = "auto";
     updateTimezoneUiState();
     expertDegreesExpanded = !!expertDegreesExpandedToggleEl.checked;
     document.getElementById("rectBirthDate").value = todayLocalDateValue();
     document.getElementById("rdBirthDate").value = todayLocalDateValue();
+    wzBirthDateEl.value = todayLocalDateValue();
     siderealModeEl.disabled = true;
     rectSiderealModeEl.disabled = true;
     rdSiderealModeEl.disabled = true;
     rectJsonBoxEl.textContent = "";
     resetRectDialogState();
     resetRectEventsState();
+    resetWizardDerivedState();
+    updateWizardContextFromCurrentStates();
+    renderWizardProgress();
+
+    const wizardBirthInputs = [
+      wzBirthDateEl, wzCityQueryEl, wzLatitudeEl, wzLongitudeEl, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl,
+      wzHouseSystemEl, wzZodiacModeEl, wzSiderealModeEl,
+    ];
+    wizardBirthInputs.forEach((el) => {
+      el.addEventListener("change", () => {
+        const previous = JSON.stringify({
+          date: rectificationWizardState.birthDateLocal,
+          place: rectificationWizardState.birthPlace,
+          lat: rectificationWizardState.latitude,
+          lon: rectificationWizardState.longitude,
+          tzMode: rectificationWizardState.timezoneMode,
+          tzName: rectificationWizardState.timezoneName,
+          tzOffset: rectificationWizardState.timezoneOffset,
+        });
+        applyWizardBirthDataFromUi();
+        const current = JSON.stringify({
+          date: rectificationWizardState.birthDateLocal,
+          place: rectificationWizardState.birthPlace,
+          lat: rectificationWizardState.latitude,
+          lon: rectificationWizardState.longitude,
+          tzMode: rectificationWizardState.timezoneMode,
+          tzName: rectificationWizardState.timezoneName,
+          tzOffset: rectificationWizardState.timezoneOffset,
+        });
+        if (previous !== current && (rectificationWizardState.stage1.completed || rectificationWizardState.stage2.completed || rectificationWizardState.pro.completed)) {
+          setWzStatus("Данные рождения изменились. Предыдущие Asc-окна и результаты ректификации будут сброшены.");
+          resetWizardDerivedState();
+          resetRectDialogState();
+          resetRectEventsState();
+          updateWizardContextFromCurrentStates();
+          renderWizardProgress();
+        }
+      });
+    });
 
     loadPrompt().catch(() => setStatus("Не удалось загрузить PROMPT.md"));
     loadRectificationPrompt().catch(() => setRdStatus("Не удалось загрузить PROMPT_RECTIFICATION_STAGE1.md"));
