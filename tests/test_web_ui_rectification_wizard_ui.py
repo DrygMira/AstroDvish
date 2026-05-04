@@ -38,4 +38,4 @@ def test_rectification_wizard_state_reset_and_pro_windows_builder_exist() -> Non
     assert "const rectificationWizardState = {" in html
     assert "buildProAscWindowsFromStage1" in html
     assert "time_ranges_local" in html
-    assert "Данные рождения изменились. Предыдущие Asc-окна и результаты ректификации будут сброшены." in html
+    assert "Вы изменили данные рождения. Предыдущие интервалы, диалог и Pro-ректификация будут сброшены." in html

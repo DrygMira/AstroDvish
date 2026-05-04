@@ -325,10 +325,20 @@
       background: #f8fbff;
       padding: 10px;
       font-size: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .wizard-step-title {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       align-items: center;
+      font-weight: 700;
+    }
+    .wizard-step-desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
     }
     .wizard-step.active {
       border-color: #93c5fd;
@@ -341,11 +351,44 @@
     .wizard-step small {
       color: var(--muted);
     }
+    .context-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f7fbff, #eef6ff);
+      padding: 14px;
+    }
+    .context-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 16px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .context-grid strong {
+      display: inline-block;
+      min-width: 110px;
+    }
+    .tech-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      background: #f8fbff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .secondary-tabs {
+      margin-top: 12px;
+    }
     @media (max-width: 860px) {
       .grid { grid-template-columns: 1fr; }
       .tabs { flex-direction: column; }
       .tab-btn { width: 100%; }
       .btn { width: 100%; }
+      .context-grid { grid-template-columns: 1fr; }
       .modal {
         padding: 8px;
         background: rgba(236, 245, 255, 0.96);
@@ -375,30 +418,37 @@
 
     <div class="card tabs">
       <button id="tabWizardBtn" class="tab-btn" type="button">Ректификация рождения</button>
-      <button id="tabChartBtn" class="tab-btn active" type="button">Обычный расчёт</button>
-      <button id="tabRectBtn" class="tab-btn" type="button">Ректификация: интервалы восходящих знаков</button>
-      <button id="tabRectDialogBtn" class="tab-btn" type="button">Ректификация: диалог по восходящему знаку</button>
-      <button id="tabRectEventsBtn" class="tab-btn" type="button">Уточнить время по событиям жизни</button>
+      <button id="tabChartBtn" class="tab-btn active" type="button">Обычный расчёт карты</button>
     </div>
 
     <section id="wizardPanel" class="tab-panel">
       <div class="card">
+        <div class="context-card">
+          <div class="actions" style="justify-content:space-between;">
+            <strong>Текущие данные</strong>
+            <button id="wzEditDataBtn" class="btn secondary" type="button">Изменить данные</button>
+          </div>
+          <div id="wzCurrentDataSummary" class="context-grid"></div>
+        </div>
+      </div>
+
+      <div class="card">
         <strong>Ректификация рождения — мастер-сценарий</strong>
-        <div class="hint">Основной путь для тестирования. Старые вкладки ниже остаются как технический режим модулей.</div>
+        <div class="hint">Главный путь для пользователя и астролога. Введите данные один раз, затем пройдите шаги по порядку.</div>
         <div id="wzProgressText" class="hint" style="margin-top:8px;"></div>
         <div id="wzProgress" class="wizard-progress">
-          <div id="wzStepBadge1" class="wizard-step"><span>Шаг 1 из 5 — Дата и место</span><small id="wzStepHint1"></small></div>
-          <div id="wzStepBadge2" class="wizard-step"><span>Шаг 2 из 5 — Asc-интервалы</span><small id="wzStepHint2"></small></div>
-          <div id="wzStepBadge3" class="wizard-step"><span>Шаг 3 из 5 — Диалог по Asc</span><small id="wzStepHint3"></small></div>
-          <div id="wzStepBadge4" class="wizard-step"><span>Шаг 4 из 5 — События жизни</span><small id="wzStepHint4"></small></div>
-          <div id="wzStepBadge5" class="wizard-step"><span>Шаг 5 из 5 — Pro-ректификация</span><small id="wzStepHint5"></small></div>
+          <div id="wzStepBadge1" class="wizard-step"><div class="wizard-step-title"><span>Шаг 1 из 5 — Дата и место</span><small id="wzStepHint1"></small></div><div class="wizard-step-desc">Введите дату рождения и город. Система автоматически подставит координаты, timezone и общие настройки.</div></div>
+          <div id="wzStepBadge2" class="wizard-step"><div class="wizard-step-title"><span>Шаг 2 из 5 — Asc-интервалы</span><small id="wzStepHint2"></small></div><div class="wizard-step-desc">Мы рассчитаем все возможные восходящие знаки и сохраним их как базу для дальнейшей ректификации.</div></div>
+          <div id="wzStepBadge3" class="wizard-step"><div class="wizard-step-title"><span>Шаг 3 из 5 — Диалог по Asc</span><small id="wzStepHint3"></small></div><div class="wizard-step-desc">Ответьте на вопросы о внешности, подаче и стиле. Это помогает выбрать 1–3 наиболее вероятных Asc-кандидата.</div></div>
+          <div id="wzStepBadge4" class="wizard-step"><div class="wizard-step-title"><span>Шаг 4 из 5 — События жизни</span><small id="wzStepHint4"></small></div><div class="wizard-step-desc">Добавьте 3–7 важных событий. Они нужны, чтобы сузить время рождения и проверить гипотезы по событиям.</div></div>
+          <div id="wzStepBadge5" class="wizard-step"><div class="wizard-step-title"><span>Шаг 5 из 5 — Pro-ректификация</span><small id="wzStepHint5"></small></div><div class="wizard-step-desc">Запустите итоговую проверку по окнам времени и событиям. После этого появятся лучшие диапазоны и уровень уверенности.</div></div>
         </div>
       </div>
 
       <div class="card">
         <strong>Шаг 1. Дата и место рождения</strong>
         <div class="grid" style="margin-top:10px;">
-          <div>
+          <div class="hidden">
             <label>Адрес API</label>
             <input id="wzApiBaseUrl" value="http://127.0.0.1:8013" />
           </div>
@@ -512,7 +562,7 @@
     <section id="chartPanel" class="tab-panel active">
       <div class="card">
         <div class="grid">
-          <div>
+          <div class="hidden">
             <label>Адрес API</label>
             <input id="apiBaseUrl" value="http://127.0.0.1:8013" />
             <div class="hint">Например, http://127.0.0.1:8013</div>
@@ -643,6 +693,23 @@
         <div id="status" class="hint"></div>
       </div>
     </section>
+
+    <div class="card">
+      <button id="techModeToggleBtn" class="tech-toggle" type="button">
+        <span>▼ Технический режим / отдельные модули</span>
+        <small id="techModeHint">По умолчанию скрыт</small>
+      </button>
+      <div id="techModeContent" class="hidden">
+        <div class="hint" style="margin-top:10px;">Здесь сохранены отдельные модули, Raw JSON и полная техническая проверка. Основной путь остаётся во вкладке «Ректификация рождения».</div>
+        <div class="tabs secondary-tabs">
+          <button id="tabRectBtn" class="tab-btn" type="button">Asc-интервалы</button>
+          <button id="tabRectDialogBtn" class="tab-btn" type="button">Диалог по Asc</button>
+          <button id="tabRectEventsBtn" class="tab-btn" type="button">События жизни</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="techPanelsWrap" class="hidden">
 
     <section id="rectPanel" class="tab-panel">
       <div class="card">
@@ -968,6 +1035,7 @@
         <div id="rpRawBox" class="json-box" style="margin-top:10px;"></div>
       </div>
     </section>
+    </div>
   </div>
 
   <div id="resultModal" class="modal">
@@ -1046,6 +1114,10 @@
     const rectPanelEl = document.getElementById("rectPanel");
     const rectDialogPanelEl = document.getElementById("rectDialogPanel");
     const rectEventsPanelEl = document.getElementById("rectEventsPanel");
+    const techPanelsWrapEl = document.getElementById("techPanelsWrap");
+    const techModeToggleBtnEl = document.getElementById("techModeToggleBtn");
+    const techModeContentEl = document.getElementById("techModeContent");
+    const techModeHintEl = document.getElementById("techModeHint");
 
     const timezoneOffsetEl = document.getElementById("timezoneOffset");
     const timezoneModeEl = document.getElementById("timezoneMode");
@@ -1151,9 +1223,12 @@
     const wzStage1SummaryEl = document.getElementById("wzStage1Summary");
     const wzStage2ContextEl = document.getElementById("wzStage2Context");
     const wzProgressTextEl = document.getElementById("wzProgressText");
+    const wzCurrentDataSummaryEl = document.getElementById("wzCurrentDataSummary");
 
     const wzStepBadgeEls = [1,2,3,4,5].map((idx) => document.getElementById(`wzStepBadge${idx}`));
     const wzStepHintEls = [1,2,3,4,5].map((idx) => document.getElementById(`wzStepHint${idx}`));
+
+    let technicalModeOpen = false;
 
     const rectDialogState = {
       rectificationDocument: null,
@@ -1213,6 +1288,24 @@
       },
     };
 
+    const sharedBirthContext = {
+      apiBaseUrl: "http://127.0.0.1:8013",
+      birthDateLocal: null,
+      birthDateTimeLocal: null,
+      cityQuery: null,
+      selectedPlaceLabel: null,
+      latitude: null,
+      longitude: null,
+      timezoneMode: "auto",
+      timezoneName: null,
+      timezoneOffset: "+05:00",
+      timezoneSource: null,
+      houseSystem: "P",
+      zodiacMode: "tropical",
+      siderealMode: null,
+      aspectOrbProfile: "avestan",
+    };
+
     function setTab(tabName) {
       tabWizardBtnEl.classList.toggle("active", tabName === "wizard");
       tabChartBtnEl.classList.toggle("active", tabName === "chart");
@@ -1224,6 +1317,155 @@
       rectPanelEl.classList.toggle("active", tabName === "rect");
       rectDialogPanelEl.classList.toggle("active", tabName === "rect-dialog");
       rectEventsPanelEl.classList.toggle("active", tabName === "rect-events");
+      techPanelsWrapEl.classList.toggle("hidden", !technicalModeOpen);
+    }
+
+    function setTechnicalMode(open) {
+      technicalModeOpen = !!open;
+      techModeContentEl.classList.toggle("hidden", !technicalModeOpen);
+      techPanelsWrapEl.classList.toggle("hidden", !technicalModeOpen);
+      techModeToggleBtnEl.querySelector("span").textContent = technicalModeOpen
+        ? "▲ Технический режим / отдельные модули"
+        : "▼ Технический режим / отдельные модули";
+      techModeHintEl.textContent = technicalModeOpen
+        ? "Открыт: отдельные модули, Raw JSON и debug"
+        : "По умолчанию скрыт";
+      if (!technicalModeOpen) {
+        rectPanelEl.classList.remove("active");
+        rectDialogPanelEl.classList.remove("active");
+        rectEventsPanelEl.classList.remove("active");
+      }
+    }
+
+    function renderSharedCurrentData() {
+      const houseLabel = sharedBirthContext.houseSystem === "P"
+        ? "Плацидус"
+        : (sharedBirthContext.houseSystem === "K" ? "Кох" : sharedBirthContext.houseSystem || "—");
+      const zodiacLabel = sharedBirthContext.zodiacMode === "tropical" ? "тропический" : (sharedBirthContext.zodiacMode || "—");
+      const orbLabel = sharedBirthContext.aspectOrbProfile === "avestan" ? "Авестийские" : (sharedBirthContext.aspectOrbProfile || "—");
+      const timezoneLabel = sharedBirthContext.timezoneMode === "manual"
+        ? `manual ${sharedBirthContext.timezoneOffset || "—"}`
+        : `auto ${sharedBirthContext.timezoneName || ""}`.trim();
+      const rows = [
+        ["Дата", sharedBirthContext.birthDateLocal || "—"],
+        ["Дата/время", sharedBirthContext.birthDateTimeLocal || "—"],
+        ["Место", sharedBirthContext.selectedPlaceLabel || sharedBirthContext.cityQuery || "—"],
+        ["Координаты", (sharedBirthContext.latitude != null && sharedBirthContext.longitude != null)
+          ? `${sharedBirthContext.latitude}, ${sharedBirthContext.longitude}`
+          : "—"],
+        ["Timezone", timezoneLabel || "—"],
+        ["Система домов", houseLabel],
+        ["Зодиак", zodiacLabel],
+        ["Орбисы", orbLabel],
+      ];
+      wzCurrentDataSummaryEl.innerHTML = rows.map(([label, value]) => `<div><strong>${label}:</strong> ${value}</div>`).join("");
+    }
+
+    function applySharedContextToForms() {
+      const apiBase = sharedBirthContext.apiBaseUrl || "http://127.0.0.1:8013";
+      document.getElementById("apiBaseUrl").value = apiBase;
+      document.getElementById("rectApiBaseUrl").value = apiBase;
+      document.getElementById("rdApiBaseUrl").value = apiBase;
+      document.getElementById("reApiBaseUrl").value = apiBase;
+      wzApiBaseUrlEl.value = apiBase;
+
+      if (sharedBirthContext.cityQuery != null) {
+        document.getElementById("cityQuery").value = sharedBirthContext.cityQuery;
+        document.getElementById("rectCityQuery").value = sharedBirthContext.cityQuery;
+        document.getElementById("rdCityQuery").value = sharedBirthContext.cityQuery;
+        wzCityQueryEl.value = sharedBirthContext.cityQuery;
+      }
+
+      const lat = sharedBirthContext.latitude ?? "";
+      const lon = sharedBirthContext.longitude ?? "";
+      document.getElementById("latitude").value = lat;
+      document.getElementById("longitude").value = lon;
+      document.getElementById("rectLatitude").value = lat;
+      document.getElementById("rectLongitude").value = lon;
+      document.getElementById("rdLatitude").value = lat;
+      document.getElementById("rdLongitude").value = lon;
+      wzLatitudeEl.value = lat;
+      wzLongitudeEl.value = lon;
+
+      if (sharedBirthContext.birthDateLocal) {
+        document.getElementById("rectBirthDate").value = sharedBirthContext.birthDateLocal;
+        document.getElementById("rdBirthDate").value = sharedBirthContext.birthDateLocal;
+        wzBirthDateEl.value = sharedBirthContext.birthDateLocal;
+      }
+      if (sharedBirthContext.birthDateTimeLocal) {
+        datetimeLocalEl.value = sharedBirthContext.birthDateTimeLocal;
+      }
+
+      timezoneModeEl.value = sharedBirthContext.timezoneMode || "auto";
+      wzTimezoneModeEl.value = sharedBirthContext.timezoneMode || "auto";
+      timezoneNameEl.value = sharedBirthContext.timezoneName || "";
+      wzTimezoneNameEl.value = sharedBirthContext.timezoneName || "";
+      timezoneOffsetEl.value = sharedBirthContext.timezoneOffset || "+05:00";
+      wzTimezoneOffsetEl.value = sharedBirthContext.timezoneOffset || "+05:00";
+
+      document.getElementById("houseSystem").value = sharedBirthContext.houseSystem || "P";
+      document.getElementById("rectHouseSystem").value = sharedBirthContext.houseSystem || "P";
+      document.getElementById("rdHouseSystem").value = sharedBirthContext.houseSystem || "P";
+      wzHouseSystemEl.value = sharedBirthContext.houseSystem || "P";
+
+      aspectOrbProfileEl.value = sharedBirthContext.aspectOrbProfile || "avestan";
+      zodiacModeEl.value = sharedBirthContext.zodiacMode || "tropical";
+      rectZodiacModeEl.value = sharedBirthContext.zodiacMode || "tropical";
+      rdZodiacModeEl.value = sharedBirthContext.zodiacMode || "tropical";
+      wzZodiacModeEl.value = sharedBirthContext.zodiacMode || "tropical";
+
+      siderealModeEl.value = sharedBirthContext.siderealMode || "";
+      rectSiderealModeEl.value = sharedBirthContext.siderealMode || "";
+      rdSiderealModeEl.value = sharedBirthContext.siderealMode || "";
+      wzSiderealModeEl.value = sharedBirthContext.siderealMode || "";
+
+      updateTimezoneUiState();
+      renderSharedCurrentData();
+    }
+
+    function syncSharedBirthContext(patch, options = {}) {
+      const previousCritical = JSON.stringify({
+        birthDateLocal: sharedBirthContext.birthDateLocal,
+        cityQuery: sharedBirthContext.cityQuery,
+        latitude: sharedBirthContext.latitude,
+        longitude: sharedBirthContext.longitude,
+        timezoneMode: sharedBirthContext.timezoneMode,
+        timezoneName: sharedBirthContext.timezoneName,
+        timezoneOffset: sharedBirthContext.timezoneOffset,
+        houseSystem: sharedBirthContext.houseSystem,
+        zodiacMode: sharedBirthContext.zodiacMode,
+      });
+      Object.assign(sharedBirthContext, patch);
+      applySharedContextToForms();
+
+      const currentCritical = JSON.stringify({
+        birthDateLocal: sharedBirthContext.birthDateLocal,
+        cityQuery: sharedBirthContext.cityQuery,
+        latitude: sharedBirthContext.latitude,
+        longitude: sharedBirthContext.longitude,
+        timezoneMode: sharedBirthContext.timezoneMode,
+        timezoneName: sharedBirthContext.timezoneName,
+        timezoneOffset: sharedBirthContext.timezoneOffset,
+        houseSystem: sharedBirthContext.houseSystem,
+        zodiacMode: sharedBirthContext.zodiacMode,
+      });
+      const hasDerivedResults =
+        !!(Array.isArray(rectificationWizardState.ascIntervals) && rectificationWizardState.ascIntervals.length) ||
+        rectificationWizardState.stage1.completed ||
+        rectificationWizardState.stage2.completed ||
+        rectificationWizardState.pro.completed;
+      if (!options.silent && previousCritical !== currentCritical && hasDerivedResults) {
+        const warningText = "Вы изменили данные рождения. Предыдущие интервалы, диалог и Pro-ректификация будут сброшены.";
+        resetWizardDerivedState();
+        resetRectDialogState();
+        resetRectEventsState();
+        rectJsonBoxEl.textContent = "";
+        rectIntervalsListEl.innerHTML = "";
+        setWzStatus(warningText);
+        setRectStatus(warningText);
+        setRdStatus(warningText);
+        setReStatus(warningText);
+      }
     }
 
     function setWzStatus(text) {
@@ -1242,6 +1484,66 @@
       rectificationWizardState.timezoneMode = wzTimezoneModeEl.value;
       rectificationWizardState.timezoneName = wzTimezoneNameEl.value || null;
       rectificationWizardState.timezoneOffset = wzTimezoneOffsetEl.value || null;
+    }
+
+    function getChartContextPatch() {
+      return {
+        apiBaseUrl: document.getElementById("apiBaseUrl").value.trim() || "http://127.0.0.1:8013",
+        birthDateLocal: datetimeLocalEl.value ? datetimeLocalEl.value.slice(0, 10) : sharedBirthContext.birthDateLocal,
+        birthDateTimeLocal: datetimeLocalEl.value || null,
+        cityQuery: document.getElementById("cityQuery").value.trim() || null,
+        latitude: Number(document.getElementById("latitude").value),
+        longitude: Number(document.getElementById("longitude").value),
+        timezoneMode: timezoneModeEl.value,
+        timezoneName: timezoneNameEl.value || null,
+        timezoneOffset: timezoneOffsetEl.value || "+05:00",
+        houseSystem: document.getElementById("houseSystem").value,
+        zodiacMode: zodiacModeEl.value,
+        siderealMode: zodiacModeEl.value === "sidereal" ? (siderealModeEl.value || null) : null,
+        aspectOrbProfile: aspectOrbProfileEl.value,
+      };
+    }
+
+    function getWizardContextPatch() {
+      return {
+        apiBaseUrl: wzApiBaseUrlEl.value.trim() || "http://127.0.0.1:8013",
+        birthDateLocal: wzBirthDateEl.value || null,
+        cityQuery: wzCityQueryEl.value.trim() || null,
+        latitude: Number(wzLatitudeEl.value),
+        longitude: Number(wzLongitudeEl.value),
+        timezoneMode: wzTimezoneModeEl.value,
+        timezoneName: wzTimezoneNameEl.value || null,
+        timezoneOffset: wzTimezoneOffsetEl.value || "+05:00",
+        houseSystem: wzHouseSystemEl.value,
+        zodiacMode: wzZodiacModeEl.value,
+        siderealMode: wzZodiacModeEl.value === "sidereal" ? (wzSiderealModeEl.value || null) : null,
+      };
+    }
+
+    function getRectContextPatch() {
+      return {
+        apiBaseUrl: document.getElementById("rectApiBaseUrl").value.trim() || "http://127.0.0.1:8013",
+        birthDateLocal: document.getElementById("rectBirthDate").value || null,
+        cityQuery: document.getElementById("rectCityQuery").value.trim() || null,
+        latitude: Number(document.getElementById("rectLatitude").value),
+        longitude: Number(document.getElementById("rectLongitude").value),
+        houseSystem: document.getElementById("rectHouseSystem").value,
+        zodiacMode: rectZodiacModeEl.value,
+        siderealMode: rectZodiacModeEl.value === "sidereal" ? (rectSiderealModeEl.value || null) : null,
+      };
+    }
+
+    function getRectDialogContextPatch() {
+      return {
+        apiBaseUrl: document.getElementById("rdApiBaseUrl").value.trim() || "http://127.0.0.1:8013",
+        birthDateLocal: document.getElementById("rdBirthDate").value || null,
+        cityQuery: document.getElementById("rdCityQuery").value.trim() || null,
+        latitude: Number(document.getElementById("rdLatitude").value),
+        longitude: Number(document.getElementById("rdLongitude").value),
+        houseSystem: document.getElementById("rdHouseSystem").value,
+        zodiacMode: rdZodiacModeEl.value,
+        siderealMode: rdZodiacModeEl.value === "sidereal" ? (rdSiderealModeEl.value || null) : null,
+      };
     }
 
     function resetWizardDerivedState() {
@@ -1743,7 +2045,14 @@
       if (!Array.isArray(warnings) || !warnings.length) {
         return "";
       }
-      return ` [fallback: ${warnings.join(", ")}]`;
+      const mapping = {
+        llm_request_failed: "Не удалось получить ответ модели. Задан резервный вопрос.",
+        invalid_llm_json: "Модель вернула некорректный ответ. Использован резервный сценарий.",
+        missing_options: "Модель не вернула варианты ответа. Использован резервный вопрос.",
+        fallback_question_used: "Задан уточняющий вопрос из резервного сценария.",
+      };
+      const text = warnings.map((item) => mapping[item] || item).join(" ");
+      return text ? ` ${text}` : "";
     }
 
     function formatElapsedDuration(seconds) {
@@ -2159,6 +2468,7 @@
         const label = [item.name, item.admin1, item.country].filter(Boolean).join(", ");
         const tzName = item.timezone_name || item.timezone || "";
         opt.textContent = `${label} [${item.latitude}, ${item.longitude}] ${tzName}`;
+        opt.dataset.label = label;
         opt.dataset.latitude = item.latitude;
         opt.dataset.longitude = item.longitude;
         opt.dataset.timezoneName = tzName;
@@ -2235,29 +2545,24 @@
       }
     }
 
+    function applyPlaceSelectionToSharedContext(option, cityQueryValue) {
+      if (!option) return;
+      syncSharedBirthContext({
+        cityQuery: cityQueryValue || sharedBirthContext.cityQuery,
+        selectedPlaceLabel: option.dataset.label || option.textContent || null,
+        latitude: Number(option.dataset.latitude),
+        longitude: Number(option.dataset.longitude),
+        timezoneName: option.dataset.timezoneName || null,
+        timezoneSource: option.dataset.timezoneName ? "geocode_result" : null,
+      }, { silent: false });
+    }
+
     function syncWizardToModuleFields() {
-      document.getElementById("rectApiBaseUrl").value = wzApiBaseUrlEl.value.trim();
-      document.getElementById("rdApiBaseUrl").value = wzApiBaseUrlEl.value.trim();
-      document.getElementById("reApiBaseUrl").value = wzApiBaseUrlEl.value.trim();
-      document.getElementById("rectBirthDate").value = wzBirthDateEl.value;
-      document.getElementById("rdBirthDate").value = wzBirthDateEl.value;
-      document.getElementById("rectLatitude").value = wzLatitudeEl.value;
-      document.getElementById("rdLatitude").value = wzLatitudeEl.value;
-      document.getElementById("rectLongitude").value = wzLongitudeEl.value;
-      document.getElementById("rdLongitude").value = wzLongitudeEl.value;
-      document.getElementById("rectHouseSystem").value = wzHouseSystemEl.value;
-      document.getElementById("rdHouseSystem").value = wzHouseSystemEl.value;
-      rectZodiacModeEl.value = wzZodiacModeEl.value;
-      rdZodiacModeEl.value = wzZodiacModeEl.value;
-      rectSiderealModeEl.value = wzZodiacModeEl.value === "sidereal" ? (wzSiderealModeEl.value || "") : "";
-      rdSiderealModeEl.value = wzZodiacModeEl.value === "sidereal" ? (wzSiderealModeEl.value || "") : "";
-      timezoneModeEl.value = wzTimezoneModeEl.value;
-      timezoneOffsetEl.value = wzTimezoneOffsetEl.value;
-      timezoneNameEl.value = wzTimezoneNameEl.value;
-      updateTimezoneUiState();
+      syncSharedBirthContext(getWizardContextPatch(), { silent: true });
     }
 
     async function generate() {
+      syncSharedBirthContext(getChartContextPatch(), { silent: false });
       setStatus("Выполняем расчёт...");
       const zodiacMode = zodiacModeEl.value;
       const sidMode = siderealModeEl.value || null;
@@ -2285,6 +2590,10 @@
         setStatus("Ошибка: " + extractErrorText(data));
         return;
       }
+      sharedBirthContext.timezoneSource = data.timezone?.timezone_source || sharedBirthContext.timezoneSource;
+      sharedBirthContext.timezoneOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneOffset;
+      sharedBirthContext.timezoneName = data.timezone?.timezone_name || sharedBirthContext.timezoneName;
+      renderSharedCurrentData();
       horoscopeBoxEl.textContent = data.horoscope_text;
       renderExpertTables(data.chart_response, data.timezone, data.warnings);
       expertWrapEl.classList.add("hidden");
@@ -2298,7 +2607,7 @@
         ? `Часовой пояс указан вручную: ${tz.timezone_offset || body.timezone_offset}`
         : `Часовой пояс определён автоматически: ${tz.timezone_name || timezoneNameEl.value || "n/a"}, ${tz.timezone_offset || ""}`;
       const warnText = Array.isArray(data.warnings) && data.warnings.length
-        ? ` [warnings: ${data.warnings.join(", ")}]`
+        ? formatWarnings(data.warnings)
         : "";
       setStatus(`Готово. UTC: ${data.datetime_utc}. ${tzInfo}${warnText}`);
     }
@@ -2319,6 +2628,7 @@
     }
 
     async function runRectification() {
+      syncSharedBirthContext(getRectContextPatch(), { silent: false });
       setRectStatus("Считаем интервалы...");
       const zodiacMode = rectZodiacModeEl.value;
       const sidMode = rectSiderealModeEl.value || null;
@@ -2349,8 +2659,8 @@
     }
 
     async function runWizardStep1() {
+      syncSharedBirthContext(getWizardContextPatch(), { silent: false });
       applyWizardBirthDataFromUi();
-      syncWizardToModuleFields();
       await runRectification();
       try {
         const parsed = rectJsonBoxEl.textContent ? JSON.parse(rectJsonBoxEl.textContent) : null;
@@ -2364,6 +2674,7 @@
     }
 
     async function startRectificationDialog() {
+      syncSharedBirthContext(getRectDialogContextPatch(), { silent: false });
       if (rectDialogState.isBusy) {
         return;
       }
@@ -2745,13 +3056,15 @@
       }
 
       const payload = {
-        birth_date_local: document.getElementById("rdBirthDate").value,
-        latitude: Number(document.getElementById("rdLatitude").value),
-        longitude: Number(document.getElementById("rdLongitude").value),
-        timezone_name: timezoneNameEl.value || "Europe/Moscow",
-        house_system: document.getElementById("rdHouseSystem").value,
-        zodiac_mode: rdZodiacModeEl.value,
-        sidereal_mode: rdZodiacModeEl.value === "sidereal" ? (rdSiderealModeEl.value || null) : null,
+        birth_date_local: sharedBirthContext.birthDateLocal || document.getElementById("rdBirthDate").value,
+        latitude: Number(sharedBirthContext.latitude ?? document.getElementById("rdLatitude").value),
+        longitude: Number(sharedBirthContext.longitude ?? document.getElementById("rdLongitude").value),
+        timezone_name: sharedBirthContext.timezoneName || timezoneNameEl.value || "Europe/Moscow",
+        house_system: sharedBirthContext.houseSystem || document.getElementById("rdHouseSystem").value,
+        zodiac_mode: sharedBirthContext.zodiacMode || rdZodiacModeEl.value,
+        sidereal_mode: (sharedBirthContext.zodiacMode || rdZodiacModeEl.value) === "sidereal"
+          ? (sharedBirthContext.siderealMode || rdSiderealModeEl.value || null)
+          : null,
         asc_windows: ascWindows,
         events,
         settings: {
@@ -2800,9 +3113,23 @@
 
     tabWizardBtnEl.addEventListener("click", () => setTab("wizard"));
     tabChartBtnEl.addEventListener("click", () => setTab("chart"));
-    tabRectBtnEl.addEventListener("click", () => setTab("rect"));
-    tabRectDialogBtnEl.addEventListener("click", () => setTab("rect-dialog"));
-    tabRectEventsBtnEl.addEventListener("click", () => setTab("rect-events"));
+    tabRectBtnEl.addEventListener("click", () => {
+      setTechnicalMode(true);
+      setTab("rect");
+    });
+    tabRectDialogBtnEl.addEventListener("click", () => {
+      setTechnicalMode(true);
+      setTab("rect-dialog");
+    });
+    tabRectEventsBtnEl.addEventListener("click", () => {
+      setTechnicalMode(true);
+      setTab("rect-events");
+    });
+    techModeToggleBtnEl.addEventListener("click", () => setTechnicalMode(!technicalModeOpen));
+    document.getElementById("wzEditDataBtn").addEventListener("click", () => {
+      wzBirthDateEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      wzBirthDateEl.focus();
+    });
 
     coordModeEl.addEventListener("change", () => {
       cityBlockEl.classList.toggle("hidden", coordModeEl.value !== "city");
@@ -2822,31 +3149,24 @@
     cityResultsEl.addEventListener("change", () => {
       const option = cityResultsEl.options[cityResultsEl.selectedIndex];
       if (!option) return;
-      document.getElementById("latitude").value = option.dataset.latitude || "";
-      document.getElementById("longitude").value = option.dataset.longitude || "";
-      timezoneNameEl.value = option.dataset.timezoneName || "";
-      updateTimezoneUiState();
+      applyPlaceSelectionToSharedContext(option, document.getElementById("cityQuery").value.trim() || null);
     });
     wzCityResultsEl.addEventListener("change", () => {
       const option = wzCityResultsEl.options[wzCityResultsEl.selectedIndex];
       if (!option) return;
-      wzLatitudeEl.value = option.dataset.latitude || "";
-      wzLongitudeEl.value = option.dataset.longitude || "";
-      wzTimezoneNameEl.value = option.dataset.timezoneName || "";
+      applyPlaceSelectionToSharedContext(option, wzCityQueryEl.value.trim() || null);
       applyWizardBirthDataFromUi();
       setWzStatus("Координаты и timezone_name обновлены.");
     });
     rectCityResultsEl.addEventListener("change", () => {
       const option = rectCityResultsEl.options[rectCityResultsEl.selectedIndex];
       if (!option) return;
-      document.getElementById("rectLatitude").value = option.dataset.latitude || "";
-      document.getElementById("rectLongitude").value = option.dataset.longitude || "";
+      applyPlaceSelectionToSharedContext(option, document.getElementById("rectCityQuery").value.trim() || null);
     });
     rdCityResultsEl.addEventListener("change", () => {
       const option = rdCityResultsEl.options[rdCityResultsEl.selectedIndex];
       if (!option) return;
-      document.getElementById("rdLatitude").value = option.dataset.latitude || "";
-      document.getElementById("rdLongitude").value = option.dataset.longitude || "";
+      applyPlaceSelectionToSharedContext(option, document.getElementById("rdCityQuery").value.trim() || null);
     });
 
     document.getElementById("generateBtn").addEventListener("click", generate);
@@ -2859,6 +3179,7 @@
         return;
       }
       syncWizardToModuleFields();
+      setTechnicalMode(true);
       setTab("rect-dialog");
       setWzStatus("Перешли к шагу 3. Запустите Stage 1.");
     });
@@ -2868,6 +3189,7 @@
         return;
       }
       syncWizardToModuleFields();
+      setTechnicalMode(true);
       setTab("rect-dialog");
     });
     document.getElementById("wzOpenStage2Btn").addEventListener("click", () => {
@@ -2875,6 +3197,7 @@
         setWzStatus("Сначала завершите диалог по Asc.");
         return;
       }
+      setTechnicalMode(true);
       setTab("rect-events");
     });
     document.getElementById("wzRunProBtn").addEventListener("click", runProRectification);
@@ -2926,9 +3249,18 @@
       }
     });
     toggleApiRawBtnEl.addEventListener("click", toggleRawApi);
-    timezoneOffsetEl.addEventListener("change", updateTimezoneUiState);
-    datetimeLocalEl.addEventListener("input", calculateUtcPreview);
-    timezoneModeEl.addEventListener("change", updateTimezoneUiState);
+    timezoneOffsetEl.addEventListener("change", () => {
+      syncSharedBirthContext(getChartContextPatch(), { silent: false });
+      updateTimezoneUiState();
+    });
+    datetimeLocalEl.addEventListener("input", () => {
+      syncSharedBirthContext(getChartContextPatch(), { silent: false });
+      calculateUtcPreview();
+    });
+    timezoneModeEl.addEventListener("change", () => {
+      syncSharedBirthContext(getChartContextPatch(), { silent: false });
+      updateTimezoneUiState();
+    });
 
     zodiacModeEl.addEventListener("change", () => {
       const sidereal = zodiacModeEl.value === "sidereal";
@@ -2944,6 +3276,11 @@
       const sidereal = rdZodiacModeEl.value === "sidereal";
       rdSiderealModeEl.disabled = !sidereal;
       if (!sidereal) rdSiderealModeEl.value = "";
+    });
+    wzZodiacModeEl.addEventListener("change", () => {
+      const sidereal = wzZodiacModeEl.value === "sidereal";
+      wzSiderealModeEl.disabled = !sidereal;
+      if (!sidereal) wzSiderealModeEl.value = "";
     });
 
     window.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
@@ -2963,45 +3300,45 @@
     siderealModeEl.disabled = true;
     rectSiderealModeEl.disabled = true;
     rdSiderealModeEl.disabled = true;
+    wzSiderealModeEl.disabled = true;
     rectJsonBoxEl.textContent = "";
     resetRectDialogState();
     resetRectEventsState();
     resetWizardDerivedState();
+    setTechnicalMode(false);
+    sharedBirthContext.birthDateLocal = todayLocalDateValue();
+    sharedBirthContext.birthDateTimeLocal = datetimeLocalEl.value;
+    sharedBirthContext.cityQuery = document.getElementById("cityQuery").value.trim() || null;
+    sharedBirthContext.latitude = Number(document.getElementById("latitude").value);
+    sharedBirthContext.longitude = Number(document.getElementById("longitude").value);
+    applySharedContextToForms();
     updateWizardContextFromCurrentStates();
     renderWizardProgress();
 
-    const wizardBirthInputs = [
-      wzBirthDateEl, wzCityQueryEl, wzLatitudeEl, wzLongitudeEl, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl,
-      wzHouseSystemEl, wzZodiacModeEl, wzSiderealModeEl,
-    ];
-    wizardBirthInputs.forEach((el) => {
+    [
+      "apiBaseUrl", "rectApiBaseUrl", "rdApiBaseUrl", "reApiBaseUrl", "wzApiBaseUrl",
+      "cityQuery", "rectCityQuery", "rdCityQuery", "wzCityQuery",
+      "latitude", "longitude", "rectLatitude", "rectLongitude", "rdLatitude", "rdLongitude", "wzLatitude", "wzLongitude",
+      "rectBirthDate", "rdBirthDate", "wzBirthDate",
+      "houseSystem", "rectHouseSystem", "rdHouseSystem", "wzHouseSystem",
+      "timezoneOffset", "wzTimezoneOffset", "timezoneMode", "wzTimezoneMode",
+      "zodiacMode", "rectZodiacMode", "rdZodiacMode", "wzZodiacMode",
+      "siderealMode", "rectSiderealMode", "rdSiderealMode", "wzSiderealMode",
+      "aspectOrbProfile",
+    ].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
       el.addEventListener("change", () => {
-        const previous = JSON.stringify({
-          date: rectificationWizardState.birthDateLocal,
-          place: rectificationWizardState.birthPlace,
-          lat: rectificationWizardState.latitude,
-          lon: rectificationWizardState.longitude,
-          tzMode: rectificationWizardState.timezoneMode,
-          tzName: rectificationWizardState.timezoneName,
-          tzOffset: rectificationWizardState.timezoneOffset,
-        });
-        applyWizardBirthDataFromUi();
-        const current = JSON.stringify({
-          date: rectificationWizardState.birthDateLocal,
-          place: rectificationWizardState.birthPlace,
-          lat: rectificationWizardState.latitude,
-          lon: rectificationWizardState.longitude,
-          tzMode: rectificationWizardState.timezoneMode,
-          tzName: rectificationWizardState.timezoneName,
-          tzOffset: rectificationWizardState.timezoneOffset,
-        });
-        if (previous !== current && (rectificationWizardState.stage1.completed || rectificationWizardState.stage2.completed || rectificationWizardState.pro.completed)) {
-          setWzStatus("Данные рождения изменились. Предыдущие Asc-окна и результаты ректификации будут сброшены.");
-          resetWizardDerivedState();
-          resetRectDialogState();
-          resetRectEventsState();
-          updateWizardContextFromCurrentStates();
-          renderWizardProgress();
+        if (["apiBaseUrl", "cityQuery", "latitude", "longitude", "houseSystem", "timezoneOffset", "timezoneMode", "zodiacMode", "siderealMode", "aspectOrbProfile"].includes(id)) {
+          syncSharedBirthContext(getChartContextPatch(), { silent: false });
+        } else if (id.startsWith("wz")) {
+          syncSharedBirthContext(getWizardContextPatch(), { silent: false });
+        } else if (id.startsWith("rect")) {
+          syncSharedBirthContext(getRectContextPatch(), { silent: false });
+        } else if (id.startsWith("rd")) {
+          syncSharedBirthContext(getRectDialogContextPatch(), { silent: false });
+        } else if (id === "reApiBaseUrl") {
+          syncSharedBirthContext({ apiBaseUrl: document.getElementById("reApiBaseUrl").value.trim() || sharedBirthContext.apiBaseUrl }, { silent: true });
         }
       });
     });
