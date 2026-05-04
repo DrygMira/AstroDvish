@@ -1404,6 +1404,12 @@ def _post_rectification_events(
         raise HTTPException(status_code=502, detail=f"API request failed: {exc}") from exc
 
     if response.status_code != 200:
+        if 400 <= response.status_code < 500:
+            try:
+                detail: Any = response.json().get("detail")
+            except ValueError:
+                detail = response.text[:2000]
+            raise HTTPException(status_code=response.status_code, detail=detail)
         raise HTTPException(
             status_code=502,
             detail={

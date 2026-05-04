@@ -412,8 +412,8 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>Тестовая веб-морда астросервиса</h1>
-      <div class="muted">UI работает на порту 8014 и отправляет расчёты в API на 8013 (или любой другой адрес).</div>
+      <h1>AstroDvish — ректификация времени рождения</h1>
+      <div class="muted">Введите данные рождения, пройдите этапы уточнения и проверьте расчётные окна времени.</div>
     </div>
 
     <div class="card tabs">
@@ -491,6 +491,7 @@
           <div>
             <label>Timezone offset</label>
             <select id="wzTimezoneOffset"></select>
+            <div id="wzTimezoneOffsetHint" class="hint">Рассчитывается автоматически по timezone name.</div>
           </div>
           <div>
             <label>House system</label>
@@ -625,7 +626,7 @@
           <div>
             <label>Часовой пояс (offset)</label>
             <select id="timezoneOffset"></select>
-            <div class="hint">Это смещение локального времени относительно UTC.</div>
+            <div id="timezoneOffsetHint" class="hint">Рассчитывается автоматически по timezone name.</div>
           </div>
         </div>
 
@@ -1123,6 +1124,7 @@
     const timezoneModeEl = document.getElementById("timezoneMode");
     const timezoneNameEl = document.getElementById("timezoneName");
     const timezoneStatusEl = document.getElementById("timezoneStatus");
+    const timezoneOffsetHintEl = document.getElementById("timezoneOffsetHint");
     const datetimeLocalEl = document.getElementById("datetimeLocal");
     const datetimeUtcPreviewEl = document.getElementById("datetimeUtcPreview");
     const coordModeEl = document.getElementById("coordMode");
@@ -1214,6 +1216,7 @@
     const wzTimezoneModeEl = document.getElementById("wzTimezoneMode");
     const wzTimezoneNameEl = document.getElementById("wzTimezoneName");
     const wzTimezoneOffsetEl = document.getElementById("wzTimezoneOffset");
+    const wzTimezoneOffsetHintEl = document.getElementById("wzTimezoneOffsetHint");
     const wzHouseSystemEl = document.getElementById("wzHouseSystem");
     const wzZodiacModeEl = document.getElementById("wzZodiacMode");
     const wzSiderealModeEl = document.getElementById("wzSiderealMode");
@@ -1299,6 +1302,7 @@
       timezoneMode: "auto",
       timezoneName: null,
       timezoneOffset: "+05:00",
+      timezoneResolvedOffset: null,
       timezoneSource: null,
       houseSystem: "P",
       zodiacMode: "tropical",
@@ -1345,7 +1349,7 @@
       const orbLabel = sharedBirthContext.aspectOrbProfile === "avestan" ? "Авестийские" : (sharedBirthContext.aspectOrbProfile || "—");
       const timezoneLabel = sharedBirthContext.timezoneMode === "manual"
         ? `manual ${sharedBirthContext.timezoneOffset || "—"}`
-        : `auto ${sharedBirthContext.timezoneName || ""}`.trim();
+        : `auto ${sharedBirthContext.timezoneName || ""} ${sharedBirthContext.timezoneResolvedOffset || "auto"}`.trim();
       const rows = [
         ["Дата", sharedBirthContext.birthDateLocal || "—"],
         ["Дата/время", sharedBirthContext.birthDateTimeLocal || "—"],
@@ -1400,8 +1404,12 @@
       wzTimezoneModeEl.value = sharedBirthContext.timezoneMode || "auto";
       timezoneNameEl.value = sharedBirthContext.timezoneName || "";
       wzTimezoneNameEl.value = sharedBirthContext.timezoneName || "";
-      timezoneOffsetEl.value = sharedBirthContext.timezoneOffset || "+05:00";
-      wzTimezoneOffsetEl.value = sharedBirthContext.timezoneOffset || "+05:00";
+      timezoneOffsetEl.value = sharedBirthContext.timezoneMode === "manual"
+        ? (sharedBirthContext.timezoneOffset || "+05:00")
+        : (sharedBirthContext.timezoneResolvedOffset || "auto");
+      wzTimezoneOffsetEl.value = sharedBirthContext.timezoneMode === "manual"
+        ? (sharedBirthContext.timezoneOffset || "+05:00")
+        : (sharedBirthContext.timezoneResolvedOffset || "auto");
 
       document.getElementById("houseSystem").value = sharedBirthContext.houseSystem || "P";
       document.getElementById("rectHouseSystem").value = sharedBirthContext.houseSystem || "P";
@@ -1421,6 +1429,48 @@
 
       updateTimezoneUiState();
       renderSharedCurrentData();
+    }
+
+    function parseIsoDateParts(value, fallbackHour = 12) {
+      if (typeof value !== "string" || !value) return null;
+      const match = value.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2}))?)?$/);
+      if (!match) return null;
+      return {
+        year: Number(match[1]),
+        month: Number(match[2]),
+        day: Number(match[3]),
+        hour: match[4] != null ? Number(match[4]) : fallbackHour,
+        minute: match[5] != null ? Number(match[5]) : 0,
+        second: match[6] != null ? Number(match[6]) : 0,
+      };
+    }
+
+    function resolveTimezoneOffsetForDisplay(timezoneName, birthDateTimeLocal, birthDateLocal) {
+      if (!timezoneName) return null;
+      const parts = parseIsoDateParts(birthDateTimeLocal || birthDateLocal, 12);
+      if (!parts) return null;
+      try {
+        const probeDate = new Date(Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second));
+        const formatter = new Intl.DateTimeFormat("en-US", {
+          timeZone: timezoneName,
+          timeZoneName: "longOffset",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const zonePart = formatter.formatToParts(probeDate).find((item) => item.type === "timeZoneName")?.value || "";
+        if (!zonePart.startsWith("GMT")) return null;
+        const normalized = zonePart.replace("GMT", "");
+        if (!normalized) return "+00:00";
+        const sign = normalized.startsWith("-") ? "-" : "+";
+        const clean = normalized.replace(/^[+-]/, "");
+        const [hours, minutes = "00"] = clean.split(":");
+        return `${sign}${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+      } catch {
+        return null;
+      }
     }
 
     function syncSharedBirthContext(patch, options = {}) {
@@ -1731,18 +1781,50 @@
       datetimeUtcPreviewEl.value = utc.toISOString().replace(".000", "");
     }
 
+    function ensureSelectDisplayValue(selectEl, value) {
+      const normalized = value || "auto";
+      let option = Array.from(selectEl.options).find((item) => item.value === normalized);
+      if (!option) {
+        option = document.createElement("option");
+        option.value = normalized;
+        option.textContent = normalized;
+        option.dataset.ephemeral = "true";
+        selectEl.appendChild(option);
+      }
+      Array.from(selectEl.options)
+        .filter((item) => item.dataset.ephemeral === "true" && item.value !== normalized)
+        .forEach((item) => item.remove());
+      selectEl.value = normalized;
+    }
+
     function updateTimezoneUiState() {
       const isAuto = timezoneModeEl.value === "auto";
       timezoneOffsetEl.disabled = isAuto;
+      wzTimezoneOffsetEl.disabled = isAuto;
+      const resolvedOffset = resolveTimezoneOffsetForDisplay(
+        timezoneNameEl.value || wzTimezoneNameEl.value || sharedBirthContext.timezoneName,
+        datetimeLocalEl.value || sharedBirthContext.birthDateTimeLocal,
+        wzBirthDateEl.value || sharedBirthContext.birthDateLocal,
+      );
+      sharedBirthContext.timezoneResolvedOffset = resolvedOffset;
       if (isAuto) {
+        ensureSelectDisplayValue(timezoneOffsetEl, resolvedOffset || "auto");
+        ensureSelectDisplayValue(wzTimezoneOffsetEl, resolvedOffset || "auto");
+        timezoneOffsetHintEl.textContent = "Рассчитывается автоматически по timezone name.";
+        wzTimezoneOffsetHintEl.textContent = "Рассчитывается автоматически по timezone name.";
         if (timezoneNameEl.value) {
-          timezoneStatusEl.textContent = `Часовой пояс определён автоматически: ${timezoneNameEl.value}`;
+          timezoneStatusEl.textContent = `Часовой пояс определён автоматически: ${timezoneNameEl.value}, ${resolvedOffset || "auto"}`;
         } else {
           timezoneStatusEl.textContent = "Часовой пояс будет определён автоматически по координатам.";
         }
       } else {
+        ensureSelectDisplayValue(timezoneOffsetEl, sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || "+05:00");
+        ensureSelectDisplayValue(wzTimezoneOffsetEl, sharedBirthContext.timezoneOffset || wzTimezoneOffsetEl.value || "+05:00");
+        timezoneOffsetHintEl.textContent = "Используется ручной offset.";
+        wzTimezoneOffsetHintEl.textContent = "Используется ручной offset.";
         timezoneStatusEl.textContent = `Часовой пояс указан вручную: ${timezoneOffsetEl.value}`;
       }
+      renderSharedCurrentData();
       calculateUtcPreview();
     }
 
@@ -2592,6 +2674,7 @@
       }
       sharedBirthContext.timezoneSource = data.timezone?.timezone_source || sharedBirthContext.timezoneSource;
       sharedBirthContext.timezoneOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneOffset;
+      sharedBirthContext.timezoneResolvedOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneResolvedOffset;
       sharedBirthContext.timezoneName = data.timezone?.timezone_name || sharedBirthContext.timezoneName;
       renderSharedCurrentData();
       horoscopeBoxEl.textContent = data.horoscope_text;

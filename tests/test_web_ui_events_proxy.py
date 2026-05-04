@@ -123,9 +123,9 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
     assert captured["timeout"] == 120
 
 
-def test_web_ui_events_finalize_proxy_non_200_to_502(monkeypatch) -> None:
+def test_web_ui_events_finalize_proxy_preserves_backend_422(monkeypatch) -> None:
     def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
-        return _DummyResponse(422, {"error": "bad request"}, text='{"error":"bad request"}')
+        return _DummyResponse(422, {"detail": "bad request"}, text='{"detail":"bad request"}')
 
     monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
 
@@ -135,10 +135,8 @@ def test_web_ui_events_finalize_proxy_non_200_to_502(monkeypatch) -> None:
         json={"api_base_url": "http://127.0.0.1:8013", "dialog_history": []},
     )
 
-    assert response.status_code == 502
-    detail = response.json()["detail"]
-    assert detail["message"] == "Rectification events API returned non-200 status"
-    assert detail["path"] == "/api/v1/rectification/events/finalize"
+    assert response.status_code == 422
+    assert response.json()["detail"] == "bad request"
 
 
 def test_web_ui_rectification_pro_proxy_success(monkeypatch) -> None:
@@ -175,3 +173,42 @@ def test_web_ui_rectification_pro_proxy_success(monkeypatch) -> None:
     assert response.status_code == 200
     assert response.json()["mode"] == "rectification_pro"
     assert captured["path"] == "/api/v1/rectification/pro/run"
+
+
+def test_web_ui_rectification_pro_proxy_preserves_backend_422(monkeypatch) -> None:
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        return _DummyResponse(
+            422,
+            {
+                "detail": [
+                    {
+                        "type": "missing",
+                        "loc": ["body", "events", 0, "event_id"],
+                        "msg": "Field required",
+                    }
+                ]
+            },
+            text='{"detail":[{"type":"missing","loc":["body","events",0,"event_id"],"msg":"Field required"}]}',
+        )
+
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/pro/run",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {
+                "birth_date_local": "1990-05-12",
+                "latitude": 53.9006,
+                "longitude": 27.5590,
+                "timezone_name": "Europe/Moscow",
+                "asc_windows": [],
+                "events": [{}],
+            },
+        },
+    )
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail[0]["loc"] == ["body", "events", 0, "event_id"]
