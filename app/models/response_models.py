@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.models.request_models import SiderealMode, ZodiacMode
+from app.models.request_models import AspectOrbProfile, SiderealMode, ZodiacMode
 
 
 class ObjectResponse(BaseModel):
@@ -55,6 +55,10 @@ class MetaResponse(BaseModel):
     sidereal_mode: SiderealMode | None
     object_constants: dict[str, int] = Field(
         description="Swiss Ephemeris constant mapping for every computed object"
+    )
+    aspect_orb_profile: AspectOrbProfile = Field(
+        default=AspectOrbProfile.avestan,
+        description="Applied orb profile for aspect detection"
     )
     node_definitions: dict[str, dict[str, str]] = Field(
         default_factory=dict,

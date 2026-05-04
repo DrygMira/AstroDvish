@@ -96,3 +96,17 @@ def test_unsupported_house_system(client: TestClient) -> None:
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "validation_error"
 
+
+def test_invalid_aspect_orb_profile(client: TestClient) -> None:
+    response = client.post(
+        "/api/v1/chart",
+        json={
+            "datetime_utc": "1984-11-13T11:35:00Z",
+            "latitude": 53.9,
+            "longitude": 27.55,
+            "aspect_orb_profile": "invalid_profile",
+        },
+    )
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "validation_error"
+

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from app.core.constants import ASCMC_LABELS
-from app.models.request_models import ChartRequest
+from app.models.request_models import AspectOrbProfile, ChartRequest
 from app.models.response_models import (
     AspectResponse,
     ChartResponse,
@@ -108,6 +108,7 @@ def build_chart_response(
     houses: HousesResponse,
     angles: dict[str, float],
     object_constants: dict[str, int],
+    aspect_orb_profile: AspectOrbProfile,
 ) -> ChartResponse:
     objects_with_houses = assign_object_houses(objects=objects, houses=houses)
     return ChartResponse(
@@ -128,6 +129,7 @@ def build_chart_response(
             zodiac_mode=payload.zodiac_mode,
             sidereal_mode=payload.sidereal_mode,
             object_constants=object_constants,
+            aspect_orb_profile=aspect_orb_profile,
             node_definitions={
                 "true_node": {
                     "label_ru": "Северный узел истинный",

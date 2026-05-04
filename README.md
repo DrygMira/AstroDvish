@@ -120,6 +120,7 @@ docker compose up -d --build
 - `POST /api/v1/rectification/events/start`
 - `POST /api/v1/rectification/events/continue`
 - `POST /api/v1/rectification/events/finalize`
+- `POST /api/v1/rectification/pro/run`
 
 ### Web UI backend (`web_ui`)
 
@@ -135,6 +136,7 @@ docker compose up -d --build
 - `POST /api/rectification/events/start`
 - `POST /api/rectification/events/continue`
 - `POST /api/rectification/events/finalize`
+- `POST /api/rectification/pro/run`
 - `GET /static/{filename}`
 
 ## Примеры запросов
@@ -282,6 +284,19 @@ curl -X POST "http://127.0.0.1:8014/api/rectification/events/finalize" \
    - список `event cards`;
    - `warnings` (если есть).
 6. Кнопка `Показать технический JSON` раскрывает raw ответ Stage 2.
+
+## Rectification Engine Pro (MVP)
+
+- Новый API endpoint: `POST /api/v1/rectification/pro/run`.
+- Новый web UI proxy endpoint: `POST /api/rectification/pro/run`.
+- Pipeline MVP:
+  - candidate generation inside Asc windows;
+  - directions (symbolic 1° = 1 year) basic match scoring;
+  - solar validation (lightweight);
+  - lunar validation placeholder;
+  - transit validation (exact date only, non-exact -> warning);
+  - totem technical placeholder (no copyrighted 360-text base).
+- Итог возвращает **окна времени и confidence**, а не гарантированно точное время.
 
 ## Запуск тестов
 

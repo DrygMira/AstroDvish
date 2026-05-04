@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from app.api.routes import router as chart_router
 from app.api.rectification_routes import router as rectification_router
 from app.api.rectification_events_routes import router as rectification_events_router
+from app.api.rectification_pro_routes import router as rectification_pro_router
 from app.bootstrap_ephe import bootstrap_ephemeris
 from app.config import Settings, get_settings
 from app.core.errors import AppError
@@ -22,6 +23,7 @@ from app.services.asc_sign_intervals_service import AscSignIntervalsService
 from app.core.logging import configure_logging
 from app.services.ephemeris_service import EphemerisService
 from app.services.rectification_events_service import RectificationEventsService
+from app.services.rectification_pro.rectification_pro_service import RectificationProService
 
 logger = logging.getLogger(__name__)
 APP_VERSION_PATH = Path(__file__).resolve().parent.parent / "VERSION"
@@ -59,6 +61,7 @@ def _build_lifespan(settings: Settings):
         app.state.ephemeris_service = EphemerisService(str(settings.sweph_ephe_path))
         app.state.asc_sign_intervals_service = AscSignIntervalsService(str(settings.sweph_ephe_path))
         app.state.rectification_events_service = RectificationEventsService()
+        app.state.rectification_pro_service = RectificationProService(app.state.ephemeris_service)
         logger.info("Application startup completed")
         yield
         logger.info("Application shutdown completed")
@@ -82,6 +85,7 @@ def create_app() -> FastAPI:
     app.include_router(chart_router)
     app.include_router(rectification_router)
     app.include_router(rectification_events_router)
+    app.include_router(rectification_pro_router)
 
     @app.middleware("http")
     async def request_id_middleware(request: Request, call_next):

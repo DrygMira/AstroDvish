@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Any
 
@@ -13,33 +13,41 @@ SAMPLE_RECTIFICATION_DOCUMENT: dict[str, Any] = {
     "mode": "asc_sign_intervals",
     "version": "1.0",
     "day_window": {
-        "start_local": "2000-04-16T00:00:00",
-        "end_local": "2000-04-16T23:59:59",
+        "start_local": "1978-03-19T00:00:00",
+        "end_local": "1978-03-19T23:59:59",
     },
     "asc_sign_intervals": [
         {
             "interval_index": 1,
-            "sign_name_ru": "Весы",
-            "sign_name_en": "Libra",
-            "start_local": "2000-04-16T01:48:00",
-            "end_local": "2000-04-16T03:37:00",
-            "duration_minutes": 109,
+            "sign_name_ru": "Скорпион",
+            "sign_name_en": "Scorpio",
+            "start_local": "1978-03-19T00:00:00",
+            "end_local": "1978-03-19T00:41:14",
+            "duration_minutes": 41,
         },
         {
             "interval_index": 2,
-            "sign_name_ru": "Дева",
-            "sign_name_en": "Virgo",
-            "start_local": "2000-04-16T00:20:00",
-            "end_local": "2000-04-16T01:47:00",
-            "duration_minutes": 87,
+            "sign_name_ru": "Стрелец",
+            "sign_name_en": "Sagittarius",
+            "start_local": "1978-03-19T00:41:14",
+            "end_local": "1978-03-19T02:16:20",
+            "duration_minutes": 95,
         },
         {
             "interval_index": 3,
+            "sign_name_ru": "Весы",
+            "sign_name_en": "Libra",
+            "start_local": "1978-03-19T20:20:00",
+            "end_local": "1978-03-19T22:05:00",
+            "duration_minutes": 105,
+        },
+        {
+            "interval_index": 4,
             "sign_name_ru": "Скорпион",
             "sign_name_en": "Scorpio",
-            "start_local": "2000-04-16T03:38:00",
-            "end_local": "2000-04-16T05:03:00",
-            "duration_minutes": 85,
+            "start_local": "1978-03-19T22:05:00",
+            "end_local": "1978-03-19T23:59:59",
+            "duration_minutes": 114,
         },
     ],
 }
@@ -48,9 +56,9 @@ SAMPLE_RECTIFICATION_DOCUMENT: dict[str, Any] = {
 def _start_payload() -> dict[str, Any]:
     return {
         "api_base_url": "http://127.0.0.1:8013",
-        "birth_date_local": "2000-04-16",
-        "latitude": 53.9,
-        "longitude": 27.56667,
+        "birth_date_local": "1978-03-19",
+        "latitude": 40.23417,
+        "longitude": 69.69481,
         "house_system": "P",
         "zodiac_mode": "tropical",
         "sidereal_mode": None,
@@ -80,6 +88,30 @@ def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
         yield test_client
 
 
+def test_stage1_question_bank_contains_body_and_behavior_blocks() -> None:
+    texts = " ".join(item["question_text"].lower() for item in web_main.QUESTION_BANK)
+    assert "телосложения" in texts
+    assert "первое впечатление" in texts
+    assert "стиль одежды" in texts
+    assert "стресс" in texts
+    assert "стиль жизни" in texts
+    assert "двигаетесь" in texts
+
+
+def test_element_scoring_water_and_fire() -> None:
+    dialog_history = [
+        {"role": "assistant", "type": "ask_question", "question_id": "q_body_type_01"},
+        {"role": "user", "selected_option_id": "D", "selected_option_text": "water", "free_text": None},
+        {"role": "assistant", "type": "ask_question", "question_id": "q_first_impression_02"},
+        {"role": "user", "selected_option_id": "A", "selected_option_text": "fire", "free_text": None},
+    ]
+    element_scores, sign_scores = web_main._calculate_element_and_sign_scores(dialog_history)
+    assert element_scores["water"] > 0
+    assert element_scores["fire"] > 0
+    assert sign_scores["Scorpio"] > 0
+    assert sign_scores["Aries"] > 0
+
+
 def test_valid_ask_question_from_llm(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         web_main,
@@ -90,9 +122,9 @@ def test_valid_ask_question_from_llm(client: TestClient, monkeypatch: pytest.Mon
                 "step_index": 1,
                 "should_continue": True,
                 "debug_probability_text": "test",
-                "question_id": "q_first_impression_01",
-                "question_text": "How are you perceived?",
-                "options": [{"id": "A", "text": "Soft"}],
+                "question_id": "q_body_type_01",
+                "question_text": "Какой тип телосложения вам ближе?",
+                "options": [{"id": "A", "text": "атлетичное"}],
                 "allow_free_text": True,
             },
             "llm_text": "{}",
@@ -123,7 +155,7 @@ def test_bad_json_from_llm_falls_back_to_safe_question(client: TestClient, monke
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["options"]
-    assert body["llm_json"]["debug_probability_text"] == "Задаю уточняющий вопрос из резервного сценария."
+    assert "Промежуточно по стихиям" in body["llm_json"]["debug_probability_text"]
     assert body["llm_json"]["question_text"] == web_main.QUESTION_BANK[0]["question_text"]
     assert body["llm_json"]["options"] == web_main.QUESTION_BANK[0]["options"]
     assert "llm_request_failed" in body["warnings"]
@@ -139,7 +171,7 @@ def test_ask_question_without_options_uses_fallback(client: TestClient, monkeypa
                 "step_index": 1,
                 "should_continue": True,
                 "debug_probability_text": "test",
-                "question_id": "q_first_impression_01",
+                "question_id": "q_body_type_01",
                 "question_text": "Bad question",
                 "options": [],
                 "allow_free_text": False,
@@ -156,7 +188,7 @@ def test_ask_question_without_options_uses_fallback(client: TestClient, monkeypa
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["options"]
-    assert body["llm_json"]["debug_probability_text"] == "Задаю уточняющий вопрос из резервного сценария."
+    assert "Промежуточно по стихиям" in body["llm_json"]["debug_probability_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -186,6 +218,7 @@ def test_final_result_without_primary_candidate_falls_back(client: TestClient, m
 
     assert body["llm_json"]["type"] == "final_result"
     assert body["llm_json"]["primary_candidate"]["sign_name_en"]
+    assert len(body["llm_json"]["primary_candidate"]["time_ranges_local"]) >= 1
     assert "Предварительный результат Stage 1 сформирован" in body["llm_json"]["summary_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
@@ -199,9 +232,9 @@ def test_probability_out_of_range_falls_back(client: TestClient, monkeypatch: py
                 "type": "final_result",
                 "should_continue": False,
                 "primary_candidate": {
-                    "sign_name_ru": "Весы",
-                    "sign_name_en": "Libra",
-                    "time_range_local": {"start": "2000-04-16T01:48:00", "end": "2000-04-16T03:37:00"},
+                    "sign_name_ru": "Скорпион",
+                    "sign_name_en": "Scorpio",
+                    "time_range_local": {"start": "1978-03-19T00:00:00", "end": "1978-03-19T00:41:14"},
                     "probability": 2.0,
                 },
                 "secondary_candidates": [],
@@ -237,9 +270,9 @@ def test_max_steps_leads_to_safe_finalization_without_llm_call(client: TestClien
                 "step_index": 11,
                 "should_continue": True,
                 "debug_probability_text": "test",
-                "question_id": "q_first_impression_01",
+                "question_id": "q_body_type_01",
                 "question_text": "Q",
-                "options": [{"id": "A", "text": "Soft"}],
+                "options": [{"id": "A", "text": "атлетичное"}],
                 "allow_free_text": False,
             },
             "llm_text": "{}",
@@ -271,9 +304,9 @@ def test_repeated_question_id_uses_fallback_question(client: TestClient, monkeyp
                 "step_index": 2,
                 "should_continue": True,
                 "debug_probability_text": "test",
-                "question_id": "q_first_impression_01",
+                "question_id": "q_body_type_01",
                 "question_text": "Repeated",
-                "options": [{"id": "A", "text": "Soft"}],
+                "options": [{"id": "A", "text": "атлетичное"}],
                 "allow_free_text": False,
             },
             "llm_text": "{}",
@@ -286,11 +319,11 @@ def test_repeated_question_id_uses_fallback_question(client: TestClient, monkeyp
         {
             "role": "assistant",
             "type": "ask_question",
-            "question_id": "q_first_impression_01",
-            "question_text": "How are you perceived?",
-            "options": [{"id": "A", "text": "Soft"}],
+            "question_id": "q_body_type_01",
+            "question_text": "Какой тип телосложения вам ближе?",
+            "options": [{"id": "A", "text": "атлетичное"}],
         },
-        {"role": "user", "selected_option_id": "A", "selected_option_text": "Soft", "free_text": None},
+        {"role": "user", "selected_option_id": "A", "selected_option_text": "атлетичное", "free_text": None},
     ]
 
     response = client.post(
@@ -301,9 +334,44 @@ def test_repeated_question_id_uses_fallback_question(client: TestClient, monkeyp
     body = response.json()
 
     assert body["llm_json"]["type"] == "ask_question"
-    assert body["llm_json"]["question_id"] != "q_first_impression_01"
-    assert body["llm_json"]["debug_probability_text"] == "Задаю уточняющий вопрос из резервного сценария."
+    assert body["llm_json"]["question_id"] != "q_body_type_01"
+    assert "Промежуточно по стихиям" in body["llm_json"]["debug_probability_text"]
     assert "llm_json_failed_guard" in body["warnings"]
+
+
+def test_stage1_final_result_contains_duplicate_sign_intervals(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        web_main,
+        "_call_rectification_llm",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "final_result",
+                "should_continue": False,
+                "primary_candidate": {
+                    "sign_name_ru": "Скорпион",
+                    "sign_name_en": "Scorpio",
+                    "time_range_local": {"start": "1978-03-19T00:00:00", "end": "1978-03-19T00:41:14"},
+                    "probability": 0.34,
+                },
+                "secondary_candidates": [],
+                "summary_text": "ok",
+            },
+            "llm_text": "{}",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        },
+    )
+
+    response = client.post(
+        "/api/rectification/dialog/continue",
+        json=_continue_payload(step_count=3, mode="finalize_now"),
+    )
+    assert response.status_code == 200
+    body = response.json()
+    ranges = body["llm_json"]["primary_candidate"]["time_ranges_local"]
+    assert len(ranges) == 2
+    assert ranges[0]["start"] == "1978-03-19T00:00:00"
+    assert ranges[1]["start"] == "1978-03-19T22:05:00"
 
 
 def test_stage1_user_visible_text_is_russian_in_safe_paths(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -315,7 +383,6 @@ def test_stage1_user_visible_text_is_russian_in_safe_paths(client: TestClient, m
     assert response.status_code == 200
     body = response.json()
     assert "How are you usually perceived at first contact?" not in body["llm_json"]["question_text"]
-    assert "Fallback question: deterministic recovery mode." not in body["llm_json"]["debug_probability_text"]
 
     response_finalize = client.post(
         "/api/rectification/dialog/continue",

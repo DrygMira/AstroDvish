@@ -59,6 +59,23 @@
       background: #fff;
       color: var(--text);
     }
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"] {
+      background: #ffffff;
+      color: #0b1220;
+      border-color: #b7d3f2;
+      font-weight: 600;
+      color-scheme: light;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus {
+      outline: 2px solid #93c5fd;
+      outline-offset: 1px;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+    }
     textarea { min-height: 110px; resize: vertical; }
     .row { display: flex; gap: 8px; }
     .row > * { flex: 1; }
@@ -183,7 +200,7 @@
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.52);
+      background: rgba(226, 239, 255, 0.86);
       display: none;
       align-items: center;
       justify-content: center;
@@ -194,9 +211,10 @@
     .modal-box {
       width: min(980px, 100%);
       max-height: 90vh;
-      background: #fff;
+      background: #ffffff;
       border-radius: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid #c5dcf7;
+      box-shadow: 0 16px 38px rgba(15, 23, 42, 0.16);
       overflow: hidden;
       display: grid;
       grid-template-rows: auto 1fr;
@@ -213,8 +231,9 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      border: 1px solid var(--border);
-      background: #fff;
+      border: 1px solid #b9d2f2;
+      background: #f7fbff;
+      color: #0f172a;
       cursor: pointer;
       font-size: 18px;
     }
@@ -267,7 +286,7 @@
     .llm-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.58);
+      background: rgba(226, 239, 255, 0.88);
       display: none;
       align-items: center;
       justify-content: center;
@@ -278,17 +297,45 @@
     .llm-overlay-box {
       width: min(520px, 100%);
       background: #fff;
-      border: 1px solid var(--border);
+      border: 1px solid #c5dcf7;
       border-radius: 14px;
       padding: 16px;
-      box-shadow: 0 12px 36px rgba(2, 6, 23, 0.18);
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.15);
       text-align: center;
+      color: #0b1220;
+    }
+    .tester-thanks {
+      margin-top: 10px;
+      border: 1px solid #b8dbca;
+      background: #eefbf4;
+      color: #0f5132;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 600;
     }
     @media (max-width: 860px) {
       .grid { grid-template-columns: 1fr; }
       .tabs { flex-direction: column; }
       .tab-btn { width: 100%; }
       .btn { width: 100%; }
+      .modal {
+        padding: 8px;
+        background: rgba(236, 245, 255, 0.96);
+      }
+      .modal-box {
+        max-height: 95vh;
+        border-radius: 12px;
+      }
+      .modal-body {
+        padding: 12px;
+      }
+      input[type="date"],
+      input[type="time"],
+      input[type="datetime-local"] {
+        min-height: 46px;
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -352,7 +399,7 @@
         <div class="grid" style="margin-top:10px;">
           <div>
             <label>Локальная дата/время</label>
-            <input id="datetimeLocal" type="datetime-local" />
+            <input id="datetimeLocal" type="datetime-local" step="1" />
           </div>
           <div>
             <label>Режим timezone</label>
@@ -397,12 +444,23 @@
             </select>
           </div>
           <div>
+            <label>Профиль орбисов</label>
+            <select id="aspectOrbProfile">
+              <option value="avestan">avestan (по умолчанию)</option>
+              <option value="western">western</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
             <label>Zodiac mode</label>
             <select id="zodiacMode">
               <option value="tropical">tropical</option>
               <option value="sidereal">sidereal</option>
             </select>
           </div>
+          <div></div>
         </div>
 
         <div class="grid" style="margin-top:10px;">
@@ -624,6 +682,7 @@
       <div class="card">
         <strong>Финальный результат</strong>
         <div id="rdFinalResult" class="final-result" style="margin-top:10px;">Финальный результат пока не получен.</div>
+        <div id="rdTesterThanks" class="tester-thanks hidden">Екатерина, благодарим вас за участие!</div>
       </div>
 
       <div class="card">
@@ -731,6 +790,24 @@
           <div id="reTechJsonBox" class="json-box"></div>
         </div>
       </div>
+
+      <div class="card">
+        <strong>Профессиональная ректификация</strong>
+        <div class="hint" style="margin-top:6px;">Использует Asc-окна Stage 1 и события Stage 2.</div>
+        <div class="actions" style="margin-top:10px;">
+          <button id="rpRunBtn" class="btn" type="button">Запустить Pro-ректификацию</button>
+        </div>
+        <div id="rpStatus" class="hint" style="margin-top:8px;"></div>
+        <div style="margin-top:10px;"><strong>Лучшие окна времени</strong></div>
+        <div id="rpBestCandidates" class="interval-list"></div>
+        <div style="margin-top:10px;"><strong>Confidence</strong></div>
+        <div id="rpConfidence" class="final-result">Pro-ректификация ещё не запускалась.</div>
+        <div style="margin-top:10px;"><strong>Подтверждённые события / методы</strong></div>
+        <div id="rpMethodsSummary" class="bigbox"></div>
+        <div style="margin-top:10px;"><strong>Warnings / ограничения</strong></div>
+        <div id="rpWarnings" class="hint"></div>
+        <div id="rpRawBox" class="json-box" style="margin-top:10px;"></div>
+      </div>
     </section>
   </div>
 
@@ -748,6 +825,10 @@
         </div>
         <div id="expertWrap" class="expert-wrap hidden">
           <div><strong>Экспертная проверка карты</strong></div>
+          <label style="display:flex; align-items:center; gap:8px; font-size:13px;">
+            <input id="expertDegreesExpandedToggle" type="checkbox" style="width:auto;" />
+            <span>Расширенный формат градусов</span>
+          </label>
 
           <div class="expert-section">
             <strong>1. Планеты и объекты</strong>
@@ -817,6 +898,7 @@
     const statusEl = document.getElementById("status");
     const siderealModeEl = document.getElementById("siderealMode");
     const zodiacModeEl = document.getElementById("zodiacMode");
+    const aspectOrbProfileEl = document.getElementById("aspectOrbProfile");
     const modalEl = document.getElementById("resultModal");
     const horoscopeBoxEl = document.getElementById("horoscopeBox");
     const toggleExpertBtnEl = document.getElementById("toggleExpertBtn");
@@ -827,9 +909,13 @@
     const expertCuspsEl = document.getElementById("expertCusps");
     const expertAspectsEl = document.getElementById("expertAspects");
     const expertTimezoneEl = document.getElementById("expertTimezone");
+    const expertDegreesExpandedToggleEl = document.getElementById("expertDegreesExpandedToggle");
     const apiRawWrapEl = document.getElementById("apiRawWrap");
     const apiRawBoxEl = document.getElementById("apiRawBox");
     const toggleApiRawBtnEl = document.getElementById("toggleApiRawBtn");
+
+    let expertDegreesExpanded = false;
+    let lastExpertRenderPayload = null;
 
     const rectCoordModeEl = document.getElementById("rectCoordMode");
     const rectCityBlockEl = document.getElementById("rectCityBlock");
@@ -856,6 +942,7 @@
     const rdQuestionTextEl = document.getElementById("rdQuestionText");
     const rdOptionsWrapEl = document.getElementById("rdOptionsWrap");
     const rdFinalResultEl = document.getElementById("rdFinalResult");
+    const rdTesterThanksEl = document.getElementById("rdTesterThanks");
     const rdRectJsonBoxEl = document.getElementById("rdRectJsonBox");
     const rdLastLlmJsonBoxEl = document.getElementById("rdLastLlmJsonBox");
     const rdUsageSummaryBoxEl = document.getElementById("rdUsageSummaryBox");
@@ -871,6 +958,12 @@
     const reTechJsonWrapEl = document.getElementById("reTechJsonWrap");
     const reTechJsonBoxEl = document.getElementById("reTechJsonBox");
     const reToggleJsonBtnEl = document.getElementById("reToggleJsonBtn");
+    const rpStatusEl = document.getElementById("rpStatus");
+    const rpBestCandidatesEl = document.getElementById("rpBestCandidates");
+    const rpConfidenceEl = document.getElementById("rpConfidence");
+    const rpMethodsSummaryEl = document.getElementById("rpMethodsSummary");
+    const rpWarningsEl = document.getElementById("rpWarnings");
+    const rpRawBoxEl = document.getElementById("rpRawBox");
 
     const llmOverlayEl = document.getElementById("llmOverlay");
     const llmOverlayMessageEl = document.getElementById("llmOverlayMessage");
@@ -1034,10 +1127,78 @@
       return value.toFixed(digits);
     }
 
+    function formatLocalDateTimeCompact(localIso) {
+      if (typeof localIso !== "string" || !localIso) return "";
+      const dt = new Date(localIso);
+      if (Number.isNaN(dt.getTime())) return localIso;
+      const dd = String(dt.getDate()).padStart(2, "0");
+      const mm = String(dt.getMonth() + 1).padStart(2, "0");
+      const yyyy = dt.getFullYear();
+      const hh = String(dt.getHours()).padStart(2, "0");
+      const min = String(dt.getMinutes()).padStart(2, "0");
+      return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+    }
+
+    function formatIntervalLine(startLocal, endLocal) {
+      if (!startLocal || !endLocal) return `${startLocal || ""} → ${endLocal || ""}`;
+      const start = new Date(startLocal);
+      const end = new Date(endLocal);
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+        return `${startLocal} → ${endLocal}`;
+      }
+      const sdd = String(start.getDate()).padStart(2, "0");
+      const smm = String(start.getMonth() + 1).padStart(2, "0");
+      const syyyy = start.getFullYear();
+      const shh = String(start.getHours()).padStart(2, "0");
+      const smin = String(start.getMinutes()).padStart(2, "0");
+      const ehh = String(end.getHours()).padStart(2, "0");
+      const emin = String(end.getMinutes()).padStart(2, "0");
+      const sameDate =
+        start.getFullYear() === end.getFullYear() &&
+        start.getMonth() === end.getMonth() &&
+        start.getDate() === end.getDate();
+      if (sameDate) {
+        return `${sdd}.${smm}.${syyyy} ${shh}:${smin}–${ehh}:${emin}`;
+      }
+      const edd = String(end.getDate()).padStart(2, "0");
+      const emm = String(end.getMonth() + 1).padStart(2, "0");
+      const eyyyy = end.getFullYear();
+      return `${sdd}.${smm}.${syyyy} ${shh}:${smin} → ${edd}.${emm}.${eyyyy} ${ehh}:${emin}`;
+    }
+
+    function degreeToDms(value, includeSeconds = false) {
+      if (typeof value !== "number" || Number.isNaN(value)) return "—";
+      const normalized = ((value % 360) + 360) % 360;
+      const wholeDegrees = Math.floor(normalized);
+      const minutesFull = (normalized - wholeDegrees) * 60;
+      let wholeMinutes = Math.floor(minutesFull);
+      let seconds = Math.round((minutesFull - wholeMinutes) * 60);
+      let degreesAdjusted = wholeDegrees;
+
+      if (seconds === 60) {
+        seconds = 0;
+        wholeMinutes += 1;
+      }
+      if (wholeMinutes === 60) {
+        wholeMinutes = 0;
+        degreesAdjusted += 1;
+      }
+
+      if (!includeSeconds) {
+        return `${degreesAdjusted}°${String(wholeMinutes).padStart(2, "0")}′`;
+      }
+      return `${degreesAdjusted}°${String(wholeMinutes).padStart(2, "0")}′${String(seconds).padStart(2, "0")}″`;
+    }
+
+    function formatDegreeForExpert(value) {
+      if (typeof value !== "number" || Number.isNaN(value)) return "—";
+      return degreeToDms(value, expertDegreesExpanded);
+    }
+
     function toSignDegreeText(item) {
       if (!item || typeof item !== "object") return "—";
       const sign = item.sign_name_en || "—";
-      const degree = typeof item.sign_degree === "number" ? `${item.sign_degree.toFixed(2)}°` : "—";
+      const degree = typeof item.sign_degree === "number" ? formatDegreeForExpert(item.sign_degree) : "—";
       return `${sign} ${degree}`;
     }
 
@@ -1050,7 +1211,7 @@
       if (normalized < 0) normalized += 360;
       const signIndex = Math.floor(normalized / 30);
       const signDegree = normalized - signIndex * 30;
-      return { signName: signs[signIndex], signDegree: `${signDegree.toFixed(2)}°` };
+      return { signName: signs[signIndex], signDegree: formatDegreeForExpert(signDegree) };
     }
 
     function renderTable(headers, rows) {
@@ -1065,6 +1226,8 @@
     }
 
     function renderExpertTables(chartResponse, timezonePayload, warnings) {
+      lastExpertRenderPayload = { chartResponse, timezonePayload, warnings };
+
       const objects = chartResponse?.objects || {};
       const houses = chartResponse?.houses || {};
       const aspects = Array.isArray(chartResponse?.aspects) ? chartResponse.aspects : [];
@@ -1081,8 +1244,8 @@
           return [
             key,
             obj.sign_name_en || "—",
-            typeof obj.sign_degree === "number" ? `${obj.sign_degree.toFixed(2)}°` : "—",
-            typeof obj.absolute_degree_0_360 === "number" ? `${obj.absolute_degree_0_360.toFixed(2)}°` : "—",
+            typeof obj.sign_degree === "number" ? formatDegreeForExpert(obj.sign_degree) : "—",
+            typeof obj.absolute_degree_0_360 === "number" ? formatDegreeForExpert(obj.absolute_degree_0_360) : "—",
             obj.house ?? "—",
             obj.retrograde ? "R" : "D",
           ];
@@ -1092,21 +1255,37 @@
         objectRows
       );
 
-      const nodeRows = ["true_node", "mean_node"]
-        .filter((key) => objects[key])
-        .map((key) => {
-          const obj = objects[key];
-          const nodeLabel = key === "true_node"
-            ? "Истинный Северный узел (true_node)"
-            : "Средний Северный узел (mean_node)";
-          return [
-            nodeLabel,
-            obj.sign_name_en || "—",
-            typeof obj.sign_degree === "number" ? `${obj.sign_degree.toFixed(2)}°` : "—",
-            obj.house ?? "—",
-            typeof obj.absolute_degree_0_360 === "number" ? `${obj.absolute_degree_0_360.toFixed(2)}°` : "—",
-          ];
-        });
+      const nodeRows = [];
+      const trueNode = objects.true_node;
+      if (trueNode && typeof trueNode.absolute_degree_0_360 === "number") {
+        const trueSouthAbs = (trueNode.absolute_degree_0_360 + 180) % 360;
+        const trueSouthSign = angleToSignDegree(trueSouthAbs);
+
+        nodeRows.push([
+          "Истинный Северный узел (true_node)",
+          trueNode.sign_name_en || "—",
+          typeof trueNode.sign_degree === "number" ? formatDegreeForExpert(trueNode.sign_degree) : "—",
+          trueNode.house ?? "—",
+          formatDegreeForExpert(trueNode.absolute_degree_0_360),
+        ]);
+        nodeRows.push([
+          "Истинный Южный узел (derived)",
+          trueSouthSign.signName,
+          trueSouthSign.signDegree,
+          "—",
+          formatDegreeForExpert(trueSouthAbs),
+        ]);
+      }
+      if (objects.mean_node) {
+        const meanNode = objects.mean_node;
+        nodeRows.push([
+          "Средний Северный узел (mean_node, debug)",
+          meanNode.sign_name_en || "—",
+          typeof meanNode.sign_degree === "number" ? formatDegreeForExpert(meanNode.sign_degree) : "—",
+          meanNode.house ?? "—",
+          typeof meanNode.absolute_degree_0_360 === "number" ? formatDegreeForExpert(meanNode.absolute_degree_0_360) : "—",
+        ]);
+      }
       expertNodesEl.innerHTML = renderTable(
         ["Узел", "Знак", "Градус", "Дом", "Абсолютный градус"],
         nodeRows
@@ -1118,7 +1297,7 @@
         .map(([key, label]) => {
           const abs = angles[key];
           const signData = angleToSignDegree(abs);
-          return [label, signData.signName, signData.signDegree, `${abs.toFixed(2)}°`];
+          return [label, signData.signName, signData.signDegree, formatDegreeForExpert(abs)];
         });
       expertAnglesEl.innerHTML = renderTable(
         ["Угол", "Знак", "Градус", "Абсолютный градус"],
@@ -1134,8 +1313,8 @@
           return [
             houseNo,
             cusp.sign_name_en || "—",
-            typeof cusp.sign_degree === "number" ? `${cusp.sign_degree.toFixed(2)}°` : "—",
-            typeof cusp.absolute_degree_0_360 === "number" ? `${cusp.absolute_degree_0_360.toFixed(2)}°` : "—",
+            typeof cusp.sign_degree === "number" ? formatDegreeForExpert(cusp.sign_degree) : "—",
+            typeof cusp.absolute_degree_0_360 === "number" ? formatDegreeForExpert(cusp.absolute_degree_0_360) : "—",
           ];
         });
       expertCuspsEl.innerHTML = renderTable(
@@ -1147,9 +1326,9 @@
         aspect.object_a || "—",
         aspect.aspect_type || "—",
         aspect.object_b || "—",
-        formatNum(aspect.exact_angle),
-        formatNum(aspect.actual_angle),
-        formatNum(aspect.orb),
+        formatDegreeForExpert(aspect.exact_angle),
+        formatDegreeForExpert(aspect.actual_angle),
+        formatDegreeForExpert(aspect.orb),
         aspect.applying === true ? "applying" : (aspect.applying === false ? "separating" : "—"),
       ]);
       expertAspectsEl.innerHTML = renderTable(
@@ -1275,6 +1454,7 @@
 
       rdHistoryEl.innerHTML = "";
       rdFinalResultEl.textContent = "Финальный результат пока не получен.";
+      rdTesterThanksEl.classList.add("hidden");
       rdRectJsonBoxEl.textContent = "";
       rdLastLlmJsonBoxEl.textContent = "";
       rdProbabilityTextEl.textContent = "";
@@ -1343,12 +1523,18 @@
 
         if (item.type === "final_result") {
           const p = item.primary_candidate || {};
+          const ranges = Array.isArray(p.time_ranges_local) && p.time_ranges_local.length
+            ? p.time_ranges_local
+            : (p.time_range_local ? [p.time_range_local] : []);
+          const rangesHtml = ranges.length
+            ? `<div>Интервалы:<br/>${ranges.map((r, idx) => `${idx + 1}) ${formatIntervalLine(r.start, r.end)}`).join("<br/>")}</div>`
+            : "<div>Интервалы: не указаны</div>";
           const msg = document.createElement("div");
           msg.className = "msg assistant";
           msg.innerHTML =
             `<div class="msg-head">Финальный шаг</div>` +
             `<div><strong>Итог:</strong> ${p.sign_name_ru || ""} (${p.sign_name_en || ""})</div>` +
-            `<div>Интервал: ${p.time_range_local?.start || ""} → ${p.time_range_local?.end || ""}</div>` +
+            rangesHtml +
             `<div>Вероятность: ${p.probability ?? "n/a"}</div>` +
             `<div style="margin-top:6px;">${item.summary_text || ""}</div>` +
             `<div class="usage-mini">Токены: input=${item.usage?.input_tokens ?? "null"}, output=${item.usage?.output_tokens ?? "null"}, ` +
@@ -1398,19 +1584,29 @@
 
       if (!lastAssistant) {
         rdFinalResultEl.textContent = "Финальный результат пока не получен.";
+        rdTesterThanksEl.classList.add("hidden");
         return;
       }
 
       const primary = lastAssistant.primary_candidate || {};
+      const primaryRanges = Array.isArray(primary.time_ranges_local) && primary.time_ranges_local.length
+        ? primary.time_ranges_local
+        : (primary.time_range_local ? [primary.time_range_local] : []);
+      const primaryRangesHtml = primaryRanges.length
+        ? primaryRanges
+            .map((item, idx) => `<div>${idx + 1}) ${formatIntervalLine(item.start, item.end)}</div>`)
+            .join("")
+        : "<div>Интервалы не определены.</div>";
       const secondary = (lastAssistant.secondary_candidates || [])
         .map((x) => `${x.sign_name_ru} (${x.sign_name_en}) — ${x.probability}`)
         .join("; ");
       rdFinalResultEl.innerHTML =
         `<div><strong>Основной кандидат:</strong> ${primary.sign_name_ru || ""} (${primary.sign_name_en || ""})</div>` +
-        `<div><strong>Интервал:</strong> ${primary.time_range_local?.start || ""} → ${primary.time_range_local?.end || ""}</div>` +
+        `<div style="margin-top:6px;"><strong>Интервалы:</strong>${primaryRangesHtml}</div>` +
         `<div><strong>Вероятность:</strong> ${primary.probability ?? "n/a"}</div>` +
         `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>` +
         `<div style="margin-top:8px;">${lastAssistant.summary_text || ""}</div>`;
+      rdTesterThanksEl.classList.remove("hidden");
     }
 
     function renderRectDialogAll() {
@@ -1659,6 +1855,7 @@
         latitude: Number(document.getElementById("latitude").value),
         longitude: Number(document.getElementById("longitude").value),
         house_system: document.getElementById("houseSystem").value,
+        aspect_orb_profile: aspectOrbProfileEl.value,
         zodiac_mode: zodiacMode,
         sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,
         prompt_text: document.getElementById("promptText").value || "Сделай гороскоп по этим данным.",
@@ -1998,6 +2195,158 @@
       }
     }
 
+    function setRpStatus(text) {
+      rpStatusEl.textContent = text || "";
+    }
+
+    function buildProAscWindowsFromStage1() {
+      const lastFinal = [...rectDialogState.dialogHistory]
+        .reverse()
+        .find((x) => x.role === "assistant" && x.type === "final_result");
+      if (!lastFinal) {
+        const intervals = rectDialogState.rectificationDocument?.asc_sign_intervals;
+        if (!Array.isArray(intervals) || !intervals.length) {
+          return [];
+        }
+        return intervals.map((item) => ({
+          start_local: item.start_local,
+          end_local: item.end_local,
+          sign_name_en: item.sign_name_en,
+          sign_name_ru: item.sign_name_ru || null,
+        }));
+      }
+
+      const candidates = [
+        lastFinal.primary_candidate,
+        ...((Array.isArray(lastFinal.secondary_candidates) ? lastFinal.secondary_candidates : [])),
+      ].filter(Boolean);
+
+      const windows = [];
+      candidates.forEach((candidate) => {
+        const ranges = Array.isArray(candidate.time_ranges_local) && candidate.time_ranges_local.length
+          ? candidate.time_ranges_local
+          : (candidate.time_range_local ? [candidate.time_range_local] : []);
+        ranges.forEach((r) => {
+          if (!r?.start || !r?.end) return;
+          windows.push({
+            start_local: r.start,
+            end_local: r.end,
+            sign_name_en: candidate.sign_name_en || "Unknown",
+            sign_name_ru: candidate.sign_name_ru || null,
+          });
+        });
+      });
+      return windows;
+    }
+
+    function buildProEventsFromStage2() {
+      if (rectEventsState.finalized && Array.isArray(rectEventsState.finalized.events)) {
+        return rectEventsState.finalized.events;
+      }
+      return [];
+    }
+
+    function renderProResult(data) {
+      const best = Array.isArray(data.best_candidates) ? data.best_candidates : [];
+      rpBestCandidatesEl.innerHTML = "";
+      if (!best.length) {
+        rpBestCandidatesEl.innerHTML = "<div class='interval-item'>Кандидаты не найдены.</div>";
+      } else {
+        best.forEach((item, idx) => {
+          const total = item.scores?.total ?? "n/a";
+          const block = document.createElement("div");
+          block.className = "interval-item";
+          const preciseOnly = (data.confidence?.level === "high" || data.confidence?.level === "expert_high")
+            ? ""
+            : " (не считать точным временем)";
+          block.textContent = `#${idx + 1} ${item.candidate_time_local} | total=${total} | confidence=${item.confidence_level}${preciseOnly}`;
+          rpBestCandidatesEl.appendChild(block);
+        });
+      }
+
+      const confidence = data.confidence || {};
+      rpConfidenceEl.textContent =
+        `Уровень: ${confidence.level || "n/a"} | Окно: ${confidence.time_window_minutes || "n/a"} мин | ${confidence.explanation || ""}`;
+
+      const methods = data.method_results || {};
+      const lines = [];
+      for (const [methodName, entries] of Object.entries(methods)) {
+        const list = Array.isArray(entries) ? entries : [];
+        const matched = list.filter((entry) => Array.isArray(entry.matches) && entry.matches.length > 0).length;
+        lines.push(`${methodName}: entries=${list.length}, matched_events=${matched}`);
+      }
+      rpMethodsSummaryEl.textContent = lines.join("\n") || "Нет данных по методикам.";
+
+      const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+      const limitations = Array.isArray(data.limitations) ? data.limitations : [];
+      rpWarningsEl.textContent =
+        `warnings: ${warnings.join(", ") || "none"} | limitations: ${limitations.join(" | ") || "none"}`;
+      rpRawBoxEl.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function runProRectification() {
+      if (rectEventsState.isBusy || rectDialogState.isBusy) {
+        setRpStatus("Дождитесь завершения текущего шага.");
+        return;
+      }
+      const ascWindows = buildProAscWindowsFromStage1();
+      if (!ascWindows.length) {
+        setRpStatus("Сначала запустите Stage 1 (Asc-окна).");
+        return;
+      }
+      const events = buildProEventsFromStage2();
+      if (!events.length) {
+        setRpStatus("Сначала соберите события Stage 2 и завершите их.");
+        return;
+      }
+
+      const payload = {
+        birth_date_local: document.getElementById("rdBirthDate").value,
+        latitude: Number(document.getElementById("rdLatitude").value),
+        longitude: Number(document.getElementById("rdLongitude").value),
+        timezone_name: timezoneNameEl.value || "Europe/Moscow",
+        house_system: document.getElementById("rdHouseSystem").value,
+        zodiac_mode: rdZodiacModeEl.value,
+        sidereal_mode: rdZodiacModeEl.value === "sidereal" ? (rdSiderealModeEl.value || null) : null,
+        asc_windows: ascWindows,
+        events,
+        settings: {
+          candidate_step_minutes: 5,
+          include_directions: true,
+          include_solars: true,
+          include_lunars: false,
+          include_transits: true,
+          include_totems: false,
+        },
+      };
+
+      setRpStatus("Запускаем Pro-ректификацию...");
+      showLlmOverlay("Запуск Pro-ректификации...");
+      try {
+        const res = await fetch("/api/rectification/pro/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            api_base_url: document.getElementById("reApiBaseUrl").value.trim(),
+            payload,
+          }),
+        });
+        const { jsonPayload, errorText } = await parseResponseBody(res);
+        if (!res.ok) {
+          throw new Error(errorText);
+        }
+        if (!jsonPayload) {
+          throw new Error("Пустой ответ API");
+        }
+        renderProResult(jsonPayload);
+        setRpStatus(`Готово. confidence=${jsonPayload.confidence?.level || "n/a"}`);
+      } catch (err) {
+        setRpStatus("Ошибка: " + (err?.message || "network error"));
+      } finally {
+        hideLlmOverlay();
+      }
+    }
+
     tabChartBtnEl.addEventListener("click", () => setTab("chart"));
     tabRectBtnEl.addEventListener("click", () => setTab("rect"));
     tabRectDialogBtnEl.addEventListener("click", () => setTab("rect-dialog"));
@@ -2065,6 +2414,7 @@
     document.getElementById("reAnswerBtn").addEventListener("click", () => continueRectEventsFlow(false));
     document.getElementById("reSkipBtn").addEventListener("click", () => continueRectEventsFlow(true));
     document.getElementById("reFinalizeBtn").addEventListener("click", finalizeRectEventsFlow);
+    document.getElementById("rpRunBtn").addEventListener("click", runProRectification);
     reToggleJsonBtnEl.addEventListener("click", () => {
       const hiddenNow = reTechJsonWrapEl.classList.toggle("hidden");
       reToggleJsonBtnEl.textContent = hiddenNow
@@ -2075,6 +2425,16 @@
     document.getElementById("closeModalBtn").addEventListener("click", closeModal);
     document.getElementById("closeModalBtn2").addEventListener("click", closeModal);
     toggleExpertBtnEl.addEventListener("click", toggleExpertTable);
+    expertDegreesExpandedToggleEl.addEventListener("change", () => {
+      expertDegreesExpanded = !!expertDegreesExpandedToggleEl.checked;
+      if (lastExpertRenderPayload) {
+        renderExpertTables(
+          lastExpertRenderPayload.chartResponse,
+          lastExpertRenderPayload.timezonePayload,
+          lastExpertRenderPayload.warnings
+        );
+      }
+    });
     toggleApiRawBtnEl.addEventListener("click", toggleRawApi);
     timezoneOffsetEl.addEventListener("change", updateTimezoneUiState);
     datetimeLocalEl.addEventListener("input", calculateUtcPreview);
@@ -2102,6 +2462,7 @@
     datetimeLocalEl.value = nowLocalInputValue();
     timezoneModeEl.value = "auto";
     updateTimezoneUiState();
+    expertDegreesExpanded = !!expertDegreesExpandedToggleEl.checked;
     document.getElementById("rectBirthDate").value = todayLocalDateValue();
     document.getElementById("rdBirthDate").value = todayLocalDateValue();
     siderealModeEl.disabled = true;

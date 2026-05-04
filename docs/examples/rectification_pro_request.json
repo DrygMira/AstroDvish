@@ -1,0 +1,41 @@
+{
+  "birth_date_local": "1990-05-12",
+  "latitude": 53.9006,
+  "longitude": 27.559,
+  "timezone_name": "Europe/Minsk",
+  "house_system": "P",
+  "zodiac_mode": "tropical",
+  "sidereal_mode": null,
+  "asc_windows": [
+    {
+      "start_local": "1990-05-12T14:00:00",
+      "end_local": "1990-05-12T16:00:00",
+      "sign_name_en": "Libra",
+      "sign_name_ru": "Весы"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "ev_001",
+      "event_type": "children_birth",
+      "title": "Рождение ребёнка",
+      "date_text": "2018-09-12",
+      "date_precision": "exact",
+      "start_date": "2018-09-12",
+      "end_date": "2018-09-12",
+      "impact_level": 5,
+      "reversibility": "irreversible",
+      "life_area": "relationships",
+      "notes": "Сильный перелом",
+      "user_skipped": false
+    }
+  ],
+  "settings": {
+    "candidate_step_minutes": 5,
+    "include_directions": true,
+    "include_solars": true,
+    "include_lunars": false,
+    "include_transits": true,
+    "include_totems": false
+  }
+}

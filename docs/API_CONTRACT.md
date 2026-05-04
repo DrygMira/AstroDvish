@@ -14,6 +14,7 @@
 5. `POST /api/v1/rectification/events/start`
 6. `POST /api/v1/rectification/events/continue`
 7. `POST /api/v1/rectification/events/finalize`
+8. `POST /api/v1/rectification/pro/run`
 
 ## Data Layer Separation
 
@@ -284,6 +285,20 @@
 - Request ID: в response header; в body только в error-response.
 
 ## References
+
+## Rectification Pro Endpoint (MVP)
+
+- `POST /api/v1/rectification/pro/run`
+- Returns:
+  - `candidate_windows`
+  - `best_candidates`
+  - `method_results` (`directions`, `solars`, `lunars`, `transits`, `totems`)
+  - `confidence`
+  - `warnings`
+  - `limitations`
+- Contract note:
+  - output is probabilistic window scoring;
+  - `expert_high` must not be returned without strong data criteria.
 
 - Примеры payload: `docs/examples/*.json`
 - Интеграция с ботом: `docs/ASTROBOT_INTEGRATION.md`

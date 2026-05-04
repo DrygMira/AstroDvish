@@ -44,6 +44,7 @@
 - `start_events_collection(...)`
 - `continue_events_collection(...)`
 - `finalize_events_collection(...)`
+- `run_rectification_pro(...)`
 
 Пример: `docs/examples/astrobot_client_usage.py`.
 

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AstroDvish Totem Degree Catalog",
+  "type": "object",
+  "required": ["version", "source", "degrees"],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "degrees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["index", "sign_name_en", "degree_in_sign", "label"],
+        "properties": {
+          "index": {"type": "integer", "minimum": 1, "maximum": 360},
+          "sign_name_en": {"type": "string"},
+          "degree_in_sign": {"type": "integer", "minimum": 0, "maximum": 29},
+          "label": {"type": "string"},
+          "description": {"type": "string"}
+        }
+      }
+    }
+  }
+}

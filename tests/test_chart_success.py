@@ -51,6 +51,7 @@ def test_chart_success_endpoint(monkeypatch, tmp_path) -> None:
     assert "normalized" in data
     assert "julian_day_ut" in data["normalized"]
     assert data["meta"]["ephemeris_source"] == "swisseph"
+    assert data["meta"]["aspect_orb_profile"] == "avestan"
 
     objects = data["objects"]
     for name in MANDATORY_OBJECTS:

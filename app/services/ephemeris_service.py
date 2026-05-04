@@ -76,7 +76,10 @@ class EphemerisService:
                 house_system=payload.house_system,
                 flags=flags,
             )
-            aspects = self.aspects_service.calculate_aspects(objects=objects)
+            aspects = self.aspects_service.calculate_aspects(
+                objects=objects,
+                orb_profile=payload.aspect_orb_profile.value,
+            )
 
         return build_chart_response(
             payload=payload,
@@ -86,6 +89,7 @@ class EphemerisService:
             houses=houses,
             angles=angles,
             object_constants={name: int(const) for name, const in OBJECT_CONSTANTS.items()},
+            aspect_orb_profile=payload.aspect_orb_profile,
         )
 
     @staticmethod

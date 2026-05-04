@@ -1,0 +1,42 @@
+{
+  "mode": "rectification_pro",
+  "version": "0.1",
+  "status": "completed",
+  "candidate_windows": [
+    {
+      "candidate_id": "cand_001",
+      "candidate_time_local": "1990-05-12T14:35:00",
+      "candidate_window": {
+        "start": "1990-05-12T14:30:00",
+        "end": "1990-05-12T14:40:00"
+      },
+      "scores": {
+        "directions": 82.0,
+        "solar": 61.0,
+        "transits": 74.0,
+        "lunar": null,
+        "totem": null,
+        "total": 76.0
+      },
+      "matched_events_count": 6,
+      "strong_events_matched_count": 4,
+      "confidence_level": "high",
+      "warnings": []
+    }
+  ],
+  "best_candidates": [],
+  "method_results": {
+    "directions": [],
+    "solars": [],
+    "lunars": [],
+    "transits": [],
+    "totems": []
+  },
+  "confidence": {
+    "level": "medium",
+    "time_window_minutes": 25,
+    "explanation": "Нужно больше точных событий."
+  },
+  "warnings": [],
+  "limitations": []
+}

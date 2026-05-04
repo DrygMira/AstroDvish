@@ -140,3 +140,38 @@ def test_web_ui_events_finalize_proxy_non_200_to_502(monkeypatch) -> None:
     assert detail["message"] == "Rectification events API returned non-200 status"
     assert detail["path"] == "/api/v1/rectification/events/finalize"
 
+
+def test_web_ui_rectification_pro_proxy_success(monkeypatch) -> None:
+    captured: dict = {}
+
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        captured["base_url"] = base_url
+        captured["path"] = path
+        captured["payload"] = payload
+        captured["timeout"] = timeout
+        return _DummyResponse(
+            200,
+            {
+                "mode": "rectification_pro",
+                "version": "0.1",
+                "status": "completed",
+                "candidate_windows": [],
+                "best_candidates": [],
+                "method_results": {"directions": [], "solars": [], "lunars": [], "transits": [], "totems": []},
+                "confidence": {"level": "low", "time_window_minutes": 120, "explanation": "test"},
+                "warnings": [],
+                "limitations": [],
+            },
+        )
+
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/pro/run",
+        json={"api_base_url": "http://127.0.0.1:8013", "payload": {"birth_date_local": "1990-05-12"}},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["mode"] == "rectification_pro"
+    assert captured["path"] == "/api/v1/rectification/pro/run"

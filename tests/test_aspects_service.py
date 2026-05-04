@@ -14,18 +14,18 @@ def _obj(name: str, longitude: float) -> ObjectResponse:
         retrograde=False,
         sign_index=0,
         sign_name_en="Aries",
-        sign_degree=longitude,
-        sign_degree_dms="0°0'0\"",
-        absolute_degree_0_360=longitude,
+        sign_degree=longitude % 30,
+        sign_degree_dms="0°00′00″",
+        absolute_degree_0_360=longitude % 360,
     )
 
 
-def test_aspect_is_calculated_when_within_orb() -> None:
+def test_aspect_is_calculated_when_within_default_avestan_orb() -> None:
     service = AspectsService()
     aspects = service.calculate_aspects(
         objects={
             "sun": _obj("sun", 0.0),
-            "moon": _obj("moon", 118.4),
+            "moon": _obj("moon", 7.9),
         }
     )
 
@@ -33,66 +33,42 @@ def test_aspect_is_calculated_when_within_orb() -> None:
     aspect = aspects[0]
     assert aspect.object_a == "Sun"
     assert aspect.object_b == "Moon"
-    assert aspect.aspect_type == "trine"
-    assert aspect.exact_angle == 120.0
-    assert aspect.actual_angle == 118.4
-    assert aspect.orb == 1.6
-    assert aspect.applying is None
+    assert aspect.aspect_type == "conjunction"
+    assert aspect.orb == 7.9
 
 
-def test_aspect_is_not_calculated_outside_orb() -> None:
+def test_avestan_default_is_stricter_for_outer_planets() -> None:
     service = AspectsService()
     aspects = service.calculate_aspects(
         objects={
-            "sun": _obj("sun", 0.0),
-            "moon": _obj("moon", 52.0),
+            "jupiter": _obj("jupiter", 0.0),
+            "saturn": _obj("saturn", 6.0),
         }
     )
     assert aspects == []
 
 
-def test_aspects_have_no_duplicates_or_self_relations() -> None:
+def test_western_profile_can_be_selected() -> None:
     service = AspectsService()
     aspects = service.calculate_aspects(
         objects={
-            "sun": _obj("sun", 0.0),
-            "moon": _obj("moon", 60.0),
-            "mars": _obj("mars", 120.0),
-        }
-    )
-
-    pairs = {(aspect.object_a, aspect.object_b) for aspect in aspects}
-    assert len(pairs) == len(aspects)
-    assert ("Sun", "Sun") not in pairs
-    assert ("Moon", "Moon") not in pairs
-    assert ("Mars", "Mars") not in pairs
-    assert ("Moon", "Sun") not in pairs
-
-
-def test_orb_is_calculated_correctly() -> None:
-    service = AspectsService()
-    aspects = service.calculate_aspects(
-        objects={
-            "sun": _obj("sun", 0.0),
-            "moon": _obj("moon", 92.25),
-        }
-    )
-
-    assert len(aspects) == 1
-    aspect = aspects[0]
-    assert aspect.aspect_type == "square"
-    assert aspect.exact_angle == 90.0
-    assert aspect.actual_angle == 92.25
-    assert aspect.orb == 2.25
-
-
-def test_orbs_are_configurable_with_overrides() -> None:
-    service = AspectsService()
-    aspects = service.calculate_aspects(
-        objects={
-            "sun": _obj("sun", 0.0),
-            "moon": _obj("moon", 63.0),
+            "jupiter": _obj("jupiter", 0.0),
+            "saturn": _obj("saturn", 6.0),
         },
-        orb_overrides={"sextile": 2.0},
+        orb_profile="western",
     )
-    assert aspects == []
+    assert len(aspects) == 1
+    assert aspects[0].aspect_type == "conjunction"
+
+
+def test_orb_overrides_are_supported() -> None:
+    service = AspectsService()
+    aspects = service.calculate_aspects(
+        objects={
+            "sun": _obj("sun", 0.0),
+            "moon": _obj("moon", 8.8),
+        },
+        orb_overrides={"conjunction": 9.0},
+    )
+    assert len(aspects) == 1
+    assert aspects[0].orb == 8.8

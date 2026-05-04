@@ -69,128 +69,124 @@ DOCKER_COMPOSE_API_BASE_URL = _env("DOCKER_COMPOSE_API_BASE_URL", "http://astrod
 
 QUESTION_BANK: list[dict[str, Any]] = [
     {
-        "question_id": "q_first_impression_01",
-        "question_text": "Как вас чаще всего воспринимают в самом начале общения?",
+        "question_id": "q_body_type_01",
+        "question_text": "Какой тип телосложения вам ближе?",
         "options": [
-            {"id": "A", "text": "мягкий и дипломатичный"},
-            {"id": "B", "text": "яркий и прямой"},
-            {"id": "C", "text": "сдержанный и серьёзный"},
-            {"id": "D", "text": "лёгкий и разговорчивый"},
-            {"id": "E", "text": "необычный и независимый"},
-            {"id": "X", "text": "не знаю / сложно сказать"},
-        ],
-    },
-    {
-        "question_id": "q_social_entry_02",
-        "question_text": "Как вы обычно входите в новый коллектив?",
-        "options": [
-            {"id": "A", "text": "сначала наблюдаю и действую осторожно"},
-            {"id": "B", "text": "быстро включаюсь и знакомлюсь"},
-            {"id": "C", "text": "ищу 1-2 близких контакта, не иду в центр сразу"},
-            {"id": "D", "text": "беру инициативу и задаю тон"},
-            {"id": "E", "text": "держусь независимо и на своей волне"},
-            {"id": "X", "text": "по-разному, зависит от ситуации"},
-        ],
-    },
-    {
-        "question_id": "q_communication_style_03",
-        "question_text": "Какой стиль общения вам ближе всего?",
-        "options": [
-            {"id": "A", "text": "мягкий, дипломатичный, аккуратный"},
-            {"id": "B", "text": "прямой и быстрый"},
-            {"id": "C", "text": "структурный и по делу"},
-            {"id": "D", "text": "эмоциональный и выразительный"},
-            {"id": "E", "text": "живой, подвижный, с юмором"},
-            {"id": "X", "text": "затрудняюсь выбрать"},
-        ],
-    },
-    {
-        "question_id": "q_reaction_tempo_04",
-        "question_text": "Какой у вас типичный темп реакции в новой ситуации?",
-        "options": [
-            {"id": "A", "text": "очень быстрый, решаю на ходу"},
-            {"id": "B", "text": "средний, сначала оцениваю контекст"},
-            {"id": "C", "text": "неторопливый, предпочитаю устойчивость"},
-            {"id": "D", "text": "скачкообразный: то быстро, то пауза"},
-            {"id": "E", "text": "зависит от людей и атмосферы"},
-            {"id": "X", "text": "сложно определить"},
-        ],
-    },
-    {
-        "question_id": "q_conflict_style_05",
-        "question_text": "В конфликте вы чаще действуете как?",
-        "options": [
-            {"id": "A", "text": "сглаживаю и ищу компромисс"},
-            {"id": "B", "text": "иду прямо в обсуждение, не избегаю остроты"},
-            {"id": "C", "text": "держу дистанцию и холодную логику"},
-            {"id": "D", "text": "защищаю границы жёстко, если нужно"},
-            {"id": "E", "text": "перевожу в шутку или в лёгкий формат"},
-            {"id": "X", "text": "по-разному"},
-        ],
-    },
-    {
-        "question_id": "q_visual_presence_06",
-        "question_text": "Что чаще замечают в вашей внешней подаче?",
-        "options": [
-            {"id": "A", "text": "гармоничность и аккуратность"},
-            {"id": "B", "text": "энергичность и напор"},
-            {"id": "C", "text": "строгость и собранность"},
-            {"id": "D", "text": "яркость и заметность"},
-            {"id": "E", "text": "нестандартность и оригинальность"},
-            {"id": "X", "text": "затрудняюсь ответить"},
-        ],
-    },
-    {
-        "question_id": "q_lead_or_balance_07",
-        "question_text": "Что вам ближе в групповой динамике?",
-        "options": [
-            {"id": "A", "text": "вести и принимать решения"},
-            {"id": "B", "text": "координировать и балансировать позиции"},
-            {"id": "C", "text": "поддерживать стабильность процесса"},
-            {"id": "D", "text": "генерировать идеи и быстро переключаться"},
-            {"id": "E", "text": "сохранять независимую позицию"},
-            {"id": "X", "text": "смешанный стиль"},
-        ],
-    },
-    {
-        "question_id": "q_energy_signature_08",
-        "question_text": "Какая характеристика лучше описывает вашу базовую подачу энергии?",
-        "options": [
-            {"id": "A", "text": "дипломатичность и контактность"},
-            {"id": "B", "text": "интенсивность и воля"},
-            {"id": "C", "text": "надёжность и устойчивость"},
-            {"id": "D", "text": "подвижность и адаптивность"},
-            {"id": "E", "text": "чувствительность и эмпатичность"},
+            {"id": "A", "text": "более атлетичное, сухое, энергичное, быстрый обмен"},
+            {"id": "B", "text": "крепкое, плотное, устойчивое, может быть выражен подбородок/скулы"},
+            {"id": "C", "text": "худощавое, вытянутое, лёгкое, длинные пальцы, подвижность"},
+            {"id": "D", "text": "мягкое, округлое, плавные линии тела, обтекаемость"},
             {"id": "X", "text": "сложно выбрать"},
         ],
     },
     {
-        "question_id": "q_new_people_effect_09",
-        "question_text": "Когда вы знакомитесь с новыми людьми, какой эффект чаще возникает?",
+        "question_id": "q_first_impression_02",
+        "question_text": "Какое первое впечатление вы чаще производите?",
         "options": [
-            {"id": "A", "text": "со мной легко и спокойно"},
-            {"id": "B", "text": "я быстро задаю динамику"},
-            {"id": "C", "text": "я кажусь закрытым, но надёжным"},
-            {"id": "D", "text": "я вызываю сильный интерес или полярные реакции"},
-            {"id": "E", "text": "я воспринимаюсь как гибкий и разговорчивый"},
-            {"id": "X", "text": "не замечал(а) устойчивого эффекта"},
+            {"id": "A", "text": "яркий, уверенный, активный, сразу заметный"},
+            {"id": "B", "text": "спокойный, надёжный, собранный, устойчивый"},
+            {"id": "C", "text": "лёгкий, общительный, дружелюбный, подвижный"},
+            {"id": "D", "text": "мягкий, глубокий, загадочный, эмоциональный"},
+            {"id": "X", "text": "по-разному"},
         ],
     },
     {
-        "question_id": "q_decision_mode_10",
-        "question_text": "Как вы чаще принимаете решения в повседневности?",
+        "question_id": "q_style_image_03",
+        "question_text": "Какой стиль одежды или образ вам ближе?",
         "options": [
-            {"id": "A", "text": "быстро, опираясь на импульс"},
-            {"id": "B", "text": "через баланс плюсов и минусов"},
-            {"id": "C", "text": "через проверку рисков и устойчивости"},
-            {"id": "D", "text": "через интуитивный образ и настроение"},
-            {"id": "E", "text": "через обсуждение и обмен идеями"},
-            {"id": "X", "text": "нет одного шаблона"},
+            {"id": "A", "text": "яркие акценты, заметность, аксессуары, статусные детали"},
+            {"id": "B", "text": "практичность, минимализм, классика, качество"},
+            {"id": "C", "text": "удобство, движение, модные тенденции, лёгкость"},
+            {"id": "D", "text": "мягкие ткани, уют, романтичность, объёмность, скрывающий силуэт"},
+            {"id": "X", "text": "нет одного стиля"},
+        ],
+    },
+    {
+        "question_id": "q_stress_reaction_04",
+        "question_text": "Как вы чаще реагируете на стресс?",
+        "options": [
+            {"id": "A", "text": "включаюсь резко, защищаюсь через нападение или активное действие"},
+            {"id": "B", "text": "собираюсь, держусь как стена, становлюсь холоднее и твёрже"},
+            {"id": "C", "text": "начинаю обсуждать, объяснять, искать варианты через разговор"},
+            {"id": "D", "text": "сильно переживаю, могу обижаться, эмоционально закрываться"},
+            {"id": "X", "text": "по-разному"},
+        ],
+    },
+    {
+        "question_id": "q_lifestyle_activity_05",
+        "question_text": "Какой стиль жизни вам ближе?",
+        "options": [
+            {"id": "A", "text": "динамика, цель, движение, соревнование, быстрые решения"},
+            {"id": "B", "text": "медленно, устойчиво, терпеливо, но довожу до результата"},
+            {"id": "C", "text": "переключение между делами, много интересов, гибкость"},
+            {"id": "D", "text": "нужны вдохновение, эмоциональный комфорт, ощущение смысла"},
+            {"id": "X", "text": "смешанный стиль"},
+        ],
+    },
+    {
+        "question_id": "q_movement_style_06",
+        "question_text": "Как вы обычно двигаетесь?",
+        "options": [
+            {"id": "A", "text": "быстро, уверенно, энергично"},
+            {"id": "B", "text": "размеренно, основательно, устойчиво"},
+            {"id": "C", "text": "легко, подвижно, с жестикуляцией"},
+            {"id": "D", "text": "плавно, мягко, обтекаемо"},
+            {"id": "X", "text": "не знаю"},
+        ],
+    },
+    {
+        "question_id": "q_visual_marker_07",
+        "question_text": "Что люди чаще замечают в вашей внешности или подаче?",
+        "options": [
+            {"id": "A", "text": "яркость, сила, напор, заметность"},
+            {"id": "B", "text": "надёжность, плотность, собранность, форма"},
+            {"id": "C", "text": "лёгкость, мимика, речь, подвижность"},
+            {"id": "D", "text": "мягкость, глаза, эмоциональность, загадочность"},
+            {"id": "X", "text": "сложно сказать"},
+        ],
+    },
+    {
+        "question_id": "q_communication_style_08",
+        "question_text": "Какой стиль общения вам ближе всего?",
+        "options": [
+            {"id": "A", "text": "прямой, быстрый, энергичный"},
+            {"id": "B", "text": "сдержанный, структурный, по делу"},
+            {"id": "C", "text": "лёгкий, контактный, гибкий"},
+            {"id": "D", "text": "эмоциональный, интуитивный, глубокий"},
+            {"id": "X", "text": "зависит от ситуации"},
+        ],
+    },
+    {
+        "question_id": "q_social_entry_09",
+        "question_text": "Как вы обычно входите в новый коллектив?",
+        "options": [
+            {"id": "A", "text": "быстро включаюсь и задаю динамику"},
+            {"id": "B", "text": "сначала оцениваю, вхожу постепенно и устойчиво"},
+            {"id": "C", "text": "легко знакомлюсь, много общаюсь, держу гибкость"},
+            {"id": "D", "text": "чувствую людей, сближаюсь избирательно и глубоко"},
+            {"id": "X", "text": "по-разному"},
         ],
     },
 ]
 
 QUESTION_BANK_BY_ID = {item["question_id"]: item for item in QUESTION_BANK}
+
+ELEMENT_TO_SIGNS: dict[str, tuple[tuple[str, str], ...]] = {
+    "fire": (("Овен", "Aries"), ("Лев", "Leo"), ("Стрелец", "Sagittarius")),
+    "earth": (("Телец", "Taurus"), ("Дева", "Virgo"), ("Козерог", "Capricorn")),
+    "air": (("Близнецы", "Gemini"), ("Весы", "Libra"), ("Водолей", "Aquarius")),
+    "water": (("Рак", "Cancer"), ("Скорпион", "Scorpio"), ("Рыбы", "Pisces")),
+}
+
+QUESTION_OPTION_ELEMENT_MAP: dict[str, dict[str, dict[str, float]]] = {
+    qid: {
+        "A": {"fire": 1.0},
+        "B": {"earth": 1.0},
+        "C": {"air": 1.0},
+        "D": {"water": 1.0},
+    }
+    for qid in QUESTION_BANK_BY_ID
+}
 
 
 class GeocodeRequest(BaseModel):
@@ -206,6 +202,7 @@ class GenerateRequest(BaseModel):
     latitude: float
     longitude: float
     house_system: str = "P"
+    aspect_orb_profile: Literal["avestan", "western"] = "avestan"
     zodiac_mode: str = "tropical"
     sidereal_mode: str | None = None
     prompt_text: str = "Сделай гороскоп по этим данным."
@@ -277,6 +274,11 @@ class RectificationEventsFinalizeRequest(BaseModel):
     dialog_history: list[dict[str, Any]] = Field(default_factory=list)
 
 
+class RectificationProRunRequest(BaseModel):
+    api_base_url: str = "http://127.0.0.1:8013"
+    payload: dict[str, Any]
+
+
 class AskQuestionOption(BaseModel):
     id: str
     text: str
@@ -301,7 +303,8 @@ class TimeRangeLocal(BaseModel):
 class PrimaryCandidate(BaseModel):
     sign_name_ru: str
     sign_name_en: str
-    time_range_local: TimeRangeLocal
+    time_range_local: TimeRangeLocal | None = None
+    time_ranges_local: list[TimeRangeLocal] = Field(default_factory=list)
     probability: float
 
 
@@ -309,6 +312,7 @@ class SecondaryCandidate(BaseModel):
     sign_name_ru: str
     sign_name_en: str
     probability: float
+    time_ranges_local: list[TimeRangeLocal] = Field(default_factory=list)
 
 
 class FinalResultLLMResponse(BaseModel):
@@ -317,6 +321,8 @@ class FinalResultLLMResponse(BaseModel):
     primary_candidate: PrimaryCandidate
     secondary_candidates: list[SecondaryCandidate]
     summary_text: str
+    element_scores: dict[str, float] = Field(default_factory=dict)
+    sign_scores: dict[str, float] = Field(default_factory=dict)
 
 
 def _log_stage1_warning(event: str, **fields: object) -> None:
@@ -357,6 +363,75 @@ def _extract_asked_question_ids(dialog_history: list[dict[str, Any]]) -> list[st
         if isinstance(question_id, str) and question_id:
             asked.append(question_id)
     return asked
+
+
+def _default_element_scores() -> dict[str, float]:
+    return {"fire": 0.0, "earth": 0.0, "air": 0.0, "water": 0.0}
+
+
+def _default_sign_scores() -> dict[str, float]:
+    signs: dict[str, float] = {}
+    for sign_group in ELEMENT_TO_SIGNS.values():
+        for _, sign_en in sign_group:
+            signs[sign_en] = 0.0
+    return signs
+
+
+def _extract_stage1_answers(dialog_history: list[dict[str, Any]]) -> list[tuple[str, str]]:
+    answers: list[tuple[str, str]] = []
+    for index, item in enumerate(dialog_history):
+        if item.get("role") != "assistant" or item.get("type") != "ask_question":
+            continue
+        question_id = item.get("question_id")
+        if not isinstance(question_id, str) or not question_id:
+            continue
+        if index + 1 >= len(dialog_history):
+            continue
+        user_item = dialog_history[index + 1]
+        if user_item.get("role") != "user":
+            continue
+        option_id = user_item.get("selected_option_id")
+        if isinstance(option_id, str) and option_id:
+            answers.append((question_id, option_id))
+    return answers
+
+
+def _calculate_element_and_sign_scores(
+    dialog_history: list[dict[str, Any]],
+) -> tuple[dict[str, float], dict[str, float]]:
+    element_scores = _default_element_scores()
+    sign_scores = _default_sign_scores()
+
+    for question_id, option_id in _extract_stage1_answers(dialog_history):
+        weights_by_element = QUESTION_OPTION_ELEMENT_MAP.get(question_id, {}).get(option_id, {})
+        for element_name, delta in weights_by_element.items():
+            if element_name not in element_scores:
+                continue
+            element_scores[element_name] += float(delta)
+            signs = ELEMENT_TO_SIGNS.get(element_name, ())
+            if not signs:
+                continue
+            per_sign = float(delta) / len(signs)
+            for _, sign_en in signs:
+                sign_scores[sign_en] += per_sign
+
+    return element_scores, sign_scores
+
+
+def _build_element_probability_text(element_scores: dict[str, float], sign_scores: dict[str, float]) -> str:
+    sorted_elements = sorted(element_scores.items(), key=lambda x: x[1], reverse=True)
+    sorted_signs = sorted(sign_scores.items(), key=lambda x: x[1], reverse=True)
+
+    top_elements = ", ".join(f"{name}:{score:.2f}" for name, score in sorted_elements[:2])
+    top_signs = ", ".join(f"{name}:{score:.2f}" for name, score in sorted_signs[:3])
+    return (
+        f"Промежуточно по стихиям: {top_elements or 'недостаточно данных'}. "
+        f"По знакам: {top_signs or 'недостаточно данных'}."
+    )
+
+
+def _parse_iso_local(dt_str: str) -> datetime:
+    return datetime.fromisoformat(dt_str)
 
 
 def _validate_stage1_semantics(
@@ -415,14 +490,38 @@ def _validate_stage1_semantics(
         if not _non_empty_string(primary.get("sign_name_en")):
             errors.append("final_result.primary_candidate.sign_name_en is empty")
 
-        time_range = primary.get("time_range_local")
-        if not isinstance(time_range, dict):
-            errors.append("final_result.primary_candidate.time_range_local is missing")
-        else:
-            if not _non_empty_string(time_range.get("start")):
-                errors.append("final_result.primary_candidate.time_range_local.start is empty")
-            if not _non_empty_string(time_range.get("end")):
-                errors.append("final_result.primary_candidate.time_range_local.end is empty")
+        time_ranges_local = primary.get("time_ranges_local")
+        valid_ranges_count = 0
+        if isinstance(time_ranges_local, list):
+            for idx, time_range_item in enumerate(time_ranges_local):
+                if not isinstance(time_range_item, dict):
+                    errors.append(
+                        f"final_result.primary_candidate.time_ranges_local[{idx}] must be object"
+                    )
+                    continue
+                if not _non_empty_string(time_range_item.get("start")):
+                    errors.append(
+                        f"final_result.primary_candidate.time_ranges_local[{idx}].start is empty"
+                    )
+                    continue
+                if not _non_empty_string(time_range_item.get("end")):
+                    errors.append(
+                        f"final_result.primary_candidate.time_ranges_local[{idx}].end is empty"
+                    )
+                    continue
+                valid_ranges_count += 1
+
+        if valid_ranges_count == 0:
+            time_range = primary.get("time_range_local")
+            if not isinstance(time_range, dict):
+                errors.append(
+                    "final_result.primary_candidate.time_range_local or time_ranges_local is required"
+                )
+            else:
+                if not _non_empty_string(time_range.get("start")):
+                    errors.append("final_result.primary_candidate.time_range_local.start is empty")
+                if not _non_empty_string(time_range.get("end")):
+                    errors.append("final_result.primary_candidate.time_range_local.end is empty")
 
         probability = primary.get("probability")
         if not isinstance(probability, (int, float)) or probability < 0 or probability > 1:
@@ -461,11 +560,13 @@ def _build_safe_question(*, dialog_history: list[dict[str, Any]], step_count: in
     if fallback_question is None:
         return None
 
+    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+
     return {
         "type": "ask_question",
         "step_index": step_count + 1,
         "should_continue": True,
-        "debug_probability_text": "Задаю уточняющий вопрос из резервного сценария.",
+        "debug_probability_text": _build_element_probability_text(element_scores, sign_scores),
         "question_id": fallback_question["question_id"],
         "question_text": fallback_question["question_text"],
         "options": fallback_question["options"],
@@ -504,19 +605,94 @@ def _sorted_intervals(rectification_document: dict[str, Any]) -> list[dict[str, 
             }
         )
 
-    normalized.sort(key=lambda x: (-x["duration_minutes"], x["interval_index"]))
+    normalized.sort(key=lambda x: (_parse_iso_local(x["start_local"]), x["interval_index"]))
     return normalized
+
+
+def _group_intervals_by_sign(
+    rectification_document: dict[str, Any],
+) -> list[dict[str, Any]]:
+    intervals = _sorted_intervals(rectification_document)
+    by_sign: dict[str, dict[str, Any]] = {}
+    for item in intervals:
+        sign_en = item["sign_name_en"]
+        if sign_en not in by_sign:
+            by_sign[sign_en] = {
+                "sign_name_ru": item["sign_name_ru"],
+                "sign_name_en": sign_en,
+                "intervals": [],
+                "duration_total_minutes": 0,
+            }
+        by_sign[sign_en]["intervals"].append(
+            {
+                "start": item["start_local"],
+                "end": item["end_local"],
+            }
+        )
+        by_sign[sign_en]["duration_total_minutes"] += max(int(item["duration_minutes"]), 0)
+
+    grouped = list(by_sign.values())
+    grouped.sort(
+        key=lambda x: (
+            -x["duration_total_minutes"],
+            _parse_iso_local(x["intervals"][0]["start"]) if x["intervals"] else datetime.max,
+        )
+    )
+    return grouped
+
+
+def _normalize_time_ranges(primary_candidate: dict[str, Any]) -> list[dict[str, str]]:
+    ranges = primary_candidate.get("time_ranges_local")
+    normalized: list[dict[str, str]] = []
+    if isinstance(ranges, list):
+        for item in ranges:
+            if not isinstance(item, dict):
+                continue
+            start = item.get("start")
+            end = item.get("end")
+            if _non_empty_string(start) and _non_empty_string(end):
+                normalized.append({"start": start.strip(), "end": end.strip()})
+    if normalized:
+        normalized.sort(key=lambda item: _parse_iso_local(item["start"]))
+        return normalized
+
+    single = primary_candidate.get("time_range_local")
+    if isinstance(single, dict):
+        start = single.get("start")
+        end = single.get("end")
+        if _non_empty_string(start) and _non_empty_string(end):
+            return [{"start": start.strip(), "end": end.strip()}]
+    return []
+
+
+def _merge_candidate_ranges_with_document(
+    *,
+    candidate: dict[str, Any],
+    rectification_document: dict[str, Any],
+) -> list[dict[str, str]]:
+    own_ranges = _normalize_time_ranges(candidate)
+    sign_name_en = candidate.get("sign_name_en")
+    if not isinstance(sign_name_en, str) or not sign_name_en:
+        return own_ranges
+
+    grouped = _group_intervals_by_sign(rectification_document)
+    for sign_info in grouped:
+        if sign_info["sign_name_en"] == sign_name_en and sign_info["intervals"]:
+            return sign_info["intervals"]
+    return own_ranges
 
 
 def _build_safe_final_result(
     *,
     rectification_document: dict[str, Any],
+    dialog_history: list[dict[str, Any]],
     reason: str,
 ) -> dict[str, Any]:
-    intervals = _sorted_intervals(rectification_document)
-    if intervals:
-        primary = intervals[0]
-        secondary_source = intervals[1:4]
+    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    candidates = _group_intervals_by_sign(rectification_document)
+    if candidates:
+        primary = candidates[0]
+        secondary_source = candidates[1:4]
         secondary_probabilities = [0.22, 0.17, 0.11]
         secondary = []
         for index, item in enumerate(secondary_source):
@@ -524,6 +700,7 @@ def _build_safe_final_result(
                 {
                     "sign_name_ru": item["sign_name_ru"],
                     "sign_name_en": item["sign_name_en"],
+                    "time_ranges_local": item["intervals"],
                     "probability": secondary_probabilities[index],
                 }
             )
@@ -533,13 +710,13 @@ def _build_safe_final_result(
             "primary_candidate": {
                 "sign_name_ru": primary["sign_name_ru"],
                 "sign_name_en": primary["sign_name_en"],
-                "time_range_local": {
-                    "start": primary["start_local"],
-                    "end": primary["end_local"],
-                },
+                "time_ranges_local": primary["intervals"],
+                "time_range_local": primary["intervals"][0],
                 "probability": 0.34,
             },
             "secondary_candidates": secondary,
+            "element_scores": element_scores,
+            "sign_scores": sign_scores,
             "summary_text": (
                 "Предварительный результат Stage 1 сформирован в резервном безопасном режиме "
                 f"({reason}). Уверенность намеренно снижена."
@@ -560,10 +737,13 @@ def _build_safe_final_result(
         "primary_candidate": {
             "sign_name_ru": "Не определено",
             "sign_name_en": "Undetermined",
+            "time_ranges_local": [{"start": start_local, "end": end_local}],
             "time_range_local": {"start": start_local, "end": end_local},
             "probability": 0.05,
         },
         "secondary_candidates": [],
+        "element_scores": element_scores,
+        "sign_scores": sign_scores,
         "summary_text": (
             "Предварительный результат Stage 1 сформирован в резервном безопасном режиме. "
             f"Не найдено пригодных интервалов ({reason})."
@@ -576,6 +756,47 @@ def _apply_free_text_policy(llm_json: dict[str, Any]) -> dict[str, Any]:
         llm_json = dict(llm_json)
         llm_json["allow_free_text"] = False
     return llm_json
+
+
+def _normalize_stage1_final_result_payload(
+    *,
+    llm_json: dict[str, Any],
+    rectification_document: dict[str, Any],
+    dialog_history: list[dict[str, Any]],
+) -> dict[str, Any]:
+    if llm_json.get("type") != "final_result":
+        return llm_json
+
+    result = dict(llm_json)
+    primary = dict(result.get("primary_candidate") or {})
+    primary_ranges = _merge_candidate_ranges_with_document(
+        candidate=primary,
+        rectification_document=rectification_document,
+    )
+    if primary_ranges:
+        primary["time_ranges_local"] = primary_ranges
+        primary["time_range_local"] = primary_ranges[0]
+    result["primary_candidate"] = primary
+
+    secondary_out: list[dict[str, Any]] = []
+    for item in result.get("secondary_candidates") or []:
+        if not isinstance(item, dict):
+            continue
+        secondary_item = dict(item)
+        secondary_ranges = _merge_candidate_ranges_with_document(
+            candidate=secondary_item,
+            rectification_document=rectification_document,
+        )
+        if secondary_ranges:
+            secondary_item["time_ranges_local"] = secondary_ranges
+        secondary_out.append(secondary_item)
+    result["secondary_candidates"] = secondary_out
+
+    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    result["element_scores"] = element_scores
+    result["sign_scores"] = sign_scores
+
+    return result
 
 
 def _run_stage1_guarded(
@@ -594,6 +815,7 @@ def _run_stage1_guarded(
         return {
             "llm_json": _build_safe_final_result(
                 rectification_document=rectification_document,
+                dialog_history=dialog_history,
                 reason="max_steps_reached",
             ),
             "llm_text": "",
@@ -622,6 +844,7 @@ def _run_stage1_guarded(
         if mode == "finalize_now" or step_count >= RECT_MIN_STEPS:
             fallback_llm_json = _build_safe_final_result(
                 rectification_document=rectification_document,
+                dialog_history=dialog_history,
                 reason="llm_request_failed",
             )
         else:
@@ -632,6 +855,7 @@ def _run_stage1_guarded(
             if fallback_llm_json is None:
                 fallback_llm_json = _build_safe_final_result(
                     rectification_document=rectification_document,
+                    dialog_history=dialog_history,
                     reason="no_safe_question_available",
                 )
         return {
@@ -664,6 +888,7 @@ def _run_stage1_guarded(
         if mode == "finalize_now" or step_count >= RECT_MIN_STEPS:
             fallback_llm_json = _build_safe_final_result(
                 rectification_document=rectification_document,
+                dialog_history=dialog_history,
                 reason="llm_json_failed_guard",
             )
         else:
@@ -674,11 +899,17 @@ def _run_stage1_guarded(
             if fallback_llm_json is None:
                 fallback_llm_json = _build_safe_final_result(
                     rectification_document=rectification_document,
+                    dialog_history=dialog_history,
                     reason="no_safe_question_available",
                 )
 
         llm_result["llm_json"] = fallback_llm_json
 
+    llm_result["llm_json"] = _normalize_stage1_final_result_payload(
+        llm_json=llm_result["llm_json"],
+        rectification_document=rectification_document,
+        dialog_history=dialog_history,
+    )
     llm_result["llm_json"] = _apply_free_text_policy(llm_result["llm_json"])
     llm_result["warnings"] = warnings
     return llm_result
@@ -1251,6 +1482,7 @@ def generate(payload: GenerateRequest) -> JSONResponse:
         "latitude": payload.latitude,
         "longitude": payload.longitude,
         "house_system": payload.house_system,
+        "aspect_orb_profile": payload.aspect_orb_profile,
         "zodiac_mode": payload.zodiac_mode,
         "sidereal_mode": payload.sidereal_mode,
     }
@@ -1405,6 +1637,16 @@ def rectification_events_finalize(payload: RectificationEventsFinalizeRequest) -
         payload={
             "dialog_history": payload.dialog_history,
         },
+    )
+    return JSONResponse(response_json)
+
+
+@app.post("/api/rectification/pro/run")
+def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
+    response_json = _post_rectification_events(
+        base_url=payload.api_base_url,
+        path="/api/v1/rectification/pro/run",
+        payload=payload.payload,
     )
     return JSONResponse(response_json)
 
