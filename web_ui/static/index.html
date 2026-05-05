@@ -999,6 +999,7 @@
             <button id="reAnswerBtn" class="btn" type="button">Ответить</button>
             <button id="reSkipBtn" class="btn secondary" type="button">Пропустить</button>
             <button id="reFinalizeBtn" class="btn secondary" type="button">Завершить</button>
+            <button id="reAddTestEventsBtn" class="btn secondary" type="button">Добавить тестовые события для Pro</button>
           </div>
         </div>
         <div id="reNoQuestionText" class="hint" style="margin-top:8px;">Нажмите «Начать сбор событий».</div>
@@ -3116,10 +3117,121 @@
     }
 
     function buildProEventsFromStage2() {
-      if (rectEventsState.finalized && Array.isArray(rectEventsState.finalized.events)) {
-        return rectEventsState.finalized.events;
+      const events = rectEventsState.finalized && Array.isArray(rectEventsState.finalized.events)
+        ? rectEventsState.finalized.events
+        : [];
+      return events
+        .map((event, idx) => normalizeProEventCard(event, idx))
+        .filter(Boolean);
+    }
+
+    const PRO_ALLOWED_EVENT_TYPES = new Set([
+      "children_birth",
+      "death_of_close_person",
+      "surgery_accident_life_risk",
+      "marriage_relationship",
+      "relocation_emigration",
+      "education_work_start",
+      "profession_lifestyle_change",
+      "freedom_restriction",
+      "financial_rise_fall",
+      "inner_crisis_turning_point",
+      "custom_major_event",
+    ]);
+    const PRO_ALLOWED_DATE_PRECISION = new Set(["exact", "month", "year", "range", "unknown"]);
+    const PRO_ALLOWED_REVERSIBILITY = new Set(["reversible", "irreversible", "unknown"]);
+    const PRO_ALLOWED_LIFE_AREAS = new Set(["relationships", "career", "home", "health", "finance", "identity", "other"]);
+
+    function toIsoDate(value) {
+      if (!value || typeof value !== "string") return null;
+      const maybeDate = value.includes("T") ? value.split("T")[0] : value;
+      return /^\d{4}-\d{2}-\d{2}$/.test(maybeDate) ? maybeDate : null;
+    }
+
+    function normalizeProEventCard(event, idx) {
+      if (!event || typeof event !== "object") return null;
+      const fallbackDate = toIsoDate(event.start_date) || toIsoDate(event.end_date) || "2000-01-01";
+      const eventType = PRO_ALLOWED_EVENT_TYPES.has(event.event_type) ? event.event_type : "custom_major_event";
+      const datePrecision = PRO_ALLOWED_DATE_PRECISION.has(event.date_precision) ? event.date_precision : "unknown";
+      const reversibility = PRO_ALLOWED_REVERSIBILITY.has(event.reversibility) ? event.reversibility : "unknown";
+      const lifeArea = PRO_ALLOWED_LIFE_AREAS.has(event.life_area) ? event.life_area : "other";
+      const impact = Number(event.impact_level);
+      const impactLevel = Number.isFinite(impact) ? Math.min(5, Math.max(1, Math.round(impact))) : 3;
+
+      const normalized = {
+        event_id: String(event.event_id || `ui_event_${idx + 1}`),
+        life_area: lifeArea,
+        event_type: eventType,
+        title: String(event.title || "Событие из Stage 2"),
+        date_text: String(event.date_text || fallbackDate),
+        start_date: toIsoDate(event.start_date) || fallbackDate,
+        end_date: toIsoDate(event.end_date) || toIsoDate(event.start_date) || fallbackDate,
+        date_precision: datePrecision,
+        impact_level: impactLevel,
+        reversibility,
+        notes: String(event.notes || ""),
+        user_skipped: Boolean(event.user_skipped),
+      };
+
+      if (!normalized.event_id || !normalized.title || !normalized.date_text) {
+        return null;
       }
-      return [];
+      return normalized;
+    }
+
+    function buildProTestEventsPreset() {
+      return [
+        {
+          event_id: "preset_ev_1",
+          event_type: "marriage_relationship",
+          title: "Брак",
+          date_text: "2012-08-18",
+          start_date: "2012-08-18",
+          end_date: "2012-08-18",
+          date_precision: "exact",
+          impact_level: 5,
+          reversibility: "irreversible",
+          life_area: "relationships",
+          notes: "Тестовый пресет для E2E Pro",
+          user_skipped: false,
+        },
+        {
+          event_id: "preset_ev_2",
+          event_type: "relocation_emigration",
+          title: "Переезд",
+          date_text: "2016-05",
+          start_date: "2016-05-01",
+          end_date: "2016-05-31",
+          date_precision: "month",
+          impact_level: 4,
+          reversibility: "irreversible",
+          life_area: "home",
+          notes: "Тестовый пресет для E2E Pro",
+          user_skipped: false,
+        },
+      ];
+    }
+
+    function applyProTestEventsPreset() {
+      const presetEvents = buildProTestEventsPreset()
+        .map((event, idx) => normalizeProEventCard(event, idx))
+        .filter(Boolean);
+      rectEventsState.finalized = {
+        status: "finalized",
+        step_index: rectEventsState.finalized?.step_index || 99,
+        events_collected_count: presetEvents.length,
+        warnings: ["test_events_preset_applied"],
+        events: presetEvents,
+        events_count: presetEvents.length,
+        strong_events_count: presetEvents.filter((event) => (event.impact_level || 0) >= 4).length,
+        confidence_preliminary: "medium",
+        dialog_history: rectEventsState.dialogHistory || [],
+      };
+      renderRectEventsFinal(rectEventsState.finalized);
+      reTechJsonBoxEl.textContent = JSON.stringify(rectEventsState.finalized, null, 2);
+      updateWizardContextFromCurrentStates();
+      setReStatus("Тестовые события для Pro добавлены.");
+      setWzStatus("Тестовые события для Pro добавлены в Stage 2.");
     }
 
     function renderProResult(data) {
@@ -3186,7 +3298,7 @@
       }
 
       const payload = {
-        birth_date_local: sharedBirthContext.birthDateLocal || document.getElementById("rdBirthDate").value,
+        birth_date_local: (sharedBirthContext.birthDateLocal || document.getElementById("rdBirthDate").value || "").split("T")[0],
         latitude: Number(sharedBirthContext.latitude ?? document.getElementById("rdLatitude").value),
         longitude: Number(sharedBirthContext.longitude ?? document.getElementById("rdLongitude").value),
         timezone_name: sharedBirthContext.timezoneName || timezoneNameEl.value || "Europe/Moscow",
@@ -3206,6 +3318,26 @@
           include_totems: false,
         },
       };
+
+      const invalidReasons = [];
+      if (!payload.birth_date_local || !/^\d{4}-\d{2}-\d{2}$/.test(payload.birth_date_local)) {
+        invalidReasons.push("дата рождения");
+      }
+      if (!Number.isFinite(payload.latitude) || !Number.isFinite(payload.longitude)) {
+        invalidReasons.push("координаты");
+      }
+      if (!payload.timezone_name) {
+        invalidReasons.push("timezone_name");
+      }
+      if (!Array.isArray(payload.events) || !payload.events.length) {
+        invalidReasons.push("валидные события Stage 2");
+      }
+      if (invalidReasons.length) {
+        const humanMsg = `Недостаточно данных для Pro-ректификации: ${invalidReasons.join(", ")}.`;
+        setRpStatus(humanMsg);
+        setWzProStatus(humanMsg);
+        return;
+      }
 
       setRpStatus("Запускаем Pro-ректификацию...");
       setWzProStatus("Запускаем Pro-ректификацию...");
@@ -3357,6 +3489,7 @@
     document.getElementById("reAnswerBtn").addEventListener("click", () => continueRectEventsFlow(false));
     document.getElementById("reSkipBtn").addEventListener("click", () => continueRectEventsFlow(true));
     document.getElementById("reFinalizeBtn").addEventListener("click", finalizeRectEventsFlow);
+    document.getElementById("reAddTestEventsBtn").addEventListener("click", applyProTestEventsPreset);
     document.getElementById("rpRunBtn").addEventListener("click", runProRectification);
     reToggleJsonBtnEl.addEventListener("click", () => {
       const hiddenNow = reTechJsonWrapEl.classList.toggle("hidden");

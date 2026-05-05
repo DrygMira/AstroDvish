@@ -49,3 +49,16 @@ def test_stage1_main_ui_hides_token_debug_strings_and_shows_human_fallback_text(
     html = response.text
     assert "Токены: input=" not in html
     assert "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам." in html
+
+
+def test_stage2_pro_e2e_helpers_present_in_ui() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert 'id="reAddTestEventsBtn"' in html
+    assert "Добавить тестовые события для Pro" in html
+    assert "normalizeProEventCard" in html
+    assert "buildProTestEventsPreset" in html
+    assert "Недостаточно данных для Pro-ректификации" in html
