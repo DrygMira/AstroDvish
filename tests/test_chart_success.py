@@ -17,6 +17,8 @@ MANDATORY_OBJECTS = (
     "neptune",
     "pluto",
     "true_node",
+    "true_north_node",
+    "true_south_node",
     "mean_node",
 )
 
@@ -89,7 +91,13 @@ def test_chart_success_endpoint(monkeypatch, tmp_path) -> None:
 
     node_defs = data["meta"]["node_definitions"]
     assert node_defs["true_node"]["calculation_type"] == "true_node"
+    assert node_defs["true_north_node"]["calculation_type"] == "true_node"
+    assert node_defs["true_south_node"]["calculation_type"] == "derived_from_true_node"
     assert node_defs["mean_node"]["calculation_type"] == "mean_node"
+    true_north = data["objects"]["true_north_node"]["absolute_degree_0_360"]
+    true_south = data["objects"]["true_south_node"]["absolute_degree_0_360"]
+    assert abs(true_south - ((true_north + 180.0) % 360.0)) < 1e-6
+    assert data["objects"]["true_south_node"]["house"] is not None
 
 
 def test_chart_returns_real_calculation_output(monkeypatch, tmp_path) -> None:
@@ -118,3 +126,4 @@ def test_chart_returns_real_calculation_output(monkeypatch, tmp_path) -> None:
     assert body["meta"]["zodiac_mode"] == "sidereal"
     assert body["meta"]["sidereal_mode"] == "lahiri"
     assert body["objects"]["true_node"]["longitude_deg"] != body["objects"]["mean_node"]["longitude_deg"]
+    assert body["objects"]["true_north_node"]["longitude_deg"] == body["objects"]["true_node"]["longitude_deg"]

@@ -37,6 +37,35 @@ def build_object_payload(name: str, raw_values: tuple[float, ...]) -> ObjectResp
     )
 
 
+def _build_derived_true_south_node(true_node: ObjectResponse) -> ObjectResponse:
+    south_longitude = normalize_degree(true_node.absolute_degree_0_360 + 180.0)
+    sign_index, sign_name, sign_degree = resolve_sign(south_longitude)
+    return ObjectResponse(
+        name="true_south_node",
+        longitude_deg=round(south_longitude, 6),
+        latitude_deg=round(-true_node.latitude_deg, 6),
+        distance_au=true_node.distance_au,
+        speed_longitude_deg_per_day=round(true_node.speed_longitude_deg_per_day, 6),
+        retrograde=true_node.retrograde,
+        sign_index=sign_index,
+        sign_name_en=sign_name,
+        sign_degree=round(sign_degree, 6),
+        sign_degree_dms=degree_to_dms(sign_degree),
+        absolute_degree_0_360=round(south_longitude, 6),
+    )
+
+
+def _augment_node_objects(objects: dict[str, ObjectResponse]) -> dict[str, ObjectResponse]:
+    augmented = dict(objects)
+    true_node = augmented.get("true_node")
+    if true_node is None:
+        return augmented
+
+    augmented["true_north_node"] = true_node.model_copy(update={"name": "true_north_node"})
+    augmented["true_south_node"] = _build_derived_true_south_node(true_node)
+    return augmented
+
+
 def build_houses_payload(house_system: str, cusps: tuple[float, ...]) -> HousesResponse:
     if len(cusps) >= 13:
         cusp_values = {str(i): round(normalize_degree(cusps[i]), 6) for i in range(1, 13)}
@@ -110,7 +139,25 @@ def build_chart_response(
     object_constants: dict[str, int],
     aspect_orb_profile: AspectOrbProfile,
 ) -> ChartResponse:
-    objects_with_houses = assign_object_houses(objects=objects, houses=houses)
+    objects_with_houses = assign_object_houses(objects=_augment_node_objects(objects), houses=houses)
+    node_definitions = {
+        "true_node": {
+            "label_ru": "Северный узел истинный",
+            "calculation_type": "true_node",
+        },
+        "true_north_node": {
+            "label_ru": "Истинный Северный узел",
+            "calculation_type": "true_node",
+        },
+        "true_south_node": {
+            "label_ru": "Истинный Южный узел",
+            "calculation_type": "derived_from_true_node",
+        },
+        "mean_node": {
+            "label_ru": "Северный узел средний",
+            "calculation_type": "mean_node",
+        },
+    }
     return ChartResponse(
         input=InputEchoResponse(
             datetime_utc=payload.datetime_as_z(),
@@ -130,15 +177,6 @@ def build_chart_response(
             sidereal_mode=payload.sidereal_mode,
             object_constants=object_constants,
             aspect_orb_profile=aspect_orb_profile,
-            node_definitions={
-                "true_node": {
-                    "label_ru": "Северный узел истинный",
-                    "calculation_type": "true_node",
-                },
-                "mean_node": {
-                    "label_ru": "Северный узел средний",
-                    "calculation_type": "mean_node",
-                },
-            },
+            node_definitions=node_definitions,
         ),
     )

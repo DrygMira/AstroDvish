@@ -39,3 +39,13 @@ def test_rectification_wizard_state_reset_and_pro_windows_builder_exist() -> Non
     assert "buildProAscWindowsFromStage1" in html
     assert "time_ranges_local" in html
     assert "Вы изменили данные рождения. Предыдущие интервалы, диалог и Pro-ректификация будут сброшены." in html
+
+
+def test_stage1_main_ui_hides_token_debug_strings_and_shows_human_fallback_text() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "Токены: input=" not in html
+    assert "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам." in html

@@ -38,8 +38,8 @@ def test_timezone_auto_ui_disables_manual_offset_and_shows_auto_resolution() -> 
     html = response.text
     assert "timezoneOffsetEl.disabled = isAuto;" in html
     assert "wzTimezoneOffsetEl.disabled = isAuto;" in html
-    assert "Рассчитывается автоматически по timezone name" in html
-    assert "Используется ручной offset" in html
+    assert "Рассчитывается автоматически по timezone name." in html
+    assert "Используется ручной offset." in html
     assert "Europe/Moscow" in html
 
 
@@ -50,4 +50,15 @@ def test_timezone_auto_ui_uses_resolved_offset_text_not_stale_manual_value() -> 
     assert response.status_code == 200
     html = response.text
     assert "sharedBirthContext.timezoneResolvedOffset" in html
-    assert "auto" in html
+    assert 'ensureSelectDisplayValue(timezoneOffsetEl, resolvedOffset || "auto");' in html
+    assert 'ensureSelectDisplayValue(wzTimezoneOffsetEl, resolvedOffset || "auto");' in html
+
+
+def test_main_ui_sanitizes_openrouter_402_error_text() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "Ответ модели временно недоступен. Попробуйте ещё раз позже." in html
+    assert "detail?.raw_error" in html

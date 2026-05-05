@@ -57,3 +57,15 @@ def test_stage1_final_ui_supports_multiple_time_ranges_and_pro_forwarding() -> N
     assert "buildProAscWindowsFromStage1" in html
     assert "secondary_candidates" in html
     assert "Екатерина, благодарим вас за участие!" in html
+
+
+def test_expert_mode_main_ui_shows_true_south_node_and_hides_mean_node_from_primary_tables() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert '"true_south_node"' in html
+    assert '"Истинный Южный узел"' in html
+    assert '"Истинный Северный узел"' in html
+    assert "Средний Северный узел (mean_node, debug)" not in html

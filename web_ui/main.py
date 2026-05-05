@@ -26,9 +26,16 @@ ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 
 TZ_OFFSET_PATTERN = re.compile(r"^[+-](?:0\d|1[0-4]):[0-5]\d$")
 
-RECT_MIN_STEPS = 3
-RECT_MAX_STEPS = 10
+STAGE1_MIN_QUESTIONS = 6
+STAGE1_MAX_QUESTIONS = 8
+STAGE1_EARLY_FINAL_THRESHOLD = 0.65
+RECT_MIN_STEPS = STAGE1_MIN_QUESTIONS
+RECT_MAX_STEPS = STAGE1_MAX_QUESTIONS
 OPENROUTER_DEFAULT_BASE_URL = "https://openrouter.ai/api/v1"
+OPENROUTER_REQUEST_KIND_DEFAULT = "default"
+OPENROUTER_REQUEST_KIND_STAGE1 = "stage1"
+OPENROUTER_REQUEST_KIND_GENERATE = "generate"
+OPENROUTER_REQUEST_KIND_PRO = "pro"
 
 app = FastAPI(title="astro-web-ui", docs_url=None, redoc_url=None, openapi_url=None)
 logger = logging.getLogger(__name__)
@@ -315,6 +322,12 @@ class SecondaryCandidate(BaseModel):
     time_ranges_local: list[TimeRangeLocal] = Field(default_factory=list)
 
 
+class CandidateGroup(BaseModel):
+    element: str | None = None
+    signs: list[str] = Field(default_factory=list)
+    reason: str
+
+
 class FinalResultLLMResponse(BaseModel):
     type: Literal["final_result"]
     should_continue: bool
@@ -323,6 +336,8 @@ class FinalResultLLMResponse(BaseModel):
     summary_text: str
     element_scores: dict[str, float] = Field(default_factory=dict)
     sign_scores: dict[str, float] = Field(default_factory=dict)
+    candidate_group: CandidateGroup | None = None
+    needs_more_questions: bool = False
 
 
 def _log_stage1_warning(event: str, **fields: object) -> None:
@@ -422,12 +437,31 @@ def _build_element_probability_text(element_scores: dict[str, float], sign_score
     sorted_elements = sorted(element_scores.items(), key=lambda x: x[1], reverse=True)
     sorted_signs = sorted(sign_scores.items(), key=lambda x: x[1], reverse=True)
 
-    top_elements = ", ".join(f"{name}:{score:.2f}" for name, score in sorted_elements[:2])
-    top_signs = ", ".join(f"{name}:{score:.2f}" for name, score in sorted_signs[:3])
-    return (
-        f"Промежуточно по стихиям: {top_elements or 'недостаточно данных'}. "
-        f"По знакам: {top_signs or 'недостаточно данных'}."
-    )
+    top_element_name = sorted_elements[0][0] if sorted_elements and sorted_elements[0][1] > 0 else None
+    top_sign_names = [name for name, score in sorted_signs if score > 0][:3]
+    element_labels = {
+        "fire": "Огонь",
+        "earth": "Земля",
+        "air": "Воздух",
+        "water": "Вода",
+    }
+    sign_labels = {
+        "Aries": "Овен",
+        "Taurus": "Телец",
+        "Gemini": "Близнецы",
+        "Cancer": "Рак",
+        "Leo": "Лев",
+        "Virgo": "Дева",
+        "Libra": "Весы",
+        "Scorpio": "Скорпион",
+        "Sagittarius": "Стрелец",
+        "Capricorn": "Козерог",
+        "Aquarius": "Водолей",
+        "Pisces": "Рыбы",
+    }
+    top_signs_text = ", ".join(sign_labels.get(name, name) for name in top_sign_names) or "пока не определены"
+    top_element_text = element_labels.get(top_element_name, top_element_name) if top_element_name else "пока не определена"
+    return f"Промежуточная оценка: Стихия: {top_element_text}. Возможные знаки: {top_signs_text}."
 
 
 def _parse_iso_local(dt_str: str) -> datetime:
@@ -641,6 +675,202 @@ def _group_intervals_by_sign(
     return grouped
 
 
+def _sign_label_map() -> dict[str, str]:
+    return {
+        "Aries": "Овен",
+        "Taurus": "Телец",
+        "Gemini": "Близнецы",
+        "Cancer": "Рак",
+        "Leo": "Лев",
+        "Virgo": "Дева",
+        "Libra": "Весы",
+        "Scorpio": "Скорпион",
+        "Sagittarius": "Стрелец",
+        "Capricorn": "Козерог",
+        "Aquarius": "Водолей",
+        "Pisces": "Рыбы",
+    }
+
+
+def _element_label_map() -> dict[str, str]:
+    return {
+        "fire": "Огонь",
+        "earth": "Земля",
+        "air": "Воздух",
+        "water": "Вода",
+    }
+
+
+def _sign_to_element_map() -> dict[str, str]:
+    mapping: dict[str, str] = {}
+    for element_name, signs in ELEMENT_TO_SIGNS.items():
+        for _, sign_en in signs:
+            mapping[sign_en] = element_name
+    return mapping
+
+
+def _score_ties(score_map: dict[str, float]) -> list[str]:
+    positive_scores = {key: float(value) for key, value in score_map.items() if float(value) > 0}
+    if not positive_scores:
+        return []
+    top_score = max(positive_scores.values())
+    epsilon = 1e-9
+    return [key for key, value in positive_scores.items() if abs(value - top_score) <= epsilon]
+
+
+def _has_strong_stage1_leader(dialog_history: list[dict[str, Any]]) -> bool:
+    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    total_element_score = sum(element_scores.values())
+    if total_element_score <= 0:
+        return False
+    top_elements = _score_ties(element_scores)
+    if len(top_elements) != 1:
+        return False
+    top_element_score = element_scores[top_elements[0]]
+    if (top_element_score / total_element_score) < STAGE1_EARLY_FINAL_THRESHOLD:
+        return False
+
+    top_signs = _score_ties(sign_scores)
+    return len(top_signs) == 1
+
+
+def _should_allow_stage1_finalization(
+    *,
+    dialog_history: list[dict[str, Any]],
+    mode: Literal["choose_next_question", "finalize_now"],
+) -> bool:
+    answered_questions = len(_extract_stage1_answers(dialog_history))
+    if answered_questions >= STAGE1_MIN_QUESTIONS:
+        return True
+    if mode == "finalize_now":
+        return _has_strong_stage1_leader(dialog_history)
+    return False
+
+
+def _build_secondary_candidates_from_signs(
+    signs: list[str],
+    grouped_by_sign: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    sign_labels = _sign_label_map()
+    if not signs:
+        return []
+    probability = round(1 / len(signs), 2)
+    secondary: list[dict[str, Any]] = []
+    for sign_name_en in signs:
+        candidate = grouped_by_sign.get(sign_name_en)
+        if not candidate:
+            continue
+        secondary.append(
+            {
+                "sign_name_ru": candidate["sign_name_ru"] or sign_labels.get(sign_name_en, sign_name_en),
+                "sign_name_en": sign_name_en,
+                "time_ranges_local": candidate["intervals"],
+                "probability": probability,
+            }
+        )
+    return secondary
+
+
+def _build_scored_safe_final_result(
+    *,
+    rectification_document: dict[str, Any],
+    element_scores: dict[str, float],
+    sign_scores: dict[str, float],
+    reason: str,
+) -> dict[str, Any] | None:
+    candidates = _group_intervals_by_sign(rectification_document)
+    grouped_by_sign = {item["sign_name_en"]: item for item in candidates}
+    sign_labels = _sign_label_map()
+    element_labels = _element_label_map()
+    sign_to_element = _sign_to_element_map()
+
+    top_signs = [sign for sign in _score_ties(sign_scores) if sign in grouped_by_sign]
+    if top_signs:
+        top_primary = grouped_by_sign[top_signs[0]]
+        probability = round(1 / len(top_signs), 2)
+        candidate_group = None
+        needs_more_questions = False
+        summary_text = (
+            "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
+            f"Лидер по знакам: {top_primary['sign_name_ru']}."
+        )
+        if len(top_signs) > 1:
+            top_element = sign_to_element.get(top_signs[0])
+            candidate_group = {
+                "element": top_element,
+                "signs": top_signs,
+                "reason": "equal_sign_scores",
+            }
+            needs_more_questions = True
+            signs_text = ", ".join(sign_labels.get(sign_name, sign_name) for sign_name in top_signs)
+            summary_text = (
+                "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
+                f"Основная стихия: {element_labels.get(top_element, top_element or 'не определена')}. "
+                f"Кандидаты внутри стихии: {signs_text}. Для выбора точного знака нужны дополнительные вопросы."
+            )
+
+        secondary_candidates = _build_secondary_candidates_from_signs(top_signs[1:], grouped_by_sign)
+        return {
+            "type": "final_result",
+            "should_continue": False,
+            "primary_candidate": {
+                "sign_name_ru": top_primary["sign_name_ru"],
+                "sign_name_en": top_primary["sign_name_en"],
+                "time_ranges_local": top_primary["intervals"],
+                "time_range_local": top_primary["intervals"][0],
+                "probability": probability,
+            },
+            "secondary_candidates": secondary_candidates,
+            "element_scores": element_scores,
+            "sign_scores": sign_scores,
+            "candidate_group": candidate_group,
+            "needs_more_questions": needs_more_questions,
+            "summary_text": f"{summary_text} Резервный режим: {reason}.",
+        }
+
+    top_elements = _score_ties(element_scores)
+    if top_elements:
+        candidate_signs: list[str] = []
+        for element_name in top_elements:
+            candidate_signs.extend(
+                sign_en for _, sign_en in ELEMENT_TO_SIGNS.get(element_name, ()) if sign_en in grouped_by_sign
+            )
+        if candidate_signs:
+            first_sign = candidate_signs[0]
+            primary = grouped_by_sign[first_sign]
+            probability = round(1 / len(candidate_signs), 2)
+            candidate_group = {
+                "element": top_elements[0] if len(top_elements) == 1 else None,
+                "signs": candidate_signs,
+                "reason": "element_scores_only" if len(top_elements) == 1 else "equal_element_scores",
+            }
+            elements_text = ", ".join(element_labels.get(item, item) for item in top_elements)
+            signs_text = ", ".join(sign_labels.get(sign_name, sign_name) for sign_name in candidate_signs)
+            return {
+                "type": "final_result",
+                "should_continue": False,
+                "primary_candidate": {
+                    "sign_name_ru": primary["sign_name_ru"],
+                    "sign_name_en": primary["sign_name_en"],
+                    "time_ranges_local": primary["intervals"],
+                    "time_range_local": primary["intervals"][0],
+                    "probability": probability,
+                },
+                "secondary_candidates": _build_secondary_candidates_from_signs(candidate_signs[1:], grouped_by_sign),
+                "element_scores": element_scores,
+                "sign_scores": sign_scores,
+                "candidate_group": candidate_group,
+                "needs_more_questions": True,
+                "summary_text": (
+                    "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
+                    f"Основная стихия: {elements_text}. Возможные знаки: {signs_text}. "
+                    f"Для точного выбора знака нужны дополнительные вопросы. Резервный режим: {reason}."
+                ),
+            }
+
+    return None
+
+
 def _normalize_time_ranges(primary_candidate: dict[str, Any]) -> list[dict[str, str]]:
     ranges = primary_candidate.get("time_ranges_local")
     normalized: list[dict[str, str]] = []
@@ -689,6 +919,15 @@ def _build_safe_final_result(
     reason: str,
 ) -> dict[str, Any]:
     element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    scored_result = _build_scored_safe_final_result(
+        rectification_document=rectification_document,
+        element_scores=element_scores,
+        sign_scores=sign_scores,
+        reason=reason,
+    )
+    if scored_result is not None:
+        return scored_result
+
     candidates = _group_intervals_by_sign(rectification_document)
     if candidates:
         primary = candidates[0]
@@ -717,8 +956,10 @@ def _build_safe_final_result(
             "secondary_candidates": secondary,
             "element_scores": element_scores,
             "sign_scores": sign_scores,
+            "candidate_group": None,
+            "needs_more_questions": True,
             "summary_text": (
-                "Предварительный результат Stage 1 сформирован в резервном безопасном режиме "
+                "Ответы пользователя не дали пригодного лидера, поэтому использован технический резервный сценарий "
                 f"({reason}). Уверенность намеренно снижена."
             ),
         }
@@ -744,8 +985,10 @@ def _build_safe_final_result(
         "secondary_candidates": [],
         "element_scores": element_scores,
         "sign_scores": sign_scores,
+        "candidate_group": None,
+        "needs_more_questions": True,
         "summary_text": (
-            "Предварительный результат Stage 1 сформирован в резервном безопасном режиме. "
+            "Ответы пользователя не дали пригодного лидера, поэтому использован технический резервный сценарий. "
             f"Не найдено пригодных интервалов ({reason})."
         ),
     }
@@ -795,6 +1038,8 @@ def _normalize_stage1_final_result_payload(
     element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
     result["element_scores"] = element_scores
     result["sign_scores"] = sign_scores
+    result["candidate_group"] = result.get("candidate_group")
+    result["needs_more_questions"] = bool(result.get("needs_more_questions", False))
 
     return result
 
@@ -809,6 +1054,7 @@ def _run_stage1_guarded(
     user_profile_note: str | None,
 ) -> dict[str, Any]:
     warnings: list[str] = []
+    can_finalize_now = _should_allow_stage1_finalization(dialog_history=dialog_history, mode=mode)
 
     if mode == "choose_next_question" and step_count >= RECT_MAX_STEPS:
         warnings.append("max_steps_reached_safe_finalization")
@@ -841,7 +1087,19 @@ def _run_stage1_guarded(
             step_count=step_count,
             detail=exc.detail,
         )
-        if mode == "finalize_now" or step_count >= RECT_MIN_STEPS:
+        if mode == "finalize_now" and not can_finalize_now:
+            warnings.append("min_questions_not_reached")
+            fallback_llm_json = _build_safe_question(
+                dialog_history=dialog_history,
+                step_count=step_count,
+            )
+            if fallback_llm_json is None:
+                fallback_llm_json = _build_safe_final_result(
+                    rectification_document=rectification_document,
+                    dialog_history=dialog_history,
+                    reason="no_safe_question_available",
+                )
+        elif mode == "finalize_now" or can_finalize_now:
             fallback_llm_json = _build_safe_final_result(
                 rectification_document=rectification_document,
                 dialog_history=dialog_history,
@@ -885,7 +1143,19 @@ def _run_stage1_guarded(
             llm_json=llm_result["llm_json"],
         )
 
-        if mode == "finalize_now" or step_count >= RECT_MIN_STEPS:
+        if mode == "finalize_now" and not can_finalize_now:
+            warnings.append("min_questions_not_reached")
+            fallback_llm_json = _build_safe_question(
+                dialog_history=dialog_history,
+                step_count=step_count,
+            )
+            if fallback_llm_json is None:
+                fallback_llm_json = _build_safe_final_result(
+                    rectification_document=rectification_document,
+                    dialog_history=dialog_history,
+                    reason="no_safe_question_available",
+                )
+        elif mode == "finalize_now" or can_finalize_now:
             fallback_llm_json = _build_safe_final_result(
                 rectification_document=rectification_document,
                 dialog_history=dialog_history,
@@ -904,6 +1174,19 @@ def _run_stage1_guarded(
                 )
 
         llm_result["llm_json"] = fallback_llm_json
+    elif llm_result["llm_json"].get("type") == "final_result" and not can_finalize_now:
+        warnings.append("min_questions_not_reached")
+        fallback_question = _build_safe_question(
+            dialog_history=dialog_history,
+            step_count=step_count,
+        )
+        if fallback_question is None:
+            fallback_question = _build_safe_final_result(
+                rectification_document=rectification_document,
+                dialog_history=dialog_history,
+                reason="no_safe_question_available",
+            )
+        llm_result["llm_json"] = fallback_question
 
     llm_result["llm_json"] = _normalize_stage1_final_result_payload(
         llm_json=llm_result["llm_json"],
@@ -940,6 +1223,11 @@ def _load_openrouter_settings() -> dict[str, Any]:
     site_url = _env("OPENROUTER_SITE_URL", "").strip()
     app_name = _env("OPENROUTER_APP_NAME", "AstroDvish").strip() or "AstroDvish"
     timeout_raw = _env("OPENROUTER_TIMEOUT_SECONDS", "120").strip()
+    max_tokens_default_raw = _env("OPENROUTER_MAX_TOKENS_DEFAULT", "6000").strip()
+    max_tokens_stage1_raw = _env("OPENROUTER_MAX_TOKENS_STAGE1", "2000").strip()
+    max_tokens_generate_raw = _env("OPENROUTER_MAX_TOKENS_GENERATE", "8000").strip()
+    max_tokens_pro_raw = _env("OPENROUTER_MAX_TOKENS_PRO", "12000").strip()
+    max_tokens_hard_limit_raw = _env("OPENROUTER_MAX_TOKENS_HARD_LIMIT", "20000").strip()
 
     if not api_key:
         raise HTTPException(
@@ -960,6 +1248,30 @@ def _load_openrouter_settings() -> dict[str, Any]:
     if timeout_seconds <= 0:
         raise HTTPException(status_code=500, detail="OPENROUTER_TIMEOUT_SECONDS must be > 0")
 
+    try:
+        max_tokens_default = int(max_tokens_default_raw)
+        max_tokens_stage1 = int(max_tokens_stage1_raw)
+        max_tokens_generate = int(max_tokens_generate_raw)
+        max_tokens_pro = int(max_tokens_pro_raw)
+        max_tokens_hard_limit = int(max_tokens_hard_limit_raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail="OPENROUTER max tokens settings must be integers") from exc
+
+    token_settings = {
+        OPENROUTER_REQUEST_KIND_DEFAULT: max_tokens_default,
+        OPENROUTER_REQUEST_KIND_STAGE1: max_tokens_stage1,
+        OPENROUTER_REQUEST_KIND_GENERATE: max_tokens_generate,
+        OPENROUTER_REQUEST_KIND_PRO: max_tokens_pro,
+    }
+    for request_kind, token_value in token_settings.items():
+        if token_value <= 0:
+            raise HTTPException(
+                status_code=500,
+                detail=f"OPENROUTER max tokens for {request_kind} must be > 0",
+            )
+    if max_tokens_hard_limit <= 0:
+        raise HTTPException(status_code=500, detail="OPENROUTER_MAX_TOKENS_HARD_LIMIT must be > 0")
+
     return {
         "api_key": api_key,
         "base_url": base_url or OPENROUTER_DEFAULT_BASE_URL,
@@ -967,7 +1279,31 @@ def _load_openrouter_settings() -> dict[str, Any]:
         "site_url": site_url,
         "app_name": app_name,
         "timeout_seconds": timeout_seconds,
+        "max_tokens_default": max_tokens_default,
+        "max_tokens_stage1": max_tokens_stage1,
+        "max_tokens_generate": max_tokens_generate,
+        "max_tokens_pro": max_tokens_pro,
+        "max_tokens_hard_limit": max_tokens_hard_limit,
     }
+
+
+def _resolve_openrouter_max_tokens(
+    *,
+    settings: dict[str, Any],
+    request_kind: str = OPENROUTER_REQUEST_KIND_DEFAULT,
+    requested_max_tokens: int | None = None,
+) -> tuple[int, int]:
+    configured_by_kind = {
+        OPENROUTER_REQUEST_KIND_DEFAULT: settings["max_tokens_default"],
+        OPENROUTER_REQUEST_KIND_STAGE1: settings["max_tokens_stage1"],
+        OPENROUTER_REQUEST_KIND_GENERATE: settings["max_tokens_generate"],
+        OPENROUTER_REQUEST_KIND_PRO: settings["max_tokens_pro"],
+    }
+    requested = requested_max_tokens
+    if requested is None:
+        requested = configured_by_kind.get(request_kind, settings["max_tokens_default"])
+    applied = min(int(requested), int(settings["max_tokens_hard_limit"]))
+    return int(requested), applied
 
 
 def _to_utc_iso(local_dt_str: str, tz_offset: str, timezone_name: str | None = None) -> str:
@@ -1155,11 +1491,18 @@ def _call_openrouter_chat(
     system_prompt: str,
     user_prompt: str,
     model_override_env: str | None = None,
+    request_kind: str = OPENROUTER_REQUEST_KIND_DEFAULT,
+    requested_max_tokens: int | None = None,
 ) -> dict[str, Any]:
     settings = _load_openrouter_settings()
     model = _env(model_override_env, "").strip() if model_override_env else ""
     if not model:
         model = settings["model"]
+    resolved_requested_max_tokens, applied_max_tokens = _resolve_openrouter_max_tokens(
+        settings=settings,
+        request_kind=request_kind,
+        requested_max_tokens=requested_max_tokens,
+    )
 
     headers: dict[str, str] = {
         "Authorization": f"Bearer {settings['api_key']}",
@@ -1176,6 +1519,7 @@ def _call_openrouter_chat(
             {"role": "user", "content": user_prompt},
         ],
         "temperature": 0,
+        "max_tokens": applied_max_tokens,
     }
 
     try:
@@ -1196,7 +1540,9 @@ def _call_openrouter_chat(
             detail={
                 "message": "OpenRouter returned non-200 status",
                 "status_code": response.status_code,
-                "body": response.text[:4000],
+                "raw_error": response.text[:4000],
+                "requested_max_tokens": resolved_requested_max_tokens,
+                "applied_max_tokens": applied_max_tokens,
             },
         )
 
@@ -1208,6 +1554,8 @@ def _call_openrouter_chat(
     return {
         "text": text,
         "raw": payload,
+        "requested_max_tokens": resolved_requested_max_tokens,
+        "applied_max_tokens": applied_max_tokens,
     }
 
 
@@ -1232,6 +1580,7 @@ def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_i
         system_prompt=system_prompt,
         user_prompt=user_prompt,
         model_override_env="OPENROUTER_MODEL_HOROSCOPE",
+        request_kind=OPENROUTER_REQUEST_KIND_GENERATE,
     )
     return chat_result["text"]
 
@@ -1339,6 +1688,7 @@ def _call_rectification_llm(
         system_prompt=prompt_text,
         user_prompt=json.dumps(runtime_payload, ensure_ascii=False),
         model_override_env="OPENROUTER_MODEL_RECTIFICATION",
+        request_kind=OPENROUTER_REQUEST_KIND_STAGE1,
     )
     llm_text = chat_result["text"]
 

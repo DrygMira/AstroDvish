@@ -1277,6 +1277,7 @@
         timeRangesLocal: [],
         elementScores: null,
         signScores: null,
+        candidateGroup: null,
       },
       stage2: {
         started: false,
@@ -1606,6 +1607,7 @@
         timeRangesLocal: [],
         elementScores: null,
         signScores: null,
+        candidateGroup: null,
       };
       rectificationWizardState.stage2 = {
         started: false,
@@ -1682,10 +1684,12 @@
       const secondary = rectificationWizardState.stage1.secondaryCandidates
         .map((x) => `${x.sign_name_ru || x.sign_name_en} — ${x.probability ?? "n/a"}`)
         .join("; ");
+      const candidateGroupText = formatCandidateGroupText(rectificationWizardState.stage1.candidateGroup);
       wzStage1SummaryEl.innerHTML =
         `<div><strong>Основной кандидат:</strong> ${p.sign_name_ru || ""} (${p.sign_name_en || ""})</div>` +
         `<div style="margin-top:6px;"><strong>Вероятность:</strong> ${p.probability ?? "n/a"}</div>` +
         `<div style="margin-top:6px;"><strong>Интервалы:</strong>${rangesHtml}</div>` +
+        (candidateGroupText ? `<div style="margin-top:6px;"><strong>Группа кандидатов:</strong> ${candidateGroupText}</div>` : "") +
         `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>`;
     }
 
@@ -1724,6 +1728,7 @@
         rectificationWizardState.stage1.timeRangesLocal = ranges;
         rectificationWizardState.stage1.elementScores = lastFinal.element_scores || null;
         rectificationWizardState.stage1.signScores = lastFinal.sign_scores || null;
+        rectificationWizardState.stage1.candidateGroup = lastFinal.candidate_group || null;
       }
 
       if (rectEventsState.finalized && Array.isArray(rectEventsState.finalized.events)) {
@@ -1995,14 +2000,29 @@
       const cuspDetails = houses.cusp_details || {};
 
       const objectOrder = [
-        "sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","true_node","mean_node","chiron"
+        "sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","true_node","true_south_node","chiron"
       ];
+      const objectLabels = {
+        sun: "Солнце",
+        moon: "Луна",
+        mercury: "Меркурий",
+        venus: "Венера",
+        mars: "Марс",
+        jupiter: "Юпитер",
+        saturn: "Сатурн",
+        uranus: "Уран",
+        neptune: "Нептун",
+        pluto: "Плутон",
+        true_node: "Истинный Северный узел",
+        true_south_node: "Истинный Южный узел",
+        chiron: "Хирон",
+      };
       const objectRows = objectOrder
         .filter((key) => objects[key])
         .map((key) => {
           const obj = objects[key];
           return [
-            key,
+            objectLabels[key] || key,
             obj.sign_name_en || "—",
             typeof obj.sign_degree === "number" ? formatDegreeForExpert(obj.sign_degree) : "—",
             typeof obj.absolute_degree_0_360 === "number" ? formatDegreeForExpert(obj.absolute_degree_0_360) : "—",
@@ -2017,33 +2037,23 @@
 
       const nodeRows = [];
       const trueNode = objects.true_node;
+      const trueSouthNode = objects.true_south_node;
       if (trueNode && typeof trueNode.absolute_degree_0_360 === "number") {
-        const trueSouthAbs = (trueNode.absolute_degree_0_360 + 180) % 360;
-        const trueSouthSign = angleToSignDegree(trueSouthAbs);
-
         nodeRows.push([
-          "Истинный Северный узел (true_node)",
+          "Истинный Северный узел",
           trueNode.sign_name_en || "—",
           typeof trueNode.sign_degree === "number" ? formatDegreeForExpert(trueNode.sign_degree) : "—",
           trueNode.house ?? "—",
           formatDegreeForExpert(trueNode.absolute_degree_0_360),
         ]);
-        nodeRows.push([
-          "Истинный Южный узел (derived)",
-          trueSouthSign.signName,
-          trueSouthSign.signDegree,
-          "—",
-          formatDegreeForExpert(trueSouthAbs),
-        ]);
       }
-      if (objects.mean_node) {
-        const meanNode = objects.mean_node;
+      if (trueSouthNode && typeof trueSouthNode.absolute_degree_0_360 === "number") {
         nodeRows.push([
-          "Средний Северный узел (mean_node, debug)",
-          meanNode.sign_name_en || "—",
-          typeof meanNode.sign_degree === "number" ? formatDegreeForExpert(meanNode.sign_degree) : "—",
-          meanNode.house ?? "—",
-          typeof meanNode.absolute_degree_0_360 === "number" ? formatDegreeForExpert(meanNode.absolute_degree_0_360) : "—",
+          "Истинный Южный узел",
+          trueSouthNode.sign_name_en || "—",
+          typeof trueSouthNode.sign_degree === "number" ? formatDegreeForExpert(trueSouthNode.sign_degree) : "—",
+          trueSouthNode.house ?? "—",
+          formatDegreeForExpert(trueSouthNode.absolute_degree_0_360),
         ]);
       }
       expertNodesEl.innerHTML = renderTable(
@@ -2115,6 +2125,14 @@
     function extractErrorText(payload) {
       if (!payload) return "Unknown error";
       if (typeof payload === "string") return payload;
+      const detail = payload.detail || payload.error || payload;
+      const upstreamStatus = detail?.status_code || payload.status_code;
+      const rawError = typeof detail?.raw_error === "string"
+        ? detail.raw_error
+        : (typeof detail?.body === "string" ? detail.body : "");
+      if (upstreamStatus === 402 && rawError) {
+        return "Ответ модели временно недоступен. Попробуйте ещё раз позже.";
+      }
       if (payload.detail) {
         if (typeof payload.detail === "string") return payload.detail;
         return JSON.stringify(payload.detail, null, 2);
@@ -2128,10 +2146,11 @@
         return "";
       }
       const mapping = {
-        llm_request_failed: "Не удалось получить ответ модели. Задан резервный вопрос.",
+        llm_request_failed: "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам.",
         invalid_llm_json: "Модель вернула некорректный ответ. Использован резервный сценарий.",
         missing_options: "Модель не вернула варианты ответа. Использован резервный вопрос.",
         fallback_question_used: "Задан уточняющий вопрос из резервного сценария.",
+        min_questions_not_reached: "Для надёжного вывода нужно ответить ещё на несколько вопросов.",
       };
       const text = warnings.map((item) => mapping[item] || item).join(" ");
       return text ? ` ${text}` : "";
@@ -2248,6 +2267,35 @@
       }
     }
 
+    function formatCandidateGroupText(candidateGroup) {
+      if (!candidateGroup || !Array.isArray(candidateGroup.signs) || !candidateGroup.signs.length) {
+        return "";
+      }
+      const signLabelMap = {
+        Aries: "Овен",
+        Taurus: "Телец",
+        Gemini: "Близнецы",
+        Cancer: "Рак",
+        Leo: "Лев",
+        Virgo: "Дева",
+        Libra: "Весы",
+        Scorpio: "Скорпион",
+        Sagittarius: "Стрелец",
+        Capricorn: "Козерог",
+        Aquarius: "Водолей",
+        Pisces: "Рыбы",
+      };
+      const elementLabelMap = {
+        fire: "Огонь",
+        earth: "Земля",
+        air: "Воздух",
+        water: "Вода",
+      };
+      const signsText = candidateGroup.signs.map((sign) => signLabelMap[sign] || sign).join(", ");
+      const elementText = candidateGroup.element ? (elementLabelMap[candidateGroup.element] || candidateGroup.element) : "смешанная";
+      return `Основная стихия: ${elementText}. Кандидаты: ${signsText}. Для точного выбора знака нужны дополнительные вопросы.`;
+    }
+
     function renderDialogHistory() {
       rdHistoryEl.innerHTML = "";
       if (!rectDialogState.dialogHistory.length) {
@@ -2274,10 +2322,7 @@
             `<div><strong>Вопрос:</strong> ${item.question_text || "-"}</div>` +
             `<div style="margin-top:6px;"><strong>Ответ:</strong> ${userItem?.selected_option_text || "ожидается"}</div>` +
             `<div class="usage-mini">` +
-            `Тестовая оценка: ${item.debug_probability_text || "-"}<br/>` +
-            `Токены: input=${item.usage?.input_tokens ?? "null"}, output=${item.usage?.output_tokens ?? "null"}, ` +
-            `cached=${item.usage?.cached_input_tokens ?? "null"}, reasoning=${item.usage?.reasoning_tokens ?? "null"}, ` +
-            `total=${item.usage?.total_tokens ?? "null"}` +
+            `${item.debug_probability_text || "-"} ` +
             `</div>`;
           rdHistoryEl.appendChild(msg);
 
@@ -2296,6 +2341,7 @@
           const rangesHtml = ranges.length
             ? `<div>Интервалы:<br/>${ranges.map((r, idx) => `${idx + 1}) ${formatIntervalLine(r.start, r.end)}`).join("<br/>")}</div>`
             : "<div>Интервалы: не указаны</div>";
+          const candidateGroupText = formatCandidateGroupText(item.candidate_group);
           const msg = document.createElement("div");
           msg.className = "msg assistant";
           msg.innerHTML =
@@ -2304,8 +2350,7 @@
             rangesHtml +
             `<div>Вероятность: ${p.probability ?? "n/a"}</div>` +
             `<div style="margin-top:6px;">${item.summary_text || ""}</div>` +
-            `<div class="usage-mini">Токены: input=${item.usage?.input_tokens ?? "null"}, output=${item.usage?.output_tokens ?? "null"}, ` +
-            `cached=${item.usage?.cached_input_tokens ?? "null"}, reasoning=${item.usage?.reasoning_tokens ?? "null"}, total=${item.usage?.total_tokens ?? "null"}</div>`;
+            (candidateGroupText ? `<div class="usage-mini">${candidateGroupText}</div>` : "");
           rdHistoryEl.appendChild(msg);
         }
       }
@@ -2367,11 +2412,13 @@
       const secondary = (lastAssistant.secondary_candidates || [])
         .map((x) => `${x.sign_name_ru} (${x.sign_name_en}) — ${x.probability}`)
         .join("; ");
+      const candidateGroupText = formatCandidateGroupText(lastAssistant.candidate_group);
       rdFinalResultEl.innerHTML =
         `<div><strong>Основной кандидат:</strong> ${primary.sign_name_ru || ""} (${primary.sign_name_en || ""})</div>` +
         `<div style="margin-top:6px;"><strong>Интервалы:</strong>${primaryRangesHtml}</div>` +
         `<div><strong>Вероятность:</strong> ${primary.probability ?? "n/a"}</div>` +
         `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>` +
+        (candidateGroupText ? `<div style="margin-top:6px;"><strong>Группа кандидатов:</strong> ${candidateGroupText}</div>` : "") +
         `<div style="margin-top:8px;">${lastAssistant.summary_text || ""}</div>`;
       rdTesterThanksEl.classList.remove("hidden");
     }

@@ -155,7 +155,7 @@ def test_bad_json_from_llm_falls_back_to_safe_question(client: TestClient, monke
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["options"]
-    assert "Промежуточно по стихиям" in body["llm_json"]["debug_probability_text"]
+    assert "Промежуточная оценка:" in body["llm_json"]["debug_probability_text"]
     assert body["llm_json"]["question_text"] == web_main.QUESTION_BANK[0]["question_text"]
     assert body["llm_json"]["options"] == web_main.QUESTION_BANK[0]["options"]
     assert "llm_request_failed" in body["warnings"]
@@ -188,7 +188,7 @@ def test_ask_question_without_options_uses_fallback(client: TestClient, monkeypa
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["options"]
-    assert "Промежуточно по стихиям" in body["llm_json"]["debug_probability_text"]
+    assert "Промежуточная оценка:" in body["llm_json"]["debug_probability_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -211,7 +211,11 @@ def test_final_result_without_primary_candidate_falls_back(client: TestClient, m
 
     response = client.post(
         "/api/rectification/dialog/continue",
-        json=_continue_payload(step_count=3, mode="finalize_now"),
+        json=_continue_payload(
+            dialog_history=_earth_dialog_history(web_main.RECT_MIN_STEPS),
+            step_count=web_main.RECT_MIN_STEPS,
+            mode="finalize_now",
+        ),
     )
     assert response.status_code == 200
     body = response.json()
@@ -219,7 +223,7 @@ def test_final_result_without_primary_candidate_falls_back(client: TestClient, m
     assert body["llm_json"]["type"] == "final_result"
     assert body["llm_json"]["primary_candidate"]["sign_name_en"]
     assert len(body["llm_json"]["primary_candidate"]["time_ranges_local"]) >= 1
-    assert "Предварительный результат Stage 1 сформирован" in body["llm_json"]["summary_text"]
+    assert "использован" in body["llm_json"]["summary_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -248,14 +252,18 @@ def test_probability_out_of_range_falls_back(client: TestClient, monkeypatch: py
 
     response = client.post(
         "/api/rectification/dialog/continue",
-        json=_continue_payload(step_count=3, mode="finalize_now"),
+        json=_continue_payload(
+            dialog_history=_earth_dialog_history(web_main.RECT_MIN_STEPS),
+            step_count=web_main.RECT_MIN_STEPS,
+            mode="finalize_now",
+        ),
     )
     assert response.status_code == 200
     body = response.json()
 
     assert body["llm_json"]["type"] == "final_result"
     assert body["llm_json"]["primary_candidate"]["probability"] <= 1
-    assert "Предварительный результат Stage 1 сформирован" in body["llm_json"]["summary_text"]
+    assert "использован" in body["llm_json"]["summary_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -335,7 +343,7 @@ def test_repeated_question_id_uses_fallback_question(client: TestClient, monkeyp
 
     assert body["llm_json"]["type"] == "ask_question"
     assert body["llm_json"]["question_id"] != "q_body_type_01"
-    assert "Промежуточно по стихиям" in body["llm_json"]["debug_probability_text"]
+    assert "Промежуточная оценка:" in body["llm_json"]["debug_probability_text"]
     assert "llm_json_failed_guard" in body["warnings"]
 
 
@@ -364,7 +372,11 @@ def test_stage1_final_result_contains_duplicate_sign_intervals(client: TestClien
 
     response = client.post(
         "/api/rectification/dialog/continue",
-        json=_continue_payload(step_count=3, mode="finalize_now"),
+        json=_continue_payload(
+            dialog_history=_earth_dialog_history(web_main.RECT_MIN_STEPS),
+            step_count=web_main.RECT_MIN_STEPS,
+            mode="finalize_now",
+        ),
     )
     assert response.status_code == 200
     body = response.json()
@@ -487,3 +499,148 @@ def test_calculation_endpoint_is_computation_only(client: TestClient, monkeypatc
 
     assert response.status_code == 200
     assert response.json()["mode"] == "asc_sign_intervals"
+
+
+def _earth_dialog_history(question_count: int) -> list[dict[str, Any]]:
+    history: list[dict[str, Any]] = []
+    for item in web_main.QUESTION_BANK[:question_count]:
+        history.append(
+            {
+                "role": "assistant",
+                "type": "ask_question",
+                "question_id": item["question_id"],
+                "question_text": item["question_text"],
+                "options": item["options"],
+            }
+        )
+        history.append(
+            {
+                "role": "user",
+                "selected_option_id": "B",
+                "selected_option_text": "earth",
+                "free_text": None,
+            }
+        )
+    return history
+
+
+def test_safe_final_uses_user_scores_not_interval_duration() -> None:
+    rectification_document = {
+        "mode": "asc_sign_intervals",
+        "version": "1.0",
+        "day_window": {
+            "start_local": "1978-03-19T00:00:00",
+            "end_local": "1978-03-19T23:59:59",
+        },
+        "asc_sign_intervals": [
+            {
+                "interval_index": 1,
+                "sign_name_ru": "Лев",
+                "sign_name_en": "Leo",
+                "start_local": "1978-03-19T00:00:00",
+                "end_local": "1978-03-19T04:00:00",
+                "duration_minutes": 240,
+            },
+            {
+                "interval_index": 2,
+                "sign_name_ru": "Телец",
+                "sign_name_en": "Taurus",
+                "start_local": "1978-03-19T04:00:00",
+                "end_local": "1978-03-19T06:00:00",
+                "duration_minutes": 120,
+            },
+            {
+                "interval_index": 3,
+                "sign_name_ru": "Дева",
+                "sign_name_en": "Virgo",
+                "start_local": "1978-03-19T06:00:00",
+                "end_local": "1978-03-19T08:00:00",
+                "duration_minutes": 120,
+            },
+            {
+                "interval_index": 4,
+                "sign_name_ru": "Козерог",
+                "sign_name_en": "Capricorn",
+                "start_local": "1978-03-19T08:00:00",
+                "end_local": "1978-03-19T10:00:00",
+                "duration_minutes": 120,
+            },
+        ],
+    }
+
+    safe_result = web_main._build_safe_final_result(
+        rectification_document=rectification_document,
+        dialog_history=_earth_dialog_history(6),
+        reason="llm_request_failed",
+    )
+
+    assert safe_result["type"] == "final_result"
+    assert safe_result["primary_candidate"]["sign_name_en"] != "Leo"
+    assert safe_result["primary_candidate"]["sign_name_en"] in {"Taurus", "Virgo", "Capricorn"}
+    assert safe_result["candidate_group"]["signs"] == ["Taurus", "Virgo", "Capricorn"]
+    assert safe_result["needs_more_questions"] is True
+
+
+def test_stage1_equal_earth_scores_produce_candidate_group() -> None:
+    rectification_document = {
+        "mode": "asc_sign_intervals",
+        "version": "1.0",
+        "day_window": {
+            "start_local": "1978-03-19T00:00:00",
+            "end_local": "1978-03-19T23:59:59",
+        },
+        "asc_sign_intervals": [
+            {
+                "interval_index": 1,
+                "sign_name_ru": "Телец",
+                "sign_name_en": "Taurus",
+                "start_local": "1978-03-19T04:00:00",
+                "end_local": "1978-03-19T06:00:00",
+                "duration_minutes": 120,
+            },
+            {
+                "interval_index": 2,
+                "sign_name_ru": "Дева",
+                "sign_name_en": "Virgo",
+                "start_local": "1978-03-19T06:00:00",
+                "end_local": "1978-03-19T08:00:00",
+                "duration_minutes": 120,
+            },
+            {
+                "interval_index": 3,
+                "sign_name_ru": "Козерог",
+                "sign_name_en": "Capricorn",
+                "start_local": "1978-03-19T08:00:00",
+                "end_local": "1978-03-19T10:00:00",
+                "duration_minutes": 120,
+            },
+        ],
+    }
+
+    safe_result = web_main._build_safe_final_result(
+        rectification_document=rectification_document,
+        dialog_history=_earth_dialog_history(6),
+        reason="llm_request_failed",
+    )
+
+    assert safe_result["candidate_group"]["element"] == "earth"
+    assert safe_result["candidate_group"]["reason"] == "equal_sign_scores"
+    assert "Для выбора точного знака нужны дополнительные вопросы." in safe_result["summary_text"]
+
+
+def test_stage1_llm_failure_before_min_questions_returns_next_question(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    def _raise_http_error(**kwargs: Any) -> dict[str, Any]:
+        raise HTTPException(status_code=502, detail={"message": "LLM output is not valid JSON"})
+
+    monkeypatch.setattr(web_main, "_call_rectification_llm", _raise_http_error)
+    dialog_history = _earth_dialog_history(3)
+
+    response = client.post(
+        "/api/rectification/dialog/continue",
+        json=_continue_payload(dialog_history=dialog_history, step_count=3, mode="finalize_now"),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["llm_json"]["type"] == "ask_question"
+    assert "min_questions_not_reached" in body["warnings"]
