@@ -79,6 +79,15 @@ def test_main_ui_has_generate_technical_debug_fields() -> None:
     assert "retried_with_lower_max_tokens" in html
 
 
+def test_main_ui_deduplicates_llm_unavailable_message_in_status() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert 'data.warnings.filter((item) => item !== "llm_unavailable")' in html
+
+
 def test_main_ui_has_humanized_openrouter_error_messages_for_common_statuses() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/")

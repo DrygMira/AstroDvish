@@ -3023,8 +3023,15 @@
       const tzInfo = tz.timezone_source === "manual_offset"
         ? `Часовой пояс указан вручную: ${tz.timezone_offset || body.timezone_offset}`
         : `Часовой пояс определён автоматически: ${tz.timezone_name || timezoneNameEl.value || "n/a"}, ${tz.timezone_offset || ""}`;
-      const warnText = Array.isArray(data.warnings) && data.warnings.length
-        ? formatWarnings(data.warnings)
+      const userWarnings = Array.isArray(data.warnings)
+        ? (
+          data.llm_status === "unavailable"
+            ? data.warnings.filter((item) => item !== "llm_unavailable")
+            : data.warnings
+        )
+        : [];
+      const warnText = userWarnings.length
+        ? formatWarnings(userWarnings)
         : "";
       if (data.llm_status === "unavailable") {
         setStatus(`Готово. UTC: ${data.datetime_utc}. ${tzInfo} ${llmUnavailableMessage}${warnText}`);
