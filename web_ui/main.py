@@ -1610,6 +1610,36 @@ def _resolve_openrouter_max_tokens(
     return int(requested), applied
 
 
+def _extract_openrouter_affordable_max_tokens(raw_error: str) -> int | None:
+    if not raw_error:
+        return None
+    match = re.search(r"can only afford\s+(\d+)", raw_error, flags=re.IGNORECASE)
+    if not match:
+        return None
+    try:
+        affordable_tokens = int(match.group(1))
+    except ValueError:
+        return None
+    return affordable_tokens if affordable_tokens > 0 else None
+
+
+def _classify_openrouter_error(status_code: int, raw_error: str) -> str:
+    lowered = raw_error.lower()
+    if status_code in {401, 403}:
+        return "unauthorized_or_forbidden"
+    if status_code == 429:
+        return "rate_limited"
+    if status_code in {500, 503}:
+        return "provider_unavailable"
+    if status_code == 402:
+        if "prompt tokens limit exceeded" in lowered:
+            return "insufficient_credits_or_max_tokens"
+        if "requires more credits" in lowered or "can only afford" in lowered:
+            return "insufficient_credits_or_max_tokens"
+        return "insufficient_credits_or_max_tokens"
+    return "upstream_error"
+
+
 def _to_utc_iso(local_dt_str: str, tz_offset: str, timezone_name: str | None = None) -> str:
     try:
         local_naive = datetime.fromisoformat(local_dt_str)
@@ -1797,6 +1827,8 @@ def _call_openrouter_chat(
     model_override_env: str | None = None,
     request_kind: str = OPENROUTER_REQUEST_KIND_DEFAULT,
     requested_max_tokens: int | None = None,
+    route_label: str = "unknown",
+    retry_on_affordable_402: bool = False,
 ) -> dict[str, Any]:
     settings = _load_openrouter_settings()
     model = _env(model_override_env, "").strip() if model_override_env else ""
@@ -1816,37 +1848,56 @@ def _call_openrouter_chat(
     if settings["site_url"]:
         headers["HTTP-Referer"] = settings["site_url"]
 
-    body = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        "temperature": 0,
-        "max_tokens": applied_max_tokens,
-    }
+    def _request_openrouter(max_tokens: int) -> httpx.Response:
+        body = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "temperature": 0,
+            "max_tokens": max_tokens,
+        }
+        try:
+            return httpx.post(
+                f"{settings['base_url']}/chat/completions",
+                headers=headers,
+                json=body,
+                timeout=settings["timeout_seconds"],
+            )
+        except httpx.TimeoutException as exc:
+            raise HTTPException(status_code=502, detail=f"OpenRouter timeout: {exc}") from exc
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"OpenRouter request failed: {exc}") from exc
 
-    try:
-        response = httpx.post(
-            f"{settings['base_url']}/chat/completions",
-            headers=headers,
-            json=body,
-            timeout=settings["timeout_seconds"],
-        )
-    except httpx.TimeoutException as exc:
-        raise HTTPException(status_code=502, detail=f"OpenRouter timeout: {exc}") from exc
-    except httpx.HTTPError as exc:
-        raise HTTPException(status_code=502, detail=f"OpenRouter request failed: {exc}") from exc
+    first_applied_max_tokens = applied_max_tokens
+    retried_with_lower_max_tokens = False
+    response = _request_openrouter(applied_max_tokens)
+    if response.status_code != 200 and retry_on_affordable_402 and response.status_code == 402:
+        affordable_from_error = _extract_openrouter_affordable_max_tokens(response.text)
+        if affordable_from_error is not None:
+            affordable_applied = min(affordable_from_error, int(settings["max_tokens_hard_limit"]))
+            if 0 < affordable_applied < applied_max_tokens:
+                response = _request_openrouter(affordable_applied)
+                applied_max_tokens = affordable_applied
+                retried_with_lower_max_tokens = True
 
     if response.status_code != 200:
+        raw_error = response.text[:4000]
         raise HTTPException(
             status_code=502,
             detail={
                 "message": "OpenRouter returned non-200 status",
                 "status_code": response.status_code,
-                "raw_error": response.text[:4000],
+                "reason": _classify_openrouter_error(response.status_code, raw_error),
+                "raw_error": raw_error,
+                "model": model,
+                "route": route_label,
+                "request_kind": request_kind,
                 "requested_max_tokens": resolved_requested_max_tokens,
                 "applied_max_tokens": applied_max_tokens,
+                "first_applied_max_tokens": first_applied_max_tokens,
+                "retried_with_lower_max_tokens": retried_with_lower_max_tokens,
             },
         )
 
@@ -1858,8 +1909,13 @@ def _call_openrouter_chat(
     return {
         "text": text,
         "raw": payload,
+        "model": model,
+        "route": route_label,
+        "request_kind": request_kind,
         "requested_max_tokens": resolved_requested_max_tokens,
         "applied_max_tokens": applied_max_tokens,
+        "first_applied_max_tokens": first_applied_max_tokens,
+        "retried_with_lower_max_tokens": retried_with_lower_max_tokens,
     }
 
 
@@ -1885,6 +1941,8 @@ def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_i
         user_prompt=user_prompt,
         model_override_env="OPENROUTER_MODEL_HOROSCOPE",
         request_kind=OPENROUTER_REQUEST_KIND_GENERATE,
+        route_label="/api/generate",
+        retry_on_affordable_402=True,
     )
     return chat_result["text"]
 
@@ -1993,6 +2051,7 @@ def _call_rectification_llm(
         user_prompt=json.dumps(runtime_payload, ensure_ascii=False),
         model_override_env="OPENROUTER_MODEL_RECTIFICATION",
         request_kind=OPENROUTER_REQUEST_KIND_STAGE1,
+        route_label="/api/rectification/dialog",
     )
     llm_text = chat_result["text"]
 

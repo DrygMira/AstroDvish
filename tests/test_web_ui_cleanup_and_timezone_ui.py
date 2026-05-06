@@ -62,3 +62,27 @@ def test_main_ui_sanitizes_openrouter_402_error_text() -> None:
     html = response.text
     assert "Ответ модели временно недоступен. Попробуйте ещё раз позже." in html
     assert "detail?.raw_error" in html
+
+
+def test_main_ui_has_generate_technical_debug_fields() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert 'id="generateDebugBox"' in html
+    assert "normalizeOpenRouterReason" in html
+    assert "requested_max_tokens" in html
+    assert "applied_max_tokens" in html
+    assert "retried_with_lower_max_tokens" in html
+
+
+def test_main_ui_has_humanized_openrouter_error_messages_for_common_statuses() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "Не удалось авторизоваться в сервисе модели. Обратитесь к администратору." in html
+    assert "Сервис модели перегружен. Повторите попытку чуть позже." in html
+    assert "Сервис модели временно недоступен. Попробуйте ещё раз позже." in html

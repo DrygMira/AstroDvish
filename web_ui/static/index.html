@@ -711,6 +711,11 @@
     </div>
 
     <div id="techPanelsWrap" class="hidden">
+    <div class="card">
+      <div><strong>Диагностика /api/generate (technical)</strong></div>
+      <div class="hint">Только для диагностики LLM-ошибок. В основном интерфейсе детали провайдера скрыты.</div>
+      <div id="generateDebugBox" class="json-box"></div>
+    </div>
 
     <section id="rectPanel" class="tab-panel">
       <div class="card">
@@ -1120,6 +1125,7 @@
     const techModeToggleBtnEl = document.getElementById("techModeToggleBtn");
     const techModeContentEl = document.getElementById("techModeContent");
     const techModeHintEl = document.getElementById("techModeHint");
+    const generateDebugBoxEl = document.getElementById("generateDebugBox");
 
     const timezoneOffsetEl = document.getElementById("timezoneOffset");
     const timezoneModeEl = document.getElementById("timezoneMode");
@@ -1233,6 +1239,7 @@
     const wzStepHintEls = [1,2,3,4,5].map((idx) => document.getElementById(`wzStepHint${idx}`));
 
     let technicalModeOpen = false;
+    let lastGenerateTechnicalDebug = null;
 
     const rectDialogState = {
       rectificationDocument: null,
@@ -2177,12 +2184,55 @@
       if (upstreamStatus === 402 && rawError) {
         return "Ответ модели временно недоступен. Попробуйте ещё раз позже.";
       }
+      if (upstreamStatus === 401 || upstreamStatus === 403) {
+        return "Не удалось авторизоваться в сервисе модели. Обратитесь к администратору.";
+      }
+      if (upstreamStatus === 429) {
+        return "Сервис модели перегружен. Повторите попытку чуть позже.";
+      }
+      if (upstreamStatus === 500 || upstreamStatus === 503) {
+        return "Сервис модели временно недоступен. Попробуйте ещё раз позже.";
+      }
       if (payload.detail) {
         if (typeof payload.detail === "string") return payload.detail;
         return JSON.stringify(payload.detail, null, 2);
       }
       if (payload.error && payload.error.message) return payload.error.message;
       return JSON.stringify(payload, null, 2);
+    }
+
+    function normalizeOpenRouterReason(reason) {
+      const map = {
+        insufficient_credits_or_max_tokens: "insufficient_credits_or_max_tokens",
+        unauthorized_or_forbidden: "unauthorized_or_forbidden",
+        rate_limited: "rate_limited",
+        provider_unavailable: "provider_unavailable",
+      };
+      return map[reason] || reason || null;
+    }
+
+    function setGenerateTechnicalDebug(payload) {
+      lastGenerateTechnicalDebug = payload || null;
+      if (!generateDebugBoxEl) return;
+      generateDebugBoxEl.textContent = JSON.stringify(lastGenerateTechnicalDebug || {
+        info: "Нет ошибок /api/generate в текущей сессии.",
+      }, null, 2);
+    }
+
+    function extractGenerateTechnicalDetail(payload) {
+      const detail = payload?.detail || payload?.error || payload || {};
+      const statusCode = detail?.status_code ?? payload?.status_code ?? null;
+      return {
+        route: detail?.route || "/api/generate",
+        status_code: statusCode,
+        reason: normalizeOpenRouterReason(detail?.reason),
+        model: detail?.model ?? null,
+        requested_max_tokens: detail?.requested_max_tokens ?? null,
+        applied_max_tokens: detail?.applied_max_tokens ?? null,
+        first_applied_max_tokens: detail?.first_applied_max_tokens ?? null,
+        retried_with_lower_max_tokens: detail?.retried_with_lower_max_tokens ?? false,
+        raw_error: typeof detail?.raw_error === "string" ? detail.raw_error : null,
+      };
     }
 
     function formatWarnings(warnings) {
@@ -2790,9 +2840,11 @@
       });
       const data = await res.json();
       if (!res.ok) {
+        setGenerateTechnicalDebug(extractGenerateTechnicalDetail(data));
         setStatus("Ошибка: " + extractErrorText(data));
         return;
       }
+      setGenerateTechnicalDebug(null);
       sharedBirthContext.timezoneSource = data.timezone?.timezone_source || sharedBirthContext.timezoneSource;
       sharedBirthContext.timezoneOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneOffset;
       sharedBirthContext.timezoneResolvedOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneResolvedOffset;
@@ -3642,6 +3694,7 @@
     resetRectEventsState();
     resetWizardDerivedState();
     setTechnicalMode(false);
+    setGenerateTechnicalDebug(null);
     sharedBirthContext.birthDateLocal = todayLocalDateValue();
     sharedBirthContext.birthDateTimeLocal = datetimeLocalEl.value;
     sharedBirthContext.cityQuery = document.getElementById("cityQuery").value.trim() || null;

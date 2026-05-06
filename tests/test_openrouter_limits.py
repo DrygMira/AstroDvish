@@ -111,6 +111,41 @@ def test_openrouter_non_200_includes_token_debug_fields(monkeypatch: pytest.Monk
 
     detail = exc_info.value.detail
     assert detail["status_code"] == 402
+    assert detail["reason"] == "insufficient_credits_or_max_tokens"
+    assert detail["model"] == "openai/gpt-4.1"
+    assert detail["route"] == "unknown"
     assert detail["requested_max_tokens"] == 8000
     assert detail["applied_max_tokens"] == 8000
     assert "credits" in detail["raw_error"]
+
+
+def test_openrouter_generate_retries_with_affordable_tokens_on_402(monkeypatch: pytest.MonkeyPatch) -> None:
+    _set_openrouter_env(monkeypatch)
+    sent_max_tokens: list[int] = []
+
+    def fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: int) -> _FakeOpenRouterResponse:
+        sent_max_tokens.append(int(json["max_tokens"]))
+        if len(sent_max_tokens) == 1:
+            return _FakeOpenRouterResponse(
+                status_code=402,
+                payload={"error": {"message": "This request requires more credits, or fewer max_tokens."}},
+                text='{"error":{"message":"This request requires more credits, or fewer max_tokens. You requested up to 8000 tokens, but can only afford 2218."}}',
+            )
+        return _FakeOpenRouterResponse()
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    result = web_ui_main._call_openrouter_chat(
+        system_prompt="system",
+        user_prompt="user",
+        request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
+        route_label="/api/generate",
+        retry_on_affordable_402=True,
+    )
+
+    assert sent_max_tokens == [8000, 2218]
+    assert result["requested_max_tokens"] == 8000
+    assert result["first_applied_max_tokens"] == 8000
+    assert result["applied_max_tokens"] == 2218
+    assert result["retried_with_lower_max_tokens"] is True
+    assert result["route"] == "/api/generate"
