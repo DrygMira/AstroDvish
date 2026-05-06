@@ -37,6 +37,10 @@ OPENROUTER_REQUEST_KIND_DEFAULT = "default"
 OPENROUTER_REQUEST_KIND_STAGE1 = "stage1"
 OPENROUTER_REQUEST_KIND_GENERATE = "generate"
 OPENROUTER_REQUEST_KIND_PRO = "pro"
+OPENROUTER_CASCADE_FALLBACK_STATUSES = {401, 402, 403, 429, 500, 502, 503, 504}
+GEOCODE_CACHE_PATH = Path(__file__).resolve().parent.parent / "data" / "geocode_cache.json"
+GEOCODE_CACHE_MAX_ITEMS = 300
+GEOCODE_CACHE_VERSION = 1
 
 app = FastAPI(title="astro-web-ui", docs_url=None, redoc_url=None, openapi_url=None)
 logger = logging.getLogger(__name__)
@@ -1522,8 +1526,17 @@ def _load_rectification_prompt() -> str:
 
 def _load_openrouter_settings() -> dict[str, Any]:
     api_key = _env("OPENROUTER_API_KEY", "").strip()
+    api_key_backup_1 = _env("OPENROUTER_API_KEY_BACKUP_1", "").strip()
+    api_key_backup_2 = _env("OPENROUTER_API_KEY_BACKUP_2", "").strip()
     base_url = _env("OPENROUTER_BASE_URL", OPENROUTER_DEFAULT_BASE_URL).strip().rstrip("/")
     model = _env("OPENROUTER_MODEL", "openai/gpt-4.1-mini").strip()
+    llm_model_generate_primary = _env("LLM_MODEL_GENERATE_PRIMARY", "").strip()
+    llm_model_generate_fallback = _env("LLM_MODEL_GENERATE_FALLBACK", "").strip()
+    llm_model_stage1_primary = _env("LLM_MODEL_STAGE1_PRIMARY", "").strip()
+    llm_model_stage1_fallback = _env("LLM_MODEL_STAGE1_FALLBACK", "").strip()
+    llm_model_pro_primary = _env("LLM_MODEL_PRO_PRIMARY", "").strip()
+    llm_model_pro_fallback = _env("LLM_MODEL_PRO_FALLBACK", "").strip()
+    max_llm_attempts_raw = _env("MAX_LLM_ATTEMPTS", "4").strip()
     site_url = _env("OPENROUTER_SITE_URL", "").strip()
     app_name = _env("OPENROUTER_APP_NAME", "AstroDvish").strip() or "AstroDvish"
     timeout_raw = _env("OPENROUTER_TIMEOUT_SECONDS", "120").strip()
@@ -1533,11 +1546,26 @@ def _load_openrouter_settings() -> dict[str, Any]:
     max_tokens_pro_raw = _env("OPENROUTER_MAX_TOKENS_PRO", "12000").strip()
     max_tokens_hard_limit_raw = _env("OPENROUTER_MAX_TOKENS_HARD_LIMIT", "20000").strip()
 
-    if not api_key:
+    try:
+        max_llm_attempts = int(max_llm_attempts_raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail="MAX_LLM_ATTEMPTS must be integer") from exc
+    if max_llm_attempts <= 0:
+        raise HTTPException(status_code=500, detail="MAX_LLM_ATTEMPTS must be > 0")
+
+    api_key_slots: list[dict[str, str]] = []
+    if api_key:
+        api_key_slots.append({"name": "primary", "value": api_key})
+    if api_key_backup_1:
+        api_key_slots.append({"name": "backup_1", "value": api_key_backup_1})
+    if api_key_backup_2:
+        api_key_slots.append({"name": "backup_2", "value": api_key_backup_2})
+
+    if not api_key_slots:
         raise HTTPException(
             status_code=500,
             detail=(
-                "OPENROUTER_API_KEY is not set. Configure it in environment "
+                "OPENROUTER_API_KEY is not set. Configure primary or backup keys in environment "
                 "or in .env file."
             ),
         )
@@ -1576,10 +1604,46 @@ def _load_openrouter_settings() -> dict[str, Any]:
     if max_tokens_hard_limit <= 0:
         raise HTTPException(status_code=500, detail="OPENROUTER_MAX_TOKENS_HARD_LIMIT must be > 0")
 
+    # Backward compatibility: OPENROUTER_MODEL_* can still define defaults,
+    # but scenario-specific LLM_MODEL_* has priority.
+    generate_primary_model = (
+        llm_model_generate_primary
+        or _env("OPENROUTER_MODEL_HOROSCOPE", "").strip()
+        or model
+    )
+    generate_fallback_model = llm_model_generate_fallback or "openai/gpt-4.1-mini"
+    stage1_primary_model = (
+        llm_model_stage1_primary
+        or _env("OPENROUTER_MODEL_RECTIFICATION", "").strip()
+        or model
+    )
+    stage1_fallback_model = llm_model_stage1_fallback or "openai/gpt-4.1-mini"
+    pro_primary_model = llm_model_pro_primary or model
+    pro_fallback_model = llm_model_pro_fallback or "openai/gpt-4.1-mini"
+
     return {
-        "api_key": api_key,
+        "api_key_slots": api_key_slots,
+        "max_llm_attempts": max_llm_attempts,
         "base_url": base_url or OPENROUTER_DEFAULT_BASE_URL,
         "model": model,
+        "models_by_scenario": {
+            OPENROUTER_REQUEST_KIND_DEFAULT: {
+                "primary": model,
+                "fallback": generate_fallback_model or model,
+            },
+            OPENROUTER_REQUEST_KIND_GENERATE: {
+                "primary": generate_primary_model,
+                "fallback": generate_fallback_model or generate_primary_model,
+            },
+            OPENROUTER_REQUEST_KIND_STAGE1: {
+                "primary": stage1_primary_model,
+                "fallback": stage1_fallback_model or stage1_primary_model,
+            },
+            OPENROUTER_REQUEST_KIND_PRO: {
+                "primary": pro_primary_model,
+                "fallback": pro_fallback_model or pro_primary_model,
+            },
+        },
         "site_url": site_url,
         "app_name": app_name,
         "timeout_seconds": timeout_seconds,
@@ -1629,7 +1693,7 @@ def _classify_openrouter_error(status_code: int, raw_error: str) -> str:
         return "unauthorized_or_forbidden"
     if status_code == 429:
         return "rate_limited"
-    if status_code in {500, 503}:
+    if status_code in {500, 502, 503, 504}:
         return "provider_unavailable"
     if status_code == 402:
         if "prompt tokens limit exceeded" in lowered:
@@ -1886,6 +1950,74 @@ def _is_localhost_base_url(base_url: str) -> bool:
     return parsed.hostname in {"127.0.0.1", "localhost"}
 
 
+def _load_geocode_cache() -> dict[str, dict[str, Any]]:
+    if not GEOCODE_CACHE_PATH.exists():
+        return {}
+    try:
+        raw = json.loads(GEOCODE_CACHE_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    if not isinstance(raw, dict):
+        return {}
+    if raw.get("version") != GEOCODE_CACHE_VERSION:
+        return {}
+    data = raw.get("data")
+    if not isinstance(data, dict):
+        return {}
+    normalized: dict[str, dict[str, Any]] = {}
+    for key, value in data.items():
+        if isinstance(key, str) and isinstance(value, dict):
+            normalized[key] = value
+    return normalized
+
+
+def _save_geocode_cache(cache: dict[str, dict[str, Any]]) -> None:
+    GEOCODE_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    payload = {"version": GEOCODE_CACHE_VERSION, "data": cache}
+    GEOCODE_CACHE_PATH.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+
+def _cache_geocode_result(query: str, results: list[dict[str, Any]]) -> None:
+    if not query or not results:
+        return
+    normalized_query = query.strip().lower()
+    if not normalized_query:
+        return
+    cache = _load_geocode_cache()
+    cache[normalized_query] = {
+        "query": query,
+        "results": results,
+        "cached_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    }
+    if len(cache) > GEOCODE_CACHE_MAX_ITEMS:
+        sorted_keys = sorted(
+            cache.keys(),
+            key=lambda key: cache.get(key, {}).get("cached_at", ""),
+            reverse=True,
+        )
+        keep_keys = set(sorted_keys[:GEOCODE_CACHE_MAX_ITEMS])
+        cache = {key: value for key, value in cache.items() if key in keep_keys}
+    _save_geocode_cache(cache)
+
+
+def _get_cached_geocode_result(query: str) -> list[dict[str, Any]] | None:
+    normalized_query = (query or "").strip().lower()
+    if not normalized_query:
+        return None
+    cache = _load_geocode_cache()
+    record = cache.get(normalized_query)
+    if not isinstance(record, dict):
+        return None
+    results = record.get("results")
+    if not isinstance(results, list):
+        return None
+    cleaned: list[dict[str, Any]] = []
+    for item in results:
+        if isinstance(item, dict):
+            cleaned.append(item)
+    return cleaned or None
+
+
 def _post_to_api_with_fallback(*, base_url: str, path: str, payload: dict[str, Any], timeout: int) -> httpx.Response:
     primary_url = base_url.rstrip("/") + path
     try:
@@ -1941,26 +2073,68 @@ def _call_openrouter_chat(
     retry_on_affordable_402: bool = False,
 ) -> dict[str, Any]:
     settings = _load_openrouter_settings()
-    model = _env(model_override_env, "").strip() if model_override_env else ""
-    if not model:
-        model = settings["model"]
     resolved_requested_max_tokens, applied_max_tokens = _resolve_openrouter_max_tokens(
         settings=settings,
         request_kind=request_kind,
         requested_max_tokens=requested_max_tokens,
     )
 
-    headers: dict[str, str] = {
-        "Authorization": f"Bearer {settings['api_key']}",
-        "Content-Type": "application/json",
-        "X-Title": settings["app_name"],
-    }
-    if settings["site_url"]:
-        headers["HTTP-Referer"] = settings["site_url"]
+    scenario_models = settings["models_by_scenario"].get(
+        request_kind, settings["models_by_scenario"][OPENROUTER_REQUEST_KIND_DEFAULT]
+    )
+    scenario_primary_model = scenario_models.get("primary") or settings["model"]
+    scenario_fallback_model = scenario_models.get("fallback") or scenario_primary_model
+    if model_override_env:
+        model_override = _env(model_override_env, "").strip()
+        if model_override:
+            scenario_primary_model = model_override
 
-    def _request_openrouter(max_tokens: int) -> httpx.Response:
+    # Recommended attempt order:
+    # 1) primary key + primary model
+    # 2) primary key + fallback model
+    # 3) backup_1 key + fallback model
+    # 4) backup_2 key + fallback model
+    all_keys = settings["api_key_slots"]
+    primary_key = next((slot for slot in all_keys if slot["name"] == "primary"), all_keys[0])
+    backup_1_key = next((slot for slot in all_keys if slot["name"] == "backup_1"), None)
+    backup_2_key = next((slot for slot in all_keys if slot["name"] == "backup_2"), None)
+
+    planned_attempts: list[tuple[dict[str, str], str]] = [
+        (primary_key, scenario_primary_model),
+        (primary_key, scenario_fallback_model),
+    ]
+    if backup_1_key is not None:
+        planned_attempts.append((backup_1_key, scenario_fallback_model))
+    if backup_2_key is not None:
+        planned_attempts.append((backup_2_key, scenario_fallback_model))
+
+    deduped_attempts: list[tuple[dict[str, str], str]] = []
+    seen_attempt_signatures: set[tuple[str, str]] = set()
+    for key_slot, model_name in planned_attempts:
+        signature = (key_slot["name"], model_name)
+        if signature in seen_attempt_signatures:
+            continue
+        seen_attempt_signatures.add(signature)
+        deduped_attempts.append((key_slot, model_name))
+
+    attempts_limit = min(max(1, int(settings["max_llm_attempts"])), len(deduped_attempts))
+    attempts_plan = deduped_attempts[:attempts_limit]
+
+    def _request_openrouter(
+        *,
+        api_key_slot: dict[str, str],
+        model_name: str,
+        max_tokens: int,
+    ) -> httpx.Response:
+        headers: dict[str, str] = {
+            "Authorization": f"Bearer {api_key_slot['value']}",
+            "Content-Type": "application/json",
+            "X-Title": settings["app_name"],
+        }
+        if settings["site_url"]:
+            headers["HTTP-Referer"] = settings["site_url"]
         body = {
-            "model": model,
+            "model": model_name,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -1980,56 +2154,155 @@ def _call_openrouter_chat(
         except httpx.HTTPError as exc:
             raise HTTPException(status_code=502, detail=f"OpenRouter request failed: {exc}") from exc
 
-    first_applied_max_tokens = applied_max_tokens
+    initial_applied_max_tokens = applied_max_tokens
+    attempt_max_tokens = applied_max_tokens
     retried_with_lower_max_tokens = False
-    response = _request_openrouter(applied_max_tokens)
-    if response.status_code != 200 and retry_on_affordable_402 and response.status_code == 402:
-        affordable_from_error = _extract_openrouter_affordable_max_tokens(response.text)
-        if affordable_from_error is not None:
-            affordable_applied = min(affordable_from_error, int(settings["max_tokens_hard_limit"]))
-            if 0 < affordable_applied < applied_max_tokens:
-                response = _request_openrouter(affordable_applied)
-                applied_max_tokens = affordable_applied
-                retried_with_lower_max_tokens = True
+    all_attempt_debug: list[dict[str, Any]] = []
+    last_http_status = 502
 
-    if response.status_code != 200:
+    for attempt_index, (key_slot, model_name) in enumerate(attempts_plan, start=1):
+        current_applied_tokens = attempt_max_tokens
+        try:
+            response = _request_openrouter(
+                api_key_slot=key_slot,
+                model_name=model_name,
+                max_tokens=current_applied_tokens,
+            )
+        except HTTPException as exc:
+            all_attempt_debug.append(
+                {
+                    "attempt": attempt_index,
+                    "key_name": key_slot["name"],
+                    "model": model_name,
+                    "status_code": 502,
+                    "reason": "network_or_timeout",
+                    "requested_max_tokens": resolved_requested_max_tokens,
+                    "applied_max_tokens": current_applied_tokens,
+                    "raw_error": str(exc.detail)[:4000],
+                }
+            )
+            last_http_status = 502
+            continue
+
+        if response.status_code == 200:
+            payload = response.json()
+            text = _extract_chat_completion_text(payload)
+            if text:
+                all_attempt_debug.append(
+                    {
+                        "attempt": attempt_index,
+                        "key_name": key_slot["name"],
+                        "model": model_name,
+                        "status_code": 200,
+                        "reason": "ok",
+                        "requested_max_tokens": resolved_requested_max_tokens,
+                        "applied_max_tokens": current_applied_tokens,
+                    }
+                )
+                return {
+                    "text": text,
+                    "raw": payload,
+                    "model": model_name,
+                    "key_name": key_slot["name"],
+                    "route": route_label,
+                    "scenario": request_kind,
+                    "request_kind": request_kind,
+                    "requested_max_tokens": resolved_requested_max_tokens,
+                    "applied_max_tokens": current_applied_tokens,
+                    "first_applied_max_tokens": initial_applied_max_tokens,
+                    "retried_with_lower_max_tokens": retried_with_lower_max_tokens,
+                    "attempts": all_attempt_debug,
+                    "fallback_used": attempt_index > 1,
+                    "final_source": "llm_primary" if attempt_index == 1 else "llm_fallback",
+                }
+            all_attempt_debug.append(
+                {
+                    "attempt": attempt_index,
+                    "key_name": key_slot["name"],
+                    "model": model_name,
+                    "status_code": 502,
+                    "reason": "empty_response",
+                    "requested_max_tokens": resolved_requested_max_tokens,
+                    "applied_max_tokens": current_applied_tokens,
+                }
+            )
+            last_http_status = 502
+            continue
+
         raw_error = response.text[:4000]
-        raise HTTPException(
-            status_code=502,
-            detail={
-                "message": "OpenRouter returned non-200 status",
+        reason = _classify_openrouter_error(response.status_code, raw_error)
+        all_attempt_debug.append(
+            {
+                "attempt": attempt_index,
+                "key_name": key_slot["name"],
+                "model": model_name,
                 "status_code": response.status_code,
-                "reason": _classify_openrouter_error(response.status_code, raw_error),
-                "raw_error": raw_error,
-                "model": model,
-                "route": route_label,
-                "request_kind": request_kind,
+                "reason": reason,
                 "requested_max_tokens": resolved_requested_max_tokens,
-                "applied_max_tokens": applied_max_tokens,
-                "first_applied_max_tokens": first_applied_max_tokens,
-                "retried_with_lower_max_tokens": retried_with_lower_max_tokens,
-            },
+                "applied_max_tokens": current_applied_tokens,
+                "raw_error": raw_error,
+            }
         )
+        last_http_status = response.status_code
 
-    payload = response.json()
-    text = _extract_chat_completion_text(payload)
-    if not text:
-        raise HTTPException(status_code=502, detail="OpenRouter response did not contain text")
+        if response.status_code not in OPENROUTER_CASCADE_FALLBACK_STATUSES:
+            break
 
-    return {
-        "text": text,
-        "raw": payload,
-        "model": model,
-        "route": route_label,
-        "request_kind": request_kind,
-        "requested_max_tokens": resolved_requested_max_tokens,
-        "applied_max_tokens": applied_max_tokens,
-        "first_applied_max_tokens": first_applied_max_tokens,
-        "retried_with_lower_max_tokens": retried_with_lower_max_tokens,
-    }
+        # If credits are tight, try smaller token cap on next attempts.
+        if request_kind == OPENROUTER_REQUEST_KIND_GENERATE and response.status_code == 402:
+            new_tokens = min(attempt_max_tokens, 4000)
+            if new_tokens < attempt_max_tokens:
+                retried_with_lower_max_tokens = True
+            attempt_max_tokens = new_tokens
+        affordable_from_error = _extract_openrouter_affordable_max_tokens(raw_error)
+        if affordable_from_error is not None:
+            new_tokens = min(
+                attempt_max_tokens,
+                affordable_from_error,
+                int(settings["max_tokens_hard_limit"]),
+            )
+            if new_tokens < attempt_max_tokens:
+                retried_with_lower_max_tokens = True
+            attempt_max_tokens = new_tokens
+        if attempt_max_tokens <= 0:
+            attempt_max_tokens = 1
+
+    raise HTTPException(
+        status_code=502,
+        detail={
+            "message": "OpenRouter returned non-200 status",
+            "status_code": last_http_status,
+            "reason": (
+                all_attempt_debug[-1]["reason"]
+                if all_attempt_debug
+                else "upstream_error"
+            ),
+            "route": route_label,
+            "scenario": request_kind,
+            "request_kind": request_kind,
+            "requested_max_tokens": resolved_requested_max_tokens,
+            "applied_max_tokens": (
+                all_attempt_debug[-1]["applied_max_tokens"]
+                if all_attempt_debug
+                else applied_max_tokens
+            ),
+            "first_applied_max_tokens": initial_applied_max_tokens,
+            "retried_with_lower_max_tokens": retried_with_lower_max_tokens,
+            "attempts": all_attempt_debug,
+            "fallback_used": bool(all_attempt_debug and len(all_attempt_debug) > 1),
+            "final_source": "template_fallback",
+            "model": all_attempt_debug[-1]["model"] if all_attempt_debug else scenario_primary_model,
+            "key_name": all_attempt_debug[-1]["key_name"] if all_attempt_debug else "primary",
+            "raw_error": all_attempt_debug[-1].get("raw_error") if all_attempt_debug else None,
+        },
+    )
 
 
-def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_identity: dict[str, Any]) -> str:
+def _render_horoscope_via_openai(
+    prompt_text: str,
+    chart: dict[str, Any],
+    core_identity: dict[str, Any],
+) -> dict[str, Any]:
     compact_chart = _compact_llm_chart_context(chart)
     safe_prompt_text = _truncate_prompt_text(prompt_text)
     system_prompt = (
@@ -2056,7 +2329,13 @@ def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_i
         route_label="/api/generate",
         retry_on_affordable_402=True,
     )
-    return chat_result["text"]
+    llm_debug = {
+        "scenario": OPENROUTER_REQUEST_KIND_GENERATE,
+        "final_source": chat_result.get("final_source", "llm_primary"),
+        "fallback_used": bool(chat_result.get("fallback_used")),
+        "attempts": chat_result.get("attempts", []),
+    }
+    return {"text": chat_result["text"], "llm_debug": llm_debug}
 
 
 def _extract_usage_stats(openai_response: dict[str, Any]) -> dict[str, int | None]:
@@ -2274,33 +2553,219 @@ def get_rectification_prompt() -> JSONResponse:
     return JSONResponse({"prompt_text": _load_rectification_prompt()})
 
 
-@app.post("/api/geocode")
-def geocode_city(payload: GeocodeRequest) -> JSONResponse:
-    url = "https://geocoding-api.open-meteo.com/v1/search"
-    params = {"name": payload.query, "count": 8, "language": "ru", "format": "json"}
+def _normalize_geocode_results_from_open_meteo(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    normalized: list[dict[str, Any]] = []
+    for item in results:
+        if not isinstance(item, dict):
+            continue
+        latitude = item.get("latitude")
+        longitude = item.get("longitude")
+        if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
+            continue
+        timezone_name = item.get("timezone")
+        if not timezone_name:
+            try:
+                timezone_name = resolve_timezone_name(latitude=float(latitude), longitude=float(longitude))
+            except Exception:
+                timezone_name = None
+        normalized.append(
+            {
+                "name": item.get("name"),
+                "country": item.get("country"),
+                "admin1": item.get("admin1"),
+                "latitude": latitude,
+                "longitude": longitude,
+                "timezone": timezone_name,
+                "timezone_name": timezone_name,
+                "timezone_source": "open_meteo",
+            }
+        )
+    return normalized
 
+
+def _normalize_geocode_results_from_nominatim(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    normalized: list[dict[str, Any]] = []
+    for item in results:
+        if not isinstance(item, dict):
+            continue
+        try:
+            latitude = float(item.get("lat"))
+            longitude = float(item.get("lon"))
+        except (TypeError, ValueError):
+            continue
+        display_name = item.get("display_name")
+        name = item.get("name") or (display_name.split(",")[0].strip() if isinstance(display_name, str) else None)
+        address = item.get("address") if isinstance(item.get("address"), dict) else {}
+        country = address.get("country")
+        admin1 = (
+            address.get("state")
+            or address.get("region")
+            or address.get("county")
+            or address.get("city")
+            or address.get("town")
+        )
+        try:
+            timezone_name = resolve_timezone_name(latitude=latitude, longitude=longitude)
+        except Exception:
+            timezone_name = None
+        normalized.append(
+            {
+                "name": name,
+                "country": country,
+                "admin1": admin1,
+                "latitude": latitude,
+                "longitude": longitude,
+                "timezone": timezone_name,
+                "timezone_name": timezone_name,
+                "timezone_source": "nominatim",
+            }
+        )
+    return normalized
+
+
+def _fetch_geocode_open_meteo(query: str) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+    url = "https://geocoding-api.open-meteo.com/v1/search"
+    params = {"name": query, "count": 8, "language": "ru", "format": "json"}
     try:
         response = httpx.get(url, params=params, timeout=20)
-        response.raise_for_status()
-    except httpx.HTTPError as exc:
-        raise HTTPException(status_code=502, detail=f"Geocoding request failed: {exc}") from exc
-
-    data = response.json()
-    results = data.get("results", []) or []
-    normalized = [
-        {
-            "name": item.get("name"),
-            "country": item.get("country"),
-            "admin1": item.get("admin1"),
-            "latitude": item.get("latitude"),
-            "longitude": item.get("longitude"),
-            "timezone": item.get("timezone"),
-            "timezone_name": item.get("timezone"),
-            "timezone_source": "geocoder",
+    except httpx.TimeoutException as exc:
+        return [], {
+            "provider": "open_meteo",
+            "status_code": 504,
+            "reason": "timeout",
+            "raw_error": str(exc),
         }
-        for item in results
-    ]
-    return JSONResponse({"results": normalized})
+    except httpx.HTTPError as exc:
+        return [], {
+            "provider": "open_meteo",
+            "status_code": 502,
+            "reason": "network_error",
+            "raw_error": str(exc),
+        }
+    if response.status_code >= 400:
+        return [], {
+            "provider": "open_meteo",
+            "status_code": response.status_code,
+            "reason": "provider_error",
+            "raw_error": response.text[:2000],
+        }
+    payload = response.json()
+    results = payload.get("results", []) or []
+    normalized = _normalize_geocode_results_from_open_meteo(results)
+    return normalized, None
+
+
+def _fetch_geocode_nominatim(query: str) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+    url = "https://nominatim.openstreetmap.org/search"
+    params = {
+        "q": query,
+        "format": "jsonv2",
+        "addressdetails": 1,
+        "limit": 8,
+        "accept-language": "ru",
+    }
+    headers = {
+        "User-Agent": "AstroDvish/1.0 (+https://astrodvish.local)",
+    }
+    try:
+        response = httpx.get(url, params=params, headers=headers, timeout=20)
+    except httpx.TimeoutException as exc:
+        return [], {
+            "provider": "nominatim",
+            "status_code": 504,
+            "reason": "timeout",
+            "raw_error": str(exc),
+        }
+    except httpx.HTTPError as exc:
+        return [], {
+            "provider": "nominatim",
+            "status_code": 502,
+            "reason": "network_error",
+            "raw_error": str(exc),
+        }
+    if response.status_code >= 400:
+        return [], {
+            "provider": "nominatim",
+            "status_code": response.status_code,
+            "reason": "provider_error",
+            "raw_error": response.text[:2000],
+        }
+    payload = response.json()
+    if not isinstance(payload, list):
+        payload = []
+    normalized = _normalize_geocode_results_from_nominatim(payload)
+    return normalized, None
+
+
+@app.post("/api/geocode")
+def geocode_city(payload: GeocodeRequest) -> JSONResponse:
+    query = payload.query.strip()
+    open_meteo_results, open_meteo_error = _fetch_geocode_open_meteo(query)
+    if open_meteo_results:
+        _cache_geocode_result(query, open_meteo_results)
+        return JSONResponse(
+            {
+                "results": open_meteo_results,
+                "provider": "open_meteo",
+                "fallback_provider_used": False,
+                "cached_result_used": False,
+            }
+        )
+
+    fallback_error: dict[str, Any] | None = None
+    fallback_results: list[dict[str, Any]] = []
+    # Fallback provider is used only for provider/network failures.
+    if open_meteo_error and open_meteo_error.get("status_code") in {500, 502, 503, 504}:
+        fallback_results, fallback_error = _fetch_geocode_nominatim(query)
+        if fallback_results:
+            _cache_geocode_result(query, fallback_results)
+            return JSONResponse(
+                {
+                    "results": fallback_results,
+                    "provider": "nominatim",
+                    "fallback_provider_used": True,
+                    "cached_result_used": False,
+                    "debug": {
+                        "provider": "open_meteo",
+                        "status_code": open_meteo_error.get("status_code"),
+                        "raw_error": open_meteo_error.get("raw_error"),
+                    },
+                }
+            )
+
+    cached_results = _get_cached_geocode_result(query)
+    if cached_results:
+        return JSONResponse(
+            {
+                "results": cached_results,
+                "provider": "cache",
+                "fallback_provider_used": bool(fallback_results),
+                "cached_result_used": True,
+                "debug": {
+                    "provider": "open_meteo",
+                    "status_code": open_meteo_error.get("status_code") if open_meteo_error else None,
+                    "raw_error": open_meteo_error.get("raw_error") if open_meteo_error else None,
+                    "fallback_provider_used": bool(fallback_results or fallback_error),
+                    "fallback_provider": "nominatim" if (fallback_results or fallback_error) else None,
+                },
+            }
+        )
+
+    detail = {
+        "message": "Geocoding temporarily unavailable",
+        "user_message": (
+            "Сервис поиска города временно недоступен. "
+            "Попробуйте ещё раз или введите координаты вручную."
+        ),
+        "provider": "open_meteo",
+        "status_code": open_meteo_error.get("status_code") if open_meteo_error else 502,
+        "fallback_provider_used": bool(fallback_results or fallback_error),
+        "cached_result_used": False,
+        "raw_error": open_meteo_error.get("raw_error") if open_meteo_error else None,
+        "fallback_provider": "nominatim" if (fallback_results or fallback_error) else None,
+        "fallback_error": fallback_error,
+    }
+    raise HTTPException(status_code=502, detail=detail)
 
 
 @app.post("/api/generate")
@@ -2343,12 +2808,31 @@ def generate(payload: GenerateRequest) -> JSONResponse:
     core_identity, core_identity_warnings = _build_core_identity_block(chart_response)
     llm_debug: dict[str, Any] | None = None
     try:
-        horoscope_text = _render_horoscope_via_openai(payload.prompt_text, chart_response, core_identity)
+        llm_result = _render_horoscope_via_openai(payload.prompt_text, chart_response, core_identity)
+        if isinstance(llm_result, dict):
+            horoscope_text = llm_result.get("text", "")
+            llm_debug = llm_result.get("llm_debug")
+        else:
+            # Backward compatibility for tests and older mocks returning plain text.
+            horoscope_text = str(llm_result)
     except HTTPException as exc:
         detail = exc.detail if isinstance(exc.detail, dict) else {"message": str(exc.detail)}
         if exc.status_code != 502:
             raise
-        llm_debug = detail
+        llm_debug = {
+            "scenario": OPENROUTER_REQUEST_KIND_GENERATE,
+            "final_source": "template_fallback",
+            "fallback_used": True,
+            "attempts": detail.get("attempts", []),
+            "status_code": detail.get("status_code"),
+            "reason": detail.get("reason"),
+            "model": detail.get("model"),
+            "key_name": detail.get("key_name"),
+            "requested_max_tokens": detail.get("requested_max_tokens"),
+            "applied_max_tokens": detail.get("applied_max_tokens"),
+            "route": detail.get("route", "/api/generate"),
+            "raw_error": detail.get("raw_error"),
+        }
         horoscope_text = _build_generate_fallback_text(core_identity, chart_response)
         core_identity_warnings.append("llm_generation_fallback_used")
 

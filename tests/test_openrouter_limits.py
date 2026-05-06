@@ -23,9 +23,18 @@ class _FakeOpenRouterResponse:
 
 def _set_openrouter_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+    monkeypatch.setenv("OPENROUTER_API_KEY_BACKUP_1", "test-key-backup-1")
+    monkeypatch.setenv("OPENROUTER_API_KEY_BACKUP_2", "test-key-backup-2")
     monkeypatch.setenv("OPENROUTER_MODEL", "openai/gpt-4.1")
     monkeypatch.setenv("OPENROUTER_MODEL_RECTIFICATION", "openai/gpt-4.1")
     monkeypatch.setenv("OPENROUTER_MODEL_HOROSCOPE", "openai/gpt-4.1")
+    monkeypatch.setenv("LLM_MODEL_GENERATE_PRIMARY", "openai/gpt-4.1")
+    monkeypatch.setenv("LLM_MODEL_GENERATE_FALLBACK", "openai/gpt-4.1-mini")
+    monkeypatch.setenv("LLM_MODEL_STAGE1_PRIMARY", "openai/gpt-4.1-mini")
+    monkeypatch.setenv("LLM_MODEL_STAGE1_FALLBACK", "openai/gpt-4.1-mini")
+    monkeypatch.setenv("LLM_MODEL_PRO_PRIMARY", "openai/gpt-4.1")
+    monkeypatch.setenv("LLM_MODEL_PRO_FALLBACK", "openai/gpt-4.1-mini")
+    monkeypatch.setenv("MAX_LLM_ATTEMPTS", "4")
     monkeypatch.setenv("OPENROUTER_MAX_TOKENS_DEFAULT", "6000")
     monkeypatch.setenv("OPENROUTER_MAX_TOKENS_STAGE1", "2000")
     monkeypatch.setenv("OPENROUTER_MAX_TOKENS_GENERATE", "8000")
@@ -113,10 +122,14 @@ def test_openrouter_non_200_includes_token_debug_fields(monkeypatch: pytest.Monk
     detail = exc_info.value.detail
     assert detail["status_code"] == 402
     assert detail["reason"] == "insufficient_credits_or_max_tokens"
-    assert detail["model"] == "openai/gpt-4.1"
+    assert detail["model"] == "openai/gpt-4.1-mini"
     assert detail["route"] == "unknown"
     assert detail["requested_max_tokens"] == 8000
-    assert detail["applied_max_tokens"] == 8000
+    assert detail["applied_max_tokens"] == 4000
+    assert detail["first_applied_max_tokens"] == 8000
+    assert detail["retried_with_lower_max_tokens"] is True
+    assert isinstance(detail["attempts"], list)
+    assert detail["attempts"][0]["key_name"] == "primary"
     assert "credits" in detail["raw_error"]
 
 
@@ -266,3 +279,108 @@ def test_generate_returns_fallback_text_when_llm_unavailable(monkeypatch: pytest
     assert "llm_generation_fallback_used" in data["warnings"]
     assert data["llm_debug"]["status_code"] == 402
     assert data["llm_debug"]["reason"] == "insufficient_credits_or_max_tokens"
+
+
+def test_openrouter_cascade_uses_fallback_model_after_primary_402(monkeypatch: pytest.MonkeyPatch) -> None:
+    _set_openrouter_env(monkeypatch)
+    seen_models: list[str] = []
+
+    def fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: int) -> _FakeOpenRouterResponse:
+        seen_models.append(str(json["model"]))
+        if len(seen_models) == 1:
+            return _FakeOpenRouterResponse(
+                status_code=402,
+                payload={"error": {"message": "credits"}},
+                text='{"error":{"message":"This request requires more credits, or fewer max_tokens. You requested up to 8000 tokens, but can only afford 1200."}}',
+            )
+        return _FakeOpenRouterResponse()
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    result = web_ui_main._call_openrouter_chat(
+        system_prompt="system",
+        user_prompt="user",
+        request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
+    )
+    assert seen_models == ["openai/gpt-4.1", "openai/gpt-4.1-mini"]
+    assert result["fallback_used"] is True
+    assert result["final_source"] == "llm_fallback"
+    assert result["attempts"][0]["status_code"] == 402
+    assert result["attempts"][1]["status_code"] == 200
+
+
+def test_openrouter_cascade_uses_backup_key_after_primary_401(monkeypatch: pytest.MonkeyPatch) -> None:
+    _set_openrouter_env(monkeypatch)
+    auth_headers: list[str] = []
+
+    def fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: int) -> _FakeOpenRouterResponse:
+        auth_headers.append(headers["Authorization"])
+        if len(auth_headers) <= 2:
+            return _FakeOpenRouterResponse(
+                status_code=401,
+                payload={"error": {"message": "unauthorized"}},
+                text='{"error":{"message":"unauthorized"}}',
+            )
+        return _FakeOpenRouterResponse()
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    result = web_ui_main._call_openrouter_chat(
+        system_prompt="system",
+        user_prompt="user",
+        request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
+    )
+    assert auth_headers[0] == "Bearer test-key"
+    assert auth_headers[1] == "Bearer test-key"
+    assert auth_headers[2] == "Bearer test-key-backup-1"
+    assert result["key_name"] == "backup_1"
+    assert result["fallback_used"] is True
+
+
+def test_openrouter_cascade_exhaustion_returns_template_fallback_detail(monkeypatch: pytest.MonkeyPatch) -> None:
+    _set_openrouter_env(monkeypatch)
+
+    def fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: int) -> _FakeOpenRouterResponse:
+        return _FakeOpenRouterResponse(
+            status_code=503,
+            payload={"error": {"message": "provider unavailable"}},
+            text='{"error":{"message":"provider unavailable"}}',
+        )
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    with pytest.raises(web_ui_main.HTTPException) as exc_info:
+        web_ui_main._call_openrouter_chat(
+            system_prompt="system",
+            user_prompt="user",
+            request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
+        )
+    detail = exc_info.value.detail
+    assert detail["final_source"] == "template_fallback"
+    assert detail["fallback_used"] is True
+    assert len(detail["attempts"]) == 4
+    serialized = str(detail)
+    assert "test-key-backup-1" not in serialized
+    assert "test-key-backup-2" not in serialized
+    assert "test-key" not in serialized
+
+
+def test_scenario_specific_model_env_has_priority_over_openrouter_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    _set_openrouter_env(monkeypatch)
+    monkeypatch.setenv("OPENROUTER_MODEL", "openai/legacy-model")
+    monkeypatch.setenv("LLM_MODEL_GENERATE_PRIMARY", "openai/priority-model")
+
+    captured_models: list[str] = []
+
+    def fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: int) -> _FakeOpenRouterResponse:
+        captured_models.append(str(json["model"]))
+        return _FakeOpenRouterResponse()
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    web_ui_main._call_openrouter_chat(
+        system_prompt="system",
+        user_prompt="user",
+        request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
+    )
+    assert captured_models[0] == "openai/priority-model"

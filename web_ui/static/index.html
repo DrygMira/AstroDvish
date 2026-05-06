@@ -716,6 +716,11 @@
       <div class="hint">Только для диагностики LLM-ошибок. В основном интерфейсе детали провайдера скрыты.</div>
       <div id="generateDebugBox" class="json-box"></div>
     </div>
+    <div class="card">
+      <div><strong>Диагностика /api/geocode (technical)</strong></div>
+      <div class="hint">Показывает провайдера, fallback и cache при поиске города.</div>
+      <div id="geocodeDebugBox" class="json-box"></div>
+    </div>
 
     <section id="rectPanel" class="tab-panel">
       <div class="card">
@@ -1126,6 +1131,7 @@
     const techModeContentEl = document.getElementById("techModeContent");
     const techModeHintEl = document.getElementById("techModeHint");
     const generateDebugBoxEl = document.getElementById("generateDebugBox");
+    const geocodeDebugBoxEl = document.getElementById("geocodeDebugBox");
 
     const timezoneOffsetEl = document.getElementById("timezoneOffset");
     const timezoneModeEl = document.getElementById("timezoneMode");
@@ -1240,6 +1246,7 @@
 
     let technicalModeOpen = false;
     let lastGenerateTechnicalDebug = null;
+    let lastGeocodeTechnicalDebug = null;
 
     const rectDialogState = {
       rectificationDocument: null,
@@ -2177,6 +2184,9 @@
       if (!payload) return "Unknown error";
       if (typeof payload === "string") return payload;
       const detail = payload.detail || payload.error || payload;
+      if (typeof detail?.user_message === "string" && detail.user_message.trim()) {
+        return detail.user_message;
+      }
       const upstreamStatus = detail?.status_code || payload.status_code;
       const rawError = typeof detail?.raw_error === "string"
         ? detail.raw_error
@@ -2219,14 +2229,27 @@
       }, null, 2);
     }
 
+    function setGeocodeTechnicalDebug(payload) {
+      lastGeocodeTechnicalDebug = payload || null;
+      if (!geocodeDebugBoxEl) return;
+      geocodeDebugBoxEl.textContent = JSON.stringify(lastGeocodeTechnicalDebug || {
+        info: "Нет данных /api/geocode в текущей сессии.",
+      }, null, 2);
+    }
+
     function extractGenerateTechnicalDetail(payload) {
       const detail = payload?.detail || payload?.error || payload || {};
       const statusCode = detail?.status_code ?? payload?.status_code ?? null;
       return {
+        scenario: detail?.scenario || detail?.request_kind || "generate",
+        final_source: detail?.final_source || null,
+        fallback_used: detail?.fallback_used ?? null,
+        attempts: Array.isArray(detail?.attempts) ? detail.attempts : [],
         route: detail?.route || "/api/generate",
         status_code: statusCode,
         reason: normalizeOpenRouterReason(detail?.reason),
         model: detail?.model ?? null,
+        key_name: detail?.key_name ?? null,
         requested_max_tokens: detail?.requested_max_tokens ?? null,
         applied_max_tokens: detail?.applied_max_tokens ?? null,
         first_applied_max_tokens: detail?.first_applied_max_tokens ?? null,
@@ -2709,8 +2732,15 @@
       });
       const data = await res.json();
       if (!res.ok) {
+        setGeocodeTechnicalDebug(data?.detail || data || null);
         throw new Error(extractErrorText(data));
       }
+      setGeocodeTechnicalDebug({
+        provider: data?.provider || "unknown",
+        fallback_provider_used: !!data?.fallback_provider_used,
+        cached_result_used: !!data?.cached_result_used,
+        debug: data?.debug || null,
+      });
       return data.results || [];
     }
 
@@ -3700,6 +3730,7 @@
     resetWizardDerivedState();
     setTechnicalMode(false);
     setGenerateTechnicalDebug(null);
+    setGeocodeTechnicalDebug(null);
     sharedBirthContext.birthDateLocal = todayLocalDateValue();
     sharedBirthContext.birthDateTimeLocal = datetimeLocalEl.value;
     sharedBirthContext.cityQuery = document.getElementById("cityQuery").value.trim() || null;

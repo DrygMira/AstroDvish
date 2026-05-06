@@ -86,3 +86,13 @@ def test_main_ui_has_humanized_openrouter_error_messages_for_common_statuses() -
     assert "Не удалось авторизоваться в сервисе модели. Обратитесь к администратору." in html
     assert "Сервис модели перегружен. Повторите попытку чуть позже." in html
     assert "Сервис модели временно недоступен. Попробуйте ещё раз позже." in html
+
+
+def test_main_ui_supports_humanized_geocode_error_and_technical_debug() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "detail?.user_message" in html
+    assert 'id="geocodeDebugBox"' in html
