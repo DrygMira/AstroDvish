@@ -60,7 +60,7 @@ def test_main_ui_sanitizes_openrouter_402_error_text() -> None:
 
     assert response.status_code == 200
     html = response.text
-    assert "Ответ модели временно недоступен. Попробуйте ещё раз позже." in html
+    assert "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже." in html
     assert "detail?.raw_error" in html
 
 

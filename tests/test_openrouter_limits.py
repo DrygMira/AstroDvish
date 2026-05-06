@@ -275,10 +275,25 @@ def test_generate_returns_fallback_text_when_llm_unavailable(monkeypatch: pytest
 
     assert response.status_code == 200
     data = response.json()
-    assert "LLM-временная недоступность" in data["horoscope_text"]
-    assert "llm_generation_fallback_used" in data["warnings"]
+    assert data["chart_status"] == "ok"
+    assert data["llm_status"] == "unavailable"
+    assert data["horoscope_text"] is None
+    assert "Проверьте баланс OpenRouter" in data["llm_message"]
+    assert "llm_unavailable" in data["warnings"]
     assert data["llm_debug"]["status_code"] == 402
     assert data["llm_debug"]["reason"] == "insufficient_credits_or_max_tokens"
+
+
+def test_openrouter_default_model_is_gpt41_when_env_not_set(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("OPENROUTER_MODEL", raising=False)
+    monkeypatch.delenv("LLM_MODEL_GENERATE_PRIMARY", raising=False)
+    monkeypatch.delenv("LLM_MODEL_PRO_PRIMARY", raising=False)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+
+    settings = web_ui_main._load_openrouter_settings()
+    assert settings["model"] == "openai/gpt-4.1"
+    assert settings["models_by_scenario"][web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE]["primary"] == "openai/gpt-4.1"
+    assert settings["models_by_scenario"][web_ui_main.OPENROUTER_REQUEST_KIND_PRO]["primary"] == "openai/gpt-4.1"
 
 
 def test_openrouter_cascade_uses_fallback_model_after_primary_402(monkeypatch: pytest.MonkeyPatch) -> None:

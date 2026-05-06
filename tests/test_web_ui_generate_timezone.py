@@ -62,6 +62,8 @@ def test_generate_auto_timezone_ignores_manual_offset_and_returns_source(monkeyp
 
     assert response.status_code == 200
     body = response.json()
+    assert body["chart_status"] == "ok"
+    assert body["llm_status"] == "ok"
     assert body["timezone"]["mode"] == "auto"
     assert body["timezone"]["timezone_name"] == "Europe/London"
     assert body["timezone"]["timezone_source"] == "auto_by_coordinates"

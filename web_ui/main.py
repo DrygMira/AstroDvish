@@ -38,6 +38,10 @@ OPENROUTER_REQUEST_KIND_STAGE1 = "stage1"
 OPENROUTER_REQUEST_KIND_GENERATE = "generate"
 OPENROUTER_REQUEST_KIND_PRO = "pro"
 OPENROUTER_CASCADE_FALLBACK_STATUSES = {401, 402, 403, 429, 500, 502, 503, 504}
+LLM_UNAVAILABLE_MESSAGE = (
+    "Карта рассчитана, но текстовая интерпретация сейчас недоступна. "
+    "Проверьте баланс OpenRouter или повторите позже."
+)
 GEOCODE_CACHE_PATH = Path(__file__).resolve().parent.parent / "data" / "geocode_cache.json"
 GEOCODE_CACHE_MAX_ITEMS = 300
 GEOCODE_CACHE_VERSION = 1
@@ -1602,7 +1606,7 @@ def _load_openrouter_settings() -> dict[str, Any]:
     api_key_backup_1 = _env("OPENROUTER_API_KEY_BACKUP_1", "").strip()
     api_key_backup_2 = _env("OPENROUTER_API_KEY_BACKUP_2", "").strip()
     base_url = _env("OPENROUTER_BASE_URL", OPENROUTER_DEFAULT_BASE_URL).strip().rstrip("/")
-    model = _env("OPENROUTER_MODEL", "openai/gpt-4.1-mini").strip()
+    model = _env("OPENROUTER_MODEL", "openai/gpt-4.1").strip()
     llm_model_generate_primary = _env("LLM_MODEL_GENERATE_PRIMARY", "").strip()
     llm_model_generate_fallback = _env("LLM_MODEL_GENERATE_FALLBACK", "").strip()
     llm_model_stage1_primary = _env("LLM_MODEL_STAGE1_PRIMARY", "").strip()
@@ -1982,37 +1986,6 @@ def _truncate_prompt_text(prompt_text: str, max_chars: int = 2000) -> str:
     if len(text) <= max_chars:
         return text
     return text[:max_chars].rstrip() + "\n\n[Промт сокращён из-за лимита контекста.]"
-
-
-def _build_generate_fallback_text(core_identity: dict[str, Any], chart: dict[str, Any]) -> str:
-    objects = chart.get("objects") if isinstance(chart, dict) else {}
-    if not isinstance(objects, dict):
-        objects = {}
-    sun = core_identity.get("sun") if isinstance(core_identity.get("sun"), dict) else objects.get("sun")
-    moon = core_identity.get("moon") if isinstance(core_identity.get("moon"), dict) else objects.get("moon")
-    asc_abs = core_identity.get("asc")
-
-    def _fmt_obj(obj: Any, ru_name: str) -> str:
-        if not isinstance(obj, dict):
-            return f"{ru_name}: данные временно недоступны."
-        sign_ru = obj.get("sign_name_ru") or obj.get("sign_name_en") or "неизвестно"
-        degree = obj.get("sign_degree")
-        house = obj.get("house")
-        degree_text = f"{degree:.2f}°" if isinstance(degree, (int, float)) else "н/д"
-        house_text = str(house) if isinstance(house, int) else "н/д"
-        return f"{ru_name}: {sign_ru} {degree_text}, дом {house_text}."
-
-    asc_text = "Asc: данные временно недоступны."
-    if isinstance(asc_abs, (int, float)):
-        asc_text = f"Asc: {asc_abs:.2f}° (абсолютный градус)."
-
-    return (
-        "LLM-временная недоступность: показан резервный краткий разбор.\n\n"
-        f"{_fmt_obj(sun, 'Солнце')}\n"
-        f"{_fmt_obj(moon, 'Луна')}\n"
-        f"{asc_text}\n\n"
-        "Для полного текстового разбора повторите расчёт позже, когда ответ модели будет доступен."
-    )
 
 
 def _is_localhost_base_url(base_url: str) -> bool:
@@ -2880,6 +2853,8 @@ def generate(payload: GenerateRequest) -> JSONResponse:
     chart_response = response.json()
     core_identity, core_identity_warnings = _build_core_identity_block(chart_response)
     llm_debug: dict[str, Any] | None = None
+    llm_status = "ok"
+    llm_message: str | None = None
     try:
         llm_result = _render_horoscope_via_openai(payload.prompt_text, chart_response, core_identity)
         if isinstance(llm_result, dict):
@@ -2894,7 +2869,7 @@ def generate(payload: GenerateRequest) -> JSONResponse:
             raise
         llm_debug = {
             "scenario": OPENROUTER_REQUEST_KIND_GENERATE,
-            "final_source": "template_fallback",
+            "final_source": "llm_unavailable",
             "fallback_used": True,
             "attempts": detail.get("attempts", []),
             "status_code": detail.get("status_code"),
@@ -2906,12 +2881,17 @@ def generate(payload: GenerateRequest) -> JSONResponse:
             "route": detail.get("route", "/api/generate"),
             "raw_error": detail.get("raw_error"),
         }
-        horoscope_text = _build_generate_fallback_text(core_identity, chart_response)
-        core_identity_warnings.append("llm_generation_fallback_used")
+        horoscope_text = None
+        llm_status = "unavailable"
+        llm_message = LLM_UNAVAILABLE_MESSAGE
+        core_identity_warnings.append("llm_unavailable")
 
     warnings = timezone_warnings + core_identity_warnings
     return JSONResponse(
         {
+            "chart_status": "ok",
+            "llm_status": llm_status,
+            "llm_message": llm_message,
             "datetime_utc": datetime_utc,
             "timezone": timezone_context,
             "warnings": warnings,

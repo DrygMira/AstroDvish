@@ -2206,7 +2206,7 @@
         ? detail.raw_error
         : (typeof detail?.body === "string" ? detail.body : "");
       if (upstreamStatus === 402 && rawError) {
-        return "Ответ модели временно недоступен. Попробуйте ещё раз позже.";
+        return "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже.";
       }
       if (upstreamStatus === 401 || upstreamStatus === 403) {
         return "Не удалось авторизоваться в сервисе модели. Обратитесь к администратору.";
@@ -2279,6 +2279,7 @@
       const mapping = {
         llm_request_failed: "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам.",
         llm_generation_fallback_used: "Ответ модели не получен, поэтому показан резервный краткий разбор.",
+        llm_unavailable: "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже.",
         invalid_llm_json: "Модель вернула некорректный ответ. Использован резервный сценарий.",
         missing_options: "Модель не вернула варианты ответа. Использован резервный вопрос.",
         fallback_question_used: "Задан уточняющий вопрос из резервного сценария.",
@@ -3003,7 +3004,13 @@
       sharedBirthContext.timezoneResolvedOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneResolvedOffset;
       sharedBirthContext.timezoneName = data.timezone?.timezone_name || sharedBirthContext.timezoneName;
       renderSharedCurrentData();
-      horoscopeBoxEl.textContent = data.horoscope_text;
+      const llmUnavailableMessage = data.llm_message
+        || "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже.";
+      if (data.llm_status === "unavailable" || data.horoscope_text == null) {
+        horoscopeBoxEl.textContent = llmUnavailableMessage;
+      } else {
+        horoscopeBoxEl.textContent = data.horoscope_text;
+      }
       renderExpertTables(data.chart_response, data.timezone, data.warnings);
       expertWrapEl.classList.add("hidden");
       toggleExpertBtnEl.textContent = "Показать экспертную таблицу";
@@ -3018,7 +3025,11 @@
       const warnText = Array.isArray(data.warnings) && data.warnings.length
         ? formatWarnings(data.warnings)
         : "";
-      setStatus(`Готово. UTC: ${data.datetime_utc}. ${tzInfo}${warnText}`);
+      if (data.llm_status === "unavailable") {
+        setStatus(`Готово. UTC: ${data.datetime_utc}. ${tzInfo} ${llmUnavailableMessage}${warnText}`);
+      } else {
+        setStatus(`Готово. UTC: ${data.datetime_utc}. ${tzInfo}${warnText}`);
+      }
     }
 
     function renderRectIntervals(intervals) {
