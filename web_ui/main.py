@@ -27,8 +27,9 @@ ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 TZ_OFFSET_PATTERN = re.compile(r"^[+-](?:0\d|1[0-4]):[0-5]\d$")
 
 STAGE1_MIN_QUESTIONS = 6
-STAGE1_MAX_QUESTIONS = 8
+STAGE1_MAX_QUESTIONS = 10
 STAGE1_EARLY_FINAL_THRESHOLD = 0.65
+STAGE1_CLOSE_SCORE_GAP = 0.12
 RECT_MIN_STEPS = STAGE1_MIN_QUESTIONS
 RECT_MAX_STEPS = STAGE1_MAX_QUESTIONS
 OPENROUTER_DEFAULT_BASE_URL = "https://openrouter.ai/api/v1"
@@ -76,21 +77,21 @@ DOCKER_COMPOSE_API_BASE_URL = _env("DOCKER_COMPOSE_API_BASE_URL", "http://astrod
 
 QUESTION_BANK: list[dict[str, Any]] = [
     {
-        "question_id": "q_body_type_01",
-        "question_text": "Какой тип телосложения вам ближе?",
+        "question_id": "q_element_energy_01",
+        "question_text": "Какой тип энергии вам ближе?",
         "options": [
-            {"id": "A", "text": "более атлетичное, сухое, энергичное, быстрый обмен"},
-            {"id": "B", "text": "крепкое, плотное, устойчивое, может быть выражен подбородок/скулы"},
-            {"id": "C", "text": "худощавое, вытянутое, лёгкое, длинные пальцы, подвижность"},
-            {"id": "D", "text": "мягкое, округлое, плавные линии тела, обтекаемость"},
-            {"id": "X", "text": "сложно выбрать"},
+            {"id": "A", "text": "быстрая, яркая, активная, пробивная"},
+            {"id": "B", "text": "спокойная, практичная, устойчивая, результативная"},
+            {"id": "C", "text": "лёгкая, подвижная, контактная, интеллектуальная"},
+            {"id": "D", "text": "мягкая, глубокая, эмоциональная, чувствующая"},
+            {"id": "X", "text": "смешано / сложно выбрать"},
         ],
     },
     {
-        "question_id": "q_first_impression_02",
+        "question_id": "q_element_first_impression_02",
         "question_text": "Какое первое впечатление вы чаще производите?",
         "options": [
-            {"id": "A", "text": "яркий, уверенный, активный, сразу заметный"},
+            {"id": "A", "text": "яркий, уверенный, активный, заметный"},
             {"id": "B", "text": "спокойный, надёжный, собранный, устойчивый"},
             {"id": "C", "text": "лёгкий, общительный, дружелюбный, подвижный"},
             {"id": "D", "text": "мягкий, глубокий, загадочный, эмоциональный"},
@@ -98,40 +99,18 @@ QUESTION_BANK: list[dict[str, Any]] = [
         ],
     },
     {
-        "question_id": "q_style_image_03",
-        "question_text": "Какой стиль одежды или образ вам ближе?",
-        "options": [
-            {"id": "A", "text": "яркие акценты, заметность, аксессуары, статусные детали"},
-            {"id": "B", "text": "практичность, минимализм, классика, качество"},
-            {"id": "C", "text": "удобство, движение, модные тенденции, лёгкость"},
-            {"id": "D", "text": "мягкие ткани, уют, романтичность, объёмность, скрывающий силуэт"},
-            {"id": "X", "text": "нет одного стиля"},
-        ],
-    },
-    {
-        "question_id": "q_stress_reaction_04",
+        "question_id": "q_element_stress_03",
         "question_text": "Как вы чаще реагируете на стресс?",
         "options": [
-            {"id": "A", "text": "включаюсь резко, защищаюсь через нападение или активное действие"},
-            {"id": "B", "text": "собираюсь, держусь как стена, становлюсь холоднее и твёрже"},
-            {"id": "C", "text": "начинаю обсуждать, объяснять, искать варианты через разговор"},
-            {"id": "D", "text": "сильно переживаю, могу обижаться, эмоционально закрываться"},
+            {"id": "A", "text": "включаюсь резко, иду в действие или нападение"},
+            {"id": "B", "text": "собираюсь, держусь, ищу практическую опору"},
+            {"id": "C", "text": "начинаю обсуждать, искать варианты, проговаривать"},
+            {"id": "D", "text": "переживаю глубоко, могу закрываться эмоционально"},
             {"id": "X", "text": "по-разному"},
         ],
     },
     {
-        "question_id": "q_lifestyle_activity_05",
-        "question_text": "Какой стиль жизни вам ближе?",
-        "options": [
-            {"id": "A", "text": "динамика, цель, движение, соревнование, быстрые решения"},
-            {"id": "B", "text": "медленно, устойчиво, терпеливо, но довожу до результата"},
-            {"id": "C", "text": "переключение между делами, много интересов, гибкость"},
-            {"id": "D", "text": "нужны вдохновение, эмоциональный комфорт, ощущение смысла"},
-            {"id": "X", "text": "смешанный стиль"},
-        ],
-    },
-    {
-        "question_id": "q_movement_style_06",
+        "question_id": "q_element_movement_04",
         "question_text": "Как вы обычно двигаетесь?",
         "options": [
             {"id": "A", "text": "быстро, уверенно, энергично"},
@@ -142,58 +121,285 @@ QUESTION_BANK: list[dict[str, Any]] = [
         ],
     },
     {
-        "question_id": "q_visual_marker_07",
-        "question_text": "Что люди чаще замечают в вашей внешности или подаче?",
+        "question_id": "q_element_lifestyle_05",
+        "question_text": "Какой стиль жизни вам ближе?",
         "options": [
-            {"id": "A", "text": "яркость, сила, напор, заметность"},
-            {"id": "B", "text": "надёжность, плотность, собранность, форма"},
-            {"id": "C", "text": "лёгкость, мимика, речь, подвижность"},
-            {"id": "D", "text": "мягкость, глаза, эмоциональность, загадочность"},
-            {"id": "X", "text": "сложно сказать"},
+            {"id": "A", "text": "динамика, цель, движение, соревнование, быстрые решения"},
+            {"id": "B", "text": "практичность, устойчивость, терпение, результат"},
+            {"id": "C", "text": "переключение между делами, много интересов, гибкость"},
+            {"id": "D", "text": "вдохновение, эмоциональный комфорт, атмосфера и смысл"},
+            {"id": "X", "text": "смешанный стиль"},
         ],
     },
     {
-        "question_id": "q_communication_style_08",
-        "question_text": "Какой стиль общения вам ближе всего?",
+        "question_id": "q_element_style_06",
+        "question_text": "Какой образ вам ближе?",
         "options": [
-            {"id": "A", "text": "прямой, быстрый, энергичный"},
-            {"id": "B", "text": "сдержанный, структурный, по делу"},
-            {"id": "C", "text": "лёгкий, контактный, гибкий"},
-            {"id": "D", "text": "эмоциональный, интуитивный, глубокий"},
-            {"id": "X", "text": "зависит от ситуации"},
+            {"id": "A", "text": "яркие акценты, заметность, энергия, смелость"},
+            {"id": "B", "text": "практичность, качество, минимализм, надёжность"},
+            {"id": "C", "text": "удобство, движение, лёгкость, актуальность"},
+            {"id": "D", "text": "мягкие ткани, уют, романтичность, обтекаемый силуэт"},
+            {"id": "X", "text": "нет одного стиля"},
         ],
     },
     {
-        "question_id": "q_social_entry_09",
-        "question_text": "Как вы обычно входите в новый коллектив?",
+        "question_id": "q_mod_earth_01",
+        "question_text": "Что вам ближе в достижении практического результата?",
         "options": [
-            {"id": "A", "text": "быстро включаюсь и задаю динамику"},
-            {"id": "B", "text": "сначала оцениваю, вхожу постепенно и устойчиво"},
-            {"id": "C", "text": "легко знакомлюсь, много общаюсь, держу гибкость"},
-            {"id": "D", "text": "чувствую людей, сближаюсь избирательно и глубоко"},
-            {"id": "X", "text": "по-разному"},
+            {"id": "A", "text": "поставить цель, выстроить систему и взять ответственность"},
+            {"id": "B", "text": "сохранить, накопить, укрепить и приумножить уже имеющееся"},
+            {"id": "C", "text": "улучшить, пересобрать, довести детали до качества"},
+            {"id": "D", "text": "по-разному"},
+        ],
+    },
+    {
+        "question_id": "q_mod_earth_02",
+        "question_text": "Что вас больше всего раздражает в работе или делах?",
+        "options": [
+            {"id": "A", "text": "отсутствие цели, стратегии и ответственности"},
+            {"id": "B", "text": "нестабильность, суета, резкие перемены и потеря опоры"},
+            {"id": "C", "text": "хаос в деталях, ошибки, недоведённость и низкое качество"},
+            {"id": "D", "text": "зависит от ситуации"},
+        ],
+    },
+    {
+        "question_id": "q_mod_earth_03",
+        "question_text": "Какой стиль действия вам ближе?",
+        "options": [
+            {"id": "A", "text": "собраться, взять контроль и двигаться к вершине"},
+            {"id": "B", "text": "держать устойчивый темп, терпеть и сохранять результат"},
+            {"id": "C", "text": "анализировать, адаптироваться и улучшать по ходу дела"},
+            {"id": "D", "text": "смешанный стиль"},
+        ],
+    },
+    {
+        "question_id": "q_mod_fire_01",
+        "question_text": "Как вы проявляете активную энергию?",
+        "options": [
+            {"id": "A", "text": "быстро начинаю и пробиваю препятствие"},
+            {"id": "B", "text": "удерживаю центр, проявляю яркость и достоинство"},
+            {"id": "C", "text": "расширяю идею, вдохновляю и веду к смыслу"},
+            {"id": "D", "text": "по-разному"},
+        ],
+    },
+    {
+        "question_id": "q_mod_fire_02",
+        "question_text": "Что вас больше раздражает?",
+        "options": [
+            {"id": "A", "text": "ожидание, торможение, невозможность действовать сразу"},
+            {"id": "B", "text": "неуважение, обесценивание, потеря признания"},
+            {"id": "C", "text": "ограничения, узость, отсутствие смысла и горизонта"},
+            {"id": "D", "text": "зависит от ситуации"},
+        ],
+    },
+    {
+        "question_id": "q_mod_fire_03",
+        "question_text": "Какой стиль действия ближе?",
+        "options": [
+            {"id": "A", "text": "стартовать первым, действовать резко и прямо"},
+            {"id": "B", "text": "держать образ, вести через харизму, быть центром"},
+            {"id": "C", "text": "идти к масштабу, вдохновлять, расширять"},
+            {"id": "D", "text": "смешанный стиль"},
+        ],
+    },
+    {
+        "question_id": "q_mod_air_01",
+        "question_text": "Как вы чаще проявляетесь в контакте?",
+        "options": [
+            {"id": "A", "text": "создаю баланс, договариваюсь, ищу форму общения"},
+            {"id": "B", "text": "держу независимую позицию, идею, свободу взгляда"},
+            {"id": "C", "text": "быстро связываю людей, идеи и информацию"},
+            {"id": "D", "text": "по-разному"},
+        ],
+    },
+    {
+        "question_id": "q_mod_air_02",
+        "question_text": "Что вас больше раздражает?",
+        "options": [
+            {"id": "A", "text": "грубость, давление, отсутствие такта и баланса"},
+            {"id": "B", "text": "контроль, навязанные правила, давление авторитетов"},
+            {"id": "C", "text": "скука, однообразие, информационный вакуум"},
+            {"id": "D", "text": "зависит от ситуации"},
+        ],
+    },
+    {
+        "question_id": "q_mod_air_03",
+        "question_text": "Какой стиль мышления ближе?",
+        "options": [
+            {"id": "A", "text": "сравнить стороны, найти баланс и договорённость"},
+            {"id": "B", "text": "удерживать принцип и нестандартный взгляд"},
+            {"id": "C", "text": "быстро переключаться и передавать информацию"},
+            {"id": "D", "text": "смешанный стиль"},
+        ],
+    },
+    {
+        "question_id": "q_mod_water_01",
+        "question_text": "Как вы проявляете эмоциональную энергию?",
+        "options": [
+            {"id": "A", "text": "создаю близость, защищаю своих, строю безопасное поле"},
+            {"id": "B", "text": "удерживаю глубину, контроль и интенсивность переживания"},
+            {"id": "C", "text": "мягко чувствую, адаптируюсь и растворяюсь в атмосфере"},
+            {"id": "D", "text": "по-разному"},
+        ],
+    },
+    {
+        "question_id": "q_mod_water_02",
+        "question_text": "Что вас больше раздражает или ранит?",
+        "options": [
+            {"id": "A", "text": "холодность, небезопасность, отрыв от близких и корней"},
+            {"id": "B", "text": "поверхностность, потеря контроля, предательство"},
+            {"id": "C", "text": "жёсткость, сухость, грубая конкретика, эмоциональное давление"},
+            {"id": "D", "text": "зависит от ситуации"},
+        ],
+    },
+    {
+        "question_id": "q_mod_water_03",
+        "question_text": "Какой стиль реакции ближе?",
+        "options": [
+            {"id": "A", "text": "заботиться, защищать, создавать эмоциональную опору"},
+            {"id": "B", "text": "собираться в глубине, контролировать, проходить кризис"},
+            {"id": "C", "text": "сочувствовать, чувствовать атмосферу, вдохновляться"},
+            {"id": "D", "text": "смешанный стиль"},
         ],
     },
 ]
 
 QUESTION_BANK_BY_ID = {item["question_id"]: item for item in QUESTION_BANK}
 
+ELEMENT_LABELS: dict[str, str] = {
+    "fire": "Огонь",
+    "earth": "Земля",
+    "air": "Воздух",
+    "water": "Вода",
+}
+MODALITY_LABELS: dict[str, str] = {
+    "cardinal": "кардинальный",
+    "fixed": "фиксированный",
+    "mutable": "мутабельный",
+}
 ELEMENT_TO_SIGNS: dict[str, tuple[tuple[str, str], ...]] = {
     "fire": (("Овен", "Aries"), ("Лев", "Leo"), ("Стрелец", "Sagittarius")),
-    "earth": (("Телец", "Taurus"), ("Дева", "Virgo"), ("Козерог", "Capricorn")),
-    "air": (("Близнецы", "Gemini"), ("Весы", "Libra"), ("Водолей", "Aquarius")),
+    "earth": (("Козерог", "Capricorn"), ("Телец", "Taurus"), ("Дева", "Virgo")),
+    "air": (("Весы", "Libra"), ("Водолей", "Aquarius"), ("Близнецы", "Gemini")),
     "water": (("Рак", "Cancer"), ("Скорпион", "Scorpio"), ("Рыбы", "Pisces")),
+}
+ELEMENT_MODALITY_TO_SIGN: dict[str, dict[str, tuple[str, str]]] = {
+    "fire": {
+        "cardinal": ("Овен", "Aries"),
+        "fixed": ("Лев", "Leo"),
+        "mutable": ("Стрелец", "Sagittarius"),
+    },
+    "earth": {
+        "cardinal": ("Козерог", "Capricorn"),
+        "fixed": ("Телец", "Taurus"),
+        "mutable": ("Дева", "Virgo"),
+    },
+    "air": {
+        "cardinal": ("Весы", "Libra"),
+        "fixed": ("Водолей", "Aquarius"),
+        "mutable": ("Близнецы", "Gemini"),
+    },
+    "water": {
+        "cardinal": ("Рак", "Cancer"),
+        "fixed": ("Скорпион", "Scorpio"),
+        "mutable": ("Рыбы", "Pisces"),
+    },
+}
+
+STAGE1_ELEMENT_QUESTION_IDS: tuple[str, ...] = (
+    "q_element_energy_01",
+    "q_element_first_impression_02",
+    "q_element_stress_03",
+    "q_element_movement_04",
+    "q_element_lifestyle_05",
+    "q_element_style_06",
+)
+STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT: dict[str, tuple[str, ...]] = {
+    "earth": ("q_mod_earth_01", "q_mod_earth_02", "q_mod_earth_03"),
+    "fire": ("q_mod_fire_01", "q_mod_fire_02", "q_mod_fire_03"),
+    "air": ("q_mod_air_01", "q_mod_air_02", "q_mod_air_03"),
+    "water": ("q_mod_water_01", "q_mod_water_02", "q_mod_water_03"),
+}
+STAGE1_MODALITY_QUESTION_IDS: set[str] = {
+    qid for items in STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT.values() for qid in items
 }
 
 QUESTION_OPTION_ELEMENT_MAP: dict[str, dict[str, dict[str, float]]] = {
-    qid: {
-        "A": {"fire": 1.0},
-        "B": {"earth": 1.0},
-        "C": {"air": 1.0},
-        "D": {"water": 1.0},
-    }
-    for qid in QUESTION_BANK_BY_ID
+    qid: {"A": {"fire": 1.0}, "B": {"earth": 1.0}, "C": {"air": 1.0}, "D": {"water": 1.0}}
+    for qid in STAGE1_ELEMENT_QUESTION_IDS
 }
+QUESTION_OPTION_MODALITY_MAP: dict[str, dict[str, dict[str, str]]] = {
+    "q_mod_earth_01": {
+        "A": {"modality": "cardinal", "sign": "Capricorn"},
+        "B": {"modality": "fixed", "sign": "Taurus"},
+        "C": {"modality": "mutable", "sign": "Virgo"},
+    },
+    "q_mod_earth_02": {
+        "A": {"modality": "cardinal", "sign": "Capricorn"},
+        "B": {"modality": "fixed", "sign": "Taurus"},
+        "C": {"modality": "mutable", "sign": "Virgo"},
+    },
+    "q_mod_earth_03": {
+        "A": {"modality": "cardinal", "sign": "Capricorn"},
+        "B": {"modality": "fixed", "sign": "Taurus"},
+        "C": {"modality": "mutable", "sign": "Virgo"},
+    },
+    "q_mod_fire_01": {
+        "A": {"modality": "cardinal", "sign": "Aries"},
+        "B": {"modality": "fixed", "sign": "Leo"},
+        "C": {"modality": "mutable", "sign": "Sagittarius"},
+    },
+    "q_mod_fire_02": {
+        "A": {"modality": "cardinal", "sign": "Aries"},
+        "B": {"modality": "fixed", "sign": "Leo"},
+        "C": {"modality": "mutable", "sign": "Sagittarius"},
+    },
+    "q_mod_fire_03": {
+        "A": {"modality": "cardinal", "sign": "Aries"},
+        "B": {"modality": "fixed", "sign": "Leo"},
+        "C": {"modality": "mutable", "sign": "Sagittarius"},
+    },
+    "q_mod_air_01": {
+        "A": {"modality": "cardinal", "sign": "Libra"},
+        "B": {"modality": "fixed", "sign": "Aquarius"},
+        "C": {"modality": "mutable", "sign": "Gemini"},
+    },
+    "q_mod_air_02": {
+        "A": {"modality": "cardinal", "sign": "Libra"},
+        "B": {"modality": "fixed", "sign": "Aquarius"},
+        "C": {"modality": "mutable", "sign": "Gemini"},
+    },
+    "q_mod_air_03": {
+        "A": {"modality": "cardinal", "sign": "Libra"},
+        "B": {"modality": "fixed", "sign": "Aquarius"},
+        "C": {"modality": "mutable", "sign": "Gemini"},
+    },
+    "q_mod_water_01": {
+        "A": {"modality": "cardinal", "sign": "Cancer"},
+        "B": {"modality": "fixed", "sign": "Scorpio"},
+        "C": {"modality": "mutable", "sign": "Pisces"},
+    },
+    "q_mod_water_02": {
+        "A": {"modality": "cardinal", "sign": "Cancer"},
+        "B": {"modality": "fixed", "sign": "Scorpio"},
+        "C": {"modality": "mutable", "sign": "Pisces"},
+    },
+    "q_mod_water_03": {
+        "A": {"modality": "cardinal", "sign": "Cancer"},
+        "B": {"modality": "fixed", "sign": "Scorpio"},
+        "C": {"modality": "mutable", "sign": "Pisces"},
+    },
+}
+
+STAGE1_METHOD_LIMITATIONS: list[str] = [
+    "Этот этап сужает поиск времени рождения через определение восходящего знака.",
+    "Обычно метод сужает 24 часа до окна около 2 часов, но не даёт точное время до минут.",
+    "Для уточнения до минут нужны события жизни и дирекционные формулы ректификации.",
+    "Если в космограмме сильно выделен другой знак, впечатление Asc может искажаться.",
+    "Возможен пограничный Asc: характеристики соседнего знака могут примешиваться.",
+    "TODO: добавить модификатор планеты в 1 доме при расширении алгоритма.",
+    "TODO: добавить учёт управителя Asc в шахте при расширении алгоритма.",
+]
 
 
 class GeocodeRequest(BaseModel):
@@ -296,6 +502,7 @@ class AskQuestionLLMResponse(BaseModel):
     step_index: int
     should_continue: bool
     debug_probability_text: str
+    phase: Literal["element_detection", "modality_detection"] | None = None
     question_id: str
     question_text: str
     options: list[AskQuestionOption]
@@ -324,6 +531,7 @@ class SecondaryCandidate(BaseModel):
 
 class CandidateGroup(BaseModel):
     element: str | None = None
+    modality: str | None = None
     signs: list[str] = Field(default_factory=list)
     reason: str
 
@@ -335,9 +543,14 @@ class FinalResultLLMResponse(BaseModel):
     secondary_candidates: list[SecondaryCandidate]
     summary_text: str
     element_scores: dict[str, float] = Field(default_factory=dict)
+    modality_scores: dict[str, float] = Field(default_factory=dict)
     sign_scores: dict[str, float] = Field(default_factory=dict)
+    leading_element: str | None = None
+    leading_modality: str | None = None
     candidate_group: CandidateGroup | None = None
     needs_more_questions: bool = False
+    method_limitations: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
 
 
 def _log_stage1_warning(event: str, **fields: object) -> None:
@@ -384,12 +597,25 @@ def _default_element_scores() -> dict[str, float]:
     return {"fire": 0.0, "earth": 0.0, "air": 0.0, "water": 0.0}
 
 
+def _default_modality_scores() -> dict[str, float]:
+    return {"cardinal": 0.0, "fixed": 0.0, "mutable": 0.0}
+
+
 def _default_sign_scores() -> dict[str, float]:
-    signs: dict[str, float] = {}
-    for sign_group in ELEMENT_TO_SIGNS.values():
-        for _, sign_en in sign_group:
-            signs[sign_en] = 0.0
-    return signs
+    return {
+        "Aries": 0.0,
+        "Leo": 0.0,
+        "Sagittarius": 0.0,
+        "Capricorn": 0.0,
+        "Taurus": 0.0,
+        "Virgo": 0.0,
+        "Libra": 0.0,
+        "Aquarius": 0.0,
+        "Gemini": 0.0,
+        "Cancer": 0.0,
+        "Scorpio": 0.0,
+        "Pisces": 0.0,
+    }
 
 
 def _extract_stage1_answers(dialog_history: list[dict[str, Any]]) -> list[tuple[str, str]]:
@@ -411,10 +637,11 @@ def _extract_stage1_answers(dialog_history: list[dict[str, Any]]) -> list[tuple[
     return answers
 
 
-def _calculate_element_and_sign_scores(
+def _calculate_stage1_scores(
     dialog_history: list[dict[str, Any]],
-) -> tuple[dict[str, float], dict[str, float]]:
+) -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
     element_scores = _default_element_scores()
+    modality_scores = _default_modality_scores()
     sign_scores = _default_sign_scores()
 
     for question_id, option_id in _extract_stage1_answers(dialog_history):
@@ -423,45 +650,62 @@ def _calculate_element_and_sign_scores(
             if element_name not in element_scores:
                 continue
             element_scores[element_name] += float(delta)
-            signs = ELEMENT_TO_SIGNS.get(element_name, ())
-            if not signs:
-                continue
-            per_sign = float(delta) / len(signs)
-            for _, sign_en in signs:
-                sign_scores[sign_en] += per_sign
+        modality_payload = QUESTION_OPTION_MODALITY_MAP.get(question_id, {}).get(option_id)
+        if modality_payload:
+            modality_name = modality_payload.get("modality")
+            sign_name = modality_payload.get("sign")
+            if isinstance(modality_name, str) and modality_name in modality_scores:
+                modality_scores[modality_name] += 1.0
+            if isinstance(sign_name, str) and sign_name in sign_scores:
+                sign_scores[sign_name] += 1.0
 
+    return element_scores, modality_scores, sign_scores
+
+
+def _calculate_element_and_sign_scores(
+    dialog_history: list[dict[str, Any]],
+) -> tuple[dict[str, float], dict[str, float]]:
+    element_scores, _, sign_scores = _calculate_stage1_scores(dialog_history)
     return element_scores, sign_scores
 
 
-def _build_element_probability_text(element_scores: dict[str, float], sign_scores: dict[str, float]) -> str:
-    sorted_elements = sorted(element_scores.items(), key=lambda x: x[1], reverse=True)
-    sorted_signs = sorted(sign_scores.items(), key=lambda x: x[1], reverse=True)
+def _count_answers_for_question_ids(
+    dialog_history: list[dict[str, Any]],
+    question_ids: set[str] | tuple[str, ...],
+) -> int:
+    ids = set(question_ids)
+    return sum(1 for qid, _ in _extract_stage1_answers(dialog_history) if qid in ids)
 
-    top_element_name = sorted_elements[0][0] if sorted_elements and sorted_elements[0][1] > 0 else None
-    top_sign_names = [name for name, score in sorted_signs if score > 0][:3]
-    element_labels = {
-        "fire": "Огонь",
-        "earth": "Земля",
-        "air": "Воздух",
-        "water": "Вода",
-    }
-    sign_labels = {
-        "Aries": "Овен",
-        "Taurus": "Телец",
-        "Gemini": "Близнецы",
-        "Cancer": "Рак",
-        "Leo": "Лев",
-        "Virgo": "Дева",
-        "Libra": "Весы",
-        "Scorpio": "Скорпион",
-        "Sagittarius": "Стрелец",
-        "Capricorn": "Козерог",
-        "Aquarius": "Водолей",
-        "Pisces": "Рыбы",
-    }
+
+def _get_top_scores(score_map: dict[str, float]) -> list[tuple[str, float]]:
+    positive = [(key, float(value)) for key, value in score_map.items() if float(value) > 0]
+    positive.sort(key=lambda item: item[1], reverse=True)
+    return positive
+
+
+def _build_element_probability_text(
+    element_scores: dict[str, float],
+    modality_scores: dict[str, float],
+    sign_scores: dict[str, float],
+    *,
+    phase: Literal["element_detection", "modality_detection"],
+) -> str:
+    top_elements = _get_top_scores(element_scores)
+    top_signs = _get_top_scores(sign_scores)
+    top_modalities = _get_top_scores(modality_scores)
+    top_element_name = top_elements[0][0] if top_elements else None
+    top_sign_names = [name for name, _ in top_signs[:3]]
+    top_modality = top_modalities[0][0] if top_modalities else None
+
+    sign_labels = _sign_label_map()
     top_signs_text = ", ".join(sign_labels.get(name, name) for name in top_sign_names) or "пока не определены"
-    top_element_text = element_labels.get(top_element_name, top_element_name) if top_element_name else "пока не определена"
-    return f"Промежуточная оценка: Стихия: {top_element_text}. Возможные знаки: {top_signs_text}."
+    top_element_text = ELEMENT_LABELS.get(top_element_name, top_element_name) if top_element_name else "пока не определена"
+    top_modality_text = MODALITY_LABELS.get(top_modality, top_modality) if top_modality else "пока не определён"
+    phase_text = "Определение стихии" if phase == "element_detection" else "Определение креста"
+    return (
+        f"{phase_text}. Стихия: {top_element_text}. "
+        f"Крест: {top_modality_text}. Возможные знаки: {top_signs_text}."
+    )
 
 
 def _parse_iso_local(dt_str: str) -> datetime:
@@ -587,20 +831,46 @@ def _validate_stage1_semantics(
 
 def _build_safe_question(*, dialog_history: list[dict[str, Any]], step_count: int) -> dict[str, Any] | None:
     asked_question_ids = set(_extract_asked_question_ids(dialog_history))
-    fallback_question = next(
-        (item for item in QUESTION_BANK if item["question_id"] not in asked_question_ids),
-        None,
-    )
-    if fallback_question is None:
+    element_scores, modality_scores, sign_scores = _calculate_stage1_scores(dialog_history)
+
+    phase: Literal["element_detection", "modality_detection"] = "element_detection"
+    next_question_id: str | None = None
+
+    for question_id in STAGE1_ELEMENT_QUESTION_IDS:
+        if question_id not in asked_question_ids:
+            next_question_id = question_id
+            break
+
+    if next_question_id is None:
+        phase = "modality_detection"
+        leading_element_scores = _get_top_scores(element_scores)
+        leading_element = leading_element_scores[0][0] if leading_element_scores else "earth"
+        modality_questions = STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT.get(
+            leading_element, STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT["earth"]
+        )
+        for question_id in modality_questions:
+            if question_id not in asked_question_ids:
+                next_question_id = question_id
+                break
+
+    if next_question_id is None:
         return None
 
-    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    fallback_question = QUESTION_BANK_BY_ID.get(next_question_id)
+    if not fallback_question:
+        return None
 
     return {
         "type": "ask_question",
         "step_index": step_count + 1,
         "should_continue": True,
-        "debug_probability_text": _build_element_probability_text(element_scores, sign_scores),
+        "phase": phase,
+        "debug_probability_text": _build_element_probability_text(
+            element_scores,
+            modality_scores,
+            sign_scores,
+            phase=phase,
+        ),
         "question_id": fallback_question["question_id"],
         "question_text": fallback_question["question_text"],
         "options": fallback_question["options"],
@@ -693,12 +963,7 @@ def _sign_label_map() -> dict[str, str]:
 
 
 def _element_label_map() -> dict[str, str]:
-    return {
-        "fire": "Огонь",
-        "earth": "Земля",
-        "air": "Воздух",
-        "water": "Вода",
-    }
+    return dict(ELEMENT_LABELS)
 
 
 def _sign_to_element_map() -> dict[str, str]:
@@ -718,8 +983,27 @@ def _score_ties(score_map: dict[str, float]) -> list[str]:
     return [key for key, value in positive_scores.items() if abs(value - top_score) <= epsilon]
 
 
+def _is_close_leader(score_map: dict[str, float], *, threshold: float = STAGE1_CLOSE_SCORE_GAP) -> bool:
+    top_scores = _get_top_scores(score_map)
+    if len(top_scores) < 2:
+        return False
+    return (top_scores[0][1] - top_scores[1][1]) <= threshold
+
+
+def _top_score_key(score_map: dict[str, float]) -> str | None:
+    top_scores = _get_top_scores(score_map)
+    if not top_scores:
+        return None
+    return top_scores[0][0]
+
+
 def _has_strong_stage1_leader(dialog_history: list[dict[str, Any]]) -> bool:
-    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    element_scores, modality_scores, sign_scores = _calculate_stage1_scores(dialog_history)
+    answered_element_questions = _count_answers_for_question_ids(
+        dialog_history, set(STAGE1_ELEMENT_QUESTION_IDS)
+    )
+    if answered_element_questions < 5:
+        return False
     total_element_score = sum(element_scores.values())
     if total_element_score <= 0:
         return False
@@ -730,6 +1014,8 @@ def _has_strong_stage1_leader(dialog_history: list[dict[str, Any]]) -> bool:
     if (top_element_score / total_element_score) < STAGE1_EARLY_FINAL_THRESHOLD:
         return False
 
+    if sum(modality_scores.values()) > 0 and _is_close_leader(modality_scores):
+        return False
     top_signs = _score_ties(sign_scores)
     return len(top_signs) == 1
 
@@ -740,7 +1026,10 @@ def _should_allow_stage1_finalization(
     mode: Literal["choose_next_question", "finalize_now"],
 ) -> bool:
     answered_questions = len(_extract_stage1_answers(dialog_history))
-    if answered_questions >= STAGE1_MIN_QUESTIONS:
+    modality_answers = _count_answers_for_question_ids(dialog_history, STAGE1_MODALITY_QUESTION_IDS)
+    if answered_questions >= STAGE1_MAX_QUESTIONS:
+        return True
+    if answered_questions >= STAGE1_MIN_QUESTIONS and modality_answers >= 2:
         return True
     if mode == "finalize_now":
         return _has_strong_stage1_leader(dialog_history)
@@ -775,100 +1064,99 @@ def _build_scored_safe_final_result(
     *,
     rectification_document: dict[str, Any],
     element_scores: dict[str, float],
+    modality_scores: dict[str, float],
     sign_scores: dict[str, float],
     reason: str,
 ) -> dict[str, Any] | None:
     candidates = _group_intervals_by_sign(rectification_document)
     grouped_by_sign = {item["sign_name_en"]: item for item in candidates}
     sign_labels = _sign_label_map()
-    element_labels = _element_label_map()
-    sign_to_element = _sign_to_element_map()
+    leading_element = _top_score_key(element_scores)
+    leading_modality = _top_score_key(modality_scores)
 
-    top_signs = [sign for sign in _score_ties(sign_scores) if sign in grouped_by_sign]
-    if top_signs:
-        top_primary = grouped_by_sign[top_signs[0]]
-        probability = round(1 / len(top_signs), 2)
-        candidate_group = None
-        needs_more_questions = False
-        summary_text = (
-            "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
-            f"Лидер по знакам: {top_primary['sign_name_ru']}."
-        )
-        if len(top_signs) > 1:
-            top_element = sign_to_element.get(top_signs[0])
-            candidate_group = {
-                "element": top_element,
-                "signs": top_signs,
-                "reason": "equal_sign_scores",
-            }
-            needs_more_questions = True
-            signs_text = ", ".join(sign_labels.get(sign_name, sign_name) for sign_name in top_signs)
-            summary_text = (
-                "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
-                f"Основная стихия: {element_labels.get(top_element, top_element or 'не определена')}. "
-                f"Кандидаты внутри стихии: {signs_text}. Для выбора точного знака нужны дополнительные вопросы."
-            )
+    warnings_local: list[str] = []
+    if _is_close_leader(element_scores):
+        warnings_local.append("element_scores_are_close")
+    if _is_close_leader(modality_scores):
+        warnings_local.append("modality_scores_are_close")
+    if _is_close_leader(sign_scores):
+        warnings_local.append("sign_scores_are_close")
 
-        secondary_candidates = _build_secondary_candidates_from_signs(top_signs[1:], grouped_by_sign)
-        return {
-            "type": "final_result",
-            "should_continue": False,
-            "primary_candidate": {
-                "sign_name_ru": top_primary["sign_name_ru"],
-                "sign_name_en": top_primary["sign_name_en"],
-                "time_ranges_local": top_primary["intervals"],
-                "time_range_local": top_primary["intervals"][0],
-                "probability": probability,
-            },
-            "secondary_candidates": secondary_candidates,
-            "element_scores": element_scores,
-            "sign_scores": sign_scores,
-            "candidate_group": candidate_group,
-            "needs_more_questions": needs_more_questions,
-            "summary_text": f"{summary_text} Резервный режим: {reason}.",
+    ranked_signs = [sign_name for sign_name, _ in _get_top_scores(sign_scores) if sign_name in grouped_by_sign]
+    if leading_element and leading_modality:
+        matrix_sign = ELEMENT_MODALITY_TO_SIGN.get(leading_element, {}).get(leading_modality, (None, None))[1]
+        if isinstance(matrix_sign, str) and matrix_sign in grouped_by_sign and matrix_sign not in ranked_signs:
+            ranked_signs.insert(0, matrix_sign)
+        elif isinstance(matrix_sign, str) and matrix_sign in grouped_by_sign:
+            ranked_signs = [matrix_sign, *[item for item in ranked_signs if item != matrix_sign]]
+
+    if not ranked_signs and leading_element:
+        ranked_signs = [
+            sign_en for _, sign_en in ELEMENT_TO_SIGNS.get(leading_element, ()) if sign_en in grouped_by_sign
+        ]
+    if not ranked_signs:
+        ranked_signs = [item["sign_name_en"] for item in candidates]
+    if not ranked_signs:
+        return None
+
+    primary_sign = ranked_signs[0]
+    primary_candidate = grouped_by_sign.get(primary_sign)
+    if not primary_candidate:
+        return None
+
+    total_sign_score = sum(value for value in sign_scores.values() if value > 0)
+    primary_score = float(sign_scores.get(primary_sign, 0.0))
+    probability = round((primary_score / total_sign_score), 2) if total_sign_score > 0 else 0.34
+    if probability <= 0:
+        probability = 0.34
+
+    secondary_candidates = _build_secondary_candidates_from_signs(ranked_signs[1:4], grouped_by_sign)
+    needs_more_questions = bool(warnings_local)
+    candidate_group: dict[str, Any] | None = None
+    if needs_more_questions:
+        close_signs = ranked_signs[:3] if len(ranked_signs) >= 2 else ranked_signs
+        candidate_group = {
+            "element": leading_element,
+            "modality": leading_modality,
+            "signs": close_signs,
+            "reason": "close_scores",
         }
 
-    top_elements = _score_ties(element_scores)
-    if top_elements:
-        candidate_signs: list[str] = []
-        for element_name in top_elements:
-            candidate_signs.extend(
-                sign_en for _, sign_en in ELEMENT_TO_SIGNS.get(element_name, ()) if sign_en in grouped_by_sign
-            )
-        if candidate_signs:
-            first_sign = candidate_signs[0]
-            primary = grouped_by_sign[first_sign]
-            probability = round(1 / len(candidate_signs), 2)
-            candidate_group = {
-                "element": top_elements[0] if len(top_elements) == 1 else None,
-                "signs": candidate_signs,
-                "reason": "element_scores_only" if len(top_elements) == 1 else "equal_element_scores",
-            }
-            elements_text = ", ".join(element_labels.get(item, item) for item in top_elements)
-            signs_text = ", ".join(sign_labels.get(sign_name, sign_name) for sign_name in candidate_signs)
-            return {
-                "type": "final_result",
-                "should_continue": False,
-                "primary_candidate": {
-                    "sign_name_ru": primary["sign_name_ru"],
-                    "sign_name_en": primary["sign_name_en"],
-                    "time_ranges_local": primary["intervals"],
-                    "time_range_local": primary["intervals"][0],
-                    "probability": probability,
-                },
-                "secondary_candidates": _build_secondary_candidates_from_signs(candidate_signs[1:], grouped_by_sign),
-                "element_scores": element_scores,
-                "sign_scores": sign_scores,
-                "candidate_group": candidate_group,
-                "needs_more_questions": True,
-                "summary_text": (
-                    "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
-                    f"Основная стихия: {elements_text}. Возможные знаки: {signs_text}. "
-                    f"Для точного выбора знака нужны дополнительные вопросы. Резервный режим: {reason}."
-                ),
-            }
+    signs_text = ", ".join(sign_labels.get(name, name) for name in ranked_signs[:3])
+    summary_text = (
+        "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
+        f"Стихия: {ELEMENT_LABELS.get(leading_element, 'не определена')}. "
+        f"Крест: {MODALITY_LABELS.get(leading_modality, 'не определён')}. "
+        f"Основной кандидат: {primary_candidate['sign_name_ru']}."
+    )
+    if needs_more_questions:
+        summary_text += (
+            f" Кандидаты близки ({signs_text}). "
+            "Для уточнения переходите к Stage 2 (события жизни)."
+        )
 
-    return None
+    return {
+        "type": "final_result",
+        "should_continue": False,
+        "primary_candidate": {
+            "sign_name_ru": primary_candidate["sign_name_ru"],
+            "sign_name_en": primary_candidate["sign_name_en"],
+            "time_ranges_local": primary_candidate["intervals"],
+            "time_range_local": primary_candidate["intervals"][0],
+            "probability": probability,
+        },
+        "secondary_candidates": secondary_candidates,
+        "element_scores": element_scores,
+        "modality_scores": modality_scores,
+        "sign_scores": sign_scores,
+        "leading_element": leading_element,
+        "leading_modality": leading_modality,
+        "candidate_group": candidate_group,
+        "needs_more_questions": needs_more_questions,
+        "warnings": warnings_local,
+        "method_limitations": STAGE1_METHOD_LIMITATIONS,
+        "summary_text": f"{summary_text} Резервный режим: {reason}.",
+    }
 
 
 def _normalize_time_ranges(primary_candidate: dict[str, Any]) -> list[dict[str, str]]:
@@ -918,10 +1206,11 @@ def _build_safe_final_result(
     dialog_history: list[dict[str, Any]],
     reason: str,
 ) -> dict[str, Any]:
-    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    element_scores, modality_scores, sign_scores = _calculate_stage1_scores(dialog_history)
     scored_result = _build_scored_safe_final_result(
         rectification_document=rectification_document,
         element_scores=element_scores,
+        modality_scores=modality_scores,
         sign_scores=sign_scores,
         reason=reason,
     )
@@ -955,9 +1244,14 @@ def _build_safe_final_result(
             },
             "secondary_candidates": secondary,
             "element_scores": element_scores,
+            "modality_scores": modality_scores,
             "sign_scores": sign_scores,
+            "leading_element": None,
+            "leading_modality": None,
             "candidate_group": None,
             "needs_more_questions": True,
+            "warnings": ["technical_fallback_used"],
+            "method_limitations": STAGE1_METHOD_LIMITATIONS,
             "summary_text": (
                 "Ответы пользователя не дали пригодного лидера, поэтому использован технический резервный сценарий "
                 f"({reason}). Уверенность намеренно снижена."
@@ -984,9 +1278,14 @@ def _build_safe_final_result(
         },
         "secondary_candidates": [],
         "element_scores": element_scores,
+        "modality_scores": modality_scores,
         "sign_scores": sign_scores,
+        "leading_element": None,
+        "leading_modality": None,
         "candidate_group": None,
         "needs_more_questions": True,
+        "warnings": ["technical_fallback_used"],
+        "method_limitations": STAGE1_METHOD_LIMITATIONS,
         "summary_text": (
             "Ответы пользователя не дали пригодного лидера, поэтому использован технический резервный сценарий. "
             f"Не найдено пригодных интервалов ({reason})."
@@ -1035,11 +1334,16 @@ def _normalize_stage1_final_result_payload(
         secondary_out.append(secondary_item)
     result["secondary_candidates"] = secondary_out
 
-    element_scores, sign_scores = _calculate_element_and_sign_scores(dialog_history)
+    element_scores, modality_scores, sign_scores = _calculate_stage1_scores(dialog_history)
     result["element_scores"] = element_scores
+    result["modality_scores"] = modality_scores
     result["sign_scores"] = sign_scores
+    result["leading_element"] = result.get("leading_element") or _top_score_key(element_scores)
+    result["leading_modality"] = result.get("leading_modality") or _top_score_key(modality_scores)
     result["candidate_group"] = result.get("candidate_group")
     result["needs_more_questions"] = bool(result.get("needs_more_questions", False))
+    result["method_limitations"] = result.get("method_limitations") or STAGE1_METHOD_LIMITATIONS
+    result["warnings"] = list(result.get("warnings") or [])
 
     return result
 

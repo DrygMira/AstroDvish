@@ -1277,8 +1277,13 @@
         secondaryCandidates: [],
         timeRangesLocal: [],
         elementScores: null,
+        modalityScores: null,
         signScores: null,
         candidateGroup: null,
+        leadingElement: null,
+        leadingModality: null,
+        methodLimitations: [],
+        stageWarnings: [],
       },
       stage2: {
         started: false,
@@ -1607,8 +1612,13 @@
         secondaryCandidates: [],
         timeRangesLocal: [],
         elementScores: null,
+        modalityScores: null,
         signScores: null,
         candidateGroup: null,
+        leadingElement: null,
+        leadingModality: null,
+        methodLimitations: [],
+        stageWarnings: [],
       };
       rectificationWizardState.stage2 = {
         started: false,
@@ -1675,6 +1685,8 @@
         wzStage1SummaryEl.textContent = "Stage 1 ещё не завершён.";
         return;
       }
+      const elementLabelMap = { fire: "Огонь", earth: "Земля", air: "Воздух", water: "Вода" };
+      const modalityLabelMap = { cardinal: "кардинальный", fixed: "фиксированный", mutable: "мутабельный" };
       const p = rectificationWizardState.stage1.primaryCandidate || {};
       const ranges = Array.isArray(p.time_ranges_local) && p.time_ranges_local.length
         ? p.time_ranges_local
@@ -1686,12 +1698,34 @@
         .map((x) => `${x.sign_name_ru || x.sign_name_en} — ${x.probability ?? "n/a"}`)
         .join("; ");
       const candidateGroupText = formatCandidateGroupText(rectificationWizardState.stage1.candidateGroup);
+      const leadingElement = rectificationWizardState.stage1.leadingElement
+        ? (elementLabelMap[rectificationWizardState.stage1.leadingElement] || rectificationWizardState.stage1.leadingElement)
+        : "не определена";
+      const leadingModality = rectificationWizardState.stage1.leadingModality
+        ? (modalityLabelMap[rectificationWizardState.stage1.leadingModality] || rectificationWizardState.stage1.leadingModality)
+        : "не определён";
+      const limitations = Array.isArray(rectificationWizardState.stage1.methodLimitations)
+        ? rectificationWizardState.stage1.methodLimitations
+        : [];
+      const limitationsHtml = limitations.length
+        ? `<div style="margin-top:6px;"><strong>Ограничения метода:</strong><br/>${limitations.map((x) => `• ${x}`).join("<br/>")}</div>`
+        : "";
+      const stageWarnings = Array.isArray(rectificationWizardState.stage1.stageWarnings)
+        ? rectificationWizardState.stage1.stageWarnings
+        : [];
+      const warningsHtml = stageWarnings.length
+        ? `<div style="margin-top:6px;"><strong>Предупреждения:</strong> ${stageWarnings.join(", ")}</div>`
+        : "";
       wzStage1SummaryEl.innerHTML =
+        `<div><strong>Стихия:</strong> ${leadingElement}</div>` +
+        `<div><strong>Крест:</strong> ${leadingModality}</div>` +
         `<div><strong>Основной кандидат:</strong> ${p.sign_name_ru || ""} (${p.sign_name_en || ""})</div>` +
         `<div style="margin-top:6px;"><strong>Вероятность:</strong> ${p.probability ?? "n/a"}</div>` +
         `<div style="margin-top:6px;"><strong>Интервалы:</strong>${rangesHtml}</div>` +
         (candidateGroupText ? `<div style="margin-top:6px;"><strong>Группа кандидатов:</strong> ${candidateGroupText}</div>` : "") +
-        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>`;
+        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>` +
+        warningsHtml +
+        limitationsHtml;
     }
 
     function renderWizardStage2Context() {
@@ -1728,8 +1762,17 @@
           : (lastFinal.primary_candidate?.time_range_local ? [lastFinal.primary_candidate.time_range_local] : []);
         rectificationWizardState.stage1.timeRangesLocal = ranges;
         rectificationWizardState.stage1.elementScores = lastFinal.element_scores || null;
+        rectificationWizardState.stage1.modalityScores = lastFinal.modality_scores || null;
         rectificationWizardState.stage1.signScores = lastFinal.sign_scores || null;
         rectificationWizardState.stage1.candidateGroup = lastFinal.candidate_group || null;
+        rectificationWizardState.stage1.leadingElement = lastFinal.leading_element || null;
+        rectificationWizardState.stage1.leadingModality = lastFinal.leading_modality || null;
+        rectificationWizardState.stage1.methodLimitations = Array.isArray(lastFinal.method_limitations)
+          ? lastFinal.method_limitations
+          : [];
+        rectificationWizardState.stage1.stageWarnings = Array.isArray(lastFinal.warnings)
+          ? lastFinal.warnings
+          : [];
       }
 
       if (rectEventsState.finalized && Array.isArray(rectEventsState.finalized.events)) {
@@ -2292,9 +2335,17 @@
         air: "Воздух",
         water: "Вода",
       };
+      const modalityLabelMap = {
+        cardinal: "кардинальный",
+        fixed: "фиксированный",
+        mutable: "мутабельный",
+      };
       const signsText = candidateGroup.signs.map((sign) => signLabelMap[sign] || sign).join(", ");
       const elementText = candidateGroup.element ? (elementLabelMap[candidateGroup.element] || candidateGroup.element) : "смешанная";
-      return `Основная стихия: ${elementText}. Кандидаты: ${signsText}. Для точного выбора знака нужны дополнительные вопросы.`;
+      const modalityText = candidateGroup.modality
+        ? (modalityLabelMap[candidateGroup.modality] || candidateGroup.modality)
+        : "не определён";
+      return `Стихия: ${elementText}. Крест: ${modalityText}. Кандидаты: ${signsText}. Для точного выбора знака нужны дополнительные вопросы.`;
     }
 
     function renderDialogHistory() {
@@ -2414,13 +2465,35 @@
         .map((x) => `${x.sign_name_ru} (${x.sign_name_en}) — ${x.probability}`)
         .join("; ");
       const candidateGroupText = formatCandidateGroupText(lastAssistant.candidate_group);
+      const elementLabelMap = { fire: "Огонь", earth: "Земля", air: "Воздух", water: "Вода" };
+      const modalityLabelMap = { cardinal: "кардинальный", fixed: "фиксированный", mutable: "мутабельный" };
+      const leadingElement = lastAssistant.leading_element
+        ? (elementLabelMap[lastAssistant.leading_element] || lastAssistant.leading_element)
+        : "не определена";
+      const leadingModality = lastAssistant.leading_modality
+        ? (modalityLabelMap[lastAssistant.leading_modality] || lastAssistant.leading_modality)
+        : "не определён";
+      const methodLimitations = Array.isArray(lastAssistant.method_limitations)
+        ? lastAssistant.method_limitations
+        : [];
+      const limitationsHtml = methodLimitations.length
+        ? `<div style="margin-top:8px;"><strong>Ограничения метода:</strong><br/>${methodLimitations.map((x) => `• ${x}`).join("<br/>")}</div>`
+        : "";
+      const warnings = Array.isArray(lastAssistant.warnings) ? lastAssistant.warnings : [];
+      const warningsHtml = warnings.length
+        ? `<div style="margin-top:6px;"><strong>Предупреждения:</strong> ${warnings.join(", ")}</div>`
+        : "";
       rdFinalResultEl.innerHTML =
+        `<div><strong>Стихия:</strong> ${leadingElement}</div>` +
+        `<div><strong>Крест:</strong> ${leadingModality}</div>` +
         `<div><strong>Основной кандидат:</strong> ${primary.sign_name_ru || ""} (${primary.sign_name_en || ""})</div>` +
         `<div style="margin-top:6px;"><strong>Интервалы:</strong>${primaryRangesHtml}</div>` +
         `<div><strong>Вероятность:</strong> ${primary.probability ?? "n/a"}</div>` +
         `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>` +
         (candidateGroupText ? `<div style="margin-top:6px;"><strong>Группа кандидатов:</strong> ${candidateGroupText}</div>` : "") +
-        `<div style="margin-top:8px;">${lastAssistant.summary_text || ""}</div>`;
+        warningsHtml +
+        `<div style="margin-top:8px;">${lastAssistant.summary_text || ""}</div>` +
+        limitationsHtml;
       rdTesterThanksEl.classList.remove("hidden");
     }
 
