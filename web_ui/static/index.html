@@ -999,7 +999,16 @@
                 <option value="5">5</option>
               </select>
             </div>
-            <div></div>
+            <div id="reSequenceWrap" class="hidden">
+              <label>Какой это случай по счёту?</label>
+              <select id="reSequenceNumber">
+                <option value="">не помню / не применимо</option>
+                <option value="1">первый</option>
+                <option value="2">второй</option>
+                <option value="3">третий</option>
+                <option value="4">другой</option>
+              </select>
+            </div>
           </div>
           <div style="margin-top:10px;">
             <label>Комментарий</label>
@@ -1296,6 +1305,8 @@
         candidateGroup: null,
         leadingElement: null,
         leadingModality: null,
+        summaryText: null,
+        explanationText: null,
         methodLimitations: [],
         stageWarnings: [],
       },
@@ -1631,6 +1642,8 @@
         candidateGroup: null,
         leadingElement: null,
         leadingModality: null,
+        summaryText: null,
+        explanationText: null,
         methodLimitations: [],
         stageWarnings: [],
       };
@@ -1708,9 +1721,7 @@
       const rangesHtml = ranges.length
         ? ranges.map((r, i) => `<div>${i + 1}) ${formatIntervalLine(r.start, r.end)}</div>`).join("")
         : "<div>Интервалы не определены.</div>";
-      const secondary = rectificationWizardState.stage1.secondaryCandidates
-        .map((x) => `${x.sign_name_ru || x.sign_name_en} — ${x.probability ?? "n/a"}`)
-        .join("; ");
+      const secondaryHtml = formatStage1SecondaryCandidatesHtml(rectificationWizardState.stage1.secondaryCandidates || []);
       const candidateGroupText = formatCandidateGroupText(rectificationWizardState.stage1.candidateGroup);
       const leadingElement = rectificationWizardState.stage1.leadingElement
         ? (elementLabelMap[rectificationWizardState.stage1.leadingElement] || rectificationWizardState.stage1.leadingElement)
@@ -1728,7 +1739,7 @@
         ? rectificationWizardState.stage1.stageWarnings
         : [];
       const warningsHtml = stageWarnings.length
-        ? `<div style="margin-top:6px;"><strong>Предупреждения:</strong> ${stageWarnings.join(", ")}</div>`
+        ? `<div style="margin-top:6px;"><strong>Предупреждения:</strong>${formatWarnings(stageWarnings)}</div>`
         : "";
       wzStage1SummaryEl.innerHTML =
         `<div><strong>Стихия:</strong> ${leadingElement}</div>` +
@@ -1736,8 +1747,9 @@
         `<div><strong>Основной кандидат:</strong> ${p.sign_name_ru || ""} (${p.sign_name_en || ""})</div>` +
         `<div style="margin-top:6px;"><strong>Вероятность:</strong> ${p.probability ?? "n/a"}</div>` +
         `<div style="margin-top:6px;"><strong>Интервалы:</strong>${rangesHtml}</div>` +
+        `<div style="margin-top:6px;"><strong>Почему выбран кандидат:</strong> ${rectificationWizardState.stage1.explanationText || rectificationWizardState.stage1.summaryText || "—"}</div>` +
         (candidateGroupText ? `<div style="margin-top:6px;"><strong>Группа кандидатов:</strong> ${candidateGroupText}</div>` : "") +
-        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>` +
+        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong><br/>${secondaryHtml}</div>` +
         warningsHtml +
         limitationsHtml;
     }
@@ -1784,6 +1796,8 @@
         rectificationWizardState.stage1.methodLimitations = Array.isArray(lastFinal.method_limitations)
           ? lastFinal.method_limitations
           : [];
+        rectificationWizardState.stage1.summaryText = lastFinal.summary_text || null;
+        rectificationWizardState.stage1.explanationText = lastFinal.explanation_text || null;
         rectificationWizardState.stage1.stageWarnings = Array.isArray(lastFinal.warnings)
           ? lastFinal.warnings
           : [];
@@ -2269,8 +2283,20 @@
         missing_options: "Модель не вернула варианты ответа. Использован резервный вопрос.",
         fallback_question_used: "Задан уточняющий вопрос из резервного сценария.",
         min_questions_not_reached: "Для надёжного вывода нужно ответить ещё на несколько вопросов.",
+        sign_scores_are_close: "Кандидаты Asc близки по баллам. Требуется проверка через события жизни.",
+        element_scores_are_close: "Стихии близки по оценке. Нужны дополнительные уточнения.",
+        modality_scores_are_close: "Крест близок по оценке. Нужны дополнительные уточнения.",
+        technical_fallback_used: "Применён резервный расчёт из-за ограничений входных данных.",
+        sequence_number_required_retry: "Для повторяемого события укажите, какой это случай по счёту.",
       };
-      const text = warnings.map((item) => mapping[item] || item).join(" ");
+      const known = warnings
+        .map((item) => mapping[item])
+        .filter(Boolean);
+      const hasUnknown = warnings.some((item) => !mapping[item]);
+      if (hasUnknown) {
+        known.push("Есть служебные предупреждения. Подробности доступны в техническом режиме.");
+      }
+      const text = known.join(" ");
       return text ? ` ${text}` : "";
     }
 
@@ -2422,6 +2448,28 @@
       return `Стихия: ${elementText}. Крест: ${modalityText}. Кандидаты: ${signsText}. Для точного выбора знака нужны дополнительные вопросы.`;
     }
 
+    function formatStage1SecondaryCandidatesHtml(candidates) {
+      if (!Array.isArray(candidates) || !candidates.length) {
+        return "нет";
+      }
+      const lines = candidates.map((candidate) => {
+        const ranges = Array.isArray(candidate.time_ranges_local) && candidate.time_ranges_local.length
+          ? candidate.time_ranges_local
+          : (candidate.time_range_local ? [candidate.time_range_local] : []);
+        const rangeText = ranges.length
+          ? ranges.map((r, i) => `${i + 1}) ${formatIntervalLine(r.start, r.end)}`).join("<br/>")
+          : "интервалы не указаны";
+        return (
+          `<div style="margin-bottom:8px;">` +
+          `<div><strong>${candidate.sign_name_ru || candidate.sign_name_en || "Кандидат"}</strong> ` +
+          `(${candidate.sign_name_en || "—"}) — ${candidate.probability ?? "n/a"}</div>` +
+          `<div>Интервалы:<br/>${rangeText}</div>` +
+          `</div>`
+        );
+      });
+      return lines.join("");
+    }
+
     function renderDialogHistory() {
       rdHistoryEl.innerHTML = "";
       if (!rectDialogState.dialogHistory.length) {
@@ -2468,6 +2516,7 @@
             ? `<div>Интервалы:<br/>${ranges.map((r, idx) => `${idx + 1}) ${formatIntervalLine(r.start, r.end)}`).join("<br/>")}</div>`
             : "<div>Интервалы: не указаны</div>";
           const candidateGroupText = formatCandidateGroupText(item.candidate_group);
+          const secondaryHtml = formatStage1SecondaryCandidatesHtml(item.secondary_candidates);
           const msg = document.createElement("div");
           msg.className = "msg assistant";
           msg.innerHTML =
@@ -2475,7 +2524,8 @@
             `<div><strong>Итог:</strong> ${p.sign_name_ru || ""} (${p.sign_name_en || ""})</div>` +
             rangesHtml +
             `<div>Вероятность: ${p.probability ?? "n/a"}</div>` +
-            `<div style="margin-top:6px;">${item.summary_text || ""}</div>` +
+            `<div style="margin-top:6px;"><strong>Почему выбран кандидат:</strong> ${item.explanation_text || item.summary_text || ""}</div>` +
+            `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong><br/>${secondaryHtml}</div>` +
             (candidateGroupText ? `<div class="usage-mini">${candidateGroupText}</div>` : "");
           rdHistoryEl.appendChild(msg);
         }
@@ -2535,9 +2585,7 @@
             .map((item, idx) => `<div>${idx + 1}) ${formatIntervalLine(item.start, item.end)}</div>`)
             .join("")
         : "<div>Интервалы не определены.</div>";
-      const secondary = (lastAssistant.secondary_candidates || [])
-        .map((x) => `${x.sign_name_ru} (${x.sign_name_en}) — ${x.probability}`)
-        .join("; ");
+      const secondaryHtml = formatStage1SecondaryCandidatesHtml(lastAssistant.secondary_candidates || []);
       const candidateGroupText = formatCandidateGroupText(lastAssistant.candidate_group);
       const elementLabelMap = { fire: "Огонь", earth: "Земля", air: "Воздух", water: "Вода" };
       const modalityLabelMap = { cardinal: "кардинальный", fixed: "фиксированный", mutable: "мутабельный" };
@@ -2555,7 +2603,7 @@
         : "";
       const warnings = Array.isArray(lastAssistant.warnings) ? lastAssistant.warnings : [];
       const warningsHtml = warnings.length
-        ? `<div style="margin-top:6px;"><strong>Предупреждения:</strong> ${warnings.join(", ")}</div>`
+        ? `<div style="margin-top:6px;"><strong>Предупреждения:</strong>${formatWarnings(warnings)}</div>`
         : "";
       rdFinalResultEl.innerHTML =
         `<div><strong>Стихия:</strong> ${leadingElement}</div>` +
@@ -2563,7 +2611,8 @@
         `<div><strong>Основной кандидат:</strong> ${primary.sign_name_ru || ""} (${primary.sign_name_en || ""})</div>` +
         `<div style="margin-top:6px;"><strong>Интервалы:</strong>${primaryRangesHtml}</div>` +
         `<div><strong>Вероятность:</strong> ${primary.probability ?? "n/a"}</div>` +
-        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong> ${secondary || "нет"}</div>` +
+        `<div style="margin-top:6px;"><strong>Почему выбран кандидат:</strong> ${lastAssistant.explanation_text || lastAssistant.summary_text || ""}</div>` +
+        `<div style="margin-top:6px;"><strong>Вторичные кандидаты:</strong><br/>${secondaryHtml}</div>` +
         (candidateGroupText ? `<div style="margin-top:6px;"><strong>Группа кандидатов:</strong> ${candidateGroupText}</div>` : "") +
         warningsHtml +
         `<div style="margin-top:8px;">${lastAssistant.summary_text || ""}</div>` +
@@ -2588,6 +2637,7 @@
       document.getElementById("reTitle").value = "";
       document.getElementById("reDateText").value = "";
       document.getElementById("reImpactLevel").value = "";
+      document.getElementById("reSequenceNumber").value = "";
       document.getElementById("reNotes").value = "";
     }
 
@@ -2629,6 +2679,12 @@
       reNoQuestionTextEl.classList.add("hidden");
       reQuestionMetaEl.textContent = `question_id: ${question.question_id || "-"} | event_type: ${question.event_type || "-"}`;
       reQuestionTextEl.textContent = question.question_text || "";
+      const seqWrap = document.getElementById("reSequenceWrap");
+      const seqRequired = !!question.requires_sequence_number;
+      seqWrap.classList.toggle("hidden", !seqRequired);
+      if (!seqRequired) {
+        document.getElementById("reSequenceNumber").value = "";
+      }
     }
 
     function renderRectEventsFinal(finalized) {
@@ -2639,25 +2695,85 @@
         return;
       }
 
+      const confidenceLabelMap = { low: "низкая", medium: "средняя", high: "высокая" };
       const summaryText =
-        `events_count: ${finalized.events_count ?? 0}, ` +
-        `strong_events_count: ${finalized.strong_events_count ?? 0}, ` +
-        `confidence_preliminary: ${finalized.confidence_preliminary || "unknown"}`;
+        `Событий: ${finalized.events_count ?? 0}. ` +
+        `Сильных событий: ${finalized.strong_events_count ?? 0}. ` +
+        `Предварительная уверенность: ${confidenceLabelMap[finalized.confidence_preliminary] || "не определена"}.`;
       reSummaryEl.textContent = summaryText;
 
       reEventsListEl.innerHTML = "";
       const events = Array.isArray(finalized.events) ? finalized.events : [];
+      const eventTypeLabelMap = {
+        child_birth: "Рождение ребёнка",
+        marriage_start: "Оформление брака",
+        divorce_separation: "Развод / разрыв союза",
+        death_father: "Смерть отца",
+        death_mother: "Смерть матери",
+        death_child: "Смерть ребёнка",
+        death_spouse: "Смерть супруга",
+        death_sibling: "Смерть брата/сестры",
+        death_grandparent: "Смерть бабушки/дедушки",
+        death_close_person_other: "Смерть близкого человека",
+        surgery: "Операция",
+        major_accident: "Серьёзная авария",
+        violence_trauma: "Травма / насилие",
+        imprisonment: "Ограничение свободы",
+        military_service: "Военная служба",
+        long_hospitalization: "Длительная госпитализация",
+        local_relocation: "Ближний переезд",
+        long_distance_relocation: "Дальний переезд / эмиграция",
+        job_start: "Старт работы",
+        job_loss: "Потеря работы",
+        career_change: "Смена карьеры",
+        profession_change: "Смена профессии",
+        business_start: "Запуск бизнеса",
+        business_loss: "Потеря бизнеса",
+        financial_rise_fall: "Финансовый взлёт/падение",
+        inner_crisis_turning_point: "Внутренний кризис",
+        custom_major_event: "Другое важное событие",
+        children_birth: "Рождение ребёнка",
+        death_of_close_person: "Смерть близкого человека",
+        surgery_accident_life_risk: "Операция/авария с риском",
+        marriage_relationship: "Брак/перелом отношений",
+        relocation_emigration: "Переезд/эмиграция",
+        education_work_start: "Старт учёбы/работы",
+        profession_lifestyle_change: "Смена профессии/образа жизни",
+        freedom_restriction: "Ограничение свободы",
+      };
+      const lifeAreaLabelMap = {
+        family: "семья",
+        relationships: "отношения",
+        career: "карьера",
+        home: "дом/место",
+        health: "здоровье",
+        finance: "финансы",
+        identity: "идентичность",
+        other: "другое",
+      };
+      const datePrecisionLabelMap = {
+        exact: "точная",
+        month: "месяц",
+        year: "год",
+        range: "период",
+        unknown: "неизвестно",
+      };
       if (!events.length) {
         reEventsListEl.innerHTML = "<div class='interval-item'>События не собраны.</div>";
       } else {
         events.forEach((event) => {
           const item = document.createElement("div");
           item.className = "interval-item";
+          const label = eventTypeLabelMap[event.event_type] || (event.title || "Событие");
+          const sequenceText = Number.isFinite(Number(event.sequence_number))
+            ? `№${Number(event.sequence_number)}`
+            : "—";
           item.innerHTML =
-            `<div><strong>${event.title || "-"}</strong> (${event.event_type || "-"})</div>` +
-            `<div>date_text: ${event.date_text || "-"} | date_precision: ${event.date_precision || "-"}</div>` +
-            `<div>impact: ${event.impact_level ?? "-"} | life_area: ${event.life_area || "-"} | reversibility: ${event.reversibility || "-"}</div>` +
-            `<div>notes: ${event.notes || "-"}</div>`;
+            `<div><strong>${label}</strong></div>` +
+            `<div>Заголовок: ${event.title || "-"}</div>` +
+            `<div>Дата: ${event.date_text || "-"} | Точность: ${datePrecisionLabelMap[event.date_precision] || event.date_precision || "-"}</div>` +
+            `<div>Сфера: ${lifeAreaLabelMap[event.life_area] || event.life_area || "-"} | Сила: ${event.impact_level ?? "-"} | Повторяемое событие: ${sequenceText}</div>` +
+            `<div>Комментарий: ${event.notes || "—"}</div>`;
           reEventsListEl.appendChild(item);
         });
       }
@@ -2693,6 +2809,7 @@
       }
 
       const impactRaw = document.getElementById("reImpactLevel").value;
+      const sequenceRaw = document.getElementById("reSequenceNumber").value;
       const title = document.getElementById("reTitle").value.trim();
       const dateText = document.getElementById("reDateText").value.trim();
       const notes = document.getElementById("reNotes").value.trim();
@@ -2704,6 +2821,7 @@
         impact_level: impactRaw ? Number(impactRaw) : null,
         reversibility: null,
         life_area: null,
+        sequence_number: sequenceRaw ? Number(sequenceRaw) : null,
         notes: notes || null,
         user_skipped: userSkipped,
       };
@@ -3286,6 +3404,30 @@
     }
 
     const PRO_ALLOWED_EVENT_TYPES = new Set([
+      "child_birth",
+      "marriage_start",
+      "divorce_separation",
+      "death_father",
+      "death_mother",
+      "death_child",
+      "death_spouse",
+      "death_sibling",
+      "death_grandparent",
+      "death_close_person_other",
+      "surgery",
+      "major_accident",
+      "violence_trauma",
+      "imprisonment",
+      "military_service",
+      "long_hospitalization",
+      "local_relocation",
+      "long_distance_relocation",
+      "job_start",
+      "job_loss",
+      "career_change",
+      "profession_change",
+      "business_start",
+      "business_loss",
       "children_birth",
       "death_of_close_person",
       "surgery_accident_life_risk",
@@ -3300,7 +3442,7 @@
     ]);
     const PRO_ALLOWED_DATE_PRECISION = new Set(["exact", "month", "year", "range", "unknown"]);
     const PRO_ALLOWED_REVERSIBILITY = new Set(["reversible", "irreversible", "unknown"]);
-    const PRO_ALLOWED_LIFE_AREAS = new Set(["relationships", "career", "home", "health", "finance", "identity", "other"]);
+    const PRO_ALLOWED_LIFE_AREAS = new Set(["family", "relationships", "career", "home", "health", "finance", "identity", "other"]);
 
     function toIsoDate(value) {
       if (!value || typeof value !== "string") return null;
@@ -3329,6 +3471,7 @@
         date_precision: datePrecision,
         impact_level: impactLevel,
         reversibility,
+        sequence_number: Number.isFinite(Number(event.sequence_number)) ? Math.max(1, Math.round(Number(event.sequence_number))) : null,
         notes: String(event.notes || ""),
         user_skipped: Boolean(event.user_skipped),
       };
@@ -3343,21 +3486,22 @@
       return [
         {
           event_id: "preset_ev_1",
-          event_type: "marriage_relationship",
-          title: "Брак",
+          event_type: "marriage_start",
+          title: "Оформление брака",
           date_text: "2012-08-18",
           start_date: "2012-08-18",
           end_date: "2012-08-18",
           date_precision: "exact",
           impact_level: 5,
-          reversibility: "irreversible",
+          reversibility: "reversible",
           life_area: "relationships",
+          sequence_number: 1,
           notes: "Тестовый пресет для E2E Pro",
           user_skipped: false,
         },
         {
           event_id: "preset_ev_2",
-          event_type: "relocation_emigration",
+          event_type: "long_distance_relocation",
           title: "Переезд",
           date_text: "2016-05",
           start_date: "2016-05-01",
@@ -3366,6 +3510,22 @@
           impact_level: 4,
           reversibility: "irreversible",
           life_area: "home",
+          sequence_number: 1,
+          notes: "Тестовый пресет для E2E Pro",
+          user_skipped: false,
+        },
+        {
+          event_id: "preset_ev_3",
+          event_type: "child_birth",
+          title: "Рождение первого ребёнка",
+          date_text: "2018-09-12",
+          start_date: "2018-09-12",
+          end_date: "2018-09-12",
+          date_precision: "exact",
+          impact_level: 5,
+          reversibility: "irreversible",
+          life_area: "family",
+          sequence_number: 1,
           notes: "Тестовый пресет для E2E Pro",
           user_skipped: false,
         },

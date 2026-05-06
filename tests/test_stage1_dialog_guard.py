@@ -17,19 +17,110 @@ SAMPLE_RECTIFICATION_DOCUMENT: dict[str, Any] = {
         "end_local": "1978-03-19T23:59:59",
     },
     "asc_sign_intervals": [
-        {"interval_index": 1, "sign_name_ru": "Овен", "sign_name_en": "Aries", "start_local": "1978-03-19T00:00:00", "end_local": "1978-03-19T01:00:00", "duration_minutes": 60},
-        {"interval_index": 2, "sign_name_ru": "Телец", "sign_name_en": "Taurus", "start_local": "1978-03-19T01:00:00", "end_local": "1978-03-19T02:00:00", "duration_minutes": 60},
-        {"interval_index": 3, "sign_name_ru": "Близнецы", "sign_name_en": "Gemini", "start_local": "1978-03-19T02:00:00", "end_local": "1978-03-19T03:00:00", "duration_minutes": 60},
-        {"interval_index": 4, "sign_name_ru": "Рак", "sign_name_en": "Cancer", "start_local": "1978-03-19T03:00:00", "end_local": "1978-03-19T04:00:00", "duration_minutes": 60},
-        {"interval_index": 5, "sign_name_ru": "Лев", "sign_name_en": "Leo", "start_local": "1978-03-19T04:00:00", "end_local": "1978-03-19T05:00:00", "duration_minutes": 60},
-        {"interval_index": 6, "sign_name_ru": "Дева", "sign_name_en": "Virgo", "start_local": "1978-03-19T05:00:00", "end_local": "1978-03-19T06:00:00", "duration_minutes": 60},
-        {"interval_index": 7, "sign_name_ru": "Весы", "sign_name_en": "Libra", "start_local": "1978-03-19T06:00:00", "end_local": "1978-03-19T07:00:00", "duration_minutes": 60},
-        {"interval_index": 8, "sign_name_ru": "Скорпион", "sign_name_en": "Scorpio", "start_local": "1978-03-19T07:00:00", "end_local": "1978-03-19T08:00:00", "duration_minutes": 60},
-        {"interval_index": 9, "sign_name_ru": "Стрелец", "sign_name_en": "Sagittarius", "start_local": "1978-03-19T08:00:00", "end_local": "1978-03-19T09:00:00", "duration_minutes": 60},
-        {"interval_index": 10, "sign_name_ru": "Козерог", "sign_name_en": "Capricorn", "start_local": "1978-03-19T09:00:00", "end_local": "1978-03-19T10:00:00", "duration_minutes": 60},
-        {"interval_index": 11, "sign_name_ru": "Водолей", "sign_name_en": "Aquarius", "start_local": "1978-03-19T10:00:00", "end_local": "1978-03-19T11:00:00", "duration_minutes": 60},
-        {"interval_index": 12, "sign_name_ru": "Рыбы", "sign_name_en": "Pisces", "start_local": "1978-03-19T11:00:00", "end_local": "1978-03-19T12:00:00", "duration_minutes": 60},
-        {"interval_index": 13, "sign_name_ru": "Козерог", "sign_name_en": "Capricorn", "start_local": "1978-03-19T22:00:00", "end_local": "1978-03-19T23:00:00", "duration_minutes": 60},
+        {
+            "interval_index": 1,
+            "sign_name_ru": "Овен",
+            "sign_name_en": "Aries",
+            "start_local": "1978-03-19T00:00:00",
+            "end_local": "1978-03-19T01:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 2,
+            "sign_name_ru": "Телец",
+            "sign_name_en": "Taurus",
+            "start_local": "1978-03-19T01:00:00",
+            "end_local": "1978-03-19T02:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 3,
+            "sign_name_ru": "Близнецы",
+            "sign_name_en": "Gemini",
+            "start_local": "1978-03-19T02:00:00",
+            "end_local": "1978-03-19T03:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 4,
+            "sign_name_ru": "Рак",
+            "sign_name_en": "Cancer",
+            "start_local": "1978-03-19T03:00:00",
+            "end_local": "1978-03-19T04:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 5,
+            "sign_name_ru": "Лев",
+            "sign_name_en": "Leo",
+            "start_local": "1978-03-19T04:00:00",
+            "end_local": "1978-03-19T05:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 6,
+            "sign_name_ru": "Дева",
+            "sign_name_en": "Virgo",
+            "start_local": "1978-03-19T05:00:00",
+            "end_local": "1978-03-19T06:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 7,
+            "sign_name_ru": "Весы",
+            "sign_name_en": "Libra",
+            "start_local": "1978-03-19T06:00:00",
+            "end_local": "1978-03-19T07:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 8,
+            "sign_name_ru": "Скорпион",
+            "sign_name_en": "Scorpio",
+            "start_local": "1978-03-19T07:00:00",
+            "end_local": "1978-03-19T08:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 9,
+            "sign_name_ru": "Стрелец",
+            "sign_name_en": "Sagittarius",
+            "start_local": "1978-03-19T08:00:00",
+            "end_local": "1978-03-19T09:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 10,
+            "sign_name_ru": "Козерог",
+            "sign_name_en": "Capricorn",
+            "start_local": "1978-03-19T09:00:00",
+            "end_local": "1978-03-19T10:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 11,
+            "sign_name_ru": "Водолей",
+            "sign_name_en": "Aquarius",
+            "start_local": "1978-03-19T10:00:00",
+            "end_local": "1978-03-19T11:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 12,
+            "sign_name_ru": "Рыбы",
+            "sign_name_en": "Pisces",
+            "start_local": "1978-03-19T11:00:00",
+            "end_local": "1978-03-19T12:00:00",
+            "duration_minutes": 60,
+        },
+        {
+            "interval_index": 13,
+            "sign_name_ru": "Козерог",
+            "sign_name_en": "Capricorn",
+            "start_local": "1978-03-19T22:00:00",
+            "end_local": "1978-03-19T23:00:00",
+            "duration_minutes": 60,
+        },
     ],
 }
 
@@ -73,8 +164,23 @@ def _history_with_element_answers(option_id: str, count: int = 6) -> list[dict[s
     history: list[dict[str, Any]] = []
     for qid in web_main.STAGE1_ELEMENT_QUESTION_IDS[:count]:
         q = web_main.QUESTION_BANK_BY_ID[qid]
-        history.append({"role": "assistant", "type": "ask_question", "question_id": qid, "question_text": q["question_text"], "options": q["options"]})
-        history.append({"role": "user", "selected_option_id": option_id, "selected_option_text": option_id, "free_text": None})
+        history.append(
+            {
+                "role": "assistant",
+                "type": "ask_question",
+                "question_id": qid,
+                "question_text": q["question_text"],
+                "options": q["options"],
+            }
+        )
+        history.append(
+            {
+                "role": "user",
+                "selected_option_id": option_id,
+                "selected_option_text": option_id,
+                "free_text": None,
+            }
+        )
     return history
 
 
@@ -89,19 +195,35 @@ def _history_with_modality_answers(
     for idx, answer in enumerate(modality_answers):
         qid = web_main.STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT[element_name][idx]
         q = web_main.QUESTION_BANK_BY_ID[qid]
-        history.append({"role": "assistant", "type": "ask_question", "question_id": qid, "question_text": q["question_text"], "options": q["options"]})
-        history.append({"role": "user", "selected_option_id": answer, "selected_option_text": answer, "free_text": None})
+        history.append(
+            {
+                "role": "assistant",
+                "type": "ask_question",
+                "question_id": qid,
+                "question_text": q["question_text"],
+                "options": q["options"],
+            }
+        )
+        history.append(
+            {
+                "role": "user",
+                "selected_option_id": answer,
+                "selected_option_text": answer,
+                "free_text": None,
+            }
+        )
     return history
 
 
 def test_phase1_questions_cover_element_detection_topics() -> None:
-    text = " ".join(web_main.QUESTION_BANK_BY_ID[qid]["question_text"].lower() for qid in web_main.STAGE1_ELEMENT_QUESTION_IDS)
-    assert "энергии" in text
-    assert "впечатление" in text
-    assert "стресс" in text
-    assert "двигаетесь" in text
-    assert "стиль жизни" in text
-    assert "образ" in text
+    assert len(web_main.STAGE1_ELEMENT_QUESTION_IDS) == 6
+    assert all(qid in web_main.QUESTION_BANK_BY_ID for qid in web_main.STAGE1_ELEMENT_QUESTION_IDS)
+
+
+def test_phase2_has_four_modality_questions_per_element() -> None:
+    for element_name, question_ids in web_main.STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT.items():
+        assert len(question_ids) == 4, element_name
+        assert all(qid in web_main.QUESTION_BANK_BY_ID for qid in question_ids)
 
 
 def test_phase1_element_scoring_works() -> None:
@@ -147,7 +269,7 @@ def test_element_plus_modality_formula_maps_to_sign(
     history = _history_with_modality_answers(
         element_option_id=element_option,
         element_name=element_name,
-        modality_answers=[modality_answer, modality_answer, modality_answer],
+        modality_answers=[modality_answer, modality_answer, modality_answer, modality_answer],
     )
     result = web_main._build_safe_final_result(
         rectification_document=SAMPLE_RECTIFICATION_DOCUMENT,
@@ -162,7 +284,7 @@ def test_primary_and_secondary_candidates_keep_all_intervals() -> None:
     history = _history_with_modality_answers(
         element_option_id="B",
         element_name="earth",
-        modality_answers=["A", "A", "A"],
+        modality_answers=["A", "A", "A", "A"],
     )
     result = web_main._build_safe_final_result(
         rectification_document=SAMPLE_RECTIFICATION_DOCUMENT,
@@ -179,7 +301,7 @@ def test_close_candidates_add_warning_and_candidate_group() -> None:
     history = _history_with_modality_answers(
         element_option_id="B",
         element_name="earth",
-        modality_answers=["A", "B", "C"],
+        modality_answers=["A", "B", "C", "D"],
     )
     result = web_main._build_safe_final_result(
         rectification_document=SAMPLE_RECTIFICATION_DOCUMENT,
@@ -195,7 +317,7 @@ def test_final_result_contains_method_limitations_block() -> None:
     history = _history_with_modality_answers(
         element_option_id="A",
         element_name="fire",
-        modality_answers=["A", "A", "A"],
+        modality_answers=["A", "A", "A", "A"],
     )
     result = web_main._build_safe_final_result(
         rectification_document=SAMPLE_RECTIFICATION_DOCUMENT,
@@ -203,11 +325,14 @@ def test_final_result_contains_method_limitations_block() -> None:
         reason="test_limitations",
     )
     limitations = result.get("method_limitations") or []
-    assert any("сужает 24 часа" in item for item in limitations)
+    assert any("1–3 часа" in item for item in limitations)
+    assert any("быстро восходящие" in item for item in limitations)
     assert any("дирекционные формулы" in item for item in limitations)
 
 
-def test_stage1_llm_failure_before_min_questions_returns_question(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_stage1_llm_failure_before_min_questions_returns_question(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
     monkeypatch.setattr(
         web_main,
         "_call_rectification_llm",
@@ -228,7 +353,12 @@ def test_stage1_max_steps_forces_safe_final(client: TestClient, monkeypatch: pyt
     monkeypatch.setattr(
         web_main,
         "_call_rectification_llm",
-        lambda **kwargs: {"llm_json": {"type": "ask_question"}, "llm_text": "", "usage": web_main._empty_usage(), "openai_raw_response": {}},
+        lambda **kwargs: {
+            "llm_json": {"type": "ask_question"},
+            "llm_text": "",
+            "usage": web_main._empty_usage(),
+            "openai_raw_response": {},
+        },
     )
     response = client.post(
         "/api/rectification/dialog/continue",
@@ -240,7 +370,9 @@ def test_stage1_max_steps_forces_safe_final(client: TestClient, monkeypatch: pyt
     assert "max_steps_reached_safe_finalization" in body["warnings"]
 
 
-def test_stage1_start_endpoint_works_with_guarded_question(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_stage1_start_endpoint_works_with_guarded_question(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
     monkeypatch.setattr(
         web_main,
         "_call_rectification_llm",

@@ -177,6 +177,16 @@ QUESTION_BANK: list[dict[str, Any]] = [
         ],
     },
     {
+        "question_id": "q_mod_earth_04",
+        "question_text": "Что для вас важнее в результате?",
+        "options": [
+            {"id": "A", "text": "достичь цели и выстроить систему вокруг результата"},
+            {"id": "B", "text": "сохранить, укрепить и сделать результат устойчивым"},
+            {"id": "C", "text": "улучшить, уточнить и довести результат до качества"},
+            {"id": "D", "text": "по-разному"},
+        ],
+    },
+    {
         "question_id": "q_mod_fire_01",
         "question_text": "Как вы проявляете активную энергию?",
         "options": [
@@ -204,6 +214,16 @@ QUESTION_BANK: list[dict[str, Any]] = [
             {"id": "B", "text": "держать образ, вести через харизму, быть центром"},
             {"id": "C", "text": "идти к масштабу, вдохновлять, расширять"},
             {"id": "D", "text": "смешанный стиль"},
+        ],
+    },
+    {
+        "question_id": "q_mod_fire_04",
+        "question_text": "Что для вас важнее в проявлении силы?",
+        "options": [
+            {"id": "A", "text": "быстро начать и пробить препятствие"},
+            {"id": "B", "text": "удержать яркость, достоинство и признание"},
+            {"id": "C", "text": "расширить смысл, вдохновить и повести дальше"},
+            {"id": "D", "text": "по-разному"},
         ],
     },
     {
@@ -237,6 +257,16 @@ QUESTION_BANK: list[dict[str, Any]] = [
         ],
     },
     {
+        "question_id": "q_mod_air_04",
+        "question_text": "Что для вас важнее в общении и идеях?",
+        "options": [
+            {"id": "A", "text": "создать контакт, баланс и договорённость"},
+            {"id": "B", "text": "сохранить свободу, принцип и независимый взгляд"},
+            {"id": "C", "text": "быстро связать людей, идеи и информацию"},
+            {"id": "D", "text": "по-разному"},
+        ],
+    },
+    {
         "question_id": "q_mod_water_01",
         "question_text": "Как вы проявляете эмоциональную энергию?",
         "options": [
@@ -264,6 +294,16 @@ QUESTION_BANK: list[dict[str, Any]] = [
             {"id": "B", "text": "собираться в глубине, контролировать, проходить кризис"},
             {"id": "C", "text": "сочувствовать, чувствовать атмосферу, вдохновляться"},
             {"id": "D", "text": "смешанный стиль"},
+        ],
+    },
+    {
+        "question_id": "q_mod_water_04",
+        "question_text": "Что для вас важнее в эмоциональной сфере?",
+        "options": [
+            {"id": "A", "text": "создать близость, защиту и чувство безопасности"},
+            {"id": "B", "text": "удержать глубину, контроль и пройти трансформацию"},
+            {"id": "C", "text": "почувствовать атмосферу, адаптироваться и вдохновиться"},
+            {"id": "D", "text": "по-разному"},
         ],
     },
 ]
@@ -319,10 +359,10 @@ STAGE1_ELEMENT_QUESTION_IDS: tuple[str, ...] = (
     "q_element_style_06",
 )
 STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT: dict[str, tuple[str, ...]] = {
-    "earth": ("q_mod_earth_01", "q_mod_earth_02", "q_mod_earth_03"),
-    "fire": ("q_mod_fire_01", "q_mod_fire_02", "q_mod_fire_03"),
-    "air": ("q_mod_air_01", "q_mod_air_02", "q_mod_air_03"),
-    "water": ("q_mod_water_01", "q_mod_water_02", "q_mod_water_03"),
+    "earth": ("q_mod_earth_01", "q_mod_earth_02", "q_mod_earth_03", "q_mod_earth_04"),
+    "fire": ("q_mod_fire_01", "q_mod_fire_02", "q_mod_fire_03", "q_mod_fire_04"),
+    "air": ("q_mod_air_01", "q_mod_air_02", "q_mod_air_03", "q_mod_air_04"),
+    "water": ("q_mod_water_01", "q_mod_water_02", "q_mod_water_03", "q_mod_water_04"),
 }
 STAGE1_MODALITY_QUESTION_IDS: set[str] = {
     qid for items in STAGE1_MODALITY_QUESTION_IDS_BY_ELEMENT.values() for qid in items
@@ -348,6 +388,11 @@ QUESTION_OPTION_MODALITY_MAP: dict[str, dict[str, dict[str, str]]] = {
         "B": {"modality": "fixed", "sign": "Taurus"},
         "C": {"modality": "mutable", "sign": "Virgo"},
     },
+    "q_mod_earth_04": {
+        "A": {"modality": "cardinal", "sign": "Capricorn"},
+        "B": {"modality": "fixed", "sign": "Taurus"},
+        "C": {"modality": "mutable", "sign": "Virgo"},
+    },
     "q_mod_fire_01": {
         "A": {"modality": "cardinal", "sign": "Aries"},
         "B": {"modality": "fixed", "sign": "Leo"},
@@ -359,6 +404,11 @@ QUESTION_OPTION_MODALITY_MAP: dict[str, dict[str, dict[str, str]]] = {
         "C": {"modality": "mutable", "sign": "Sagittarius"},
     },
     "q_mod_fire_03": {
+        "A": {"modality": "cardinal", "sign": "Aries"},
+        "B": {"modality": "fixed", "sign": "Leo"},
+        "C": {"modality": "mutable", "sign": "Sagittarius"},
+    },
+    "q_mod_fire_04": {
         "A": {"modality": "cardinal", "sign": "Aries"},
         "B": {"modality": "fixed", "sign": "Leo"},
         "C": {"modality": "mutable", "sign": "Sagittarius"},
@@ -378,6 +428,11 @@ QUESTION_OPTION_MODALITY_MAP: dict[str, dict[str, dict[str, str]]] = {
         "B": {"modality": "fixed", "sign": "Aquarius"},
         "C": {"modality": "mutable", "sign": "Gemini"},
     },
+    "q_mod_air_04": {
+        "A": {"modality": "cardinal", "sign": "Libra"},
+        "B": {"modality": "fixed", "sign": "Aquarius"},
+        "C": {"modality": "mutable", "sign": "Gemini"},
+    },
     "q_mod_water_01": {
         "A": {"modality": "cardinal", "sign": "Cancer"},
         "B": {"modality": "fixed", "sign": "Scorpio"},
@@ -393,16 +448,20 @@ QUESTION_OPTION_MODALITY_MAP: dict[str, dict[str, dict[str, str]]] = {
         "B": {"modality": "fixed", "sign": "Scorpio"},
         "C": {"modality": "mutable", "sign": "Pisces"},
     },
+    "q_mod_water_04": {
+        "A": {"modality": "cardinal", "sign": "Cancer"},
+        "B": {"modality": "fixed", "sign": "Scorpio"},
+        "C": {"modality": "mutable", "sign": "Pisces"},
+    },
 }
 
 STAGE1_METHOD_LIMITATIONS: list[str] = [
     "Этот этап сужает поиск времени рождения через определение восходящего знака.",
-    "Обычно метод сужает 24 часа до окна около 2 часов, но не даёт точное время до минут.",
+    "Обычно этот этап сужает 24 часа до окна примерно 1–3 часа. Длительность окна зависит от широты места рождения и скорости восхождения знака.",
+    "Интервалы восходящих знаков не обязаны быть равны двум часам. Из-за широты места рождения и наклона земной оси существуют быстро восходящие и медленно восходящие знаки.",
     "Для уточнения до минут нужны события жизни и дирекционные формулы ректификации.",
     "Если в космограмме сильно выделен другой знак, впечатление Asc может искажаться.",
     "Возможен пограничный Asc: характеристики соседнего знака могут примешиваться.",
-    "TODO: добавить модификатор планеты в 1 доме при расширении алгоритма.",
-    "TODO: добавить учёт управителя Asc в шахте при расширении алгоритма.",
 ]
 
 
@@ -476,6 +535,7 @@ class EventAnswerWebInput(BaseModel):
     impact_level: int | None = None
     reversibility: str | None = None
     life_area: str | None = None
+    sequence_number: int | None = None
     notes: str | None = None
     user_skipped: bool = False
 
@@ -546,6 +606,7 @@ class FinalResultLLMResponse(BaseModel):
     primary_candidate: PrimaryCandidate
     secondary_candidates: list[SecondaryCandidate]
     summary_text: str
+    explanation_text: str | None = None
     element_scores: dict[str, float] = Field(default_factory=dict)
     modality_scores: dict[str, float] = Field(default_factory=dict)
     sign_scores: dict[str, float] = Field(default_factory=dict)
@@ -1033,10 +1094,10 @@ def _should_allow_stage1_finalization(
     modality_answers = _count_answers_for_question_ids(dialog_history, STAGE1_MODALITY_QUESTION_IDS)
     if answered_questions >= STAGE1_MAX_QUESTIONS:
         return True
-    if answered_questions >= STAGE1_MIN_QUESTIONS and modality_answers >= 2:
+    if answered_questions >= STAGE1_MIN_QUESTIONS and modality_answers >= 4:
         return True
     if mode == "finalize_now":
-        return _has_strong_stage1_leader(dialog_history)
+        return modality_answers >= 4 and _has_strong_stage1_leader(dialog_history)
     return False
 
 
@@ -1127,10 +1188,21 @@ def _build_scored_safe_final_result(
         }
 
     signs_text = ", ".join(sign_labels.get(name, name) for name in ranked_signs[:3])
+    leading_element_label = ELEMENT_LABELS.get(leading_element, "не определена")
+    leading_modality_label = MODALITY_LABELS.get(leading_modality, "не определён")
+    explanation_text = (
+        f"Стихия {leading_element_label.lower()} выражена сильнее всего. "
+        f"По способу проявления энергии лидирует {leading_modality_label} крест. "
+        f"Поэтому основной кандидат — {primary_candidate['sign_name_ru']}."
+    )
+    if needs_more_questions:
+        explanation_text += (
+            " Вторичные кандидаты остаются для проверки через события жизни."
+        )
     summary_text = (
         "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам. "
-        f"Стихия: {ELEMENT_LABELS.get(leading_element, 'не определена')}. "
-        f"Крест: {MODALITY_LABELS.get(leading_modality, 'не определён')}. "
+        f"Стихия: {leading_element_label}. "
+        f"Крест: {leading_modality_label}. "
         f"Основной кандидат: {primary_candidate['sign_name_ru']}."
     )
     if needs_more_questions:
@@ -1159,7 +1231,8 @@ def _build_scored_safe_final_result(
         "needs_more_questions": needs_more_questions,
         "warnings": warnings_local,
         "method_limitations": STAGE1_METHOD_LIMITATIONS,
-        "summary_text": f"{summary_text} Резервный режим: {reason}.",
+        "explanation_text": explanation_text,
+        "summary_text": summary_text,
     }
 
 
@@ -1257,8 +1330,8 @@ def _build_safe_final_result(
             "warnings": ["technical_fallback_used"],
             "method_limitations": STAGE1_METHOD_LIMITATIONS,
             "summary_text": (
-                "Ответы пользователя не дали пригодного лидера, поэтому использован технический резервный сценарий "
-                f"({reason}). Уверенность намеренно снижена."
+                "Ответы пользователя не дали пригодного лидера, поэтому использован резервный расчёт. "
+                "Уверенность намеренно снижена."
             ),
         }
 
@@ -1291,8 +1364,8 @@ def _build_safe_final_result(
         "warnings": ["technical_fallback_used"],
         "method_limitations": STAGE1_METHOD_LIMITATIONS,
         "summary_text": (
-            "Ответы пользователя не дали пригодного лидера, поэтому использован технический резервный сценарий. "
-            f"Не найдено пригодных интервалов ({reason})."
+            "Ответы пользователя не дали пригодного лидера, поэтому использован резервный расчёт. "
+            "Не найдено пригодных интервалов."
         ),
     }
 

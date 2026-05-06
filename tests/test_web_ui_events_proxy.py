@@ -31,17 +31,18 @@ def test_web_ui_events_start_proxy_success(monkeypatch) -> None:
                 "events_collected_count": 0,
                 "warnings": [],
                 "question": {
-                    "question_id": "ev_children_birth_01",
-                    "event_type": "children_birth",
+                    "question_id": "ev_child_birth_01",
+                    "event_type": "child_birth",
                     "question_text": "test",
                     "options": [{"id": "yes", "text": "Да"}],
+                    "repeatable": True,
+                    "requires_sequence_number": True,
                 },
                 "dialog_history": [],
             },
         )
 
     monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
-
     client = TestClient(web_ui_main.app)
     response = client.post(
         "/api/rectification/events/start",
@@ -74,7 +75,7 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
                 "events": [
                     {
                         "event_id": "uuid-1",
-                        "event_type": "children_birth",
+                        "event_type": "child_birth",
                         "title": "major event",
                         "date_text": "2018",
                         "date_precision": "year",
@@ -82,7 +83,8 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
                         "end_date": "2018-12-31",
                         "impact_level": 4,
                         "reversibility": "irreversible",
-                        "life_area": "relationships",
+                        "life_area": "family",
+                        "sequence_number": 1,
                         "notes": "note",
                         "user_skipped": False,
                     }
@@ -95,7 +97,6 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
         )
 
     monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
-
     client = TestClient(web_ui_main.app)
     response = client.post(
         "/api/rectification/events/continue",
@@ -103,13 +104,14 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
             "api_base_url": "http://127.0.0.1:8013",
             "dialog_history": [{"role": "assistant", "step_index": 1}],
             "last_answer": {
-                "question_id": "ev_children_birth_01",
-                "event_type": "children_birth",
+                "question_id": "ev_child_birth_01",
+                "event_type": "child_birth",
                 "title": "major event",
                 "date_text": "2018",
                 "impact_level": 4,
                 "reversibility": None,
                 "life_area": None,
+                "sequence_number": 1,
                 "notes": "note",
                 "user_skipped": False,
             },
@@ -119,7 +121,8 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
     assert response.status_code == 200
     assert response.json()["status"] == "finalized"
     assert captured["path"] == "/api/v1/rectification/events/continue"
-    assert captured["payload"]["last_answer"]["question_id"] == "ev_children_birth_01"
+    assert captured["payload"]["last_answer"]["question_id"] == "ev_child_birth_01"
+    assert captured["payload"]["last_answer"]["sequence_number"] == 1
     assert captured["timeout"] == 120
 
 
@@ -128,13 +131,11 @@ def test_web_ui_events_finalize_proxy_preserves_backend_422(monkeypatch) -> None
         return _DummyResponse(422, {"detail": "bad request"}, text='{"detail":"bad request"}')
 
     monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
-
     client = TestClient(web_ui_main.app)
     response = client.post(
         "/api/rectification/events/finalize",
         json={"api_base_url": "http://127.0.0.1:8013", "dialog_history": []},
     )
-
     assert response.status_code == 422
     assert response.json()["detail"] == "bad request"
 
@@ -163,7 +164,6 @@ def test_web_ui_rectification_pro_proxy_success(monkeypatch) -> None:
         )
 
     monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
-
     client = TestClient(web_ui_main.app)
     response = client.post(
         "/api/rectification/pro/run",
@@ -192,7 +192,6 @@ def test_web_ui_rectification_pro_proxy_preserves_backend_422(monkeypatch) -> No
         )
 
     monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
-
     client = TestClient(web_ui_main.app)
     response = client.post(
         "/api/rectification/pro/run",

@@ -29,7 +29,8 @@ def _payload(events_count: int) -> dict:
                 "end_date": f"201{idx}-05-12",
                 "impact_level": 5,
                 "reversibility": "irreversible",
-                "life_area": "relationships",
+                "life_area": "family",
+                "sequence_number": idx + 1,
                 "notes": "",
                 "user_skipped": False,
             }
@@ -80,3 +81,14 @@ def test_rectification_pro_run_low_confidence_for_weak_data(monkeypatch, tmp_pat
     assert response.status_code == 200
     body = response.json()
     assert body["confidence"]["level"] in {"low", "medium"}
+
+
+def test_rectification_pro_accepts_new_event_types(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["life_area"] = "family"
+    payload["events"][0]["sequence_number"] = 1
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+    assert response.status_code == 200

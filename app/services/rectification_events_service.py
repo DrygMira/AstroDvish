@@ -27,9 +27,45 @@ MAX_STEPS = 14
 
 EVENT_QUESTION_BANK: list[EventQuestion] = [
     EventQuestion(
-        question_id="ev_children_birth_01",
-        event_type=EventType.children_birth,
-        question_text="Было ли рождение ребенка (или детей), которое сильно изменило вашу жизнь?",
+        question_id="ev_child_birth_01",
+        event_type=EventType.child_birth,
+        question_text="Было ли рождение ребёнка? Если детей несколько, добавьте каждого отдельно и укажите, какой ребёнок по счёту.",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_marriage_start_02",
+        event_type=EventType.marriage_start,
+        question_text="Было ли официальное оформление брака или начало семейного союза?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_divorce_separation_03",
+        event_type=EventType.divorce_separation,
+        question_text="Был ли развод, юридическое расторжение брака или окончательный разрыв семейного союза?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_death_father_04",
+        event_type=EventType.death_father,
+        question_text="Была ли смерть отца?",
         options=[
             EventQuestionOption(id="yes", text="Да"),
             EventQuestionOption(id="no", text="Нет"),
@@ -37,9 +73,9 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         ],
     ),
     EventQuestion(
-        question_id="ev_death_close_02",
-        event_type=EventType.death_of_close_person,
-        question_text="Была ли смерть близкого человека, после которой жизнь разделилась на до/после?",
+        question_id="ev_death_mother_05",
+        event_type=EventType.death_mother,
+        question_text="Была ли смерть матери?",
         options=[
             EventQuestionOption(id="yes", text="Да"),
             EventQuestionOption(id="no", text="Нет"),
@@ -47,9 +83,129 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         ],
     ),
     EventQuestion(
-        question_id="ev_surgery_accident_03",
-        event_type=EventType.surgery_accident_life_risk,
-        question_text="Были ли операции, аварии или ситуации с риском для жизни?",
+        question_id="ev_death_sibling_06",
+        event_type=EventType.death_sibling,
+        question_text="Была ли смерть брата или сестры?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_death_grandparent_07",
+        event_type=EventType.death_grandparent,
+        question_text="Была ли смерть бабушки или дедушки?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_death_close_other_08",
+        event_type=EventType.death_close_person_other,
+        question_text="Была ли смерть другого близкого человека, после которой жизнь разделилась на до/после?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_local_relocation_09",
+        event_type=EventType.local_relocation,
+        question_text="Был ли ближний переезд (внутри города/области), который заметно повлиял на жизнь?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_long_distance_relocation_10",
+        event_type=EventType.long_distance_relocation,
+        question_text="Был ли дальний переезд, смена города/страны или эмиграция?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_job_start_11",
+        event_type=EventType.job_start,
+        question_text="Был ли значимый старт работы или карьеры (первая работа, резкий профессиональный вход)?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_profession_change_12",
+        event_type=EventType.profession_change,
+        question_text="Была ли существенная смена профессии?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_surgery_13",
+        event_type=EventType.surgery,
+        question_text="Были ли хирургические операции?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_major_accident_14",
+        event_type=EventType.major_accident,
+        question_text="Были ли серьёзные аварии или происшествия с риском для жизни?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_imprisonment_15",
+        event_type=EventType.imprisonment,
+        question_text="Были ли периоды ограничения свободы (суд, заключение, изоляция)?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+        repeatable=True,
+        requires_sequence_number=True,
+    ),
+    EventQuestion(
+        question_id="ev_military_service_16",
+        event_type=EventType.military_service,
+        question_text="Была ли военная служба, заметно изменившая ваш жизненный курс?",
         options=[
             EventQuestionOption(id="yes", text="Да"),
             EventQuestionOption(id="no", text="Нет"),
@@ -57,67 +213,19 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         ],
     ),
     EventQuestion(
-        question_id="ev_marriage_relationship_04",
-        event_type=EventType.marriage_relationship,
-        question_text="Было ли официальное оформление брака/развода или крупный перелом в отношениях?",
-        options=[
-            EventQuestionOption(id="yes", text="Да"),
-            EventQuestionOption(id="no", text="Нет"),
-            EventQuestionOption(id="skip", text="Пропустить"),
-        ],
-    ),
-    EventQuestion(
-        question_id="ev_relocation_05",
-        event_type=EventType.relocation_emigration,
-        question_text="Был ли переезд, эмиграция или смена города/страны с сильным влиянием?",
-        options=[
-            EventQuestionOption(id="yes", text="Да"),
-            EventQuestionOption(id="no", text="Нет"),
-            EventQuestionOption(id="skip", text="Пропустить"),
-        ],
-    ),
-    EventQuestion(
-        question_id="ev_education_work_start_06",
-        event_type=EventType.education_work_start,
-        question_text="Был ли значимый старт в учебе/работе (поступление, первая работа, резкий профессиональный вход)?",
-        options=[
-            EventQuestionOption(id="yes", text="Да"),
-            EventQuestionOption(id="no", text="Нет"),
-            EventQuestionOption(id="skip", text="Пропустить"),
-        ],
-    ),
-    EventQuestion(
-        question_id="ev_profession_change_07",
-        event_type=EventType.profession_lifestyle_change,
-        question_text="Была ли радикальная смена профессии или образа жизни?",
-        options=[
-            EventQuestionOption(id="yes", text="Да"),
-            EventQuestionOption(id="no", text="Нет"),
-            EventQuestionOption(id="skip", text="Пропустить"),
-        ],
-    ),
-    EventQuestion(
-        question_id="ev_freedom_restriction_08",
-        event_type=EventType.freedom_restriction,
-        question_text="Были ли периоды ограничения свободы (служба, суд, изоляция, длительный уход)?",
-        options=[
-            EventQuestionOption(id="yes", text="Да"),
-            EventQuestionOption(id="no", text="Нет"),
-            EventQuestionOption(id="skip", text="Пропустить"),
-        ],
-    ),
-    EventQuestion(
-        question_id="ev_finance_rise_fall_09",
+        question_id="ev_finance_rise_fall_17",
         event_type=EventType.financial_rise_fall,
-        question_text="Были ли резкие финансовые взлеты/падения?",
+        question_text="Были ли резкие финансовые взлёты или падения?",
         options=[
             EventQuestionOption(id="yes", text="Да"),
             EventQuestionOption(id="no", text="Нет"),
             EventQuestionOption(id="skip", text="Пропустить"),
         ],
+        repeatable=True,
+        requires_sequence_number=True,
     ),
     EventQuestion(
-        question_id="ev_inner_crisis_10",
+        question_id="ev_inner_crisis_18",
         event_type=EventType.inner_crisis_turning_point,
         question_text="Был ли внутренний кризис или перелом идентичности, после которого вы стали жить иначе?",
         options=[
@@ -127,9 +235,9 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         ],
     ),
     EventQuestion(
-        question_id="ev_custom_major_11",
+        question_id="ev_custom_major_19",
         event_type=EventType.custom_major_event,
-        question_text="Есть ли еще одно крупное событие, которое важно учесть?",
+        question_text="Есть ли ещё одно крупное событие, которое важно учесть для ректификации?",
         options=[
             EventQuestionOption(id="yes", text="Да"),
             EventQuestionOption(id="no", text="Нет"),
@@ -139,24 +247,69 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
 ]
 
 EVENT_TYPE_DEFAULT_LIFE_AREA: dict[EventType, LifeArea] = {
-    EventType.children_birth: LifeArea.relationships,
-    EventType.death_of_close_person: LifeArea.relationships,
+    EventType.child_birth: LifeArea.family,
+    EventType.marriage_start: LifeArea.relationships,
+    EventType.divorce_separation: LifeArea.relationships,
+    EventType.death_father: LifeArea.family,
+    EventType.death_mother: LifeArea.family,
+    EventType.death_child: LifeArea.family,
+    EventType.death_spouse: LifeArea.relationships,
+    EventType.death_sibling: LifeArea.family,
+    EventType.death_grandparent: LifeArea.family,
+    EventType.death_close_person_other: LifeArea.other,
+    EventType.surgery: LifeArea.health,
+    EventType.major_accident: LifeArea.health,
+    EventType.violence_trauma: LifeArea.health,
+    EventType.imprisonment: LifeArea.identity,
+    EventType.military_service: LifeArea.identity,
+    EventType.long_hospitalization: LifeArea.health,
+    EventType.local_relocation: LifeArea.home,
+    EventType.long_distance_relocation: LifeArea.home,
+    EventType.job_start: LifeArea.career,
+    EventType.job_loss: LifeArea.career,
+    EventType.career_change: LifeArea.career,
+    EventType.profession_change: LifeArea.career,
+    EventType.business_start: LifeArea.career,
+    EventType.business_loss: LifeArea.career,
+    EventType.financial_rise_fall: LifeArea.finance,
+    EventType.inner_crisis_turning_point: LifeArea.identity,
+    EventType.custom_major_event: LifeArea.other,
+    EventType.children_birth: LifeArea.family,
+    EventType.death_of_close_person: LifeArea.other,
     EventType.surgery_accident_life_risk: LifeArea.health,
     EventType.marriage_relationship: LifeArea.relationships,
     EventType.relocation_emigration: LifeArea.home,
     EventType.education_work_start: LifeArea.career,
     EventType.profession_lifestyle_change: LifeArea.career,
     EventType.freedom_restriction: LifeArea.identity,
-    EventType.financial_rise_fall: LifeArea.finance,
-    EventType.inner_crisis_turning_point: LifeArea.identity,
-    EventType.custom_major_event: LifeArea.other,
 }
 
 IRREVERSIBLE_EVENT_TYPES: set[EventType] = {
+    EventType.child_birth,
+    EventType.death_father,
+    EventType.death_mother,
+    EventType.death_child,
+    EventType.death_spouse,
+    EventType.death_sibling,
+    EventType.death_grandparent,
+    EventType.death_close_person_other,
+    EventType.surgery,
+    EventType.major_accident,
+    EventType.violence_trauma,
+    EventType.imprisonment,
+    EventType.long_hospitalization,
     EventType.children_birth,
     EventType.death_of_close_person,
     EventType.surgery_accident_life_risk,
     EventType.freedom_restriction,
+}
+
+REPEATABLE_EVENT_TYPES: set[EventType] = {
+    question.event_type for question in EVENT_QUESTION_BANK if question.repeatable
+}
+
+SEQUENCE_REQUIRED_EVENT_TYPES: set[EventType] = {
+    question.event_type for question in EVENT_QUESTION_BANK if question.requires_sequence_number
 }
 
 
@@ -232,6 +385,18 @@ class RectificationEventsService:
 
         if not last_answer.user_skipped and self._is_answer_empty(last_answer):
             warnings.append("empty_answer_retry")
+            return self._retry_same_question(
+                history,
+                last_question,
+                last_question_item.step_index,
+                warnings,
+            )
+        if (
+            not last_answer.user_skipped
+            and self._is_sequence_required(last_answer.event_type)
+            and last_answer.sequence_number is None
+        ):
+            warnings.append("sequence_number_required_retry")
             return self._retry_same_question(
                 history,
                 last_question,
@@ -399,6 +564,7 @@ class RectificationEventsService:
                 impact_level=1,
                 reversibility=Reversibility.unknown,
                 life_area=answer.life_area or EVENT_TYPE_DEFAULT_LIFE_AREA[answer.event_type],
+                sequence_number=None,
                 notes=answer.notes or "",
                 user_skipped=True,
             )
@@ -409,7 +575,7 @@ class RectificationEventsService:
 
         title = (answer.title or "").strip()
         if not title:
-            title = self._default_title(answer.event_type)
+            title = self._default_title(answer.event_type, answer.sequence_number)
 
         reversibility = answer.reversibility
         if reversibility is None:
@@ -432,13 +598,65 @@ class RectificationEventsService:
             impact_level=impact_level,
             reversibility=reversibility,
             life_area=life_area,
+            sequence_number=self._resolve_sequence_number(answer),
             notes=(answer.notes or "").strip(),
             user_skipped=False,
         )
 
     @staticmethod
-    def _default_title(event_type: EventType) -> str:
-        return event_type.value
+    def _default_title(event_type: EventType, sequence_number: int | None) -> str:
+        label_map: dict[EventType, str] = {
+            EventType.child_birth: "Рождение ребёнка",
+            EventType.marriage_start: "Оформление брака",
+            EventType.divorce_separation: "Развод / окончательный разрыв союза",
+            EventType.death_father: "Смерть отца",
+            EventType.death_mother: "Смерть матери",
+            EventType.death_child: "Смерть ребёнка",
+            EventType.death_spouse: "Смерть супруга",
+            EventType.death_sibling: "Смерть брата/сестры",
+            EventType.death_grandparent: "Смерть бабушки/дедушки",
+            EventType.death_close_person_other: "Смерть близкого человека",
+            EventType.local_relocation: "Ближний переезд",
+            EventType.long_distance_relocation: "Дальний переезд/эмиграция",
+            EventType.job_start: "Старт работы",
+            EventType.job_loss: "Потеря работы",
+            EventType.career_change: "Смена карьерного направления",
+            EventType.profession_change: "Смена профессии",
+            EventType.business_start: "Запуск бизнеса",
+            EventType.business_loss: "Потеря бизнеса",
+            EventType.surgery: "Хирургическая операция",
+            EventType.major_accident: "Серьёзная авария/происшествие",
+            EventType.violence_trauma: "Травма/насилие",
+            EventType.imprisonment: "Ограничение свободы",
+            EventType.military_service: "Военная служба",
+            EventType.long_hospitalization: "Длительная госпитализация",
+            EventType.financial_rise_fall: "Финансовый взлёт/падение",
+            EventType.inner_crisis_turning_point: "Внутренний кризис",
+            EventType.custom_major_event: "Другое важное событие",
+            EventType.children_birth: "Рождение ребёнка",
+            EventType.death_of_close_person: "Смерть близкого человека",
+            EventType.surgery_accident_life_risk: "Операция/авария с риском",
+            EventType.marriage_relationship: "Брак/перелом отношений",
+            EventType.relocation_emigration: "Переезд/эмиграция",
+            EventType.education_work_start: "Учёба/старт работы",
+            EventType.profession_lifestyle_change: "Смена профессии/образа жизни",
+            EventType.freedom_restriction: "Ограничение свободы",
+        }
+        label = label_map.get(event_type, event_type.value)
+        if sequence_number is not None:
+            return f"{label} №{sequence_number}"
+        return label
+
+    @staticmethod
+    def _is_sequence_required(event_type: EventType) -> bool:
+        return event_type in SEQUENCE_REQUIRED_EVENT_TYPES
+
+    def _resolve_sequence_number(self, answer: EventAnswerInput) -> int | None:
+        if answer.sequence_number is not None:
+            return answer.sequence_number
+        if self._is_sequence_required(answer.event_type):
+            return 1
+        return None
 
     @staticmethod
     def _resolve_impact(answer: EventAnswerInput) -> int:
@@ -446,13 +664,36 @@ class RectificationEventsService:
             return max(1, min(5, answer.impact_level))
 
         if answer.event_type in {
+            EventType.death_father,
+            EventType.death_mother,
+            EventType.death_child,
+            EventType.death_spouse,
+            EventType.death_sibling,
+            EventType.death_grandparent,
+            EventType.death_close_person_other,
+            EventType.surgery,
+            EventType.major_accident,
+            EventType.violence_trauma,
+            EventType.imprisonment,
+            EventType.long_hospitalization,
+            EventType.freedom_restriction,
             EventType.death_of_close_person,
             EventType.surgery_accident_life_risk,
-            EventType.freedom_restriction,
             EventType.inner_crisis_turning_point,
         }:
             return 5
         if answer.event_type in {
+            EventType.child_birth,
+            EventType.marriage_start,
+            EventType.divorce_separation,
+            EventType.local_relocation,
+            EventType.long_distance_relocation,
+            EventType.job_start,
+            EventType.job_loss,
+            EventType.career_change,
+            EventType.profession_change,
+            EventType.business_start,
+            EventType.business_loss,
             EventType.children_birth,
             EventType.marriage_relationship,
             EventType.relocation_emigration,
