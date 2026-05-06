@@ -149,3 +149,40 @@ def test_openrouter_generate_retries_with_affordable_tokens_on_402(monkeypatch: 
     assert result["applied_max_tokens"] == 2218
     assert result["retried_with_lower_max_tokens"] is True
     assert result["route"] == "/api/generate"
+
+
+def test_compact_llm_chart_context_reduces_payload_shape() -> None:
+    chart = {
+        "objects": {
+            "sun": {
+                "sign_name_en": "Aries",
+                "sign_name_ru": "Овен",
+                "sign_degree": 12.3,
+                "absolute_degree_0_360": 12.3,
+                "house": 1,
+                "retrograde": False,
+                "speed": 1.0,
+                "extra_large_field": "x" * 5000,
+            }
+        },
+        "angles": {"asc": 10.5, "mc": 200.1},
+        "houses": {"house_system": "P", "cusp_details": {"1": {"sign_name_en": "Aries", "sign_degree": 10.5}}},
+        "aspects": [{"object_a": "sun", "object_b": "moon", "aspect_type": "trine", "orb": 0.5}],
+        "meta": {"foo": "bar"},
+        "verbose_unneeded": {"blob": "y" * 7000},
+    }
+
+    compact = web_ui_main._compact_llm_chart_context(chart)
+    assert "verbose_unneeded" not in compact
+    assert compact["objects"]["sun"]["sign_name_en"] == "Aries"
+    assert "extra_large_field" not in compact["objects"]["sun"]
+    assert compact["angles"]["asc"] == 10.5
+    assert compact["houses"]["house_system"] == "P"
+    assert compact["aspects"][0]["aspect_type"] == "trine"
+
+
+def test_truncate_prompt_text_applies_limit() -> None:
+    long_text = "a" * 2500
+    truncated = web_ui_main._truncate_prompt_text(long_text, max_chars=2000)
+    assert len(truncated) < len(long_text)
+    assert "[Промт сокращён" in truncated

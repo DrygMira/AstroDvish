@@ -1768,6 +1768,85 @@ def _build_core_identity_block(chart: dict[str, Any]) -> tuple[dict[str, Any], l
     return core_identity, warnings
 
 
+def _compact_llm_chart_context(chart: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(chart, dict):
+        return {}
+
+    objects_raw = chart.get("objects")
+    compact_objects: dict[str, dict[str, Any]] = {}
+    if isinstance(objects_raw, dict):
+        for name, obj in objects_raw.items():
+            if not isinstance(obj, dict):
+                continue
+            compact_objects[str(name)] = {
+                "sign_name_en": obj.get("sign_name_en"),
+                "sign_name_ru": obj.get("sign_name_ru"),
+                "sign_degree": obj.get("sign_degree"),
+                "absolute_degree_0_360": obj.get("absolute_degree_0_360"),
+                "house": obj.get("house"),
+                "retrograde": obj.get("retrograde"),
+                "speed": obj.get("speed"),
+            }
+
+    houses_raw = chart.get("houses")
+    compact_houses: dict[str, Any] = {}
+    if isinstance(houses_raw, dict):
+        compact_houses["house_system"] = houses_raw.get("house_system")
+        cusp_details = houses_raw.get("cusp_details")
+        if isinstance(cusp_details, dict):
+            compact_houses["cusp_details"] = {
+                str(index): {
+                    "sign_name_en": cusp.get("sign_name_en"),
+                    "sign_name_ru": cusp.get("sign_name_ru"),
+                    "sign_degree": cusp.get("sign_degree"),
+                    "absolute_degree_0_360": cusp.get("absolute_degree_0_360"),
+                }
+                for index, cusp in cusp_details.items()
+                if isinstance(cusp, dict)
+            }
+
+    angles_raw = chart.get("angles")
+    compact_angles: dict[str, Any] = {}
+    if isinstance(angles_raw, dict):
+        for key in ("asc", "mc", "desc", "ic"):
+            value = angles_raw.get(key)
+            if isinstance(value, (int, float)):
+                compact_angles[key] = value
+
+    compact_aspects: list[dict[str, Any]] = []
+    aspects_raw = chart.get("aspects")
+    if isinstance(aspects_raw, list):
+        for aspect in aspects_raw[:80]:
+            if not isinstance(aspect, dict):
+                continue
+            compact_aspects.append(
+                {
+                    "object_a": aspect.get("object_a"),
+                    "object_b": aspect.get("object_b"),
+                    "aspect_type": aspect.get("aspect_type"),
+                    "exact_angle": aspect.get("exact_angle"),
+                    "actual_angle": aspect.get("actual_angle"),
+                    "orb": aspect.get("orb"),
+                    "applying": aspect.get("applying"),
+                }
+            )
+
+    return {
+        "objects": compact_objects,
+        "angles": compact_angles,
+        "houses": compact_houses,
+        "aspects": compact_aspects,
+        "meta": chart.get("meta"),
+    }
+
+
+def _truncate_prompt_text(prompt_text: str, max_chars: int = 2000) -> str:
+    text = (prompt_text or "").strip()
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars].rstrip() + "\n\n[Промт сокращён из-за лимита контекста.]"
+
+
 def _is_localhost_base_url(base_url: str) -> bool:
     try:
         parsed = urlparse(base_url)
@@ -1920,6 +1999,8 @@ def _call_openrouter_chat(
 
 
 def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_identity: dict[str, Any]) -> str:
+    compact_chart = _compact_llm_chart_context(chart)
+    safe_prompt_text = _truncate_prompt_text(prompt_text)
     system_prompt = (
         "Ты астрологический ассистент. Пиши по-русски. "
         "Дай структурированный и понятный разбор без мистификации, "
@@ -1928,13 +2009,13 @@ def _render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_i
         "Нельзя заменять Луну или Asc на узлы. Узлы допустимы только после базового блока."
     )
     user_prompt = (
-        f"{prompt_text.strip()}\n\n"
+        f"{safe_prompt_text}\n\n"
         "Обязательный базовый блок (используй как основу для первого раздела):\n"
         f"{json.dumps(core_identity, ensure_ascii=False)}\n\n"
-        "Ниже JSON с расчётом натальной карты. "
+        "Ниже сокращённый JSON с расчётом натальной карты. "
         "Сделай связный текстовый гороскоп: личность, эмоции, "
         "отношения, работа/реализация, сильные стороны и риски.\n\n"
-        f"{json.dumps(chart, ensure_ascii=False)}"
+        f"{json.dumps(compact_chart, ensure_ascii=False)}"
     )
     chat_result = _call_openrouter_chat(
         system_prompt=system_prompt,
