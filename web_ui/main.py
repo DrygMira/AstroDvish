@@ -33,6 +33,7 @@ STAGE1_CLOSE_SCORE_GAP = 0.12
 RECT_MIN_STEPS = STAGE1_MIN_QUESTIONS
 RECT_MAX_STEPS = STAGE1_MAX_QUESTIONS
 OPENROUTER_DEFAULT_BASE_URL = "https://openrouter.ai/api/v1"
+OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
 OPENROUTER_REQUEST_KIND_DEFAULT = "default"
 OPENROUTER_REQUEST_KIND_STAGE1 = "stage1"
 OPENROUTER_REQUEST_KIND_GENERATE = "generate"
@@ -40,7 +41,7 @@ OPENROUTER_REQUEST_KIND_PRO = "pro"
 OPENROUTER_CASCADE_FALLBACK_STATUSES = {401, 402, 403, 429, 500, 502, 503, 504}
 LLM_UNAVAILABLE_MESSAGE = (
     "Карта рассчитана, но текстовая интерпретация сейчас недоступна. "
-    "Проверьте баланс OpenRouter или повторите позже."
+    "Попробуйте повторить позже."
 )
 GEOCODE_CACHE_PATH = Path(__file__).resolve().parent.parent / "data" / "geocode_cache.json"
 GEOCODE_CACHE_MAX_ITEMS = 300
@@ -1601,6 +1602,88 @@ def _load_rectification_prompt() -> str:
     return text
 
 
+def _load_llm_provider() -> str:
+    provider = _env("LLM_PROVIDER", "openai").strip().lower()
+    if provider not in {"openai", "openrouter"}:
+        raise HTTPException(status_code=500, detail="LLM_PROVIDER must be openai or openrouter")
+    return provider
+
+
+def _load_openai_settings() -> dict[str, Any]:
+    api_key = _env("OPENAI_API_KEY", "").strip()
+    base_url = _env("OPENAI_BASE_URL", OPENAI_DEFAULT_BASE_URL).strip().rstrip("/")
+    timeout_raw = _env("OPENAI_TIMEOUT_SECONDS", "120").strip()
+    hard_limit_raw = _env("OPENAI_MAX_TOKENS_HARD_LIMIT", "20000").strip()
+    default_max_raw = _env("OPENAI_MAX_TOKENS_DEFAULT", "6000").strip()
+    stage1_max_raw = _env("OPENAI_MAX_TOKENS_STAGE1", "3000").strip()
+    generate_max_raw = _env("OPENAI_MAX_TOKENS_GENERATE", "8000").strip()
+    pro_max_raw = _env("OPENAI_MAX_TOKENS_PRO", "12000").strip()
+
+    if not api_key:
+        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+
+    try:
+        timeout_seconds = int(timeout_raw)
+        hard_limit = int(hard_limit_raw)
+        max_default = int(default_max_raw)
+        max_stage1 = int(stage1_max_raw)
+        max_generate = int(generate_max_raw)
+        max_pro = int(pro_max_raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail="OpenAI token/timeouts must be integers") from exc
+
+    if timeout_seconds <= 0:
+        raise HTTPException(status_code=500, detail="OPENAI_TIMEOUT_SECONDS must be > 0")
+    if hard_limit <= 0:
+        raise HTTPException(status_code=500, detail="OPENAI_MAX_TOKENS_HARD_LIMIT must be > 0")
+    for name, value in {
+        "OPENAI_MAX_TOKENS_DEFAULT": max_default,
+        "OPENAI_MAX_TOKENS_STAGE1": max_stage1,
+        "OPENAI_MAX_TOKENS_GENERATE": max_generate,
+        "OPENAI_MAX_TOKENS_PRO": max_pro,
+    }.items():
+        if value <= 0:
+            raise HTTPException(status_code=500, detail=f"{name} must be > 0")
+
+    models_by_scenario = {
+        OPENROUTER_REQUEST_KIND_DEFAULT: _env("OPENAI_MODEL_DEFAULT", "gpt-4.1").strip() or "gpt-4.1",
+        OPENROUTER_REQUEST_KIND_GENERATE: _env("OPENAI_MODEL_GENERATE", "gpt-4.1").strip() or "gpt-4.1",
+        OPENROUTER_REQUEST_KIND_STAGE1: _env("OPENAI_MODEL_STAGE1", "gpt-4.1").strip() or "gpt-4.1",
+        OPENROUTER_REQUEST_KIND_PRO: _env("OPENAI_MODEL_PRO", "gpt-4.1").strip() or "gpt-4.1",
+    }
+
+    return {
+        "api_key": api_key,
+        "base_url": base_url or OPENAI_DEFAULT_BASE_URL,
+        "timeout_seconds": timeout_seconds,
+        "max_tokens_default": max_default,
+        "max_tokens_stage1": max_stage1,
+        "max_tokens_generate": max_generate,
+        "max_tokens_pro": max_pro,
+        "max_tokens_hard_limit": hard_limit,
+        "models_by_scenario": models_by_scenario,
+    }
+
+
+def _resolve_openai_max_tokens(
+    *,
+    settings: dict[str, Any],
+    request_kind: str = OPENROUTER_REQUEST_KIND_DEFAULT,
+    requested_max_tokens: int | None = None,
+) -> tuple[int, int]:
+    configured_by_kind = {
+        OPENROUTER_REQUEST_KIND_DEFAULT: settings["max_tokens_default"],
+        OPENROUTER_REQUEST_KIND_STAGE1: settings["max_tokens_stage1"],
+        OPENROUTER_REQUEST_KIND_GENERATE: settings["max_tokens_generate"],
+        OPENROUTER_REQUEST_KIND_PRO: settings["max_tokens_pro"],
+    }
+    requested = requested_max_tokens
+    if requested is None:
+        requested = configured_by_kind.get(request_kind, settings["max_tokens_default"])
+    applied = min(int(requested), int(settings["max_tokens_hard_limit"]))
+    return int(requested), applied
+
+
 def _load_openrouter_settings() -> dict[str, Any]:
     api_key = _env("OPENROUTER_API_KEY", "").strip()
     api_key_backup_1 = _env("OPENROUTER_API_KEY_BACKUP_1", "").strip()
@@ -1778,6 +1861,21 @@ def _classify_openrouter_error(status_code: int, raw_error: str) -> str:
         if "requires more credits" in lowered or "can only afford" in lowered:
             return "insufficient_credits_or_max_tokens"
         return "insufficient_credits_or_max_tokens"
+    return "upstream_error"
+
+
+def _classify_openai_error(status_code: int, raw_error: str) -> str:
+    lowered = raw_error.lower()
+    if status_code in {401, 403}:
+        return "unauthorized_or_forbidden"
+    if status_code == 429:
+        return "rate_limited"
+    if status_code in {500, 502, 503, 504}:
+        return "provider_unavailable"
+    if status_code == 400 and "max_tokens" in lowered:
+        return "invalid_max_tokens"
+    if status_code == 408:
+        return "timeout"
     return "upstream_error"
 
 
@@ -2108,6 +2206,197 @@ def _extract_chat_completion_text(payload: dict[str, Any]) -> str:
     return ""
 
 
+def _call_openai_chat(
+    *,
+    system_prompt: str,
+    user_prompt: str,
+    model_override_env: str | None = None,
+    request_kind: str = OPENROUTER_REQUEST_KIND_DEFAULT,
+    requested_max_tokens: int | None = None,
+    route_label: str = "unknown",
+    _retry_on_affordable_402: bool = False,
+) -> dict[str, Any]:
+    settings = _load_openai_settings()
+    resolved_requested_max_tokens, applied_max_tokens = _resolve_openai_max_tokens(
+        settings=settings,
+        request_kind=request_kind,
+        requested_max_tokens=requested_max_tokens,
+    )
+
+    scenario_model = settings["models_by_scenario"].get(
+        request_kind,
+        settings["models_by_scenario"][OPENROUTER_REQUEST_KIND_DEFAULT],
+    )
+    if model_override_env:
+        model_override = _env(model_override_env, "").strip()
+        if model_override:
+            scenario_model = model_override
+
+    headers = {
+        "Authorization": f"Bearer {settings['api_key']}",
+        "Content-Type": "application/json",
+    }
+    body = {
+        "model": scenario_model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        "temperature": 0,
+        "max_tokens": applied_max_tokens,
+    }
+    try:
+        response = httpx.post(
+            f"{settings['base_url']}/chat/completions",
+            headers=headers,
+            json=body,
+            timeout=settings["timeout_seconds"],
+        )
+    except httpx.TimeoutException as exc:
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": "LLM request timeout",
+                "provider": "openai",
+                "status_code": 502,
+                "reason": "timeout",
+                "route": route_label,
+                "model": scenario_model,
+                "key_name": "primary",
+                "requested_max_tokens": resolved_requested_max_tokens,
+                "applied_max_tokens": applied_max_tokens,
+                "raw_error": str(exc)[:4000],
+            },
+        ) from exc
+    except httpx.HTTPError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": "LLM request failed",
+                "provider": "openai",
+                "status_code": 502,
+                "reason": "network_or_timeout",
+                "route": route_label,
+                "model": scenario_model,
+                "key_name": "primary",
+                "requested_max_tokens": resolved_requested_max_tokens,
+                "applied_max_tokens": applied_max_tokens,
+                "raw_error": str(exc)[:4000],
+            },
+        ) from exc
+
+    if response.status_code != 200:
+        raw_error = response.text[:4000]
+        reason = _classify_openai_error(response.status_code, raw_error)
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": "LLM provider returned non-200 status",
+                "provider": "openai",
+                "status_code": response.status_code,
+                "reason": reason,
+                "route": route_label,
+                "model": scenario_model,
+                "key_name": "primary",
+                "requested_max_tokens": resolved_requested_max_tokens,
+                "applied_max_tokens": applied_max_tokens,
+                "attempts": [
+                    {
+                        "attempt": 1,
+                        "key_name": "primary",
+                        "model": scenario_model,
+                        "status_code": response.status_code,
+                        "reason": reason,
+                        "requested_max_tokens": resolved_requested_max_tokens,
+                        "applied_max_tokens": applied_max_tokens,
+                        "raw_error": raw_error,
+                    }
+                ],
+                "fallback_used": False,
+                "final_source": "llm_unavailable",
+                "raw_error": raw_error,
+            },
+        )
+
+    payload = response.json()
+    text = _extract_chat_completion_text(payload)
+    if not text:
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": "LLM provider returned empty response",
+                "provider": "openai",
+                "status_code": 502,
+                "reason": "empty_response",
+                "route": route_label,
+                "model": scenario_model,
+                "key_name": "primary",
+                "requested_max_tokens": resolved_requested_max_tokens,
+                "applied_max_tokens": applied_max_tokens,
+            },
+        )
+
+    return {
+        "text": text,
+        "raw": payload,
+        "provider": "openai",
+        "model": scenario_model,
+        "key_name": "primary",
+        "route": route_label,
+        "scenario": request_kind,
+        "request_kind": request_kind,
+        "requested_max_tokens": resolved_requested_max_tokens,
+        "applied_max_tokens": applied_max_tokens,
+        "first_applied_max_tokens": applied_max_tokens,
+        "retried_with_lower_max_tokens": False,
+        "attempts": [
+            {
+                "attempt": 1,
+                "key_name": "primary",
+                "model": scenario_model,
+                "status_code": 200,
+                "reason": "ok",
+                "requested_max_tokens": resolved_requested_max_tokens,
+                "applied_max_tokens": applied_max_tokens,
+            }
+        ],
+        "fallback_used": False,
+        "final_source": "llm_primary",
+    }
+
+
+def _call_llm_chat(
+    *,
+    system_prompt: str,
+    user_prompt: str,
+    model_override_env: str | None = None,
+    request_kind: str = OPENROUTER_REQUEST_KIND_DEFAULT,
+    requested_max_tokens: int | None = None,
+    route_label: str = "unknown",
+    retry_on_affordable_402: bool = False,
+) -> dict[str, Any]:
+    provider = _load_llm_provider()
+    if provider == "openai":
+        return _call_openai_chat(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            model_override_env=model_override_env,
+            request_kind=request_kind,
+            requested_max_tokens=requested_max_tokens,
+            route_label=route_label,
+            _retry_on_affordable_402=retry_on_affordable_402,
+        )
+    return _call_openrouter_chat(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        model_override_env=model_override_env,
+        request_kind=request_kind,
+        requested_max_tokens=requested_max_tokens,
+        route_label=route_label,
+        retry_on_affordable_402=retry_on_affordable_402,
+    )
+
+
 def _call_openrouter_chat(
     *,
     system_prompt: str,
@@ -2248,6 +2537,7 @@ def _call_openrouter_chat(
                 return {
                     "text": text,
                     "raw": payload,
+                    "provider": "openrouter",
                     "model": model_name,
                     "key_name": key_slot["name"],
                     "route": route_label,
@@ -2316,7 +2606,8 @@ def _call_openrouter_chat(
     raise HTTPException(
         status_code=502,
         detail={
-            "message": "OpenRouter returned non-200 status",
+            "message": "LLM provider returned non-200 status",
+            "provider": "openrouter",
             "status_code": last_http_status,
             "reason": (
                 all_attempt_debug[-1]["reason"]
@@ -2367,15 +2658,15 @@ def _render_horoscope_via_openai(
         "отношения, работа/реализация, сильные стороны и риски.\n\n"
         f"{json.dumps(compact_chart, ensure_ascii=False)}"
     )
-    chat_result = _call_openrouter_chat(
+    chat_result = _call_llm_chat(
         system_prompt=system_prompt,
         user_prompt=user_prompt,
-        model_override_env="OPENROUTER_MODEL_HOROSCOPE",
         request_kind=OPENROUTER_REQUEST_KIND_GENERATE,
         route_label="/api/generate",
         retry_on_affordable_402=True,
     )
     llm_debug = {
+        "provider": chat_result.get("provider", _load_llm_provider()),
         "scenario": OPENROUTER_REQUEST_KIND_GENERATE,
         "final_source": chat_result.get("final_source", "llm_primary"),
         "fallback_used": bool(chat_result.get("fallback_used")),
@@ -2483,10 +2774,9 @@ def _call_rectification_llm(
         "max_steps": RECT_MAX_STEPS,
         "user_profile_note": user_profile_note or "",
     }
-    chat_result = _call_openrouter_chat(
+    chat_result = _call_llm_chat(
         system_prompt=prompt_text,
         user_prompt=json.dumps(runtime_payload, ensure_ascii=False),
-        model_override_env="OPENROUTER_MODEL_RECTIFICATION",
         request_kind=OPENROUTER_REQUEST_KIND_STAGE1,
         route_label="/api/rectification/dialog",
     )
@@ -2868,6 +3158,7 @@ def generate(payload: GenerateRequest) -> JSONResponse:
         if exc.status_code != 502:
             raise
         llm_debug = {
+            "provider": detail.get("provider", _load_llm_provider()),
             "scenario": OPENROUTER_REQUEST_KIND_GENERATE,
             "final_source": "llm_unavailable",
             "fallback_used": True,

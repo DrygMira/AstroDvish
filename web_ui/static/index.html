@@ -2206,7 +2206,7 @@
         ? detail.raw_error
         : (typeof detail?.body === "string" ? detail.body : "");
       if (upstreamStatus === 402 && rawError) {
-        return "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже.";
+        return "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Попробуйте повторить позже.";
       }
       if (upstreamStatus === 401 || upstreamStatus === 403) {
         return "Не удалось авторизоваться в сервисе модели. Обратитесь к администратору.";
@@ -2225,7 +2225,7 @@
       return JSON.stringify(payload, null, 2);
     }
 
-    function normalizeOpenRouterReason(reason) {
+    function normalizeLlmReason(reason) {
       const map = {
         insufficient_credits_or_max_tokens: "insufficient_credits_or_max_tokens",
         unauthorized_or_forbidden: "unauthorized_or_forbidden",
@@ -2255,13 +2255,14 @@
       const detail = payload?.detail || payload?.error || payload || {};
       const statusCode = detail?.status_code ?? payload?.status_code ?? null;
       return {
+        provider: detail?.provider || null,
         scenario: detail?.scenario || detail?.request_kind || "generate",
         final_source: detail?.final_source || null,
         fallback_used: detail?.fallback_used ?? null,
         attempts: Array.isArray(detail?.attempts) ? detail.attempts : [],
         route: detail?.route || "/api/generate",
         status_code: statusCode,
-        reason: normalizeOpenRouterReason(detail?.reason),
+        reason: normalizeLlmReason(detail?.reason),
         model: detail?.model ?? null,
         key_name: detail?.key_name ?? null,
         requested_max_tokens: detail?.requested_max_tokens ?? null,
@@ -2279,7 +2280,7 @@
       const mapping = {
         llm_request_failed: "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам.",
         llm_generation_fallback_used: "Ответ модели не получен, поэтому показан резервный краткий разбор.",
-        llm_unavailable: "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже.",
+        llm_unavailable: "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Попробуйте повторить позже.",
         invalid_llm_json: "Модель вернула некорректный ответ. Использован резервный сценарий.",
         missing_options: "Модель не вернула варианты ответа. Использован резервный вопрос.",
         fallback_question_used: "Задан уточняющий вопрос из резервного сценария.",
@@ -3005,7 +3006,7 @@
       sharedBirthContext.timezoneName = data.timezone?.timezone_name || sharedBirthContext.timezoneName;
       renderSharedCurrentData();
       const llmUnavailableMessage = data.llm_message
-        || "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже.";
+        || "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Попробуйте повторить позже.";
       if (data.llm_status === "unavailable" || data.horoscope_text == null) {
         horoscopeBoxEl.textContent = llmUnavailableMessage;
       } else {

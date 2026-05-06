@@ -278,7 +278,7 @@ def test_generate_returns_fallback_text_when_llm_unavailable(monkeypatch: pytest
     assert data["chart_status"] == "ok"
     assert data["llm_status"] == "unavailable"
     assert data["horoscope_text"] is None
-    assert "Проверьте баланс OpenRouter" in data["llm_message"]
+    assert "Попробуйте повторить позже" in data["llm_message"]
     assert "llm_unavailable" in data["warnings"]
     assert data["llm_debug"]["status_code"] == 402
     assert data["llm_debug"]["reason"] == "insufficient_credits_or_max_tokens"

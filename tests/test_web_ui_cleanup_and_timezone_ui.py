@@ -60,7 +60,8 @@ def test_main_ui_sanitizes_openrouter_402_error_text() -> None:
 
     assert response.status_code == 200
     html = response.text
-    assert "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Проверьте баланс OpenRouter или повторите позже." in html
+    assert "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Попробуйте повторить позже." in html
+    assert "OpenRouter" not in html
     assert "detail?.raw_error" in html
 
 
@@ -71,7 +72,8 @@ def test_main_ui_has_generate_technical_debug_fields() -> None:
     assert response.status_code == 200
     html = response.text
     assert 'id="generateDebugBox"' in html
-    assert "normalizeOpenRouterReason" in html
+    assert "normalizeLlmReason" in html
+    assert "provider: detail?.provider || null" in html
     assert "requested_max_tokens" in html
     assert "applied_max_tokens" in html
     assert "retried_with_lower_max_tokens" in html
