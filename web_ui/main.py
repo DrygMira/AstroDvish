@@ -1847,6 +1847,37 @@ def _truncate_prompt_text(prompt_text: str, max_chars: int = 2000) -> str:
     return text[:max_chars].rstrip() + "\n\n[Промт сокращён из-за лимита контекста.]"
 
 
+def _build_generate_fallback_text(core_identity: dict[str, Any], chart: dict[str, Any]) -> str:
+    objects = chart.get("objects") if isinstance(chart, dict) else {}
+    if not isinstance(objects, dict):
+        objects = {}
+    sun = core_identity.get("sun") if isinstance(core_identity.get("sun"), dict) else objects.get("sun")
+    moon = core_identity.get("moon") if isinstance(core_identity.get("moon"), dict) else objects.get("moon")
+    asc_abs = core_identity.get("asc")
+
+    def _fmt_obj(obj: Any, ru_name: str) -> str:
+        if not isinstance(obj, dict):
+            return f"{ru_name}: данные временно недоступны."
+        sign_ru = obj.get("sign_name_ru") or obj.get("sign_name_en") or "неизвестно"
+        degree = obj.get("sign_degree")
+        house = obj.get("house")
+        degree_text = f"{degree:.2f}°" if isinstance(degree, (int, float)) else "н/д"
+        house_text = str(house) if isinstance(house, int) else "н/д"
+        return f"{ru_name}: {sign_ru} {degree_text}, дом {house_text}."
+
+    asc_text = "Asc: данные временно недоступны."
+    if isinstance(asc_abs, (int, float)):
+        asc_text = f"Asc: {asc_abs:.2f}° (абсолютный градус)."
+
+    return (
+        "LLM-временная недоступность: показан резервный краткий разбор.\n\n"
+        f"{_fmt_obj(sun, 'Солнце')}\n"
+        f"{_fmt_obj(moon, 'Луна')}\n"
+        f"{asc_text}\n\n"
+        "Для полного текстового разбора повторите расчёт позже, когда ответ модели будет доступен."
+    )
+
+
 def _is_localhost_base_url(base_url: str) -> bool:
     try:
         parsed = urlparse(base_url)
@@ -2310,7 +2341,17 @@ def generate(payload: GenerateRequest) -> JSONResponse:
 
     chart_response = response.json()
     core_identity, core_identity_warnings = _build_core_identity_block(chart_response)
-    horoscope_text = _render_horoscope_via_openai(payload.prompt_text, chart_response, core_identity)
+    llm_debug: dict[str, Any] | None = None
+    try:
+        horoscope_text = _render_horoscope_via_openai(payload.prompt_text, chart_response, core_identity)
+    except HTTPException as exc:
+        detail = exc.detail if isinstance(exc.detail, dict) else {"message": str(exc.detail)}
+        if exc.status_code != 502:
+            raise
+        llm_debug = detail
+        horoscope_text = _build_generate_fallback_text(core_identity, chart_response)
+        core_identity_warnings.append("llm_generation_fallback_used")
+
     warnings = timezone_warnings + core_identity_warnings
     return JSONResponse(
         {
@@ -2320,6 +2361,7 @@ def generate(payload: GenerateRequest) -> JSONResponse:
             "core_identity": core_identity,
             "horoscope_text": horoscope_text,
             "chart_response": chart_response,
+            "llm_debug": llm_debug,
         }
     )
 

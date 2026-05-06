@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+from fastapi.testclient import TestClient
 
 import web_ui.main as web_ui_main
 
@@ -186,3 +187,82 @@ def test_truncate_prompt_text_applies_limit() -> None:
     truncated = web_ui_main._truncate_prompt_text(long_text, max_chars=2000)
     assert len(truncated) < len(long_text)
     assert "[Промт сокращён" in truncated
+
+
+def test_generate_returns_fallback_text_when_llm_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FakeChartResponse:
+        status_code = 200
+        text = ""
+
+        @staticmethod
+        def json() -> dict[str, Any]:
+            return {
+                "objects": {
+                    "sun": {
+                        "sign_name_ru": "Овен",
+                        "sign_name_en": "Aries",
+                        "sign_degree": 10.0,
+                        "absolute_degree_0_360": 10.0,
+                        "house": 1,
+                        "retrograde": False,
+                        "speed": 1.0,
+                    },
+                    "moon": {
+                        "sign_name_ru": "Рак",
+                        "sign_name_en": "Cancer",
+                        "sign_degree": 5.0,
+                        "absolute_degree_0_360": 95.0,
+                        "house": 4,
+                        "retrograde": False,
+                        "speed": 12.0,
+                    },
+                },
+                "angles": {"asc": 12.5, "mc": 220.0},
+                "houses": {"house_system": "P", "cusp_details": {}},
+                "aspects": [],
+                "meta": {},
+            }
+
+    def fake_post_to_api_with_fallback(*, base_url: str, path: str, payload: dict[str, Any], timeout: int) -> _FakeChartResponse:
+        return _FakeChartResponse()
+
+    def fake_render_horoscope_via_openai(prompt_text: str, chart: dict[str, Any], core_identity: dict[str, Any]) -> str:
+        raise web_ui_main.HTTPException(
+            status_code=502,
+            detail={
+                "message": "OpenRouter returned non-200 status",
+                "status_code": 402,
+                "reason": "insufficient_credits_or_max_tokens",
+                "model": "openai/gpt-4.1",
+                "requested_max_tokens": 8000,
+                "applied_max_tokens": 400,
+            },
+        )
+
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post_to_api_with_fallback)
+    monkeypatch.setattr(web_ui_main, "_render_horoscope_via_openai", fake_render_horoscope_via_openai)
+
+    payload = {
+        "api_base_url": "http://127.0.0.1:8013",
+        "datetime_local": "1990-05-12T14:35:00",
+        "timezone_mode": "auto",
+        "timezone_offset": "+03:00",
+        "timezone_name": "Europe/Moscow",
+        "latitude": 55.7558,
+        "longitude": 37.6173,
+        "house_system": "P",
+        "aspect_orb_profile": "avestan",
+        "zodiac_mode": "tropical",
+        "sidereal_mode": None,
+        "prompt_text": "Сделай гороскоп по этим данным.",
+    }
+
+    with TestClient(web_ui_main.app) as client:
+        response = client.post("/api/generate", json=payload)
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "LLM-временная недоступность" in data["horoscope_text"]
+    assert "llm_generation_fallback_used" in data["warnings"]
+    assert data["llm_debug"]["status_code"] == 402
+    assert data["llm_debug"]["reason"] == "insufficient_credits_or_max_tokens"

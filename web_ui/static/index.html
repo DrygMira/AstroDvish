@@ -2241,6 +2241,7 @@
       }
       const mapping = {
         llm_request_failed: "Ответ модели не получен, поэтому использован резервный расчёт по вашим ответам.",
+        llm_generation_fallback_used: "Ответ модели не получен, поэтому показан резервный краткий разбор.",
         invalid_llm_json: "Модель вернула некорректный ответ. Использован резервный сценарий.",
         missing_options: "Модель не вернула варианты ответа. Использован резервный вопрос.",
         fallback_question_used: "Задан уточняющий вопрос из резервного сценария.",
@@ -2844,7 +2845,11 @@
         setStatus("Ошибка: " + extractErrorText(data));
         return;
       }
-      setGenerateTechnicalDebug(null);
+      if (data.llm_debug) {
+        setGenerateTechnicalDebug(extractGenerateTechnicalDetail({ detail: data.llm_debug }));
+      } else {
+        setGenerateTechnicalDebug(null);
+      }
       sharedBirthContext.timezoneSource = data.timezone?.timezone_source || sharedBirthContext.timezoneSource;
       sharedBirthContext.timezoneOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneOffset;
       sharedBirthContext.timezoneResolvedOffset = data.timezone?.timezone_offset || sharedBirthContext.timezoneResolvedOffset;
