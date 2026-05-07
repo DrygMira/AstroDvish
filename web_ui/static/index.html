@@ -607,6 +607,12 @@
           <div>
             <label>Локальная дата/время</label>
             <input id="datetimeLocal" type="datetime-local" step="1" />
+            <div class="hint">Секунды важны для точного Asc/MC. Если неизвестны — оставьте 00.</div>
+          </div>
+          <div>
+            <label>Секунды (mobile fallback)</label>
+            <input id="datetimeLocalSeconds" type="number" min="0" max="59" step="1" value="00" />
+            <div class="hint">Если picker не даёт выбрать секунды, задайте их здесь (00–59).</div>
           </div>
           <div>
             <label>Режим timezone</label>
@@ -1148,6 +1154,7 @@
     const timezoneStatusEl = document.getElementById("timezoneStatus");
     const timezoneOffsetHintEl = document.getElementById("timezoneOffsetHint");
     const datetimeLocalEl = document.getElementById("datetimeLocal");
+    const datetimeLocalSecondsEl = document.getElementById("datetimeLocalSeconds");
     const datetimeUtcPreviewEl = document.getElementById("datetimeUtcPreview");
     const coordModeEl = document.getElementById("coordMode");
     const cityBlockEl = document.getElementById("cityBlock");
@@ -1429,7 +1436,7 @@
         wzBirthDateEl.value = sharedBirthContext.birthDateLocal;
       }
       if (sharedBirthContext.birthDateTimeLocal) {
-        datetimeLocalEl.value = sharedBirthContext.birthDateTimeLocal;
+        setDateTimeWithSeconds(sharedBirthContext.birthDateTimeLocal, { syncShared: false });
       }
 
       timezoneModeEl.value = sharedBirthContext.timezoneMode || "auto";
@@ -1475,6 +1482,52 @@
         minute: match[5] != null ? Number(match[5]) : 0,
         second: match[6] != null ? Number(match[6]) : 0,
       };
+    }
+
+    function normalizeSecondValue(value) {
+      const parsed = Number(value);
+      if (!Number.isFinite(parsed)) return "00";
+      const clamped = Math.max(0, Math.min(59, Math.trunc(parsed)));
+      return String(clamped).padStart(2, "0");
+    }
+
+    function parseDateTimeLocalParts(value) {
+      if (typeof value !== "string" || !value) return null;
+      const match = value.match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})(?::(\d{2}))?$/);
+      if (!match) return null;
+      return {
+        prefix: match[1],
+        second: match[2] || null,
+      };
+    }
+
+    function buildDateTimeWithSeconds(value, fallbackSecond = "00") {
+      const parts = parseDateTimeLocalParts(value);
+      if (!parts) return value;
+      const second = parts.second || normalizeSecondValue(fallbackSecond);
+      return `${parts.prefix}:${second}`;
+    }
+
+    function setDateTimeWithSeconds(value, options = {}) {
+      const fallbackSecond = normalizeSecondValue(datetimeLocalSecondsEl.value || "00");
+      const normalized = buildDateTimeWithSeconds(value, fallbackSecond);
+      const parts = parseDateTimeLocalParts(normalized);
+      if (!parts) {
+        datetimeLocalEl.value = value || "";
+        datetimeLocalSecondsEl.value = fallbackSecond;
+        return datetimeLocalEl.value;
+      }
+      const second = parts.second || "00";
+      if (datetimeLocalEl.value !== normalized) {
+        datetimeLocalEl.value = normalized;
+      }
+      if (datetimeLocalSecondsEl.value !== second) {
+        datetimeLocalSecondsEl.value = second;
+      }
+      if (options.syncShared !== false) {
+        sharedBirthContext.birthDateTimeLocal = normalized;
+      }
+      return normalized;
     }
 
     function resolveTimezoneOffsetForDisplay(timezoneName, birthDateTimeLocal, birthDateLocal) {
@@ -1569,10 +1622,11 @@
     }
 
     function getChartContextPatch() {
+      const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
       return {
         apiBaseUrl: document.getElementById("apiBaseUrl").value.trim() || "http://127.0.0.1:8013",
-        birthDateLocal: datetimeLocalEl.value ? datetimeLocalEl.value.slice(0, 10) : sharedBirthContext.birthDateLocal,
-        birthDateTimeLocal: datetimeLocalEl.value || null,
+        birthDateLocal: normalizedDateTime ? normalizedDateTime.slice(0, 10) : sharedBirthContext.birthDateLocal,
+        birthDateTimeLocal: normalizedDateTime || null,
         cityQuery: document.getElementById("cityQuery").value.trim() || null,
         latitude: Number(document.getElementById("latitude").value),
         longitude: Number(document.getElementById("longitude").value),
@@ -1830,7 +1884,7 @@
     function nowLocalInputValue() {
       const now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      return now.toISOString().slice(0, 16);
+      return now.toISOString().slice(0, 19);
     }
 
     function todayLocalDateValue() {
@@ -1840,6 +1894,7 @@
     }
 
     function calculateUtcPreview() {
+      setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
       if (!datetimeLocalEl.value) {
         datetimeUtcPreviewEl.value = "";
         return;
@@ -2968,11 +3023,12 @@
     async function generate() {
       syncSharedBirthContext(getChartContextPatch(), { silent: false });
       setStatus("Выполняем расчёт...");
+      const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
       const zodiacMode = zodiacModeEl.value;
       const sidMode = siderealModeEl.value || null;
       const body = {
         api_base_url: document.getElementById("apiBaseUrl").value.trim(),
-        datetime_local: datetimeLocalEl.value,
+        datetime_local: normalizedDateTime,
         timezone_mode: timezoneModeEl.value,
         timezone_offset: timezoneOffsetEl.value,
         timezone_name: timezoneNameEl.value || null,
@@ -3856,6 +3912,14 @@
       updateTimezoneUiState();
     });
     datetimeLocalEl.addEventListener("input", () => {
+      setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
+      syncSharedBirthContext(getChartContextPatch(), { silent: false });
+      calculateUtcPreview();
+    });
+    datetimeLocalSecondsEl.addEventListener("input", () => {
+      const normalizedSecond = normalizeSecondValue(datetimeLocalSecondsEl.value || "00");
+      datetimeLocalSecondsEl.value = normalizedSecond;
+      setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
       syncSharedBirthContext(getChartContextPatch(), { silent: false });
       calculateUtcPreview();
     });
@@ -3892,7 +3956,7 @@
       wzTimezoneOffsetEl.appendChild(timezoneOffsetEl.options[i].cloneNode(true));
     }
     wzTimezoneOffsetEl.value = "+05:00";
-    datetimeLocalEl.value = nowLocalInputValue();
+    setDateTimeWithSeconds(nowLocalInputValue(), { syncShared: false });
     timezoneModeEl.value = "auto";
     updateTimezoneUiState();
     expertDegreesExpanded = !!expertDegreesExpandedToggleEl.checked;

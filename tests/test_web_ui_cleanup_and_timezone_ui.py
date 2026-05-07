@@ -54,6 +54,38 @@ def test_timezone_auto_ui_uses_resolved_offset_text_not_stale_manual_value() -> 
     assert 'ensureSelectDisplayValue(wzTimezoneOffsetEl, resolvedOffset || "auto");' in html
 
 
+def test_main_ui_has_mobile_safe_birth_seconds_input_and_hint() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert 'id="datetimeLocalSeconds"' in html
+    assert "Секунды важны для точного Asc/MC. Если неизвестны — оставьте 00." in html
+    assert "mobile fallback" in html
+
+
+def test_main_ui_does_not_truncate_birth_datetime_to_minutes() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "toISOString().slice(0, 16)" not in html
+    assert "toISOString().slice(0, 19)" in html
+    assert "setDateTimeWithSeconds(nowLocalInputValue(), { syncShared: false });" in html
+
+
+def test_main_ui_generate_payload_uses_datetime_with_seconds() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });" in html
+    assert "datetime_local: normalizedDateTime," in html
+
+
 def test_main_ui_sanitizes_openrouter_402_error_text() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/")

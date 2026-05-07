@@ -124,3 +124,38 @@ def test_generate_passes_core_identity_sun_moon_asc(monkeypatch) -> None:
     assert captured["core_identity"]["sun"] is not None
     assert captured["core_identity"]["moon"] is not None
     assert captured["core_identity"]["asc"] == 145.0
+
+
+def test_generate_preserves_seconds_in_datetime_local_and_utc(monkeypatch) -> None:
+    monkeypatch.setattr(web_main, "_post_to_api_with_fallback", lambda **kwargs: _FakeResponse())
+    monkeypatch.setattr(web_main, "_render_horoscope_via_openai", lambda prompt_text, chart, core_identity: "OK")
+
+    payload = _base_payload()
+    payload["timezone_mode"] = "manual"
+    payload["timezone_offset"] = "+00:00"
+    payload["datetime_local"] = "1990-01-15T12:00:30"
+
+    with TestClient(web_main.app) as client:
+        response = client.post("/api/generate", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["timezone"]["datetime_local"] == "1990-01-15T12:00:30"
+    assert body["timezone"]["datetime_utc"].endswith("12:00:30Z")
+
+
+def test_generate_defaults_missing_seconds_to_zero(monkeypatch) -> None:
+    monkeypatch.setattr(web_main, "_post_to_api_with_fallback", lambda **kwargs: _FakeResponse())
+    monkeypatch.setattr(web_main, "_render_horoscope_via_openai", lambda prompt_text, chart, core_identity: "OK")
+
+    payload = _base_payload()
+    payload["timezone_mode"] = "manual"
+    payload["timezone_offset"] = "+00:00"
+    payload["datetime_local"] = "1990-01-15T12:00"
+
+    with TestClient(web_main.app) as client:
+        response = client.post("/api/generate", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["timezone"]["datetime_utc"].endswith("12:00:00Z")

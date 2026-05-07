@@ -1,0 +1,43 @@
+{
+  "cases": [
+    {
+      "case_id": "ekaterina_ufa_1984_10_25",
+      "description": "Reference check from astrologer screenshots. Comparison is calculation-only, without manual angle correction.",
+      "input": {
+        "place_name": "Ufa",
+        "latitude": 54.7388,
+        "longitude": 55.9721,
+        "datetime_local": "1984-10-25T14:28:30",
+        "timezone_name": "Asia/Yekaterinburg",
+        "timezone_offset": "+05:00",
+        "house_system": "P",
+        "zodiac_mode": "tropical",
+        "sidereal_mode": null,
+        "aspect_orb_profile": "avestan"
+      },
+      "reference": {
+        "angles": {
+          "asc": {
+            "sign_name_en": "Capricorn",
+            "absolute_degree_0_360": 284.633333
+          },
+          "mc": {
+            "sign_name_en": "Scorpio",
+            "absolute_degree_0_360": 234.4
+          }
+        },
+        "objects": {},
+        "houses": {}
+      },
+      "tolerances": {
+        "angles_target_arcmin": 2.0,
+        "planets_ok_arcmin": 1.0,
+        "planets_investigate_arcmin": 2.0
+      },
+      "notes": [
+        "Current external reference data is partial (Asc/MC only).",
+        "Planets and cusps should be compared in non-blocking mode until full expert table is provided."
+      ]
+    }
+  ]
+}
