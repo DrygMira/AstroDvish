@@ -1108,6 +1108,10 @@
         <div id="rpMethodsSummary" class="bigbox"></div>
         <div style="margin-top:10px;"><strong>Warnings / ограничения</strong></div>
         <div id="rpWarnings" class="hint"></div>
+        <details id="rpExplainDetails" style="margin-top:10px;">
+          <summary><strong>Как система считает</strong></summary>
+          <div id="rpExplainBody" class="bigbox" style="margin-top:8px;"></div>
+        </details>
         <div id="rpRawBox" class="json-box" style="margin-top:10px;"></div>
       </div>
     </section>
@@ -1282,6 +1286,7 @@
     const rpConfidenceEl = document.getElementById("rpConfidence");
     const rpMethodsSummaryEl = document.getElementById("rpMethodsSummary");
     const rpWarningsEl = document.getElementById("rpWarnings");
+    const rpExplainBodyEl = document.getElementById("rpExplainBody");
     const rpRawBoxEl = document.getElementById("rpRawBox");
 
     const llmOverlayEl = document.getElementById("llmOverlay");
@@ -1322,6 +1327,7 @@
     let technicalModeOpen = false;
     let lastGenerateTechnicalDebug = null;
     let lastGeocodeTechnicalDebug = null;
+    let lastProRunPayload = null;
 
     const rectDialogState = {
       rectificationDocument: null,
@@ -1934,7 +1940,11 @@
       rpConfidenceEl.textContent = "Pro-ректификация ещё не запускалась.";
       rpMethodsSummaryEl.textContent = "";
       rpWarningsEl.textContent = "";
+      if (rpExplainBodyEl) {
+        rpExplainBodyEl.textContent = "";
+      }
       rpRawBoxEl.textContent = "";
+      lastProRunPayload = null;
       setWzProStatus("");
     }
 
@@ -3999,13 +4009,166 @@
       return map;
     }
 
+    function formatJsonCompact(value) {
+      if (!value || typeof value !== "object") return "не рассчитано";
+      try {
+        return JSON.stringify(value);
+      } catch (err) {
+        return "не рассчитано";
+      }
+    }
+
+    function summarizeMethodStats(methodResults) {
+      const normalized = {};
+      Object.entries(methodResults || {}).forEach(([methodName, rawEntries]) => {
+        const entries = Array.isArray(rawEntries) ? rawEntries : [];
+        const matched = entries.filter((entry) => Array.isArray(entry?.matches) && entry.matches.length > 0).length;
+        normalized[methodName] = { entriesCount: entries.length, matchedCount: matched };
+      });
+      return normalized;
+    }
+
+    function isMethodInactive(stats, methodName) {
+      const item = stats?.[methodName];
+      if (!item) return true;
+      return Number(item.entriesCount || 0) === 0 && Number(item.matchedCount || 0) === 0;
+    }
+
+    function getStage2RepeatCountHint(eventType, sequenceNumber) {
+      const history = Array.isArray(rectEventsState.dialogHistory) ? rectEventsState.dialogHistory : [];
+      for (const item of history) {
+        if (!item || item.role !== "user") continue;
+        if (item.event_type !== eventType) continue;
+        const raw = item.raw_answer || {};
+        if (sequenceNumber != null && Number(raw.sequence_number) !== Number(sequenceNumber)) continue;
+        const repeatCount = Number(raw.repeat_count);
+        if (Number.isFinite(repeatCount) && repeatCount >= 1) return repeatCount;
+      }
+      return null;
+    }
+
+    function buildProExplainabilityHtml(data) {
+      const chartResponse = lastExpertRenderPayload?.chartResponse || null;
+      const timezoneFromChart = lastExpertRenderPayload?.timezonePayload || null;
+      const proPayload = lastProRunPayload || {};
+      const methodStats = summarizeMethodStats(data?.method_results || {});
+      const eventsUsed = Array.isArray(proPayload.events) ? proPayload.events : buildProEventsFromStage2();
+      const bestWindows = Array.isArray(data?.best_candidates) ? data.best_candidates : [];
+      const stage1 = rectificationWizardState.stage1 || {};
+      const stageWarnings = Array.isArray(stage1.stageWarnings) ? stage1.stageWarnings : [];
+      const closeCandidates = stageWarnings.includes("sign_scores_are_close")
+        || stageWarnings.includes("element_scores_are_close")
+        || stageWarnings.includes("modality_scores_are_close");
+
+      const mainMethods = ["directions", "solars", "transits"];
+      const methodsUsed = mainMethods
+        .filter((name) => !isMethodInactive(methodStats, name))
+        .map((name) => `${formatMethodLabel(name)}: записей ${methodStats[name].entriesCount}, подтверждений ${methodStats[name].matchedCount}`);
+      const inactiveOptionalMethods = ["lunars", "totems"]
+        .filter((name) => isMethodInactive(methodStats, name))
+        .map((name) => formatMethodLabel(name));
+
+      const chartObjects = chartResponse?.objects || {};
+      const objectNames = Object.keys(chartObjects);
+      const trueNorthNode = chartObjects.true_node || chartObjects.true_north_node || null;
+      const trueSouthNode = chartObjects.true_south_node || null;
+      const houses = chartResponse?.houses?.cusp_details || {};
+      const aspects = Array.isArray(chartResponse?.aspects) ? chartResponse.aspects : [];
+      const planetHouseCount = objectNames.filter((name) => chartObjects[name]?.house != null).length;
+
+      const primaryCandidate = stage1.primaryCandidate || null;
+      const primaryRanges = Array.isArray(primaryCandidate?.time_ranges_local) && primaryCandidate.time_ranges_local.length
+        ? primaryCandidate.time_ranges_local
+        : (primaryCandidate?.time_range_local ? [primaryCandidate.time_range_local] : []);
+      const secondaryCandidates = Array.isArray(stage1.secondaryCandidates) ? stage1.secondaryCandidates : [];
+
+      const explainRows = [];
+      explainRows.push("<div><strong>1) Система использовала следующие данные</strong></div>");
+      explainRows.push(`<div>Дата рождения: ${proPayload.birth_date_local || sharedBirthContext.birthDateLocal || "не рассчитано"}</div>`);
+      explainRows.push(`<div>Время рождения (HH:MM:SS): ${sharedBirthContext.birthDateTimeLocal || "не рассчитано"}</div>`);
+      explainRows.push(`<div>Место: ${sharedBirthContext.selectedPlaceLabel || sharedBirthContext.cityQuery || rectificationWizardState.birthPlace || "не рассчитано"}</div>`);
+      explainRows.push(`<div>Координаты: ${proPayload.latitude ?? sharedBirthContext.latitude ?? "не рассчитано"}, ${proPayload.longitude ?? sharedBirthContext.longitude ?? "не рассчитано"}</div>`);
+      explainRows.push(`<div>DMS: ${sharedBirthContext.latitudeDms || "не рассчитано"}, ${sharedBirthContext.longitudeDms || "не рассчитано"}</div>`);
+      explainRows.push(`<div>Timezone: ${proPayload.timezone_name || sharedBirthContext.timezoneName || "не рассчитано"} (${sharedBirthContext.timezoneMode || "не рассчитано"})</div>`);
+      explainRows.push(`<div>House system: ${proPayload.house_system || sharedBirthContext.houseSystem || "не рассчитано"}</div>`);
+      explainRows.push(`<div>Zodiac: ${proPayload.zodiac_mode || sharedBirthContext.zodiacMode || "не рассчитано"}</div>`);
+
+      explainRows.push("<div style='margin-top:8px;'><strong>2) Данные карты, использованные в проверке</strong></div>");
+      explainRows.push(`<div>Asc: ${chartResponse?.angles?.asc ?? "не рассчитано"} | MC: ${chartResponse?.angles?.mc ?? "не рассчитано"}</div>`);
+      explainRows.push(`<div>Куспиды домов: ${Object.keys(houses).length || 0}</div>`);
+      explainRows.push(`<div>Планеты/объекты: ${objectNames.length}</div>`);
+      explainRows.push(`<div>Истинный северный узел: ${trueNorthNode ? `${trueNorthNode.sign_name_en || "—"} ${trueNorthNode.sign_degree_dms || "—"}` : "не рассчитано"}</div>`);
+      explainRows.push(`<div>Истинный южный узел: ${trueSouthNode ? `${trueSouthNode.sign_name_en || "—"} ${trueSouthNode.sign_degree_dms || "—"}` : "не рассчитано"}</div>`);
+      explainRows.push(`<div>Планеты с определённым домом: ${planetHouseCount}</div>`);
+      explainRows.push(`<div>Аспекты в chart_response: ${aspects.length}</div>`);
+      explainRows.push(`<div>Timezone блока расчёта: ${formatJsonCompact(timezoneFromChart)}</div>`);
+
+      explainRows.push("<div style='margin-top:8px;'><strong>3) Логика Stage 1</strong></div>");
+      explainRows.push(`<div>Element scores: ${formatJsonCompact(stage1.elementScores)}</div>`);
+      explainRows.push(`<div>Cross/Modality scores: ${formatJsonCompact(stage1.modalityScores)}</div>`);
+      explainRows.push(`<div>Основной Asc-кандидат: ${primaryCandidate ? `${primaryCandidate.sign_name_ru || primaryCandidate.sign_name_en || "—"} (${primaryCandidate.probability ?? "n/a"})` : "не рассчитано"}</div>`);
+      explainRows.push(`<div>Вторичные кандидаты: ${secondaryCandidates.length ? secondaryCandidates.map((item) => `${item.sign_name_ru || item.sign_name_en || "—"} (${item.probability ?? "n/a"})`).join("; ") : "не рассчитано"}</div>`);
+      explainRows.push(`<div>Почему выбран кандидат: ${stage1.explanationText || stage1.summaryText || "не рассчитано"}</div>`);
+      explainRows.push(`<div>Кандидаты близки: ${closeCandidates ? "да, результат Stage 1 не финальный" : "нет"}</div>`);
+
+      explainRows.push("<div style='margin-top:8px;'><strong>4) Окна кандидатов и Pro-ранжирование</strong></div>");
+      explainRows.push(`<div>Primary Asc windows: ${primaryRanges.length ? primaryRanges.map((item) => `${item.start} → ${item.end}`).join("; ") : "не рассчитано"}</div>`);
+      const secondaryRanges = secondaryCandidates
+        .flatMap((candidate) => Array.isArray(candidate.time_ranges_local) ? candidate.time_ranges_local : [])
+        .map((item) => `${item.start} → ${item.end}`);
+      explainRows.push(`<div>Secondary Asc windows: ${secondaryRanges.length ? secondaryRanges.join("; ") : "не рассчитано"}</div>`);
+      if (!bestWindows.length) {
+        explainRows.push("<div>Best Pro windows: не рассчитано</div>");
+      } else {
+        bestWindows.forEach((item, idx) => {
+          const clipped = item.clipped_by_birth_date ? "да" : "нет";
+          explainRows.push(
+            `<div>#${idx + 1}: ${item.candidate_window?.start || "—"} → ${item.candidate_window?.end || "—"} | total=${item.scores?.total ?? "n/a"} | confidence=${item.confidence_level || "n/a"} | clipped=${clipped}</div>`
+          );
+        });
+      }
+      explainRows.push("<div>Ширина окна: это диапазон поиска, а не точное время рождения.</div>");
+
+      explainRows.push("<div style='margin-top:8px;'><strong>5) События, переданные в Pro</strong></div>");
+      if (!eventsUsed.length) {
+        explainRows.push("<div>События: не рассчитано</div>");
+      } else {
+        eventsUsed.forEach((event, idx) => {
+          const repeatCount = getStage2RepeatCountHint(event.event_type, event.sequence_number);
+          explainRows.push(
+            `<div>#${idx + 1}: ${event.title || "Событие"} | type=${event.event_type || "—"} | date=${event.date_text || event.start_date || "—"} | precision=${event.date_precision || "—"} | seq=${event.sequence_number ?? "—"} | impact=${event.impact_level ?? "—"} | life_area=${event.life_area || "—"} | repeat_count=${repeatCount ?? "не рассчитано"}</div>`
+          );
+        });
+      }
+
+      explainRows.push("<div style='margin-top:8px;'><strong>6) Методы, использованные в текущем расчёте</strong></div>");
+      explainRows.push(`<div>${methodsUsed.length ? methodsUsed.join(" | ") : "не рассчитано"}</div>`);
+      explainRows.push(`<div>Скрыто в основном UI как неактивные: ${inactiveOptionalMethods.length ? inactiveOptionalMethods.join(", ") : "нет"}</div>`);
+
+      const topWindow = bestWindows[0] || null;
+      const confidence = data?.confidence || {};
+      explainRows.push("<div style='margin-top:8px;'><strong>7) Почему выбран итоговый диапазон</strong></div>");
+      explainRows.push(`<div>Это окно получило больше подтверждений, потому что total score=${topWindow?.scores?.total ?? "n/a"} и подтверждённых событий ${topWindow?.matched_events_count ?? "n/a"}.</div>`);
+      explainRows.push(`<div>Текущий уровень уверенности: ${confidence.level || "не рассчитано"} (${confidence.explanation || "пояснение не рассчитано"}).</div>`);
+      explainRows.push("<div>Метод пока является промежуточной проверкой, не финальным Direction Formula Engine.</div>");
+      explainRows.push(`<div>Недостаточно данных: ${Array.isArray(data?.limitations) && data.limitations.length ? data.limitations.join(" | ") : "не рассчитано"}</div>`);
+      explainRows.push(`<div>Неиспользованные данные/методы: ${inactiveOptionalMethods.length ? inactiveOptionalMethods.join(", ") : "нет"}</div>`);
+
+      return explainRows.join("");
+    }
+
     function renderProConfirmations(data) {
       const methods = data.method_results || {};
+      const methodStats = summarizeMethodStats(methods);
       const eventMap = buildProEventMap();
       const methodEntries = [];
 
       for (const [methodName, entries] of Object.entries(methods)) {
         const list = Array.isArray(entries) ? entries : [];
+        if ((methodName === "lunars" || methodName === "totems")
+            && isMethodInactive(methodStats, methodName)) {
+          continue;
+        }
         list.forEach((entry) => {
           methodEntries.push({
             methodName,
@@ -4125,6 +4288,9 @@
       const limitations = Array.isArray(data.limitations) ? data.limitations : [];
       rpWarningsEl.textContent =
         `warnings: ${warnings.join(", ") || "none"} | limitations: ${limitations.join(" | ") || "none"}`;
+      if (rpExplainBodyEl) {
+        rpExplainBodyEl.innerHTML = buildProExplainabilityHtml(data);
+      }
       rpRawBoxEl.textContent = JSON.stringify(data, null, 2);
     }
 
@@ -4174,6 +4340,7 @@
           include_totems: false,
         },
       };
+      lastProRunPayload = JSON.parse(JSON.stringify(payload));
 
       const invalidReasons = [];
       if (!payload.birth_date_local || !/^\d{4}-\d{2}-\d{2}$/.test(payload.birth_date_local)) {
