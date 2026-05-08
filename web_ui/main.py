@@ -540,6 +540,7 @@ class EventAnswerWebInput(BaseModel):
     impact_level: int | None = None
     reversibility: str | None = None
     life_area: str | None = None
+    repeat_count: int | None = None
     sequence_number: int | None = None
     notes: str | None = None
     user_skipped: bool = False

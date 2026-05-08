@@ -111,6 +111,7 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
                 "impact_level": 4,
                 "reversibility": None,
                 "life_area": None,
+                "repeat_count": 2,
                 "sequence_number": 1,
                 "notes": "note",
                 "user_skipped": False,
@@ -122,6 +123,7 @@ def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
     assert response.json()["status"] == "finalized"
     assert captured["path"] == "/api/v1/rectification/events/continue"
     assert captured["payload"]["last_answer"]["question_id"] == "ev_child_birth_01"
+    assert captured["payload"]["last_answer"]["repeat_count"] == 2
     assert captured["payload"]["last_answer"]["sequence_number"] == 1
     assert captured["timeout"] == 120
 
@@ -211,3 +213,83 @@ def test_web_ui_rectification_pro_proxy_preserves_backend_422(monkeypatch) -> No
     assert response.status_code == 422
     detail = response.json()["detail"]
     assert detail[0]["loc"] == ["body", "events", 0, "event_id"]
+
+
+def test_web_ui_rectification_pro_proxy_accepts_repeated_eventcards(monkeypatch) -> None:
+    captured: dict = {}
+
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        captured["payload"] = payload
+        return _DummyResponse(
+            200,
+            {
+                "mode": "rectification_pro",
+                "version": "0.1",
+                "status": "completed",
+                "candidate_windows": [],
+                "best_candidates": [],
+                "method_results": {"directions": [], "solars": [], "lunars": [], "transits": [], "totems": []},
+                "confidence": {"level": "low", "time_window_minutes": 60, "explanation": "ok"},
+                "warnings": [],
+                "limitations": [],
+            },
+        )
+
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/pro/run",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {
+                "birth_date_local": "1990-05-12",
+                "latitude": 53.9006,
+                "longitude": 27.5590,
+                "timezone_name": "Europe/Moscow",
+                "asc_windows": [],
+                "events": [
+                    {
+                        "event_id": "ev-1",
+                        "event_type": "child_birth",
+                        "title": "Рождение ребёнка №1",
+                        "date_text": "2010-01-10",
+                        "date_precision": "exact",
+                        "start_date": "2010-01-10",
+                        "end_date": "2010-01-10",
+                        "impact_level": 5,
+                        "reversibility": "irreversible",
+                        "life_area": "family",
+                        "sequence_number": 1,
+                        "notes": "",
+                        "user_skipped": False,
+                    },
+                    {
+                        "event_id": "ev-2",
+                        "event_type": "child_birth",
+                        "title": "Рождение ребёнка №2",
+                        "date_text": "2013-05-21",
+                        "date_precision": "exact",
+                        "start_date": "2013-05-21",
+                        "end_date": "2013-05-21",
+                        "impact_level": 5,
+                        "reversibility": "irreversible",
+                        "life_area": "family",
+                        "sequence_number": 2,
+                        "notes": "",
+                        "user_skipped": False,
+                    },
+                ],
+                "settings": {
+                    "candidate_step_minutes": 5,
+                    "include_directions": True,
+                    "include_solars": True,
+                    "include_lunars": False,
+                    "include_transits": True,
+                    "include_totems": False,
+                },
+            },
+        },
+    )
+    assert response.status_code == 200
+    assert captured["payload"]["events"][0]["sequence_number"] == 1
+    assert captured["payload"]["events"][1]["sequence_number"] == 2

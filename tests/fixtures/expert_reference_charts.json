@@ -38,6 +38,73 @@
         "Current external reference data is partial (Asc/MC only).",
         "Planets and cusps should be compared in non-blocking mode until full expert table is provided."
       ]
+    },
+    {
+      "case_id": "ufa_1984_10_25_142830_radix",
+      "description": "Radix (Avestian program by P.P. Globa) calibration case for Ufa with exact local time and UTC+05.",
+      "input": {
+        "place_name": "Ufa",
+        "latitude": 54.733333,
+        "longitude": 55.933333,
+        "latitude_dms": "54°44'00\" N",
+        "longitude_dms": "55°56'00\" E",
+        "datetime_local": "1984-10-25T14:28:30",
+        "timezone_name": "Asia/Yekaterinburg",
+        "timezone_offset": "+05:00",
+        "house_system": "P",
+        "zodiac_mode": "tropical",
+        "sidereal_mode": null,
+        "aspect_orb_profile": "avestan"
+      },
+      "reference": {
+        "angles": {
+          "asc": "Capricorn 14°36'55\"",
+          "mc": "Scorpio 24°22'40\""
+        },
+        "houses": {
+          "1": "Capricorn 14°36'55\"",
+          "2": "Pisces 15°22'46\"",
+          "3": "Aries 29°33'43\"",
+          "4": "Taurus 24°22'40\"",
+          "5": "Gemini 11°46'41\"",
+          "6": "Gemini 27°06'09\"",
+          "7": "Cancer 14°36'55\"",
+          "8": "Virgo 15°22'46\"",
+          "9": "Libra 29°33'43\"",
+          "10": "Scorpio 24°22'40\"",
+          "11": "Sagittarius 11°46'41\"",
+          "12": "Sagittarius 27°06'09\""
+        },
+        "objects": {
+          "sun": "Scorpio 02°08'53\"",
+          "moon": "Scorpio 14°34'01\"",
+          "mercury": "Scorpio 11°38'00\"",
+          "venus": "Sagittarius 06°16'15\"",
+          "mars": "Capricorn 14°14'57\"",
+          "jupiter": "Capricorn 07°46'40\"",
+          "saturn": "Scorpio 17°03'43\"",
+          "uranus": "Sagittarius 11°24'24\"",
+          "neptune": "Sagittarius 29°12'40\"",
+          "pluto": "Scorpio 02°04'22\"",
+          "chiron": "Gemini 07°37'58\" R",
+          "lilith": "Aries 05°36'14\"",
+          "selena": "Libra 01°21'29\"",
+          "true_node": "Taurus 27°32'20\" R",
+          "true_south_node": "Scorpio 27°32'20\" R"
+        },
+        "optional_future_objects": [
+          "proserpina"
+        ]
+      },
+      "tolerances": {
+        "angles_target_arcmin": 2.0,
+        "planets_ok_arcmin": 1.0,
+        "planets_investigate_arcmin": 2.0
+      },
+      "notes": [
+        "Lilith/Selena are reference-only and may be unavailable in current API output.",
+        "Optional objects are non-blocking until calculation support is added."
+      ]
     }
   ]
 }

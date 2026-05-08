@@ -122,6 +122,7 @@ class EventAnswerInput(BaseModel):
     reversibility: Reversibility | None = None
     life_area: LifeArea | None = None
     sequence_number: int | None = None
+    repeat_count: int | None = None
     notes: str | None = None
     user_skipped: bool = False
 
@@ -141,6 +142,15 @@ class EventAnswerInput(BaseModel):
             return value
         if value < 1 or value > 99:
             raise ValueError("sequence_number must be in range 1..99")
+        return value
+
+    @field_validator("repeat_count")
+    @classmethod
+    def _validate_repeat_count(cls, value: int | None) -> int | None:
+        if value is None:
+            return value
+        if value < 1 or value > 99:
+            raise ValueError("repeat_count must be in range 1..99")
         return value
 
 

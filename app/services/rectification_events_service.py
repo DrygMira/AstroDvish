@@ -421,6 +421,42 @@ class RectificationEventsService:
         asked_ids = self._asked_question_ids(history)
         step_count = self._assistant_steps_count(history)
 
+        if (
+            not last_answer.user_skipped
+            and last_question.repeatable
+        ):
+            repeat_target = self._resolve_repeat_target(
+                history=history,
+                question=last_question,
+                answer=last_answer,
+            )
+            collected_for_question = self._collected_events_for_question(
+                history=history,
+                question_id=last_question.question_id,
+            )
+            if collected_for_question < repeat_target:
+                warnings.append("repeatable_event_collect_more")
+                next_step_index = step_count + 1
+                history.append(
+                    EventsDialogHistoryItem(
+                        role="assistant",
+                        step_index=next_step_index,
+                        question_id=last_question.question_id,
+                        event_type=last_question.event_type,
+                    )
+                )
+                return EventsDialogQuestionResponse(
+                    step_index=next_step_index,
+                    events_collected_count=len(events),
+                    warnings=warnings,
+                    question=self._question_with_repeat_progress(
+                        question=last_question,
+                        collected=collected_for_question,
+                        target=repeat_target,
+                    ),
+                    dialog_history=history,
+                )
+
         if len(events) >= MAX_EVENTS:
             warnings.append("max_events_reached_safe_finalize")
             return self._build_final(history, warnings)
@@ -657,6 +693,65 @@ class RectificationEventsService:
         if self._is_sequence_required(answer.event_type):
             return 1
         return None
+
+    @staticmethod
+    def _collected_events_for_question(history: list[EventsDialogHistoryItem], question_id: str) -> int:
+        count = 0
+        for item in history:
+            if item.role != "user":
+                continue
+            if item.question_id != question_id:
+                continue
+            if item.event is None or item.event.user_skipped:
+                continue
+            count += 1
+        return count
+
+    @staticmethod
+    def _repeat_target_from_history(history: list[EventsDialogHistoryItem], question_id: str) -> int | None:
+        targets: list[int] = []
+        for item in history:
+            if item.role != "user":
+                continue
+            if item.question_id != question_id:
+                continue
+            raw_answer = item.raw_answer if isinstance(item.raw_answer, dict) else None
+            if not raw_answer:
+                continue
+            repeat_count = raw_answer.get("repeat_count")
+            if isinstance(repeat_count, int) and repeat_count >= 1:
+                targets.append(repeat_count)
+        if not targets:
+            return None
+        return max(targets)
+
+    def _resolve_repeat_target(
+        self,
+        *,
+        history: list[EventsDialogHistoryItem],
+        question: EventQuestion,
+        answer: EventAnswerInput,
+    ) -> int:
+        if answer.repeat_count is not None:
+            return max(1, answer.repeat_count)
+        from_history = self._repeat_target_from_history(history, question.question_id)
+        if from_history is not None:
+            return from_history
+        if answer.sequence_number is not None:
+            return max(1, answer.sequence_number)
+        return 1
+
+    @staticmethod
+    def _question_with_repeat_progress(
+        *,
+        question: EventQuestion,
+        collected: int,
+        target: int,
+    ) -> EventQuestion:
+        if target <= 1:
+            return question
+        suffix = f" Добавьте событие {collected + 1} из {target}."
+        return question.model_copy(update={"question_text": f"{question.question_text}{suffix}"})
 
     @staticmethod
     def _resolve_impact(answer: EventAnswerInput) -> int:

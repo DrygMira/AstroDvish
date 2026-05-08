@@ -20,6 +20,7 @@ def _answer(
     idx: int,
     skipped: bool = False,
     impact_level: int | None = None,
+    repeat_count: int | None = None,
     sequence_number: int | None = 1,
 ) -> dict:
     return {
@@ -30,6 +31,7 @@ def _answer(
         "impact_level": impact_level,
         "reversibility": None,
         "life_area": None,
+        "repeat_count": repeat_count,
         "sequence_number": sequence_number,
         "notes": "" if skipped else "raw user note",
         "user_skipped": skipped,
@@ -97,6 +99,52 @@ def test_child_birth_sequence_1_and_2_are_valid(monkeypatch, tmp_path) -> None:
     assert events[0]["sequence_number"] == 1
 
 
+def test_repeatable_count_first_flow_collects_declared_repeats(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    with client:
+        state = client.post("/api/v1/rectification/events/start", json={}).json()
+        assert state["question"]["event_type"] == "child_birth"
+        state = client.post(
+            "/api/v1/rectification/events/continue",
+            json={
+                "dialog_history": state["dialog_history"],
+                "last_answer": _answer(
+                    state["question"],
+                    idx=1,
+                    repeat_count=2,
+                    sequence_number=1,
+                ),
+            },
+        ).json()
+        assert state["status"] == "ask_question"
+        assert state["question"]["event_type"] == "child_birth"
+        assert "repeatable_event_collect_more" in state["warnings"]
+
+        state = client.post(
+            "/api/v1/rectification/events/continue",
+            json={
+                "dialog_history": state["dialog_history"],
+                "last_answer": _answer(
+                    state["question"],
+                    idx=2,
+                    repeat_count=2,
+                    sequence_number=2,
+                ),
+            },
+        ).json()
+        assert state["status"] == "ask_question"
+        assert state["question"]["event_type"] == "marriage_start"
+
+        final = client.post(
+            "/api/v1/rectification/events/finalize",
+            json={"dialog_history": state["dialog_history"]},
+        ).json()
+
+    child_events = [event for event in final["events"] if event["event_type"] == "child_birth"]
+    assert len(child_events) == 2
+    assert {event["sequence_number"] for event in child_events} == {1, 2}
+
+
 def test_marriage_and_divorce_are_separate_event_types(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     with client:
@@ -138,6 +186,44 @@ def test_death_question_metadata_one_time_vs_repeatable(monkeypatch, tmp_path) -
     assert q_map["death_sibling"]["repeatable"] is True
     assert q_map["death_grandparent"]["repeatable"] is True
     assert q_map["death_sibling"]["requires_sequence_number"] is True
+
+
+def test_repeatable_relocation_supports_multiple_entries(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    with client:
+        state = client.post("/api/v1/rectification/events/start", json={}).json()
+        safety = 0
+        while state.get("status") == "ask_question" and state["question"]["event_type"] != "local_relocation":
+            safety += 1
+            if safety > 20:
+                raise AssertionError("Could not reach local_relocation question in Stage 2 flow")
+            state = client.post(
+                "/api/v1/rectification/events/continue",
+                json={
+                    "dialog_history": state["dialog_history"],
+                    "last_answer": _answer(state["question"], idx=safety, skipped=True, sequence_number=None),
+                },
+            ).json()
+
+        assert state["question"]["event_type"] == "local_relocation"
+        state = client.post(
+            "/api/v1/rectification/events/continue",
+            json={
+                "dialog_history": state["dialog_history"],
+                "last_answer": _answer(state["question"], idx=1, repeat_count=2, sequence_number=1),
+            },
+        ).json()
+        assert state["question"]["event_type"] == "local_relocation"
+
+        state = client.post(
+            "/api/v1/rectification/events/continue",
+            json={
+                "dialog_history": state["dialog_history"],
+                "last_answer": _answer(state["question"], idx=2, repeat_count=2, sequence_number=2),
+            },
+        ).json()
+        assert state["status"] == "ask_question"
+        assert state["question"]["event_type"] != "local_relocation"
 
 
 def test_events_empty_answer_retry(monkeypatch, tmp_path) -> None:
