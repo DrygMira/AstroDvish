@@ -13,6 +13,8 @@ class ScoringService:
         *,
         candidate_id: str,
         candidate_time_local: str,
+        source_asc_interval: dict[str, str] | None = None,
+        clipped_by_birth_date: bool = False,
         method_results: dict[str, list[MethodMatch]],
         events: list[EventCard],
         weights: dict[str, float],
@@ -58,6 +60,8 @@ class ScoringService:
                     strong_matched += 1
 
         confidence_level = self._initial_confidence(total=total, matched_events=matched_events, strong_matched=strong_matched)
+        if clipped_by_birth_date:
+            warnings.append("candidate_window_clipped_to_birth_date")
         return CandidateScore(
             candidate_id=candidate_id,
             candidate_time_local=candidate_time_local,
@@ -73,6 +77,8 @@ class ScoringService:
             strong_events_matched_count=strong_matched,
             confidence_level=confidence_level,
             warnings=sorted(set(warnings)),
+            source_asc_interval=source_asc_interval,
+            clipped_by_birth_date=clipped_by_birth_date,
         )
 
     @staticmethod

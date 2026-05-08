@@ -64,6 +64,8 @@ class CandidateTime(BaseModel):
     datetime_utc: str
     asc_sign: str
     asc_degree: float
+    source_asc_interval: dict[str, str] | None = None
+    clipped_by_birth_date: bool = False
 
 
 class CandidateGenerationResult(BaseModel):
@@ -88,6 +90,8 @@ class CandidateScore(BaseModel):
     strong_events_matched_count: int
     confidence_level: Literal["low", "medium", "high", "expert_high"]
     warnings: list[str] = Field(default_factory=list)
+    source_asc_interval: dict[str, str] | None = None
+    clipped_by_birth_date: bool = False
 
 
 class ConfidenceSummary(BaseModel):

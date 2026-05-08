@@ -92,3 +92,36 @@ def test_rectification_pro_accepts_new_event_types(monkeypatch, tmp_path) -> Non
     with client:
         response = client.post("/api/v1/rectification/pro/run", json=payload)
     assert response.status_code == 200
+
+
+def test_rectification_pro_clips_candidates_to_selected_birth_date(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(2)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-18T22:09:22",
+            "end_local": "1978-03-19T00:41:14",
+            "sign_name_en": "Scorpio",
+            "sign_name_ru": "Скорпион",
+        },
+        {
+            "start_local": "1978-03-19T22:05:00",
+            "end_local": "1978-03-20T00:15:00",
+            "sign_name_en": "Scorpio",
+            "sign_name_ru": "Скорпион",
+        },
+    ]
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    all_candidates = body.get("candidate_windows", [])
+    assert all_candidates
+    for item in all_candidates:
+        ts = item["candidate_time_local"]
+        assert ts >= "1978-03-19T00:00:00"
+        assert ts < "1978-03-20T00:00:00"
+    warnings = body.get("warnings", [])
+    assert "candidate_windows_clipped_to_birth_date" in warnings

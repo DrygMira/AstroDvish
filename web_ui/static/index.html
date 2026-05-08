@@ -3904,6 +3904,181 @@
       setWzStatus("Тестовые события для Pro добавлены в Stage 2.");
     }
 
+    const PRO_METHOD_LABELS = {
+      directions: "Дирекции",
+      solars: "Соляр",
+      solar: "Соляр",
+      transits: "Транзиты",
+      lunars: "Лунар",
+      lunar: "Лунар",
+      totems: "Тотем",
+      totem: "Тотем",
+    };
+
+    const PRO_EVENT_TYPE_LABELS = {
+      child_birth: "Рождение ребёнка",
+      marriage_start: "Брак/союз",
+      divorce_separation: "Развод/расставание",
+      death_father: "Смерть отца",
+      death_mother: "Смерть матери",
+      death_child: "Смерть ребёнка",
+      death_spouse: "Смерть супруга",
+      death_sibling: "Смерть брата/сестры",
+      death_grandparent: "Смерть бабушки/дедушки",
+      death_close_person_other: "Смерть близкого",
+      surgery: "Операция",
+      major_accident: "Серьёзная авария",
+      violence_trauma: "Травма/насилие",
+      imprisonment: "Ограничение свободы",
+      military_service: "Военная служба",
+      long_hospitalization: "Длительная госпитализация",
+      local_relocation: "Ближний переезд",
+      long_distance_relocation: "Дальний переезд",
+      job_start: "Начало работы",
+      job_loss: "Потеря работы",
+      career_change: "Смена карьеры",
+      profession_change: "Смена профессии",
+      business_start: "Старт бизнеса",
+      business_loss: "Потеря бизнеса",
+      financial_rise_fall: "Финансовый перелом",
+      inner_crisis_turning_point: "Внутренний кризис",
+      custom_major_event: "Другое важное событие",
+    };
+
+    function formatMethodLabel(methodName) {
+      return PRO_METHOD_LABELS[methodName] || methodName || "Метод";
+    }
+
+    function formatEventTypeLabel(eventType) {
+      return PRO_EVENT_TYPE_LABELS[eventType] || eventType || "событие";
+    }
+
+    function formatOrbValue(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "—";
+      return `${n.toFixed(2)}°`;
+    }
+
+    function extractProMatchDetails(match) {
+      if (!match || typeof match !== "object") {
+        return {
+          aspect: "—",
+          orb: "—",
+          points: "—",
+          score: "—",
+          explanation: "Совпадений по сигналам метода не найдено.",
+        };
+      }
+
+      const aspect = match.aspect_type || "—";
+      const orb = formatOrbValue(match.orb);
+      const scoreNum = Number(match.score);
+      const score = Number.isFinite(scoreNum) ? scoreNum.toFixed(2) : "—";
+      const explanation = match.explanation || "Технически подтверждено сигналом метода, требуется экспертная проверка.";
+
+      let points = "—";
+      if (match.directed_object || match.natal_object) {
+        points = `${match.directed_object || "—"} ↔ ${match.natal_object || "—"}`;
+      } else if (match.transit_object || match.natal_object) {
+        points = `${match.transit_object || "—"} ↔ ${match.natal_object || "—"}`;
+      } else if (match.solar_point || match.target) {
+        points = `${match.solar_point || "—"} ↔ ${match.target || "—"}`;
+      } else if (match.asc_sign || Number.isFinite(Number(match.degree_in_sign))) {
+        points = `${match.asc_sign || "—"} ${Number.isFinite(Number(match.degree_in_sign)) ? `${match.degree_in_sign}°` : ""}`.trim();
+      }
+
+      return { aspect, orb, points, score, explanation };
+    }
+
+    function buildProEventMap() {
+      const events = buildProEventsFromStage2();
+      const map = new Map();
+      events.forEach((event) => {
+        if (event?.event_id) map.set(event.event_id, event);
+      });
+      return map;
+    }
+
+    function renderProConfirmations(data) {
+      const methods = data.method_results || {};
+      const eventMap = buildProEventMap();
+      const methodEntries = [];
+
+      for (const [methodName, entries] of Object.entries(methods)) {
+        const list = Array.isArray(entries) ? entries : [];
+        list.forEach((entry) => {
+          methodEntries.push({
+            methodName,
+            eventId: entry?.event_id || "",
+            eventScore: Number(entry?.event_score),
+            matches: Array.isArray(entry?.matches) ? entry.matches : [],
+            warnings: Array.isArray(entry?.warnings) ? entry.warnings : [],
+          });
+        });
+      }
+
+      rpMethodsSummaryEl.innerHTML = "";
+      if (!methodEntries.length) {
+        rpMethodsSummaryEl.textContent = "Нет данных по подтверждениям событий.";
+        return;
+      }
+
+      methodEntries
+        .sort((left, right) => Number((right.matches || []).length > 0) - Number((left.matches || []).length > 0))
+        .forEach((item) => {
+          const event = eventMap.get(item.eventId) || {};
+          const matched = item.matches.length > 0;
+          const details = extractProMatchDetails(item.matches[0]);
+          const eventTitle = event.title || `Событие ${item.eventId || "без id"}`;
+          const eventType = formatEventTypeLabel(event.event_type);
+          const eventDate = event.date_text || event.start_date || "дата не указана";
+          const methodLabel = formatMethodLabel(item.methodName);
+          const eventScore = Number.isFinite(item.eventScore) ? item.eventScore.toFixed(2) : "—";
+          const warningsText = item.warnings.length ? item.warnings.join(", ") : "—";
+          const matchedText = matched
+            ? "Да. Технически подтверждено сигналом метода, требуется экспертная проверка."
+            : "Нет, убедительного сигнала метода не получено.";
+
+          const block = document.createElement("div");
+          block.className = "interval-item";
+          const titleNode = document.createElement("div");
+          const titleStrong = document.createElement("strong");
+          titleStrong.textContent = eventTitle;
+          titleNode.appendChild(titleStrong);
+          block.appendChild(titleNode);
+
+          const lineTypeDate = document.createElement("div");
+          lineTypeDate.textContent = `Тип: ${eventType} | Дата: ${eventDate}`;
+          block.appendChild(lineTypeDate);
+
+          const lineMethod = document.createElement("div");
+          lineMethod.textContent = `Метод: ${methodLabel} | Подтверждено: ${matched ? "да" : "нет"}`;
+          block.appendChild(lineMethod);
+
+          const lineAspect = document.createElement("div");
+          lineAspect.textContent = `Аспект: ${details.aspect} | Орбис: ${details.orb} | Точки: ${details.points}`;
+          block.appendChild(lineAspect);
+
+          const lineScore = document.createElement("div");
+          lineScore.textContent = `Score/weight: ${details.score} | Event score: ${eventScore}`;
+          block.appendChild(lineScore);
+
+          const lineExplanation = document.createElement("div");
+          lineExplanation.textContent = `Пояснение: ${details.explanation}`;
+          block.appendChild(lineExplanation);
+
+          const lineStatus = document.createElement("div");
+          lineStatus.textContent = `Статус: ${matchedText}`;
+          block.appendChild(lineStatus);
+
+          const lineWarnings = document.createElement("div");
+          lineWarnings.className = "hint";
+          lineWarnings.textContent = `Тех. предупреждения: ${warningsText}`;
+          block.appendChild(lineWarnings);
+          rpMethodsSummaryEl.appendChild(block);
+        });
+    }
+
     function renderProResult(data) {
       const best = Array.isArray(data.best_candidates) ? data.best_candidates : [];
       rpBestCandidatesEl.innerHTML = "";
@@ -3917,23 +4092,34 @@
           const preciseOnly = (data.confidence?.level === "high" || data.confidence?.level === "expert_high")
             ? ""
             : " (не считать точным временем)";
-          block.textContent = `#${idx + 1} ${item.candidate_time_local} | total=${total} | confidence=${item.confidence_level}${preciseOnly}`;
+          const source = item.source_asc_interval || {};
+          const sourceStart = source.start_local_clipped || source.start_local || "—";
+          const sourceEnd = source.end_local_clipped || source.end_local || "—";
+          const sourceSign = source.sign_name_ru || source.sign_name_en || item.asc_sign || "—";
+          const clippedNote = item.clipped_by_birth_date
+            ? "Окно было ограничено границами выбранной даты рождения."
+            : "Окно полностью внутри выбранной даты рождения.";
+          block.innerHTML =
+            `<div><strong>#${idx + 1}</strong> ${item.candidate_time_local} | total=${total} | confidence=${item.confidence_level}${preciseOnly}</div>` +
+            `<div>Источник Asc-интервала: ${sourceSign} (${sourceStart} → ${sourceEnd})</div>` +
+            `<div class="hint">${clippedNote}</div>`;
           rpBestCandidatesEl.appendChild(block);
         });
       }
 
       const confidence = data.confidence || {};
-      rpConfidenceEl.textContent =
-        `Уровень: ${confidence.level || "n/a"} | Окно: ${confidence.time_window_minutes || "n/a"} мин | ${confidence.explanation || ""}`;
+      const windowMinutes = Number.isFinite(Number(confidence.time_window_minutes))
+        ? Number(confidence.time_window_minutes)
+        : null;
+      const windowExplanation = windowMinutes == null
+        ? "Ширина окна: не определена."
+        : `Ширина окна: ${windowMinutes} минут — это диапазон времени, внутри которого система ищет наиболее вероятное рождение. Это не точное время рождения.`;
+      rpConfidenceEl.innerHTML =
+        `<div><strong>Уровень:</strong> ${confidence.level || "n/a"}</div>` +
+        `<div>${windowExplanation}</div>` +
+        `<div>${confidence.explanation || ""}</div>`;
 
-      const methods = data.method_results || {};
-      const lines = [];
-      for (const [methodName, entries] of Object.entries(methods)) {
-        const list = Array.isArray(entries) ? entries : [];
-        const matched = list.filter((entry) => Array.isArray(entry.matches) && entry.matches.length > 0).length;
-        lines.push(`${methodName}: entries=${list.length}, matched_events=${matched}`);
-      }
-      rpMethodsSummaryEl.textContent = lines.join("\n") || "Нет данных по методикам.";
+      renderProConfirmations(data);
 
       const warnings = Array.isArray(data.warnings) ? data.warnings : [];
       const limitations = Array.isArray(data.limitations) ? data.limitations : [];

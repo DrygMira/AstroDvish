@@ -79,6 +79,53 @@ def _to_decimal_from_dms_coord(value: str) -> float:
     return decimal
 
 
+# Robust fallback parsers override the legacy mojibake-dependent versions above.
+def _absolute_from_sign_dms(value: str) -> float:
+    import re
+
+    sign_map = {
+        "Aries": 0,
+        "Taurus": 30,
+        "Gemini": 60,
+        "Cancer": 90,
+        "Leo": 120,
+        "Virgo": 150,
+        "Libra": 180,
+        "Scorpio": 210,
+        "Sagittarius": 240,
+        "Capricorn": 270,
+        "Aquarius": 300,
+        "Pisces": 330,
+    }
+    cleaned = value.strip().replace(" R", "").replace(" D", "").replace(" S", "")
+    match = re.match(r"^([A-Za-z]+)\s+(\d+)\D+(\d+)\D+(\d+)", cleaned)
+    if not match:
+        raise ValueError(f"Cannot parse sign DMS value: {value}")
+    sign_name, degrees_part, minutes_part, seconds_part = match.groups()
+    sign_offset = sign_map[sign_name]
+    degrees = float(degrees_part)
+    minutes = float(minutes_part)
+    seconds = float(seconds_part)
+    return sign_offset + degrees + minutes / 60 + seconds / 3600
+
+
+def _to_decimal_from_dms_coord(value: str) -> float:
+    import re
+
+    cleaned = value.strip().upper()
+    match = re.match(r"^(-?\d+)\D+(\d+)\D+(\d+)\D*([NSEW])$", cleaned)
+    if not match:
+        raise ValueError(f"Cannot parse coordinate DMS value: {value}")
+    degrees_part, minutes_part, seconds_token, hemisphere = match.groups()
+    degrees = float(degrees_part)
+    minutes = float(minutes_part)
+    seconds = float(seconds_token)
+    decimal = abs(degrees) + minutes / 60 + seconds / 3600
+    if hemisphere in {"S", "W"}:
+        decimal *= -1
+    return decimal
+
+
 def test_reference_ufa_inputs_and_angles_close_to_expert_reference() -> None:
     case = _load_case("ekaterina_ufa_1984_10_25")
     source = case["input"]
@@ -259,6 +306,85 @@ def test_radix_reference_ufa_angles_and_cusps_within_target_tolerance() -> None:
 
 def test_radix_reference_ufa_planets_within_arcminute_or_marked_pending() -> None:
     case = _load_case("ufa_1984_10_25_142830_radix")
+    source = case["input"]
+    tolerance_arcmin = float(case["tolerances"]["planets_ok_arcmin"])
+    payload = ChartRequest(
+        datetime_utc=_to_utc_z(source["datetime_local"], source["timezone_name"]),
+        latitude=source["latitude"],
+        longitude=source["longitude"],
+        house_system=source["house_system"],
+        zodiac_mode=source["zodiac_mode"],
+        sidereal_mode=source["sidereal_mode"],
+        aspect_orb_profile=source["aspect_orb_profile"],
+    )
+    chart = EphemerisService(ephe_path="ephe").calculate_chart(payload)
+
+    missing_nonblocking = {"lilith", "selena", "proserpina"}
+    missing_actual: set[str] = set()
+    for object_name, expected_text in case["reference"]["objects"].items():
+        if object_name not in chart.objects:
+            missing_actual.add(object_name)
+            continue
+        expected_abs = _absolute_from_sign_dms(expected_text)
+        got_abs = chart.objects[object_name].absolute_degree_0_360
+        assert _arcmin_diff(got_abs, expected_abs) <= tolerance_arcmin
+
+    assert missing_actual.issubset(missing_nonblocking)
+
+
+def test_radix_reference_minsk_uses_dms_coordinates_and_keeps_seconds() -> None:
+    case = _load_case("minsk_1986_12_02_154725_radix")
+    source = case["input"]
+    latitude = _to_decimal_from_dms_coord(source["latitude_dms"])
+    longitude = _to_decimal_from_dms_coord(source["longitude_dms"])
+    expected_utc = _to_utc_z(source["datetime_local"], source["timezone_name"])
+
+    payload = ChartRequest(
+        datetime_utc=expected_utc,
+        latitude=latitude,
+        longitude=longitude,
+        house_system=source["house_system"],
+        zodiac_mode=source["zodiac_mode"],
+        sidereal_mode=source["sidereal_mode"],
+        aspect_orb_profile=source["aspect_orb_profile"],
+    )
+    chart = EphemerisService(ephe_path="ephe").calculate_chart(payload)
+
+    assert payload.datetime_as_z() == "1986-12-02T12:47:25Z"
+    assert abs(chart.input.latitude - latitude) < 1e-6
+    assert abs(chart.input.longitude - longitude) < 1e-6
+    assert chart.houses.cusps["1"] == chart.angles["asc"]
+    assert chart.houses.cusps["10"] == chart.angles["mc"]
+
+
+def test_radix_reference_minsk_angles_and_cusps_within_target_tolerance() -> None:
+    case = _load_case("minsk_1986_12_02_154725_radix")
+    source = case["input"]
+    tolerance_arcmin = float(case["tolerances"]["angles_target_arcmin"])
+    payload = ChartRequest(
+        datetime_utc=_to_utc_z(source["datetime_local"], source["timezone_name"]),
+        latitude=source["latitude"],
+        longitude=source["longitude"],
+        house_system=source["house_system"],
+        zodiac_mode=source["zodiac_mode"],
+        sidereal_mode=source["sidereal_mode"],
+        aspect_orb_profile=source["aspect_orb_profile"],
+    )
+    chart = EphemerisService(ephe_path="ephe").calculate_chart(payload)
+
+    expected_asc = _absolute_from_sign_dms(case["reference"]["angles"]["asc"])
+    expected_mc = _absolute_from_sign_dms(case["reference"]["angles"]["mc"])
+    assert _arcmin_diff(chart.angles["asc"], expected_asc) <= tolerance_arcmin
+    assert _arcmin_diff(chart.angles["mc"], expected_mc) <= tolerance_arcmin
+
+    for house_no, expected_text in case["reference"]["houses"].items():
+        expected_abs = _absolute_from_sign_dms(expected_text)
+        got_abs = chart.houses.cusps[house_no]
+        assert _arcmin_diff(got_abs, expected_abs) <= tolerance_arcmin
+
+
+def test_radix_reference_minsk_planets_within_arcminute_or_marked_pending() -> None:
+    case = _load_case("minsk_1986_12_02_154725_radix")
     source = case["input"]
     tolerance_arcmin = float(case["tolerances"]["planets_ok_arcmin"])
     payload = ChartRequest(

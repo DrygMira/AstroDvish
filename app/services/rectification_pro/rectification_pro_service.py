@@ -35,6 +35,7 @@ class RectificationProService:
     def run(self, payload: RectificationProRunRequest) -> RectificationProRunResponse:
         settings = payload.settings
         generation = self.candidate_generator.generate(
+            birth_date_local=payload.birth_date_local,
             timezone_name=payload.timezone_name,
             asc_windows=payload.asc_windows,
             step_minutes=settings.candidate_step_minutes,
@@ -107,6 +108,8 @@ class RectificationProService:
             score = self.scoring_service.score_candidate(
                 candidate_id=candidate.candidate_id,
                 candidate_time_local=candidate.datetime_local,
+                source_asc_interval=candidate.source_asc_interval,
+                clipped_by_birth_date=candidate.clipped_by_birth_date,
                 method_results=method_results_for_candidate,
                 events=payload.events,
                 weights=settings.weights,

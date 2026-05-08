@@ -74,6 +74,7 @@ def _sample_event(event_id: str = "e1") -> EventCard:
 def test_candidate_generator_respects_bounds_and_step() -> None:
     generator = CandidateGenerator()
     result = generator.generate(
+        birth_date_local=date(1990, 5, 12),
         timezone_name="Europe/Moscow",
         asc_windows=[
             ProAscWindow(
@@ -154,6 +155,8 @@ def test_scoring_and_confidence_rules() -> None:
     candidate_score = scoring.score_candidate(
         candidate_id="cand_001",
         candidate_time_local="1990-05-12T14:35:00",
+        source_asc_interval=None,
+        clipped_by_birth_date=False,
         method_results=method_results,
         events=[event],
         weights={"directions": 0.45, "solar": 0.2, "transits": 0.2, "lunar": 0.1, "totem": 0.05},
@@ -161,3 +164,55 @@ def test_scoring_and_confidence_rules() -> None:
     summary = confidence.summarize(best_candidate=candidate_score, events=[event])
     assert summary.level in {"low", "medium", "high", "expert_high"}
     assert summary.level != "expert_high"
+
+
+def test_candidate_generator_clips_boundaries_and_preserves_duplicate_intervals() -> None:
+    generator = CandidateGenerator()
+    result = generator.generate(
+        birth_date_local=date(1978, 3, 19),
+        timezone_name="Asia/Yekaterinburg",
+        asc_windows=[
+            ProAscWindow(
+                start_local="1978-03-18T22:09:22",
+                end_local="1978-03-19T00:41:14",
+                sign_name_en="Scorpio",
+                sign_name_ru="Скорпион",
+            ),
+            ProAscWindow(
+                start_local="1978-03-19T22:05:00",
+                end_local="1978-03-20T00:15:00",
+                sign_name_en="Scorpio",
+                sign_name_ru="Скорпион",
+            ),
+        ],
+        step_minutes=5,
+        max_candidates=1000,
+    )
+    assert result.candidate_times
+    locals_all = [item.datetime_local for item in result.candidate_times]
+    assert any(value.startswith("1978-03-19T00:") for value in locals_all)
+    assert any(value.startswith("1978-03-19T22:") for value in locals_all)
+    assert all("1978-03-19T" in value for value in locals_all)
+    assert "candidate_windows_clipped_to_birth_date" in result.warnings
+
+
+def test_candidate_generator_never_outputs_candidates_outside_selected_birth_day() -> None:
+    generator = CandidateGenerator()
+    result = generator.generate(
+        birth_date_local=date(1990, 5, 12),
+        timezone_name="Europe/Moscow",
+        asc_windows=[
+            ProAscWindow(
+                start_local="1990-05-11T23:55:00",
+                end_local="1990-05-13T00:05:00",
+                sign_name_en="Libra",
+                sign_name_ru="Весы",
+            )
+        ],
+        step_minutes=5,
+        max_candidates=1000,
+    )
+    assert result.candidate_times
+    assert all("1990-05-12T" in item.datetime_local for item in result.candidate_times)
+    assert all(item.datetime_local >= "1990-05-12T00:00:00" for item in result.candidate_times)
+    assert all(item.datetime_local < "1990-05-13T00:00:00" for item in result.candidate_times)

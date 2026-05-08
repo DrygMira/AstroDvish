@@ -105,6 +105,73 @@
         "Lilith/Selena are reference-only and may be unavailable in current API output.",
         "Optional objects are non-blocking until calculation support is added."
       ]
+    },
+    {
+      "case_id": "minsk_1986_12_02_154725_radix",
+      "description": "Radix (Avestian program by P.P. Globa) calibration case for Minsk with exact local time and UTC+03.",
+      "input": {
+        "place_name": "Minsk",
+        "latitude": 53.9,
+        "longitude": 27.566667,
+        "latitude_dms": "53В°54'00\" N",
+        "longitude_dms": "27В°34'00\" E",
+        "datetime_local": "1986-12-02T15:47:25",
+        "timezone_name": "Etc/GMT-3",
+        "timezone_offset": "+03:00",
+        "house_system": "P",
+        "zodiac_mode": "tropical",
+        "sidereal_mode": null,
+        "aspect_orb_profile": "avestan"
+      },
+      "reference": {
+        "angles": {
+          "asc": "Taurus 18В°07'14\"",
+          "mc": "Capricorn 18В°55'23\""
+        },
+        "houses": {
+          "1": "Taurus 18В°07'14\"",
+          "2": "Gemini 14В°58'22\"",
+          "3": "Cancer 02В°25'11\"",
+          "4": "Cancer 18В°55'23\"",
+          "5": "Leo 09В°16'00\"",
+          "6": "Virgo 12В°59'38\"",
+          "7": "Scorpio 18В°07'14\"",
+          "8": "Sagittarius 14В°58'22\"",
+          "9": "Capricorn 02В°25'11\"",
+          "10": "Capricorn 18В°55'23\"",
+          "11": "Aquarius 09В°16'00\"",
+          "12": "Pisces 12В°59'38\""
+        },
+        "objects": {
+          "sun": "Sagittarius 10В°02'32\"",
+          "moon": "Sagittarius 21В°56'34\"",
+          "mercury": "Scorpio 20В°09'27\"",
+          "venus": "Scorpio 05В°42'02\"",
+          "mars": "Pisces 04В°21'32\"",
+          "jupiter": "Pisces 13В°56'50\"",
+          "saturn": "Sagittarius 11В°57'07\"",
+          "uranus": "Sagittarius 21В°49'12\"",
+          "neptune": "Capricorn 04В°35'39\"",
+          "pluto": "Scorpio 08В°33'37\"",
+          "chiron": "Gemini 19В°07'05\" R",
+          "lilith": "Cancer 01В°00'16\"",
+          "selena": "Capricorn 19В°31'21\"",
+          "true_node": "Aries 19В°43'25\" R",
+          "true_south_node": "Libra 19В°43'25\" R"
+        },
+        "optional_future_objects": [
+          "proserpina"
+        ]
+      },
+      "tolerances": {
+        "angles_target_arcmin": 2.0,
+        "planets_ok_arcmin": 1.0,
+        "planets_investigate_arcmin": 2.0
+      },
+      "notes": [
+        "Lilith/Selena are reference-only and may be unavailable in current API output.",
+        "Optional objects are non-blocking until calculation support is added."
+      ]
     }
   ]
 }
