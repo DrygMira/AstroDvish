@@ -159,3 +159,80 @@ def test_generate_defaults_missing_seconds_to_zero(monkeypatch) -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["timezone"]["datetime_utc"].endswith("12:00:00Z")
+
+
+def test_generate_preserves_asymmetric_orb_aspects_in_final_chart_response(monkeypatch) -> None:
+    class _AspectResponse:
+        status_code = 200
+
+        @staticmethod
+        def json() -> dict[str, Any]:
+            return {
+                "input": {
+                    "datetime_utc": "1984-10-25T09:28:30Z",
+                    "latitude": 54.7388,
+                    "longitude": 55.9721,
+                    "house_system": "P",
+                    "zodiac_mode": "tropical",
+                    "sidereal_mode": None,
+                },
+                "normalized": {"julian_day_ut": 2446000.0},
+                "objects": {
+                    "sun": {"longitude_deg": 210.0},
+                    "uranus": {"longitude_deg": 215.033333},
+                    "moon": {"longitude_deg": 30.0},
+                    "neptune": {"longitude_deg": 205.333333},
+                    "venus": {"longitude_deg": 10.0},
+                },
+                "houses": {"system": "P", "cusps": {"1": 270.0}},
+                "angles": {"asc": 270.0, "mc": 210.0},
+                "aspects": [
+                    {
+                        "object_a": "Sun",
+                        "object_b": "Uranus",
+                        "aspect_type": "conjunction",
+                        "exact_angle": 0.0,
+                        "actual_angle": 5.033333,
+                        "orb": 5.033333,
+                        "applying": None,
+                    },
+                    {
+                        "object_a": "Moon",
+                        "object_b": "Neptune",
+                        "aspect_type": "opposition",
+                        "exact_angle": 180.0,
+                        "actual_angle": 175.333333,
+                        "orb": 4.666667,
+                        "applying": None,
+                    },
+                    {
+                        "object_a": "Venus",
+                        "object_b": "Neptune",
+                        "aspect_type": "trine",
+                        "exact_angle": 120.0,
+                        "actual_angle": 123.1,
+                        "orb": 3.1,
+                        "applying": None,
+                    },
+                ],
+                "meta": {
+                    "ephemeris_source": "swisseph",
+                    "zodiac_mode": "tropical",
+                    "sidereal_mode": None,
+                    "object_constants": {"sun": 0},
+                    "aspect_orb_profile": "avestan",
+                },
+            }
+
+    monkeypatch.setattr(web_main, "_post_to_api_with_fallback", lambda **kwargs: _AspectResponse())
+    monkeypatch.setattr(web_main, "_render_horoscope_via_openai", lambda prompt_text, chart, core_identity: "OK")
+
+    with TestClient(web_main.app) as client:
+        response = client.post("/api/generate", json=_base_payload())
+
+    assert response.status_code == 200
+    aspects = response.json()["chart_response"]["aspects"]
+    pairs = {(item["object_a"], item["object_b"], item["aspect_type"]) for item in aspects}
+    assert ("Sun", "Uranus", "conjunction") in pairs
+    assert ("Moon", "Neptune", "opposition") in pairs
+    assert ("Venus", "Neptune", "trine") in pairs

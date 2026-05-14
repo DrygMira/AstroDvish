@@ -18,6 +18,9 @@ def test_expert_mode_block_contains_degree_format_toggle() -> None:
     assert 'id="expertAspects"' in html
     assert 'id="expertTimezone"' in html
     assert 'id="expertDegreesExpandedToggle"' in html
+    assert "resolveAspectStrengthLabel(" in html
+    assert "Отклонение (орбис)" in html
+    assert "Сила" in html
     assert "Расширенный формат градусов" in html
 
     tail = html.split('id="expertDegreesExpandedToggle"', 1)[1][:120]

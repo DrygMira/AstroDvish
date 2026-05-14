@@ -55,6 +55,8 @@ def test_shared_context_sync_and_reset_messages_exist() -> None:
     assert "function applySharedContextToForms()" in html
     assert "function syncSharedBirthContext(patch, options = {})" in html
     assert "function applyPlaceSelectionToSharedContext(option, cityQueryValue)" in html
+    assert "latitudeDms: Number.isFinite(latitude) ? decimalToDms(latitude, \"lat\") : null" in html
+    assert "longitudeDms: Number.isFinite(longitude) ? decimalToDms(longitude, \"lon\") : null" in html
     assert "Вы изменили данные рождения. Предыдущие интервалы, диалог и Pro-ректификация будут сброшены." in html
 
 

@@ -151,7 +151,7 @@ class AspectsService:
 
         left_category = self._object_category(left_name)
         right_category = self._object_category(right_name)
-        base_limit = min(
+        base_limit = max(
             profile_limits.get(left_category, profile_limits["fallback"]),
             profile_limits.get(right_category, profile_limits["fallback"]),
         )

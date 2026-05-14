@@ -63,6 +63,8 @@ def test_main_ui_has_mobile_safe_birth_seconds_input_and_hint() -> None:
     assert 'id="datetimeLocalSeconds"' in html
     assert "Секунды важны для точного Asc/MC. Если неизвестны — оставьте 00." in html
     assert "mobile fallback" in html
+    assert "fillSecondOptions()" in html
+    assert "for (let second = 0; second <= 59; second += 1)" in html
 
 
 def test_main_ui_does_not_truncate_birth_datetime_to_minutes() -> None:
@@ -74,6 +76,7 @@ def test_main_ui_does_not_truncate_birth_datetime_to_minutes() -> None:
     assert "return `${base}:00`;" in html
     assert "setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });" in html
     assert "setDateTimeWithSeconds(nowLocalInputValue(), { syncShared: false });" in html
+    assert "forceSecond: datetimeLocalSecondsEl.value" in html
 
 
 def test_main_ui_supports_dms_coordinate_input_and_conversion_debug() -> None:
@@ -88,6 +91,9 @@ def test_main_ui_supports_dms_coordinate_input_and_conversion_debug() -> None:
     assert "parseDmsCoordinate(" in html
     assert "decimalToDms(" in html
     assert "coordinates_debug" in html
+    assert "latitudeDms: normalizedLatDms || null" in html
+    assert "longitudeDms: normalizedLonDms || null" in html
+    assert "latitudeDms: Number.isFinite(latitude) ? decimalToDms(latitude, \"lat\") : null" in html
 
 
 def test_main_ui_generate_payload_uses_datetime_with_seconds() -> None:
@@ -96,8 +102,19 @@ def test_main_ui_generate_payload_uses_datetime_with_seconds() -> None:
 
     assert response.status_code == 200
     html = response.text
-    assert "const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });" in html
+    assert "const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, {" in html
+    assert "forceSecond: datetimeLocalSecondsEl.value" in html
     assert "datetime_local: normalizedDateTime," in html
+
+
+def test_main_ui_seconds_input_overrides_datetime_seconds() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "const forceSecond = options.forceSecond != null" in html
+    assert "forceSecond: normalizedSecond" in html
 
 
 def test_main_ui_sanitizes_openrouter_402_error_text() -> None:

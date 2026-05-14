@@ -72,3 +72,45 @@ def test_orb_overrides_are_supported() -> None:
     )
     assert len(aspects) == 1
     assert aspects[0].orb == 8.8
+
+
+def test_asymmetric_orb_keeps_sun_uranus_conjunction_when_luminary_allows() -> None:
+    service = AspectsService()
+    aspects = service.calculate_aspects(
+        objects={
+            "sun": _obj("sun", 0.0),
+            "uranus": _obj("uranus", 5.02),
+        }
+    )
+
+    assert len(aspects) == 1
+    assert aspects[0].aspect_type == "conjunction"
+    assert aspects[0].orb == 5.02
+
+
+def test_asymmetric_orb_keeps_moon_neptune_opposition_when_luminary_allows() -> None:
+    service = AspectsService()
+    aspects = service.calculate_aspects(
+        objects={
+            "moon": _obj("moon", 0.0),
+            "neptune": _obj("neptune", 175.333333),
+        }
+    )
+
+    assert len(aspects) == 1
+    assert aspects[0].aspect_type == "opposition"
+    assert aspects[0].orb == 4.666667
+
+
+def test_asymmetric_orb_keeps_venus_neptune_trine_when_personal_planet_allows() -> None:
+    service = AspectsService()
+    aspects = service.calculate_aspects(
+        objects={
+            "venus": _obj("venus", 0.0),
+            "neptune": _obj("neptune", 123.1),
+        }
+    )
+
+    assert len(aspects) == 1
+    assert aspects[0].aspect_type == "trine"
+    assert aspects[0].orb == 3.1

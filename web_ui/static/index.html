@@ -645,8 +645,8 @@
           </div>
           <div>
             <label>Секунды (mobile fallback)</label>
-            <input id="datetimeLocalSeconds" type="number" min="0" max="59" step="1" value="00" />
-            <div class="hint">Если picker не даёт выбрать секунды, задайте их здесь (00–59).</div>
+            <select id="datetimeLocalSeconds"></select>
+            <div class="hint">Если picker не даёт выбрать секунды, задайте их здесь (00–59). Значение 00 доступно и сохраняется.</div>
           </div>
           <div>
             <label>Режим timezone</label>
@@ -1572,23 +1572,28 @@
       };
     }
 
-    function buildDateTimeWithSeconds(value, fallbackSecond = "00") {
+    function buildDateTimeWithSeconds(value, fallbackSecond = "00", forceSecond = null) {
       const parts = parseDateTimeLocalParts(value);
       if (!parts) return value;
-      const second = parts.second || normalizeSecondValue(fallbackSecond);
+      const second = forceSecond != null
+        ? normalizeSecondValue(forceSecond)
+        : (parts.second || normalizeSecondValue(fallbackSecond));
       return `${parts.prefix}:${second}`;
     }
 
     function setDateTimeWithSeconds(value, options = {}) {
       const fallbackSecond = normalizeSecondValue(datetimeLocalSecondsEl.value || "00");
-      const normalized = buildDateTimeWithSeconds(value, fallbackSecond);
+      const forceSecond = options.forceSecond != null
+        ? normalizeSecondValue(options.forceSecond)
+        : null;
+      const normalized = buildDateTimeWithSeconds(value, fallbackSecond, forceSecond);
       const parts = parseDateTimeLocalParts(normalized);
       if (!parts) {
         datetimeLocalEl.value = value || "";
-        datetimeLocalSecondsEl.value = fallbackSecond;
+        datetimeLocalSecondsEl.value = forceSecond || fallbackSecond;
         return datetimeLocalEl.value;
       }
-      const second = parts.second || "00";
+      const second = forceSecond || parts.second || "00";
       if (datetimeLocalEl.value !== normalized) {
         datetimeLocalEl.value = normalized;
       }
@@ -1698,6 +1703,16 @@
         document.getElementById("longitude").value = Number(longitude).toFixed(6);
         wzLongitudeEl.value = Number(longitude).toFixed(6);
       }
+      const normalizedLatDms = Number.isFinite(latitude) ? decimalToDms(Number(latitude), "lat") : null;
+      const normalizedLonDms = Number.isFinite(longitude) ? decimalToDms(Number(longitude), "lon") : null;
+      if (normalizedLatDms) {
+        latitudeDmsEl.value = normalizedLatDms;
+        wzLatitudeDmsEl.value = normalizedLatDms;
+      }
+      if (normalizedLonDms) {
+        longitudeDmsEl.value = normalizedLonDms;
+        wzLongitudeDmsEl.value = normalizedLonDms;
+      }
 
       setGenerateTechnicalDebug({
         ...(lastGenerateTechnicalDebug || {}),
@@ -1715,8 +1730,8 @@
         coordValueFormat: format,
         latitude: Number.isFinite(latitude) ? Number(latitude) : null,
         longitude: Number.isFinite(longitude) ? Number(longitude) : null,
-        latitudeDms: rawLatDms || null,
-        longitudeDms: rawLonDms || null,
+        latitudeDms: normalizedLatDms || null,
+        longitudeDms: normalizedLonDms || null,
       };
     }
 
@@ -1731,11 +1746,11 @@
       if (Number.isFinite(sharedBirthContext.latitude) && Number.isFinite(sharedBirthContext.longitude)) {
         const latDms = decimalToDms(Number(sharedBirthContext.latitude), "lat");
         const lonDms = decimalToDms(Number(sharedBirthContext.longitude), "lon");
-        latitudeDmsEl.value = sharedBirthContext.latitudeDms || latDms;
-        longitudeDmsEl.value = sharedBirthContext.longitudeDms || lonDms;
-        wzLatitudeDmsEl.value = sharedBirthContext.latitudeDms || latDms;
-        wzLongitudeDmsEl.value = sharedBirthContext.longitudeDms || lonDms;
-      } else if (!isDms) {
+        latitudeDmsEl.value = latDms;
+        longitudeDmsEl.value = lonDms;
+        wzLatitudeDmsEl.value = latDms;
+        wzLongitudeDmsEl.value = lonDms;
+      } else {
         latitudeDmsEl.value = "";
         longitudeDmsEl.value = "";
         wzLatitudeDmsEl.value = "";
@@ -1836,7 +1851,10 @@
     }
 
     function getChartContextPatch() {
-      const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
+      const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, {
+        syncShared: false,
+        forceSecond: datetimeLocalSecondsEl.value,
+      });
       const coords = buildCoordinateContextPatch("chart");
       return {
         apiBaseUrl: document.getElementById("apiBaseUrl").value.trim() || "http://127.0.0.1:8013",
@@ -2107,6 +2125,18 @@
       timezoneOffsetEl.value = "+05:00";
     }
 
+    function fillSecondOptions() {
+      datetimeLocalSecondsEl.innerHTML = "";
+      for (let second = 0; second <= 59; second += 1) {
+        const value = String(second).padStart(2, "0");
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        datetimeLocalSecondsEl.appendChild(option);
+      }
+      datetimeLocalSecondsEl.value = "00";
+    }
+
     function nowLocalInputValue() {
       const now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -2121,7 +2151,10 @@
     }
 
     function calculateUtcPreview() {
-      setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
+      setDateTimeWithSeconds(datetimeLocalEl.value, {
+        syncShared: false,
+        forceSecond: datetimeLocalSecondsEl.value,
+      });
       if (!datetimeLocalEl.value) {
         datetimeUtcPreviewEl.value = "";
         return;
@@ -2358,6 +2391,15 @@
       return `<table class="expert-table"><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
     }
 
+    function resolveAspectStrengthLabel(aspect) {
+      const orb = Number(aspect?.orb);
+      if (!Number.isFinite(orb)) return "—";
+      if (orb <= 0.5) return "exact";
+      if (orb <= 1.5) return "strong";
+      if (orb <= 3.0) return "working";
+      return "weak";
+    }
+
     function renderExpertTables(chartResponse, timezonePayload, warnings) {
       lastExpertRenderPayload = { chartResponse, timezonePayload, warnings };
 
@@ -2467,10 +2509,11 @@
         formatDegreeForExpert(aspect.exact_angle),
         formatDegreeForExpert(aspect.actual_angle),
         formatDegreeForExpert(aspect.orb),
+        resolveAspectStrengthLabel(aspect),
         aspect.applying === true ? "applying" : (aspect.applying === false ? "separating" : "—"),
       ]);
       expertAspectsEl.innerHTML = renderTable(
-        ["Объект A", "Аспект", "Объект B", "Точный угол", "Фактический угол", "Орбис", "Applying/Separating"],
+        ["Объект A", "Аспект", "Объект B", "Точный угол", "Фактический угол", "Отклонение (орбис)", "Сила", "Applying/Separating"],
         aspectRows
       );
 
@@ -3291,11 +3334,15 @@
 
     function applyPlaceSelectionToSharedContext(option, cityQueryValue) {
       if (!option) return;
+      const latitude = Number(option.dataset.latitude);
+      const longitude = Number(option.dataset.longitude);
       syncSharedBirthContext({
         cityQuery: cityQueryValue || sharedBirthContext.cityQuery,
         selectedPlaceLabel: option.dataset.label || option.textContent || null,
-        latitude: Number(option.dataset.latitude),
-        longitude: Number(option.dataset.longitude),
+        latitude,
+        longitude,
+        latitudeDms: Number.isFinite(latitude) ? decimalToDms(latitude, "lat") : null,
+        longitudeDms: Number.isFinite(longitude) ? decimalToDms(longitude, "lon") : null,
         timezoneName: option.dataset.timezoneName || null,
         timezoneSource: option.dataset.timezoneName ? "geocode_result" : null,
       }, { silent: false });
@@ -3308,7 +3355,10 @@
     async function generate() {
       syncSharedBirthContext(getChartContextPatch(), { silent: false });
       setStatus("Выполняем расчёт...");
-      const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
+      const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, {
+        syncShared: false,
+        forceSecond: datetimeLocalSecondsEl.value,
+      });
       const zodiacMode = zodiacModeEl.value;
       const sidMode = siderealModeEl.value || null;
       const body = {
@@ -4547,7 +4597,10 @@
     datetimeLocalSecondsEl.addEventListener("input", () => {
       const normalizedSecond = normalizeSecondValue(datetimeLocalSecondsEl.value || "00");
       datetimeLocalSecondsEl.value = normalizedSecond;
-      setDateTimeWithSeconds(datetimeLocalEl.value, { syncShared: false });
+      setDateTimeWithSeconds(datetimeLocalEl.value, {
+        syncShared: false,
+        forceSecond: normalizedSecond,
+      });
       syncSharedBirthContext(getChartContextPatch(), { silent: false });
       calculateUtcPreview();
     });
@@ -4574,6 +4627,16 @@
       });
     });
     [wzLatitudeDmsEl, wzLongitudeDmsEl].forEach((el) => {
+      el.addEventListener("input", () => {
+        syncCoordinatesFromActiveFormat("wizard");
+      });
+    });
+    [document.getElementById("latitude"), document.getElementById("longitude")].forEach((el) => {
+      el.addEventListener("input", () => {
+        syncCoordinatesFromActiveFormat("chart");
+      });
+    });
+    [wzLatitudeEl, wzLongitudeEl].forEach((el) => {
       el.addEventListener("input", () => {
         syncCoordinatesFromActiveFormat("wizard");
       });
@@ -4607,6 +4670,7 @@
     window.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
 
     fillOffsets();
+    fillSecondOptions();
     for (let i = 0; i < timezoneOffsetEl.options.length; i++) {
       wzTimezoneOffsetEl.appendChild(timezoneOffsetEl.options[i].cloneNode(true));
     }
