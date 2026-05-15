@@ -88,6 +88,8 @@ def test_chart_success_endpoint(monkeypatch, tmp_path) -> None:
         assert "actual_angle" in aspect
         assert "orb" in aspect
         assert aspect["applying"] is None
+        assert "Mean Node" not in {aspect["object_a"], aspect["object_b"]}
+        assert {"True Node", "True North Node"} != {aspect["object_a"], aspect["object_b"]}
 
     node_defs = data["meta"]["node_definitions"]
     assert node_defs["true_node"]["calculation_type"] == "true_node"
@@ -98,6 +100,14 @@ def test_chart_success_endpoint(monkeypatch, tmp_path) -> None:
     true_south = data["objects"]["true_south_node"]["absolute_degree_0_360"]
     assert abs(true_south - ((true_north + 180.0) % 360.0)) < 1e-6
     assert data["objects"]["true_south_node"]["house"] is not None
+    assert any(
+        {
+            aspect["object_a"],
+            aspect["object_b"],
+        }
+        == {"True North Node", "True South Node"} and aspect["aspect_type"] == "opposition"
+        for aspect in data["aspects"]
+    )
 
 
 def test_chart_returns_real_calculation_output(monkeypatch, tmp_path) -> None:

@@ -31,6 +31,8 @@ OBJECT_DISPLAY_NAMES: dict[str, str] = {
     "neptune": "Neptune",
     "pluto": "Pluto",
     "true_node": "True Node",
+    "true_north_node": "True North Node",
+    "true_south_node": "True South Node",
     "mean_node": "Mean Node",
     "chiron": "Chiron",
 }
@@ -38,7 +40,7 @@ OBJECT_DISPLAY_NAMES: dict[str, str] = {
 LUMINARIES = {"sun", "moon"}
 PERSONAL_PLANETS = {"mercury", "venus", "mars"}
 OUTER_PLANETS = {"jupiter", "saturn", "uranus", "neptune", "pluto"}
-SPECIAL_POINTS = {"chiron", "true_node", "mean_node"}
+SPECIAL_POINTS = {"chiron", "true_node", "true_north_node", "true_south_node", "mean_node"}
 
 DEFAULT_PROFILE = "avestan"
 

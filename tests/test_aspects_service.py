@@ -114,3 +114,34 @@ def test_asymmetric_orb_keeps_venus_neptune_trine_when_personal_planet_allows() 
     assert len(aspects) == 1
     assert aspects[0].aspect_type == "trine"
     assert aspects[0].orb == 3.1
+
+
+def test_true_node_axis_opposition_is_supported() -> None:
+    service = AspectsService()
+    aspects = service.calculate_aspects(
+        objects={
+            "true_north_node": _obj("true_north_node", 15.0),
+            "true_south_node": _obj("true_south_node", 195.0),
+        }
+    )
+
+    assert len(aspects) == 1
+    assert aspects[0].object_a == "True North Node"
+    assert aspects[0].object_b == "True South Node"
+    assert aspects[0].aspect_type == "opposition"
+    assert aspects[0].orb == 0.0
+
+
+def test_true_south_node_gets_consistent_planet_aspect_when_geometry_allows() -> None:
+    service = AspectsService()
+    aspects = service.calculate_aspects(
+        objects={
+            "moon": _obj("moon", 60.0),
+            "true_north_node": _obj("true_north_node", 0.0),
+            "true_south_node": _obj("true_south_node", 180.0),
+        }
+    )
+
+    pairs = {(aspect.object_a, aspect.object_b, aspect.aspect_type) for aspect in aspects}
+    assert ("Moon", "True North Node", "sextile") in pairs
+    assert ("Moon", "True South Node", "trine") in pairs

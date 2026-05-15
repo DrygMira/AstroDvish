@@ -481,8 +481,8 @@
           <div class="hint" style="align-self:end;">Поддерживается ввод вида 54°44'00" N и 55°56'00" E.</div>
         </div>
         <div class="grid" style="margin-top:10px;">
-          <div><label>Latitude</label><input id="wzLatitude" type="number" step="0.000001" value="54.7388" /></div>
-          <div><label>Longitude</label><input id="wzLongitude" type="number" step="0.000001" value="55.9721" /></div>
+          <div><label>Latitude</label><input id="wzLatitude" type="text" inputmode="decimal" value="54.7388" /></div>
+          <div><label>Longitude</label><input id="wzLongitude" type="text" inputmode="decimal" value="55.9721" /></div>
         </div>
         <div id="wzCoordDmsWrap" class="grid hidden" style="margin-top:10px;">
           <div><label>Latitude (DMS)</label><input id="wzLatitudeDms" placeholder="54°44'00&quot; N" /></div>
@@ -609,11 +609,11 @@
         <div class="grid" style="margin-top:10px;">
           <div>
             <label>Latitude</label>
-            <input id="latitude" type="number" step="0.000001" value="54.7388" />
+            <input id="latitude" type="text" inputmode="decimal" value="54.7388" />
           </div>
           <div>
             <label>Longitude</label>
-            <input id="longitude" type="number" step="0.000001" value="55.9721" />
+            <input id="longitude" type="text" inputmode="decimal" value="55.9721" />
           </div>
         </div>
         <div class="grid" style="margin-top:10px;">
@@ -1143,27 +1143,22 @@
           </div>
 
           <div class="expert-section">
-            <strong>2. Узлы (разные типы расчёта)</strong>
-            <div id="expertNodes"></div>
-          </div>
-
-          <div class="expert-section">
-            <strong>3. Углы карты</strong>
+            <strong>2. Углы карты</strong>
             <div id="expertAngles"></div>
           </div>
 
           <div class="expert-section">
-            <strong>4. Куспиды домов</strong>
+            <strong>3. Куспиды домов</strong>
             <div id="expertCusps"></div>
           </div>
 
           <div class="expert-section">
-            <strong>5. Аспекты</strong>
+            <strong>4. Аспекты</strong>
             <div id="expertAspects"></div>
           </div>
 
           <div class="expert-section">
-            <strong>6. Timezone</strong>
+            <strong>5. Timezone</strong>
             <div id="expertTimezone"></div>
           </div>
         </div>
@@ -1211,6 +1206,8 @@
     const datetimeUtcPreviewEl = document.getElementById("datetimeUtcPreview");
     const coordValueFormatEl = document.getElementById("coordValueFormat");
     const coordDmsWrapEl = document.getElementById("coordDmsWrap");
+    const latitudeEl = document.getElementById("latitude");
+    const longitudeEl = document.getElementById("longitude");
     const latitudeDmsEl = document.getElementById("latitudeDms");
     const longitudeDmsEl = document.getElementById("longitudeDms");
     const coordModeEl = document.getElementById("coordMode");
@@ -1225,7 +1222,6 @@
     const toggleExpertBtnEl = document.getElementById("toggleExpertBtn");
     const expertWrapEl = document.getElementById("expertWrap");
     const expertObjectsEl = document.getElementById("expertObjects");
-    const expertNodesEl = document.getElementById("expertNodes");
     const expertAnglesEl = document.getElementById("expertAngles");
     const expertCuspsEl = document.getElementById("expertCusps");
     const expertAspectsEl = document.getElementById("expertAspects");
@@ -1328,6 +1324,7 @@
     let lastGenerateTechnicalDebug = null;
     let lastGeocodeTechnicalDebug = null;
     let lastProRunPayload = null;
+    let activeCoordinateInputId = null;
 
     const rectDialogState = {
       rectificationDocument: null,
@@ -1472,6 +1469,19 @@
       wzCurrentDataSummaryEl.innerHTML = rows.map(([label, value]) => `<div><strong>${label}:</strong> ${value}</div>`).join("");
     }
 
+    function withActiveCoordinateInput(inputId, callback) {
+      activeCoordinateInputId = inputId;
+      try {
+        callback();
+      } finally {
+        window.setTimeout(() => {
+          if (activeCoordinateInputId === inputId) {
+            activeCoordinateInputId = null;
+          }
+        }, 0);
+      }
+    }
+
     function applySharedContextToForms() {
       const apiBase = sharedBirthContext.apiBaseUrl || "http://127.0.0.1:8013";
       document.getElementById("apiBaseUrl").value = apiBase;
@@ -1489,14 +1499,22 @@
 
       const lat = sharedBirthContext.latitude ?? "";
       const lon = sharedBirthContext.longitude ?? "";
-      document.getElementById("latitude").value = lat;
-      document.getElementById("longitude").value = lon;
+      if (activeCoordinateInputId !== "latitude") {
+        latitudeEl.value = lat;
+      }
+      if (activeCoordinateInputId !== "longitude") {
+        longitudeEl.value = lon;
+      }
       document.getElementById("rectLatitude").value = lat;
       document.getElementById("rectLongitude").value = lon;
       document.getElementById("rdLatitude").value = lat;
       document.getElementById("rdLongitude").value = lon;
-      wzLatitudeEl.value = lat;
-      wzLongitudeEl.value = lon;
+      if (activeCoordinateInputId !== "wzLatitude") {
+        wzLatitudeEl.value = lat;
+      }
+      if (activeCoordinateInputId !== "wzLongitude") {
+        wzLongitudeEl.value = lon;
+      }
       coordValueFormatEl.value = sharedBirthContext.coordValueFormat || "decimal";
       wzCoordValueFormatEl.value = sharedBirthContext.coordValueFormat || "decimal";
       updateCoordinateFormatUi();
@@ -1683,8 +1701,8 @@
     function buildCoordinateContextPatch(source = "chart") {
       const format = sharedBirthContext.coordValueFormat || "decimal";
       const useWizard = source === "wizard";
-      const rawLatDecimal = useWizard ? String(wzLatitudeEl.value || "") : String(document.getElementById("latitude").value || "");
-      const rawLonDecimal = useWizard ? String(wzLongitudeEl.value || "") : String(document.getElementById("longitude").value || "");
+      const rawLatDecimal = useWizard ? String(wzLatitudeEl.value || "") : String(latitudeEl.value || "");
+      const rawLonDecimal = useWizard ? String(wzLongitudeEl.value || "") : String(longitudeEl.value || "");
       const rawLatDms = useWizard ? wzLatitudeDmsEl.value.trim() : latitudeDmsEl.value.trim();
       const rawLonDms = useWizard ? wzLongitudeDmsEl.value.trim() : longitudeDmsEl.value.trim();
 
@@ -1696,12 +1714,22 @@
       }
 
       if (Number.isFinite(latitude)) {
-        document.getElementById("latitude").value = Number(latitude).toFixed(6);
-        wzLatitudeEl.value = Number(latitude).toFixed(6);
+        const normalizedLatitude = Number(latitude).toFixed(6);
+        if (activeCoordinateInputId !== "latitude") {
+          latitudeEl.value = normalizedLatitude;
+        }
+        if (activeCoordinateInputId !== "wzLatitude") {
+          wzLatitudeEl.value = normalizedLatitude;
+        }
       }
       if (Number.isFinite(longitude)) {
-        document.getElementById("longitude").value = Number(longitude).toFixed(6);
-        wzLongitudeEl.value = Number(longitude).toFixed(6);
+        const normalizedLongitude = Number(longitude).toFixed(6);
+        if (activeCoordinateInputId !== "longitude") {
+          longitudeEl.value = normalizedLongitude;
+        }
+        if (activeCoordinateInputId !== "wzLongitude") {
+          wzLongitudeEl.value = normalizedLongitude;
+        }
       }
       const normalizedLatDms = Number.isFinite(latitude) ? decimalToDms(Number(latitude), "lat") : null;
       const normalizedLonDms = Number.isFinite(longitude) ? decimalToDms(Number(longitude), "lon") : null;
@@ -2410,7 +2438,7 @@
       const cuspDetails = houses.cusp_details || {};
 
       const objectOrder = [
-        "sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","true_node","true_south_node","chiron"
+        "sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","true_north_node","true_south_node","chiron"
       ];
       const objectLabels = {
         sun: "Солнце",
@@ -2423,7 +2451,7 @@
         uranus: "Уран",
         neptune: "Нептун",
         pluto: "Плутон",
-        true_node: "Истинный Северный узел",
+        true_north_node: "Истинный Северный узел",
         true_south_node: "Истинный Южный узел",
         chiron: "Хирон",
       };
@@ -2444,32 +2472,6 @@
         ["Объект / планета", "Знак", "Градус в знаке", "Абсолютный градус 0–360", "Дом", "Фазы движения"],
         objectRows
       ) + "<div class='hint' style='margin-top:6px;'>D = директное, R = ретроградное, S = стационарное. Технически S определяется по порогу скорости (placeholder) и требует экспертной проверки.</div>";
-
-      const nodeRows = [];
-      const trueNode = objects.true_node;
-      const trueSouthNode = objects.true_south_node;
-      if (trueNode && typeof trueNode.absolute_degree_0_360 === "number") {
-        nodeRows.push([
-          "Истинный Северный узел",
-          trueNode.sign_name_en || "—",
-          typeof trueNode.sign_degree === "number" ? formatDegreeForExpert(trueNode.sign_degree) : "—",
-          trueNode.house ?? "—",
-          formatDegreeForExpert(trueNode.absolute_degree_0_360),
-        ]);
-      }
-      if (trueSouthNode && typeof trueSouthNode.absolute_degree_0_360 === "number") {
-        nodeRows.push([
-          "Истинный Южный узел",
-          trueSouthNode.sign_name_en || "—",
-          typeof trueSouthNode.sign_degree === "number" ? formatDegreeForExpert(trueSouthNode.sign_degree) : "—",
-          trueSouthNode.house ?? "—",
-          formatDegreeForExpert(trueSouthNode.absolute_degree_0_360),
-        ]);
-      }
-      expertNodesEl.innerHTML = renderTable(
-        ["Узел", "Знак", "Градус", "Дом", "Абсолютный градус"],
-        nodeRows
-      );
 
       const angleMap = [["asc", "Asc"], ["mc", "MC"], ["desc", "Desc"], ["ic", "IC"]];
       const angleRows = angleMap
@@ -3353,7 +3355,8 @@
     }
 
     async function generate() {
-      syncSharedBirthContext(getChartContextPatch(), { silent: false });
+      const chartContext = getChartContextPatch();
+      syncSharedBirthContext(chartContext, { silent: false });
       setStatus("Выполняем расчёт...");
       const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, {
         syncShared: false,
@@ -3367,8 +3370,8 @@
         timezone_mode: timezoneModeEl.value,
         timezone_offset: timezoneOffsetEl.value,
         timezone_name: timezoneNameEl.value || null,
-        latitude: Number(document.getElementById("latitude").value),
-        longitude: Number(document.getElementById("longitude").value),
+        latitude: chartContext.latitude,
+        longitude: chartContext.longitude,
         house_system: document.getElementById("houseSystem").value,
         aspect_orb_profile: aspectOrbProfileEl.value,
         zodiac_mode: zodiacMode,
@@ -4120,7 +4123,7 @@
 
       const chartObjects = chartResponse?.objects || {};
       const objectNames = Object.keys(chartObjects);
-      const trueNorthNode = chartObjects.true_node || chartObjects.true_north_node || null;
+      const trueNorthNode = chartObjects.true_north_node || null;
       const trueSouthNode = chartObjects.true_south_node || null;
       const houses = chartResponse?.houses?.cusp_details || {};
       const aspects = Array.isArray(chartResponse?.aspects) ? chartResponse.aspects : [];
@@ -4631,14 +4634,18 @@
         syncCoordinatesFromActiveFormat("wizard");
       });
     });
-    [document.getElementById("latitude"), document.getElementById("longitude")].forEach((el) => {
+    [latitudeEl, longitudeEl].forEach((el) => {
       el.addEventListener("input", () => {
-        syncCoordinatesFromActiveFormat("chart");
+        withActiveCoordinateInput(el.id, () => {
+          syncCoordinatesFromActiveFormat("chart");
+        });
       });
     });
     [wzLatitudeEl, wzLongitudeEl].forEach((el) => {
       el.addEventListener("input", () => {
-        syncCoordinatesFromActiveFormat("wizard");
+        withActiveCoordinateInput(el.id, () => {
+          syncCoordinatesFromActiveFormat("wizard");
+        });
       });
     });
     timezoneModeEl.addEventListener("change", () => {
@@ -4696,8 +4703,8 @@
     sharedBirthContext.birthDateLocal = todayLocalDateValue();
     sharedBirthContext.birthDateTimeLocal = datetimeLocalEl.value;
     sharedBirthContext.cityQuery = document.getElementById("cityQuery").value.trim() || null;
-    sharedBirthContext.latitude = Number(document.getElementById("latitude").value);
-    sharedBirthContext.longitude = Number(document.getElementById("longitude").value);
+    sharedBirthContext.latitude = normalizeCoordinateNumber(latitudeEl.value);
+    sharedBirthContext.longitude = normalizeCoordinateNumber(longitudeEl.value);
     sharedBirthContext.coordValueFormat = "decimal";
     applySharedContextToForms();
     updateWizardContextFromCurrentStates();

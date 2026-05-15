@@ -12,6 +12,7 @@ from app.models.request_models import ChartRequest, SiderealMode, ZodiacMode
 from app.models.response_models import ChartResponse, HousesResponse, ObjectResponse
 from app.services.aspects_service import AspectsService
 from app.services.formatter_service import (
+    augment_node_objects,
     build_angles_payload,
     build_chart_response,
     build_houses_payload,
@@ -76,8 +77,9 @@ class EphemerisService:
                 house_system=payload.house_system,
                 flags=flags,
             )
+            aspect_objects = self._build_aspect_objects(objects)
             aspects = self.aspects_service.calculate_aspects(
-                objects=objects,
+                objects=aspect_objects,
                 orb_profile=payload.aspect_orb_profile.value,
             )
 
@@ -123,6 +125,12 @@ class EphemerisService:
                 ) from exc
             result[name] = build_object_payload(name, data)
         return result
+
+    @staticmethod
+    def _build_aspect_objects(objects: dict[str, ObjectResponse]) -> dict[str, ObjectResponse]:
+        augmented = augment_node_objects(objects)
+        excluded = {"true_node", "mean_node"}
+        return {name: obj for name, obj in augmented.items() if name not in excluded}
 
     @staticmethod
     def _calculate_houses_and_angles(

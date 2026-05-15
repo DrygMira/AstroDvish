@@ -55,7 +55,7 @@ def _build_derived_true_south_node(true_node: ObjectResponse) -> ObjectResponse:
     )
 
 
-def _augment_node_objects(objects: dict[str, ObjectResponse]) -> dict[str, ObjectResponse]:
+def augment_node_objects(objects: dict[str, ObjectResponse]) -> dict[str, ObjectResponse]:
     augmented = dict(objects)
     true_node = augmented.get("true_node")
     if true_node is None:
@@ -139,7 +139,7 @@ def build_chart_response(
     object_constants: dict[str, int],
     aspect_orb_profile: AspectOrbProfile,
 ) -> ChartResponse:
-    objects_with_houses = assign_object_houses(objects=_augment_node_objects(objects), houses=houses)
+    objects_with_houses = assign_object_houses(objects=augment_node_objects(objects), houses=houses)
     node_definitions = {
         "true_node": {
             "label_ru": "Северный узел истинный",

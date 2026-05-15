@@ -86,6 +86,9 @@ def test_main_ui_supports_dms_coordinate_input_and_conversion_debug() -> None:
     assert response.status_code == 200
     html = response.text
     assert 'id="coordValueFormat"' in html
+    assert 'id="latitude" type="text"' in html
+    assert 'id="longitude" type="text"' in html
+    assert 'inputmode="decimal"' in html
     assert 'id="latitudeDms"' in html
     assert 'id="longitudeDms"' in html
     assert "parseDmsCoordinate(" in html
@@ -94,6 +97,18 @@ def test_main_ui_supports_dms_coordinate_input_and_conversion_debug() -> None:
     assert "latitudeDms: normalizedLatDms || null" in html
     assert "longitudeDms: normalizedLonDms || null" in html
     assert "latitudeDms: Number.isFinite(latitude) ? decimalToDms(latitude, \"lat\") : null" in html
+
+
+def test_main_ui_decimal_coordinate_inputs_preserve_manual_editing_while_syncing_other_fields() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "let activeCoordinateInputId = null;" in html
+    assert "function withActiveCoordinateInput(inputId, callback)" in html
+    assert "if (activeCoordinateInputId !== \"latitude\") {" in html
+    assert "if (activeCoordinateInputId !== \"longitude\") {" in html
 
 
 def test_main_ui_generate_payload_uses_datetime_with_seconds() -> None:
