@@ -111,6 +111,32 @@ def test_main_ui_decimal_coordinate_inputs_preserve_manual_editing_while_syncing
     assert "if (activeCoordinateInputId !== \"longitude\") {" in html
 
 
+def test_main_ui_coordinate_sync_uses_source_of_edit_not_only_selected_format() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "function syncFromDecimalInputs(source)" in html
+    assert "function syncFromDmsInputs(source)" in html
+    assert "getChartContextPatch({ coordinateSource: \"decimal\" })" in html
+    assert "getChartContextPatch({ coordinateSource: \"dms\" })" in html
+    assert "getWizardContextPatch({ coordinateSource: \"decimal\" })" in html
+    assert "getWizardContextPatch({ coordinateSource: \"dms\" })" in html
+
+
+def test_main_ui_decimal_and_dms_paths_are_not_forced_by_coord_value_format() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "const preferredSource = options.preferredSource || format;" in html
+    assert "if (preferredSource === \"dms\") {" in html
+    assert "latitude_input: preferredSource === \"dms\" ? rawLatDms : rawLatDecimal," in html
+    assert "longitude_input: preferredSource === \"dms\" ? rawLonDms : rawLonDecimal," in html
+
+
 def test_main_ui_generate_payload_uses_datetime_with_seconds() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/")

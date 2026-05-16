@@ -1698,8 +1698,9 @@
       return `${degreesAdjusted}°${String(minutesAdjusted).padStart(2, "0")}'${String(seconds).padStart(2, "0")}" ${hemisphere}`;
     }
 
-    function buildCoordinateContextPatch(source = "chart") {
+    function buildCoordinateContextPatch(source = "chart", options = {}) {
       const format = sharedBirthContext.coordValueFormat || "decimal";
+      const preferredSource = options.preferredSource || format;
       const useWizard = source === "wizard";
       const rawLatDecimal = useWizard ? String(wzLatitudeEl.value || "") : String(latitudeEl.value || "");
       const rawLonDecimal = useWizard ? String(wzLongitudeEl.value || "") : String(longitudeEl.value || "");
@@ -1708,7 +1709,7 @@
 
       let latitude = normalizeCoordinateNumber(rawLatDecimal);
       let longitude = normalizeCoordinateNumber(rawLonDecimal);
-      if (format === "dms") {
+      if (preferredSource === "dms") {
         latitude = parseDmsCoordinate(rawLatDms, "lat");
         longitude = parseDmsCoordinate(rawLonDms, "lon");
       }
@@ -1733,11 +1734,11 @@
       }
       const normalizedLatDms = Number.isFinite(latitude) ? decimalToDms(Number(latitude), "lat") : null;
       const normalizedLonDms = Number.isFinite(longitude) ? decimalToDms(Number(longitude), "lon") : null;
-      if (normalizedLatDms) {
+      if (normalizedLatDms && activeCoordinateInputId !== "latitudeDms" && activeCoordinateInputId !== "wzLatitudeDms") {
         latitudeDmsEl.value = normalizedLatDms;
         wzLatitudeDmsEl.value = normalizedLatDms;
       }
-      if (normalizedLonDms) {
+      if (normalizedLonDms && activeCoordinateInputId !== "longitudeDms" && activeCoordinateInputId !== "wzLongitudeDms") {
         longitudeDmsEl.value = normalizedLonDms;
         wzLongitudeDmsEl.value = normalizedLonDms;
       }
@@ -1746,9 +1747,10 @@
         ...(lastGenerateTechnicalDebug || {}),
         coordinates_debug: {
           format,
+          preferred_source: preferredSource,
           source,
-          latitude_input: format === "dms" ? rawLatDms : rawLatDecimal,
-          longitude_input: format === "dms" ? rawLonDms : rawLonDecimal,
+          latitude_input: preferredSource === "dms" ? rawLatDms : rawLatDecimal,
+          longitude_input: preferredSource === "dms" ? rawLonDms : rawLonDecimal,
           latitude_decimal: Number.isFinite(latitude) ? Number(latitude) : null,
           longitude_decimal: Number.isFinite(longitude) ? Number(longitude) : null,
         },
@@ -1774,15 +1776,31 @@
       if (Number.isFinite(sharedBirthContext.latitude) && Number.isFinite(sharedBirthContext.longitude)) {
         const latDms = decimalToDms(Number(sharedBirthContext.latitude), "lat");
         const lonDms = decimalToDms(Number(sharedBirthContext.longitude), "lon");
-        latitudeDmsEl.value = latDms;
-        longitudeDmsEl.value = lonDms;
-        wzLatitudeDmsEl.value = latDms;
-        wzLongitudeDmsEl.value = lonDms;
+        if (activeCoordinateInputId !== "latitudeDms") {
+          latitudeDmsEl.value = latDms;
+        }
+        if (activeCoordinateInputId !== "longitudeDms") {
+          longitudeDmsEl.value = lonDms;
+        }
+        if (activeCoordinateInputId !== "wzLatitudeDms") {
+          wzLatitudeDmsEl.value = latDms;
+        }
+        if (activeCoordinateInputId !== "wzLongitudeDms") {
+          wzLongitudeDmsEl.value = lonDms;
+        }
       } else {
-        latitudeDmsEl.value = "";
-        longitudeDmsEl.value = "";
-        wzLatitudeDmsEl.value = "";
-        wzLongitudeDmsEl.value = "";
+        if (activeCoordinateInputId !== "latitudeDms") {
+          latitudeDmsEl.value = "";
+        }
+        if (activeCoordinateInputId !== "longitudeDms") {
+          longitudeDmsEl.value = "";
+        }
+        if (activeCoordinateInputId !== "wzLatitudeDms") {
+          wzLatitudeDmsEl.value = "";
+        }
+        if (activeCoordinateInputId !== "wzLongitudeDms") {
+          wzLongitudeDmsEl.value = "";
+        }
       }
     }
 
@@ -1878,12 +1896,14 @@
       rectificationWizardState.timezoneOffset = wzTimezoneOffsetEl.value || null;
     }
 
-    function getChartContextPatch() {
+    function getChartContextPatch(options = {}) {
       const normalizedDateTime = setDateTimeWithSeconds(datetimeLocalEl.value, {
         syncShared: false,
         forceSecond: datetimeLocalSecondsEl.value,
       });
-      const coords = buildCoordinateContextPatch("chart");
+      const coords = buildCoordinateContextPatch("chart", {
+        preferredSource: options.coordinateSource || "decimal",
+      });
       return {
         apiBaseUrl: document.getElementById("apiBaseUrl").value.trim() || "http://127.0.0.1:8013",
         birthDateLocal: normalizedDateTime ? normalizedDateTime.slice(0, 10) : sharedBirthContext.birthDateLocal,
@@ -1904,8 +1924,10 @@
       };
     }
 
-    function getWizardContextPatch() {
-      const coords = buildCoordinateContextPatch("wizard");
+    function getWizardContextPatch(options = {}) {
+      const coords = buildCoordinateContextPatch("wizard", {
+        preferredSource: options.coordinateSource || "decimal",
+      });
       return {
         apiBaseUrl: wzApiBaseUrlEl.value.trim() || "http://127.0.0.1:8013",
         birthDateLocal: wzBirthDateEl.value || null,
@@ -4607,44 +4629,57 @@
       syncSharedBirthContext(getChartContextPatch(), { silent: false });
       calculateUtcPreview();
     });
-    const syncCoordinatesFromActiveFormat = (source) => {
+    function syncFromDecimalInputs(source) {
       if (source === "wizard") {
-        syncSharedBirthContext(getWizardContextPatch(), { silent: false });
+        syncSharedBirthContext(getWizardContextPatch({ coordinateSource: "decimal" }), { silent: false });
       } else {
-        syncSharedBirthContext(getChartContextPatch(), { silent: false });
+        syncSharedBirthContext(getChartContextPatch({ coordinateSource: "decimal" }), { silent: false });
       }
-    };
+    }
+
+    function syncFromDmsInputs(source) {
+      if (source === "wizard") {
+        syncSharedBirthContext(getWizardContextPatch({ coordinateSource: "dms" }), { silent: false });
+      } else {
+        syncSharedBirthContext(getChartContextPatch({ coordinateSource: "dms" }), { silent: false });
+      }
+    }
+
     coordValueFormatEl.addEventListener("change", () => {
       sharedBirthContext.coordValueFormat = coordValueFormatEl.value;
       updateCoordinateFormatUi();
-      syncCoordinatesFromActiveFormat("chart");
+      syncFromDecimalInputs("chart");
     });
     wzCoordValueFormatEl.addEventListener("change", () => {
       sharedBirthContext.coordValueFormat = wzCoordValueFormatEl.value;
       updateCoordinateFormatUi();
-      syncCoordinatesFromActiveFormat("wizard");
+      syncFromDecimalInputs("wizard");
     });
     [latitudeDmsEl, longitudeDmsEl].forEach((el) => {
       el.addEventListener("input", () => {
-        syncCoordinatesFromActiveFormat("chart");
+        withActiveCoordinateInput(el.id, () => {
+          syncFromDmsInputs("chart");
+        });
       });
     });
     [wzLatitudeDmsEl, wzLongitudeDmsEl].forEach((el) => {
       el.addEventListener("input", () => {
-        syncCoordinatesFromActiveFormat("wizard");
+        withActiveCoordinateInput(el.id, () => {
+          syncFromDmsInputs("wizard");
+        });
       });
     });
     [latitudeEl, longitudeEl].forEach((el) => {
       el.addEventListener("input", () => {
         withActiveCoordinateInput(el.id, () => {
-          syncCoordinatesFromActiveFormat("chart");
+          syncFromDecimalInputs("chart");
         });
       });
     });
     [wzLatitudeEl, wzLongitudeEl].forEach((el) => {
       el.addEventListener("input", () => {
         withActiveCoordinateInput(el.id, () => {
-          syncCoordinatesFromActiveFormat("wizard");
+          syncFromDecimalInputs("wizard");
         });
       });
     });
