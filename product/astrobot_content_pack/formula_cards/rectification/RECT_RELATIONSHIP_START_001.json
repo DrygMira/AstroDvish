@@ -1,0 +1,28 @@
+{
+  "card_id": "RECT_RELATIONSHIP_START_001",
+  "event_type": "relationship_start",
+  "status": "test",
+  "school": "expert_rectification_v0",
+  "title": "Relationship start",
+  "core_logic": ["house_7", "house_5", "venus"],
+  "houses": ["house_7", "house_5"],
+  "planets": ["venus", "moon", "jupiter"],
+  "aspects": ["venus_moon_link", "ruler_7_link", "romantic_axis_activation"],
+  "method_priority": ["directions", "transits", "solars"],
+  "strong_confirmation": ["multiple_methods", "romantic_axis_activation"],
+  "weak_confirmation": ["brief_contact_only", "single_transit_only"],
+  "exclusions": ["divorce_signature", "bereavement_signature"],
+  "subformulas": [
+    {
+      "id": "romantic_start",
+      "title": "Romantic start marker",
+      "indicators": ["house_5", "house_7", "romantic_axis_activation"]
+    },
+    {
+      "id": "formalization_pending",
+      "title": "Relationship without legal union yet",
+      "indicators": ["venus", "ruler_7_link"]
+    }
+  ],
+  "notes": "Test card only. Not a final rectification formula."
+}

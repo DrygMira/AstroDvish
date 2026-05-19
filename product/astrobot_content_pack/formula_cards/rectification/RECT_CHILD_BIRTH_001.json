@@ -1,0 +1,23 @@
+{
+  "card_id": "RECT_CHILD_BIRTH_001",
+  "event_type": "child_birth",
+  "status": "test",
+  "school": "expert_rectification_v0",
+  "title": "Birth of child",
+  "core_logic": ["house_5", "house_4", "ruler_5", "moon"],
+  "houses": ["house_5", "house_4"],
+  "planets": ["moon", "jupiter", "venus"],
+  "aspects": ["angle_link", "ruler_5_angle_link", "moon_jupiter_link"],
+  "method_priority": ["directions", "solars", "transits"],
+  "strong_confirmation": ["multiple_methods", "jupiter_support", "family_axis_activation"],
+  "weak_confirmation": ["single_transit_only", "house_5_without_angles"],
+  "exclusions": ["house_8_12_overload", "malefic_loss_signature"],
+  "subformulas": [
+    {
+      "id": "child_family_axis",
+      "title": "House 5 and house 4 family activation",
+      "indicators": ["house_5", "house_4", "family_axis_activation"]
+    }
+  ],
+  "notes": "Test card only. Not a final rectification formula."
+}

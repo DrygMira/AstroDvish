@@ -1,0 +1,28 @@
+{
+  "card_id": "RECT_DIVORCE_BREAKUP_001",
+  "event_type": "divorce_breakup",
+  "status": "test",
+  "school": "expert_rectification_v0",
+  "title": "Divorce or breakup",
+  "core_logic": ["house_7", "house_8", "house_12", "saturn", "uranus", "pluto"],
+  "houses": ["house_7", "house_8", "house_12"],
+  "planets": ["saturn", "uranus", "pluto", "venus"],
+  "aspects": ["relationship_break_signature", "uranus_hard_aspect", "pluto_separation_link"],
+  "method_priority": ["directions", "transits", "solars"],
+  "strong_confirmation": ["multiple_methods", "status_break_marker", "separation_axis_activation"],
+  "weak_confirmation": ["conflict_without_break", "single_transit_only"],
+  "exclusions": ["marriage_signature", "child_birth_signature"],
+  "subformulas": [
+    {
+      "id": "legal_divorce",
+      "title": "Legal or final separation",
+      "indicators": ["house_7", "status_break_marker", "relationship_break_signature"]
+    },
+    {
+      "id": "deep_breakup_transform",
+      "title": "Breakup with crisis/transformation markers",
+      "indicators": ["house_8", "house_12", "pluto", "uranus"]
+    }
+  ],
+  "notes": "Test card only. Not a final rectification formula."
+}

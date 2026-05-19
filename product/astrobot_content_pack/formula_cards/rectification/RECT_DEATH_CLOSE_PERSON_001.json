@@ -1,0 +1,23 @@
+{
+  "card_id": "RECT_DEATH_CLOSE_PERSON_001",
+  "event_type": "death_close_person",
+  "status": "test",
+  "school": "expert_rectification_v0",
+  "title": "Death of close person",
+  "core_logic": ["house_of_deceased_person", "house_8", "house_12", "saturn", "pluto"],
+  "houses": ["house_of_deceased_person", "house_8", "house_12"],
+  "planets": ["saturn", "pluto", "moon"],
+  "aspects": ["saturn_hard_aspect", "pluto_hard_aspect", "loss_axis_link"],
+  "method_priority": ["directions", "transits", "solars"],
+  "strong_confirmation": ["multiple_methods", "angle_to_death_house", "saturn_pluto_repetition"],
+  "weak_confirmation": ["only_transit_loss_signature", "house_12_without_angles"],
+  "exclusions": ["relationship_only_signature", "career_only_signature"],
+  "subformulas": [
+    {
+      "id": "close_person_death_axis",
+      "title": "Loss houses with Saturn/Pluto pressure",
+      "indicators": ["house_of_deceased_person", "house_8", "house_12", "saturn", "pluto"]
+    }
+  ],
+  "notes": "Test card only. Not a final rectification formula."
+}

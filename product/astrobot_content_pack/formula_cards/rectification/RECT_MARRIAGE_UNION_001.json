@@ -1,0 +1,28 @@
+{
+  "card_id": "RECT_MARRIAGE_UNION_001",
+  "event_type": "marriage_union",
+  "status": "test",
+  "school": "expert_rectification_v0",
+  "title": "Marriage or legal union",
+  "core_logic": ["house_7", "house_4", "venus", "jupiter"],
+  "houses": ["house_7", "house_4"],
+  "planets": ["venus", "jupiter", "moon"],
+  "aspects": ["venus_jupiter_link", "ruler_7_angle_link", "union_status_change"],
+  "method_priority": ["directions", "solars", "transits"],
+  "strong_confirmation": ["multiple_methods", "legal_status_activation", "family_axis_activation"],
+  "weak_confirmation": ["relationship_only_without_union", "single_transit_only"],
+  "exclusions": ["divorce_signature", "loss_signature"],
+  "subformulas": [
+    {
+      "id": "legal_union_status",
+      "title": "Legal union or family status change",
+      "indicators": ["house_7", "house_4", "legal_status_activation"]
+    },
+    {
+      "id": "venus_jupiter_support",
+      "title": "Benefic support for union",
+      "indicators": ["venus", "jupiter", "venus_jupiter_link"]
+    }
+  ],
+  "notes": "Test card only. Not a final rectification formula."
+}
