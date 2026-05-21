@@ -2,19 +2,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
 
 from app.models.event_models import DatePrecision, EventCard
 from app.models.formula_card_models import FormulaAspectMatch, FormulaCard, FormulaDirectionRule
 from app.models.response_models import ChartResponse
+from app.services.rectification_formula.direction_chart_builder import (
+    DirectionChartBuildResult,
+    DirectionChartBuilder,
+    DirectionMethod,
+)
 
 ASPECT_MEANINGS: dict[str, str] = {
-    "conjunction": "прямое соединение и явная активация формулы",
-    "trine": "естественная поддержка и свободная реализация формулы",
-    "sextile": "рабочая возможность и включение формулы через действие",
-    "square": "напряжение и вынужденная реализация формулы",
-    "opposition": "поляризация и событийное проявление через ось",
-    "quincunx": "перестройка и неудобная подстройка формулы",
+    "conjunction": "direct activation of the formula link",
+    "trine": "easy support and free realization of the formula link",
+    "sextile": "working opportunity and activation through action",
+    "square": "tension and forced realization of the formula link",
+    "opposition": "axis-based event manifestation through polarization",
+    "quincunx": "adjustment and uncomfortable reconfiguration of the formula link",
 }
 
 ASPECT_ANGLES: dict[str, float] = {
@@ -45,10 +50,15 @@ SIGN_RULERS: dict[str, list[str]] = {
 @dataclass(frozen=True)
 class ResolvedPoint:
     key: str
+    base_key: str
+    natal_degree: float
     degree: float
 
 
 class DirectionsFormulaMatcher:
+    def __init__(self, *, direction_chart_builder: DirectionChartBuilder | None = None) -> None:
+        self.direction_chart_builder = direction_chart_builder or DirectionChartBuilder()
+
     def evaluate(
         self,
         *,
@@ -56,6 +66,7 @@ class DirectionsFormulaMatcher:
         chart: ChartResponse,
         candidate_birth_date: date,
         event: EventCard,
+        direction_method: DirectionMethod | None = None,
     ) -> tuple[list[FormulaAspectMatch], list[FormulaAspectMatch], list[dict[str, Any]], list[dict[str, Any]]]:
         event_date = self._event_anchor_date(event)
         if event_date is None:
@@ -70,7 +81,13 @@ class DirectionsFormulaMatcher:
             ]
             return [], [], missing, []
 
-        symbolic_arc = ((event_date - candidate_birth_date).days / 365.2425) % 360.0
+        direction_result = self.direction_chart_builder.build(
+            natal_chart=chart,
+            candidate_birth_date=candidate_birth_date,
+            event=event,
+            direction_method=direction_method,
+        )
+
         matched: list[FormulaAspectMatch] = []
         rejected: list[FormulaAspectMatch] = []
         missing_rules: list[dict[str, Any]] = []
@@ -80,7 +97,7 @@ class DirectionsFormulaMatcher:
             rule_result = self._evaluate_rule(
                 card=card,
                 chart=chart,
-                symbolic_arc=symbolic_arc,
+                direction_result=direction_result,
                 event=event,
                 rule=rule,
             )
@@ -98,7 +115,7 @@ class DirectionsFormulaMatcher:
         *,
         card: FormulaCard,
         chart: ChartResponse,
-        symbolic_arc: float,
+        direction_result: DirectionChartBuildResult,
         event: EventCard,
         rule: FormulaDirectionRule,
     ) -> dict[str, Any]:
@@ -106,23 +123,25 @@ class DirectionsFormulaMatcher:
             chart=chart,
             card=card,
             selectors=rule.source_selectors,
-            directed=True,
-            symbolic_arc=symbolic_arc,
+            coordinate_kind="directed",
+            direction_result=direction_result,
         )
         natal_points = self._resolve_selectors(
             chart=chart,
             card=card,
             selectors=rule.target_selectors,
-            directed=False,
-            symbolic_arc=symbolic_arc,
+            coordinate_kind="natal",
+            direction_result=direction_result,
         )
 
         debug: dict[str, Any] = {
             "rule_id": rule.id,
             "title": rule.title,
             "display_formula": self._display_formula(rule),
-            "source_kind": rule.source_kind,
-            "target_kind": rule.target_kind,
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "direction_method": direction_result.direction_method,
+            "direction_arc": round(direction_result.direction_arc, 6),
             "resolved_sources": [point.key for point in directed_points],
             "resolved_targets": [point.key for point in natal_points],
             "checked_pairs": [],
@@ -158,7 +177,7 @@ class DirectionsFormulaMatcher:
 
         for source in directed_points:
             for target in natal_points:
-                if source.key == target.key:
+                if source.key == target.key and source.base_key == target.base_key:
                     continue
                 aspect_name, orb, actual_angle, exact_angle = self._closest_requested_aspect(
                     source.degree,
@@ -176,11 +195,16 @@ class DirectionsFormulaMatcher:
                 pair_payload = {
                     "directed_point": source.key,
                     "natal_target": target.key,
+                    "source_coordinate_type": "directed",
+                    "target_coordinate_type": "natal",
+                    "source_natal_coordinate": round(source.natal_degree, 4),
+                    "directed_coordinate": round(source.degree, 4),
+                    "natal_coordinate": round(target.degree, 4),
                     "aspect_type": aspect_name,
                     "actual_angle": round(actual_angle, 4),
                     "exact_angle": round(exact_angle, 4),
                     "orb": round(orb, 4),
-                    "limit": round(rule.orb_limit, 4),
+                    "orb_limit": round(rule.orb_limit, 4),
                 }
                 debug["checked_pairs"].append(pair_payload)
 
@@ -188,18 +212,23 @@ class DirectionsFormulaMatcher:
                     method="directions",
                     event_type=event.event_type.value,
                     card_id=card.card_id,
+                    direction_method=direction_result.direction_method,
+                    direction_arc=round(direction_result.direction_arc, 6),
                     directed_point=source.key,
+                    directed_source_longitude=round(source.degree, 4),
                     natal_target=target.key,
+                    natal_target_longitude=round(target.degree, 4),
                     aspect_type=aspect_name,
                     actual_angle=round(actual_angle, 4),
                     exact_angle=round(exact_angle, 4),
                     orb=round(orb, 4),
                     orb_limit=round(rule.orb_limit, 4),
                     strength=self._strength(orb, rule.orb_limit),
+                    match_status="matched" if orb <= rule.orb_limit else "rejected",
                     formula_rule_matched=rule.id,
                     explanation_for_expert=(
                         f"Directed {source.key} -> Natal {target.key}: {aspect_name}; "
-                        f"{ASPECT_MEANINGS.get(aspect_name, 'формульная связь')}."
+                        f"{ASPECT_MEANINGS.get(aspect_name, 'formula link')}."
                     ),
                     rejection_reason=None,
                 )
@@ -230,21 +259,20 @@ class DirectionsFormulaMatcher:
         chart: ChartResponse,
         card: FormulaCard,
         selectors: Iterable[str],
-        directed: bool,
-        symbolic_arc: float,
+        coordinate_kind: Literal["directed", "natal"],
+        direction_result: DirectionChartBuildResult,
     ) -> list[ResolvedPoint]:
-        points: list[ResolvedPoint] = []
+        points: dict[str, ResolvedPoint] = {}
         for selector in selectors:
-            points.extend(
-                self._resolve_selector(
-                    chart=chart,
-                    card=card,
-                    selector=selector,
-                    directed=directed,
-                    symbolic_arc=symbolic_arc,
-                )
-            )
-        return list({point.key: point for point in points}.values())
+            for point in self._resolve_selector(
+                chart=chart,
+                card=card,
+                selector=selector,
+                coordinate_kind=coordinate_kind,
+                direction_result=direction_result,
+            ):
+                points[point.key] = point
+        return list(points.values())
 
     def _resolve_selector(
         self,
@@ -252,46 +280,71 @@ class DirectionsFormulaMatcher:
         chart: ChartResponse,
         card: FormulaCard,
         selector: str,
-        directed: bool,
-        symbolic_arc: float,
+        coordinate_kind: Literal["directed", "natal"],
+        direction_result: DirectionChartBuildResult,
     ) -> list[ResolvedPoint]:
         if selector == "significators":
             return self._resolve_selectors(
                 chart=chart,
                 card=card,
                 selectors=card.significators,
-                directed=directed,
-                symbolic_arc=symbolic_arc,
+                coordinate_kind=coordinate_kind,
+                direction_result=direction_result,
             )
         if selector.startswith("cusp_"):
             house_num = selector.split("_", 1)[1]
-            degree = chart.houses.cusps.get(house_num)
-            if degree is None:
-                return []
-            return [ResolvedPoint(key=f"cusp_{house_num}", degree=self._direct(degree, symbolic_arc, directed))]
+            point_key = f"cusp_{house_num}"
+            return self._point_from_base_key(point_key=point_key, base_key=point_key, direction_result=direction_result, coordinate_kind=coordinate_kind)
         if selector.startswith("ruler_"):
             house_num = selector.split("_", 1)[1]
-            return self._resolve_house_rulers(chart=chart, house_num=house_num, directed=directed, symbolic_arc=symbolic_arc)
+            return self._resolve_house_rulers(
+                chart=chart,
+                house_num=house_num,
+                coordinate_kind=coordinate_kind,
+                direction_result=direction_result,
+            )
         if selector.startswith("house_elements_"):
             house_num = int(selector.split("_")[-1])
-            return self._resolve_house_elements(chart=chart, house_num=house_num, directed=directed, symbolic_arc=symbolic_arc)
+            return self._resolve_house_elements(
+                chart=chart,
+                house_num=house_num,
+                coordinate_kind=coordinate_kind,
+                direction_result=direction_result,
+            )
         if selector in {"asc", "mc"}:
-            degree = chart.angles.get(selector)
-            if degree is None:
-                return []
-            return [ResolvedPoint(key=selector, degree=self._direct(degree, symbolic_arc, directed))]
-        obj = chart.objects.get(selector)
-        if obj is not None:
-            return [ResolvedPoint(key=selector, degree=self._direct(obj.absolute_degree_0_360, symbolic_arc, directed))]
+            return self._point_from_base_key(point_key=selector, base_key=selector, direction_result=direction_result, coordinate_kind=coordinate_kind)
+        if selector in chart.objects:
+            return self._point_from_base_key(point_key=selector, base_key=selector, direction_result=direction_result, coordinate_kind=coordinate_kind)
         return []
+
+    def _point_from_base_key(
+        self,
+        *,
+        point_key: str,
+        base_key: str,
+        direction_result: DirectionChartBuildResult,
+        coordinate_kind: Literal["directed", "natal"],
+    ) -> list[ResolvedPoint]:
+        natal_degree = direction_result.natal_coordinate(base_key)
+        degree = self._coordinate(direction_result=direction_result, base_key=base_key, coordinate_kind=coordinate_kind)
+        if natal_degree is None or degree is None:
+            return []
+        return [
+            ResolvedPoint(
+                key=point_key,
+                base_key=base_key,
+                natal_degree=float(natal_degree),
+                degree=float(degree),
+            )
+        ]
 
     def _resolve_house_rulers(
         self,
         *,
         chart: ChartResponse,
         house_num: str,
-        directed: bool,
-        symbolic_arc: float,
+        coordinate_kind: Literal["directed", "natal"],
+        direction_result: DirectionChartBuildResult,
     ) -> list[ResolvedPoint]:
         cusp = chart.houses.cusp_details.get(str(house_num))
         if cusp is None:
@@ -299,13 +352,12 @@ class DirectionsFormulaMatcher:
         rulers = SIGN_RULERS.get(cusp.sign_name_en, [])
         points: list[ResolvedPoint] = []
         for ruler_name in rulers:
-            obj = chart.objects.get(ruler_name)
-            if obj is None:
-                continue
-            points.append(
-                ResolvedPoint(
-                    key=f"ruler_{house_num}:{ruler_name}",
-                    degree=self._direct(obj.absolute_degree_0_360, symbolic_arc, directed),
+            points.extend(
+                self._point_from_base_key(
+                    point_key=f"ruler_{house_num}:{ruler_name}",
+                    base_key=ruler_name,
+                    direction_result=direction_result,
+                    coordinate_kind=coordinate_kind,
                 )
             )
         return points
@@ -315,19 +367,33 @@ class DirectionsFormulaMatcher:
         *,
         chart: ChartResponse,
         house_num: int,
-        directed: bool,
-        symbolic_arc: float,
+        coordinate_kind: Literal["directed", "natal"],
+        direction_result: DirectionChartBuildResult,
     ) -> list[ResolvedPoint]:
         points: list[ResolvedPoint] = []
         for name, obj in chart.objects.items():
-            if obj.house == house_num:
-                points.append(
-                    ResolvedPoint(
-                        key=f"house_element_{house_num}:{name}",
-                        degree=self._direct(obj.absolute_degree_0_360, symbolic_arc, directed),
-                    )
+            if obj.house != house_num:
+                continue
+            points.extend(
+                self._point_from_base_key(
+                    point_key=f"house_element_{house_num}:{name}",
+                    base_key=name,
+                    direction_result=direction_result,
+                    coordinate_kind=coordinate_kind,
                 )
+            )
         return points
+
+    @staticmethod
+    def _coordinate(
+        *,
+        direction_result: DirectionChartBuildResult,
+        base_key: str,
+        coordinate_kind: Literal["directed", "natal"],
+    ) -> float | None:
+        if coordinate_kind == "directed":
+            return direction_result.directed_coordinate(base_key)
+        return direction_result.natal_coordinate(base_key)
 
     @staticmethod
     def _event_anchor_date(event: EventCard) -> date | None:
@@ -339,10 +405,6 @@ class DirectionsFormulaMatcher:
             except ValueError:
                 return None
         return None
-
-    @staticmethod
-    def _direct(degree: float, symbolic_arc: float, directed: bool) -> float:
-        return (float(degree) + symbolic_arc) % 360.0 if directed else float(degree)
 
     @staticmethod
     def _angular_distance(left: float, right: float) -> float:

@@ -57,14 +57,19 @@ class FormulaAspectMatch(BaseModel):
     method: str
     event_type: str
     card_id: str
+    direction_method: str | None = None
+    direction_arc: float | None = None
     directed_point: str
+    directed_source_longitude: float | None = None
     natal_target: str
+    natal_target_longitude: float | None = None
     aspect_type: str
     actual_angle: float
     exact_angle: float
     orb: float
     orb_limit: float
     strength: str
+    match_status: str | None = None
     formula_rule_matched: str
     explanation_for_expert: str
     rejection_reason: str | None = None

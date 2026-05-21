@@ -6,14 +6,32 @@ from typing import Any
 from app.models.event_models import EventCard
 from app.models.formula_card_models import FormulaCard, FormulaTestModeResult
 from app.models.response_models import ChartResponse
+from app.services.ephemeris_service import EphemerisService
+from app.services.rectification_formula.direction_chart_builder import DirectionChartBuilder, DirectionMethod
 from app.services.rectification_formula.directions_formula_matcher import DirectionsFormulaMatcher
 from app.services.rectification_formula.formula_card_loader import FormulaCardLoader
 
+MVP_SCORING_ASPECTS = {"conjunction", "opposition", "square", "trine", "sextile"}
+DEBUG_OPTIONAL_ASPECTS = {"quincunx"}
+
 
 class FormulaTestModeService:
-    def __init__(self, loader: FormulaCardLoader | None = None) -> None:
+    def __init__(
+        self,
+        loader: FormulaCardLoader | None = None,
+        ephemeris_service: EphemerisService | None = None,
+        default_direction_method: DirectionMethod | None = None,
+    ) -> None:
         self.loader = loader or FormulaCardLoader()
-        self.directions_matcher = DirectionsFormulaMatcher()
+        self.default_direction_method: DirectionMethod = default_direction_method or (
+            "solar_arc" if ephemeris_service is not None else "symbolic_1deg_per_year"
+        )
+        self.directions_matcher = DirectionsFormulaMatcher(
+            direction_chart_builder=DirectionChartBuilder(
+                ephemeris_service=ephemeris_service,
+                default_method=self.default_direction_method,
+            )
+        )
 
     def evaluate(
         self,
@@ -44,6 +62,7 @@ class FormulaTestModeService:
         weak_context = {str(item) for item in context.get("weak_indicators", [])}
         exclusion_context = {str(item) for item in context.get("exclusion_indicators", [])}
         methods_used = self._extract_methods(context)
+        direction_method = self._extract_direction_method(context) or self.default_direction_method
 
         matched_formula_aspects = []
         rejected_aspects = []
@@ -55,6 +74,7 @@ class FormulaTestModeService:
                 chart=chart,
                 candidate_birth_date=candidate_birth_date,
                 event=event,
+                direction_method=direction_method,
             )
             indicators.update(self._derived_indicators(matches=matched_formula_aspects))
 
@@ -146,6 +166,7 @@ class FormulaTestModeService:
                 "matched_strong": matched_strong,
                 "matched_weak": matched_weak,
                 "method_priority": card.method_priority,
+                "direction_method": direction_method,
                 "non_scoring_methods": [item for item in methods_used if item != "directions"],
             },
         )
@@ -181,6 +202,13 @@ class FormulaTestModeService:
             return raw
         if isinstance(raw, str):
             return date.fromisoformat(raw)
+        return None
+
+    @staticmethod
+    def _extract_direction_method(context: dict[str, Any]) -> DirectionMethod | None:
+        raw = context.get("direction_method")
+        if raw in {"symbolic_1deg_per_year", "solar_arc"}:
+            return raw
         return None
 
     @staticmethod
@@ -250,12 +278,24 @@ class FormulaTestModeService:
         methods_used: list[str],
         exclusion_risks: list[str],
     ) -> dict[str, float]:
+        scoring_formula_aspects = [
+            item
+            for item in matched_formula_aspects
+            if str(getattr(item, "aspect_type", "")).lower() in MVP_SCORING_ASPECTS
+        ]
+        debug_optional_formula_aspects = [
+            item
+            for item in matched_formula_aspects
+            if str(getattr(item, "aspect_type", "")).lower() in DEBUG_OPTIONAL_ASPECTS
+        ]
         return {
             "matched_core_points": len(matched_core) * 12.0,
             "matched_aspect_points": len(matched_aspects) * 8.0,
             "matched_strong_points": len(matched_strong) * 7.0,
             "matched_weak_points": len(matched_weak) * 3.0,
-            "matched_formula_aspect_points": len(matched_formula_aspects) * 4.0,
+            "matched_formula_aspect_points": len(scoring_formula_aspects) * 4.0,
+            "debug_optional_formula_aspect_points": 0.0,
+            "debug_optional_formula_aspect_count": float(len(debug_optional_formula_aspects)),
             "method_points": cls._score_methods(card.method_priority, methods_used),
             "exclusion_penalty": len(exclusion_risks) * 10.0,
         }
@@ -288,7 +328,9 @@ class FormulaTestModeService:
         required_rule_ids = {rule.id for rule in card.direction_rules if rule.required}
         suspicious = [
             item for item in found
-            if item.get("strength") == "weak" or item.get("formula_rule_matched") not in required_rule_ids
+            if item.get("strength") == "weak"
+            or item.get("formula_rule_matched") not in required_rule_ids
+            or item.get("aspect_type") in DEBUG_OPTIONAL_ASPECTS
         ]
         final_status = cls._final_status(
             found_count=len(found),
@@ -322,6 +364,8 @@ class FormulaTestModeService:
             "method_scope": {
                 "scoring_methods": ["directions"],
                 "debug_only_methods": [item for item in methods_used if item != "directions"],
+                "scoring_aspects": sorted(MVP_SCORING_ASPECTS),
+                "debug_optional_aspects": sorted(DEBUG_OPTIONAL_ASPECTS),
             },
             "final_status_for_expert": final_status,
             "questions_for_ekaterina": cls._questions_for_expert(

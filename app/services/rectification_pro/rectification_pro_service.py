@@ -25,7 +25,7 @@ class RectificationProService:
     def __init__(self, ephemeris_service: EphemerisService) -> None:
         self.ephemeris_service = ephemeris_service
         self.candidate_generator = CandidateGenerator()
-        self.formula_test_mode_service = FormulaTestModeService()
+        self.formula_test_mode_service = FormulaTestModeService(ephemeris_service=ephemeris_service)
         self.directions_service = DirectionsService()
         self.solar_service = SolarService()
         self.lunar_service = LunarService()
