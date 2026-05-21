@@ -10,6 +10,7 @@ from app.models.rectification_pro_models import (
 )
 from app.models.request_models import ChartRequest
 from app.services.ephemeris_service import EphemerisService
+from app.services.rectification_formula.formula_test_mode_service import FormulaTestModeService
 from app.services.rectification_pro.candidate_generator import CandidateGenerator
 from app.services.rectification_pro.confidence_service import ConfidenceService
 from app.services.rectification_pro.directions_service import DirectionsService
@@ -24,6 +25,7 @@ class RectificationProService:
     def __init__(self, ephemeris_service: EphemerisService) -> None:
         self.ephemeris_service = ephemeris_service
         self.candidate_generator = CandidateGenerator()
+        self.formula_test_mode_service = FormulaTestModeService()
         self.directions_service = DirectionsService()
         self.solar_service = SolarService()
         self.lunar_service = LunarService()
@@ -69,6 +71,7 @@ class RectificationProService:
             "transits": [],
             "totems": [],
         }
+        best_chart = None
         top_total = -1.0
         top_candidate_id = ""
 
@@ -120,6 +123,7 @@ class RectificationProService:
             if total_score > top_total:
                 top_total = total_score
                 top_candidate_id = candidate.candidate_id
+                best_chart = chart
                 best_method_results = {
                     "directions": method_results_for_candidate.get("directions", []),
                     "solars": method_results_for_candidate.get("solar", []),
@@ -132,6 +136,11 @@ class RectificationProService:
         best_candidates = candidate_scores[:3]
         best_candidate = best_candidates[0] if best_candidates else None
         confidence = self.confidence_service.summarize(best_candidate=best_candidate, events=payload.events)
+        formula_test_mode_results = self._build_formula_test_mode_results(
+            payload=payload,
+            best_chart=best_chart,
+            method_results=best_method_results,
+        )
 
         if confidence.level in {"low", "medium"}:
             warnings.append("do_not_present_as_exact_birth_time")
@@ -142,6 +151,7 @@ class RectificationProService:
             candidate_windows=candidate_scores,
             best_candidates=best_candidates,
             method_results=best_method_results,
+            formula_test_mode_results=formula_test_mode_results,
             confidence=confidence,
             warnings=sorted(set(warnings)),
             limitations=limitations,
@@ -157,3 +167,51 @@ class RectificationProService:
             sidereal_mode=payload.sidereal_mode,
         )
         return self.ephemeris_service.calculate_chart(request)
+
+    def _build_formula_test_mode_results(
+        self,
+        *,
+        payload: RectificationProRunRequest,
+        best_chart,
+        method_results: dict[str, list[MethodMatch]],
+    ) -> list:
+        if best_chart is None:
+            return []
+        results = []
+        for event in payload.events:
+            normalized_event_type = self._normalize_formula_event_type(str(event.event_type.value))
+            if normalized_event_type is None:
+                continue
+            try:
+                result = self.formula_test_mode_service.evaluate(
+                    event_type=normalized_event_type,
+                    context={
+                        "chart_response": best_chart.model_dump(mode="json"),
+                        "candidate_birth_date": payload.birth_date_local.isoformat(),
+                        "event": event.model_dump(mode="json"),
+                        "pro_result": {"method_results": method_results},
+                    },
+                )
+            except ValueError:
+                continue
+            results.append(result)
+        return results
+
+    @staticmethod
+    def _normalize_formula_event_type(event_type: str) -> str | None:
+        mapping = {
+            "child_birth": "child_birth",
+            "children_birth": "child_birth",
+            "marriage_start": "marriage_union",
+            "marriage_relationship": "relationship_start",
+            "divorce_separation": "divorce_breakup",
+            "death_father": "death_close_person",
+            "death_mother": "death_close_person",
+            "death_child": "death_close_person",
+            "death_spouse": "death_close_person",
+            "death_sibling": "death_close_person",
+            "death_grandparent": "death_close_person",
+            "death_close_person_other": "death_close_person",
+            "death_of_close_person": "death_close_person",
+        }
+        return mapping.get(event_type)

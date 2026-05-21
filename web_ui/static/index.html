@@ -4232,7 +4232,94 @@
       return explainRows.join("");
     }
 
-    function renderProConfirmations(data) {
+    function renderFormulaTestModeConfirmations(data) {
+      const formulaResults = Array.isArray(data?.formula_test_mode_results) ? data.formula_test_mode_results : [];
+      if (!formulaResults.length) return false;
+
+      rpMethodsSummaryEl.innerHTML = "";
+      formulaResults.forEach((result, idx) => {
+        const report = result.validation_report || {};
+        const matchedFormulaAspects = Array.isArray(result.matched_formula_aspects) ? result.matched_formula_aspects : [];
+        const rejectedAspects = Array.isArray(result.rejected_aspects) ? result.rejected_aspects : [];
+        const missingFormulaLinks = Array.isArray(result.missing_formula_links) ? result.missing_formula_links : [];
+        const suspicious = Array.isArray(report.extra_or_suspicious_aspects) ? report.extra_or_suspicious_aspects : [];
+        const scoreBreakdown = report.score_breakdown || {};
+        const block = document.createElement("div");
+        block.className = "interval-item";
+
+        const titleNode = document.createElement("div");
+        const titleStrong = document.createElement("strong");
+        titleStrong.textContent = result.source_event_title || `Событие ${idx + 1}`;
+        titleNode.appendChild(titleStrong);
+        block.appendChild(titleNode);
+
+        const lineTypeDate = document.createElement("div");
+        lineTypeDate.textContent = `Тип: ${formatEventTypeLabel(result.source_event_type || result.event_type)} | Дата: ${result.source_event_date || "дата не указана"}`;
+        block.appendChild(lineTypeDate);
+
+        const lineCard = document.createElement("div");
+        lineCard.textContent = `Card: ${result.card_id} | Status: ${report.final_status_for_expert || result.status || "n/a"} | Confidence: ${result.confidence || "n/a"} | Score: ${result.score ?? "n/a"}`;
+        block.appendChild(lineCard);
+
+        const tableLine = document.createElement("div");
+        tableLine.className = "hint";
+        tableLine.textContent = result.validation_report_table || "validation_report_table: не рассчитано";
+        block.appendChild(tableLine);
+
+        const expectedLine = document.createElement("div");
+        expectedLine.textContent = `Expected: ${Array.isArray(report.expected_by_card?.direction_rules) ? report.expected_by_card.direction_rules.map((rule) => rule.id).join(", ") : "не рассчитано"}`;
+        block.appendChild(expectedLine);
+
+        const foundHeader = document.createElement("div");
+        foundHeader.innerHTML = `<strong>matched_formula_aspects:</strong> ${matchedFormulaAspects.length}`;
+        block.appendChild(foundHeader);
+        if (!matchedFormulaAspects.length) {
+          const noneLine = document.createElement("div");
+          noneLine.textContent = "Найденных formula-specific аспектов нет.";
+          block.appendChild(noneLine);
+        } else {
+          matchedFormulaAspects.forEach((match) => {
+            const line = document.createElement("div");
+            line.textContent = `${formatMethodLabel(match.method)} | ${match.directed_point} ${match.aspect_type} ${match.natal_target} | orb=${match.orb} | strength=${match.strength} | rule=${match.formula_rule_matched}`;
+            block.appendChild(line);
+            if (match.explanation_for_expert) {
+              const exp = document.createElement("div");
+              exp.className = "hint";
+              exp.textContent = match.explanation_for_expert;
+              block.appendChild(exp);
+            }
+          });
+        }
+
+        const missedLine = document.createElement("div");
+        missedLine.textContent = `Missing: ${missingFormulaLinks.length ? missingFormulaLinks.join(", ") : "нет"}`;
+        block.appendChild(missedLine);
+
+        const rejectedHeader = document.createElement("div");
+        rejectedHeader.textContent = `Rejected: ${rejectedAspects.length}`;
+        block.appendChild(rejectedHeader);
+        rejectedAspects.forEach((match) => {
+          const line = document.createElement("div");
+          line.className = "hint";
+          line.textContent = `${match.directed_point} ${match.aspect_type} ${match.natal_target} | orb=${match.orb} | reason=${match.rejection_reason || match.reason || "n/a"} | rule=${match.formula_rule_matched}`;
+          block.appendChild(line);
+        });
+
+        const suspiciousLine = document.createElement("div");
+        suspiciousLine.textContent = `Suspicious: ${suspicious.length ? suspicious.map((item) => item.formula_rule_matched || item.aspect_type || "—").join(", ") : "нет"}`;
+        block.appendChild(suspiciousLine);
+
+        const scoreLine = document.createElement("div");
+        scoreLine.className = "hint";
+        scoreLine.textContent = `Score breakdown: core=${scoreBreakdown.matched_core_points ?? 0}, aspects=${scoreBreakdown.matched_aspect_points ?? 0}, formula=${scoreBreakdown.matched_formula_aspect_points ?? 0}, methods=${scoreBreakdown.method_points ?? 0}, penalty=${scoreBreakdown.exclusion_penalty ?? 0}`;
+        block.appendChild(scoreLine);
+
+        rpMethodsSummaryEl.appendChild(block);
+      });
+      return true;
+    }
+
+    function renderLegacyProConfirmations(data) {
       const methods = data.method_results || {};
       const methodStats = summarizeMethodStats(methods);
       const eventMap = buildProEventMap();
@@ -4266,7 +4353,6 @@
         .forEach((item) => {
           const event = eventMap.get(item.eventId) || {};
           const matched = item.matches.length > 0;
-          const details = extractProMatchDetails(item.matches[0]);
           const eventTitle = event.title || `Событие ${item.eventId || "без id"}`;
           const eventType = formatEventTypeLabel(event.event_type);
           const eventDate = event.date_text || event.start_date || "дата не указана";
@@ -4293,17 +4379,26 @@
           lineMethod.textContent = `Метод: ${methodLabel} | Подтверждено: ${matched ? "да" : "нет"}`;
           block.appendChild(lineMethod);
 
-          const lineAspect = document.createElement("div");
-          lineAspect.textContent = `Аспект: ${details.aspect} | Орбис: ${details.orb} | Точки: ${details.points}`;
-          block.appendChild(lineAspect);
+          if (!item.matches.length) {
+            const lineAspect = document.createElement("div");
+            lineAspect.textContent = "Аспекты: убедительных совпадений нет.";
+            block.appendChild(lineAspect);
+          } else {
+            item.matches.forEach((match) => {
+              const details = extractProMatchDetails(match);
+              const lineAspect = document.createElement("div");
+              lineAspect.textContent = `Аспект: ${details.aspect} | Орбис: ${details.orb} | Точки: ${details.points}`;
+              block.appendChild(lineAspect);
 
-          const lineScore = document.createElement("div");
-          lineScore.textContent = `Score/weight: ${details.score} | Event score: ${eventScore}`;
-          block.appendChild(lineScore);
+              const lineScore = document.createElement("div");
+              lineScore.textContent = `Score/weight: ${details.score} | Event score: ${eventScore}`;
+              block.appendChild(lineScore);
 
-          const lineExplanation = document.createElement("div");
-          lineExplanation.textContent = `Пояснение: ${details.explanation}`;
-          block.appendChild(lineExplanation);
+              const lineExplanation = document.createElement("div");
+              lineExplanation.textContent = `Пояснение: ${details.explanation}`;
+              block.appendChild(lineExplanation);
+            });
+          }
 
           const lineStatus = document.createElement("div");
           lineStatus.textContent = `Статус: ${matchedText}`;
@@ -4315,6 +4410,13 @@
           block.appendChild(lineWarnings);
           rpMethodsSummaryEl.appendChild(block);
         });
+    }
+
+    function renderProConfirmations(data) {
+      if (renderFormulaTestModeConfirmations(data)) {
+        return;
+      }
+      renderLegacyProConfirmations(data);
     }
 
     function renderProResult(data) {

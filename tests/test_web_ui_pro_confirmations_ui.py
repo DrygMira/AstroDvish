@@ -16,6 +16,24 @@ def test_pro_ui_renders_human_confirmations_instead_of_raw_entries_summary() -> 
     assert "matched_events=" not in html
 
 
+def test_pro_ui_confirmations_do_not_use_only_first_match_per_event() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "extractProMatchDetails(item.matches[0])" not in html
+
+
+def test_pro_ui_renders_formula_test_mode_blocks() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "formula_test_mode_results" in html
+    assert "validation_report_table" in html
+    assert "matched_formula_aspects" in html
+
+
 def test_pro_ui_keeps_technical_json_available() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/")

@@ -64,15 +64,29 @@ class FormulaTestModeService:
         missing = [item for item in [*card.core_logic, *card.aspects] if item not in indicators]
         exclusion_risks = [item for item in card.exclusions if item in indicators or item in exclusion_context]
 
-        score = 0.0
-        score += len(matched_core) * 12.0
-        score += len(matched_aspects) * 8.0
-        score += len(matched_strong) * 7.0
-        score += len(matched_weak) * 3.0
-        score += len(matched_formula_aspects) * 4.0
-        score += self._score_methods(card.method_priority, methods_used)
-        score -= len(exclusion_risks) * 10.0
-        score = max(0.0, round(score, 1))
+        score_breakdown = self._score_breakdown(
+            card=card,
+            matched_core=matched_core,
+            matched_aspects=matched_aspects,
+            matched_strong=matched_strong,
+            matched_weak=matched_weak,
+            matched_formula_aspects=matched_formula_aspects,
+            methods_used=methods_used,
+            exclusion_risks=exclusion_risks,
+        )
+        score = max(
+            0.0,
+            round(
+                score_breakdown["matched_core_points"]
+                + score_breakdown["matched_aspect_points"]
+                + score_breakdown["matched_strong_points"]
+                + score_breakdown["matched_weak_points"]
+                + score_breakdown["matched_formula_aspect_points"]
+                + score_breakdown["method_points"]
+                - score_breakdown["exclusion_penalty"],
+                1,
+            ),
+        )
 
         confidence = self._confidence_for(
             score=score,
@@ -88,10 +102,29 @@ class FormulaTestModeService:
             "Это предварительная экспертная проверка, не финальная профессиональная ректификация."
         )
 
+        validation_report = self._build_validation_report(
+            card=card,
+            event_type=card.event_type,
+            matched_formula_aspects=matched_formula_aspects,
+            missing_formula_links=missing_formula_links,
+            rejected_aspects=rejected_aspects,
+            methods_used=methods_used,
+            matched_core=matched_core,
+            matched_aspects=matched_aspects,
+            matched_strong=matched_strong,
+            matched_weak=matched_weak,
+            exclusion_risks=exclusion_risks,
+            score_breakdown=score_breakdown,
+        )
+
         return FormulaTestModeResult(
             card_id=card.card_id,
             event_type=card.event_type,
             status=card.status,
+            source_event_id=event.event_id if event is not None else None,
+            source_event_type=event.event_type.value if event is not None else None,
+            source_event_title=event.title if event is not None else None,
+            source_event_date=(event.date_text or event.start_date) if event is not None else None,
             matched_indicators=[*matched_core, *matched_aspects, *matched_strong],
             missing_indicators=missing,
             weak_indicators=matched_weak,
@@ -103,6 +136,8 @@ class FormulaTestModeService:
             matched_formula_aspects=matched_formula_aspects,
             missing_formula_links=missing_formula_links,
             rejected_aspects=rejected_aspects,
+            validation_report=validation_report,
+            validation_report_table=self._format_validation_report_table(validation_report),
             debug={
                 "matched_core": matched_core,
                 "matched_aspects": matched_aspects,
@@ -193,13 +228,148 @@ class FormulaTestModeService:
         scoring_methods = [item for item in methods_used if item == "directions"]
         if not scoring_methods:
             return 0.0
-
         total = 0.0
         for idx, method_name in enumerate(method_priority):
             if method_name not in scoring_methods:
                 continue
             total += max(2.0, 8.0 - (idx * 2.0))
         return total
+
+    @classmethod
+    def _score_breakdown(
+        cls,
+        *,
+        card: FormulaCard,
+        matched_core: list[str],
+        matched_aspects: list[str],
+        matched_strong: list[str],
+        matched_weak: list[str],
+        matched_formula_aspects: list[Any],
+        methods_used: list[str],
+        exclusion_risks: list[str],
+    ) -> dict[str, float]:
+        return {
+            "matched_core_points": len(matched_core) * 12.0,
+            "matched_aspect_points": len(matched_aspects) * 8.0,
+            "matched_strong_points": len(matched_strong) * 7.0,
+            "matched_weak_points": len(matched_weak) * 3.0,
+            "matched_formula_aspect_points": len(matched_formula_aspects) * 4.0,
+            "method_points": cls._score_methods(card.method_priority, methods_used),
+            "exclusion_penalty": len(exclusion_risks) * 10.0,
+        }
+
+    @classmethod
+    def _build_validation_report(
+        cls,
+        *,
+        card: FormulaCard,
+        event_type: str,
+        matched_formula_aspects: list[Any],
+        missing_formula_links: list[str],
+        rejected_aspects: list[Any],
+        methods_used: list[str],
+        matched_core: list[str],
+        matched_aspects: list[str],
+        matched_strong: list[str],
+        matched_weak: list[str],
+        exclusion_risks: list[str],
+        score_breakdown: dict[str, float],
+    ) -> dict[str, Any]:
+        found = [item.model_dump(mode="json") if hasattr(item, "model_dump") else dict(item) for item in matched_formula_aspects]
+        rejected = []
+        for item in rejected_aspects:
+            payload = item.model_dump(mode="json") if hasattr(item, "model_dump") else dict(item)
+            payload["reason"] = payload.get("rejection_reason") or "over_orb"
+            rejected.append(payload)
+
+        required_rule_ids = {rule.id for rule in card.direction_rules if rule.required}
+        suspicious = [
+            item for item in found
+            if item.get("strength") == "weak" or item.get("formula_rule_matched") not in required_rule_ids
+        ]
+        final_status = cls._final_status(
+            found_count=len(found),
+            missed_count=len(missing_formula_links),
+            rejected_count=len(rejected),
+            suspicious_count=len(suspicious),
+        )
+        return {
+            "event_type": event_type,
+            "card_id": card.card_id,
+            "expected_by_card": {
+                "core_logic": card.core_logic,
+                "houses": card.houses,
+                "planets": card.planets,
+                "significators": card.significators,
+                "direction_rules": [rule.model_dump(mode="json") for rule in card.direction_rules],
+                "aspects": card.aspects,
+            },
+            "found_by_engine": found,
+            "missed_by_engine": list(missing_formula_links),
+            "rejected_aspects": rejected,
+            "extra_or_suspicious_aspects": suspicious,
+            "score_breakdown": score_breakdown,
+            "method_scope": {
+                "scoring_methods": ["directions"],
+                "debug_only_methods": [item for item in methods_used if item != "directions"],
+            },
+            "final_status_for_expert": final_status,
+            "questions_for_ekaterina": cls._questions_for_expert(
+                missing_formula_links=missing_formula_links,
+                rejected_aspects=rejected,
+                suspicious=suspicious,
+                matched_core=matched_core,
+                matched_aspects=matched_aspects,
+                matched_strong=matched_strong,
+                matched_weak=matched_weak,
+                exclusion_risks=exclusion_risks,
+            ),
+        }
+
+    @staticmethod
+    def _final_status(*, found_count: int, missed_count: int, rejected_count: int, suspicious_count: int) -> str:
+        if found_count == 0:
+            return "miss"
+        if suspicious_count > 0 or rejected_count > 0:
+            return "needs_expert_review"
+        if missed_count > 0:
+            return "partial"
+        return "hit"
+
+    @staticmethod
+    def _questions_for_expert(
+        *,
+        missing_formula_links: list[str],
+        rejected_aspects: list[dict[str, Any]],
+        suspicious: list[dict[str, Any]],
+        matched_core: list[str],
+        matched_aspects: list[str],
+        matched_strong: list[str],
+        matched_weak: list[str],
+        exclusion_risks: list[str],
+    ) -> list[str]:
+        questions: list[str] = []
+        if missing_formula_links:
+            questions.append(f"Проверить пропущенные обязательные связи: {', '.join(missing_formula_links)}.")
+        if rejected_aspects:
+            questions.append("Проверить, допустим ли больший орбис для отклонённых аспектов.")
+        if suspicious:
+            questions.append("Проверить, считать ли слабые или необязательные связи рабочими.")
+        if matched_weak and not matched_strong:
+            questions.append("Уточнить, достаточно ли только слабых подтверждений для этой формулы.")
+        if exclusion_risks:
+            questions.append("Проверить, не объясняется ли событие лучше исключающей категорией.")
+        return questions
+
+    @staticmethod
+    def _format_validation_report_table(report: dict[str, Any]) -> str:
+        return (
+            f"Карточка: {report.get('card_id')} | "
+            f"Найдено: {len(report.get('found_by_engine', []))} | "
+            f"Пропущено: {len(report.get('missed_by_engine', []))} | "
+            f"Отклонено: {len(report.get('rejected_aspects', []))} | "
+            f"Статус: {report.get('final_status_for_expert', 'needs_expert_review')}"
+        )
 
     @staticmethod
     def _confidence_for(

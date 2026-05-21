@@ -6,6 +6,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field, field_validator
 
 from app.models.event_models import EventCard
+from app.models.formula_card_models import FormulaTestModeResult
 from app.models.request_models import SiderealMode, ZodiacMode
 
 
@@ -107,6 +108,7 @@ class RectificationProRunResponse(BaseModel):
     candidate_windows: list[CandidateScore]
     best_candidates: list[CandidateScore]
     method_results: dict[str, list[MethodMatch]]
+    formula_test_mode_results: list[FormulaTestModeResult] = Field(default_factory=list)
     confidence: ConfidenceSummary
     warnings: list[str] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)

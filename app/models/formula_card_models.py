@@ -60,12 +60,17 @@ class FormulaAspectMatch(BaseModel):
     strength: str
     formula_rule_matched: str
     explanation_for_expert: str
+    rejection_reason: str | None = None
 
 
 class FormulaTestModeResult(BaseModel):
     card_id: str
     event_type: str
     status: str
+    source_event_id: str | None = None
+    source_event_type: str | None = None
+    source_event_title: str | None = None
+    source_event_date: str | None = None
     matched_indicators: list[str]
     missing_indicators: list[str]
     weak_indicators: list[str]
@@ -77,4 +82,6 @@ class FormulaTestModeResult(BaseModel):
     matched_formula_aspects: list[FormulaAspectMatch] = Field(default_factory=list)
     missing_formula_links: list[str] = Field(default_factory=list)
     rejected_aspects: list[FormulaAspectMatch] = Field(default_factory=list)
+    validation_report: dict[str, Any] = Field(default_factory=dict)
+    validation_report_table: str | None = None
     debug: dict[str, Any] = Field(default_factory=dict)

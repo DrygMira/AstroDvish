@@ -107,6 +107,7 @@ def test_formula_test_mode_returns_structured_json_for_mocked_context() -> None:
     assert isinstance(result["score"], (int, float))
     assert result["confidence"] in {"low", "medium", "high"}
     assert result["explanation_for_expert"]
+    assert "validation_report" in result
 
 
 def _sample_formula_chart() -> ChartResponse:
@@ -175,6 +176,123 @@ def _sample_child_birth_event() -> EventCard:
         sequence_number=1,
         notes="",
     )
+
+
+def _custom_event(*, title: str, event_type: EventType = EventType.custom_major_event) -> EventCard:
+    return EventCard(
+        event_id=f"evt_{title.lower().replace(' ', '_')}",
+        event_type=event_type,
+        title=title,
+        date_text="2000-01-01",
+        date_precision=DatePrecision.exact,
+        start_date="2000-01-01",
+        end_date="2000-01-01",
+        impact_level=5,
+        reversibility=Reversibility.irreversible,
+        life_area=LifeArea.other,
+        notes="",
+    )
+
+
+def _build_chart_with_rules(*, objects: dict, cusps: dict[str, float], cusp_signs: dict[str, str]) -> ChartResponse:
+    def _obj(name: str, degree: float, sign_name: str, house: int | None = None) -> dict:
+        sign_index = {
+            "Aries": 0,
+            "Taurus": 1,
+            "Gemini": 2,
+            "Cancer": 3,
+            "Leo": 4,
+            "Virgo": 5,
+            "Libra": 6,
+            "Scorpio": 7,
+            "Sagittarius": 8,
+            "Capricorn": 9,
+            "Aquarius": 10,
+            "Pisces": 11,
+        }[sign_name]
+        sign_degree = degree % 30
+        return {
+            "name": name,
+            "longitude_deg": degree,
+            "latitude_deg": 0,
+            "distance_au": 1,
+            "speed_longitude_deg_per_day": 1.0,
+            "retrograde": False,
+            "sign_index": sign_index,
+            "sign_name_en": sign_name,
+            "sign_degree": sign_degree,
+            "sign_degree_dms": f"{sign_degree:.0f}°00'00\"",
+            "absolute_degree_0_360": degree,
+            "house": house,
+        }
+
+    chart_objects = {
+        name: _obj(name, payload["degree"], payload["sign"], payload.get("house"))
+        for name, payload in objects.items()
+    }
+    cusp_details = {
+        house_num: {
+            "absolute_degree_0_360": degree,
+            "sign_index": {
+                "Aries": 0,
+                "Taurus": 1,
+                "Gemini": 2,
+                "Cancer": 3,
+                "Leo": 4,
+                "Virgo": 5,
+                "Libra": 6,
+                "Scorpio": 7,
+                "Sagittarius": 8,
+                "Capricorn": 9,
+                "Aquarius": 10,
+                "Pisces": 11,
+            }[cusp_signs[house_num]],
+            "sign_name_en": cusp_signs[house_num],
+            "sign_degree": degree % 30,
+            "sign_degree_dms": f"{degree % 30:.0f}°00'00\"",
+        }
+        for house_num, degree in cusps.items()
+    }
+    return ChartResponse.model_validate(
+        {
+            "input": {
+                "datetime_utc": "2000-01-01T00:00:00Z",
+                "latitude": 53.9,
+                "longitude": 27.55,
+                "house_system": "P",
+                "zodiac_mode": "tropical",
+                "sidereal_mode": None,
+            },
+            "normalized": {"julian_day_ut": 2451544.5},
+            "objects": chart_objects,
+            "aspects": [],
+            "houses": {
+                "system": "P",
+                "cusps": cusps,
+                "cusp_details": cusp_details,
+            },
+            "angles": {"asc": float(cusps.get("1", 0.0)), "mc": float(cusps.get("10", 270.0))},
+            "meta": {
+                "ephemeris_source": "swisseph",
+                "zodiac_mode": "tropical",
+                "sidereal_mode": None,
+                "object_constants": {"sun": 0},
+                "aspect_orb_profile": "avestan",
+                "node_definitions": {},
+            },
+        }
+    )
+
+
+def _write_formula_cards(tmp_path: Path, cards: list[dict]) -> FormulaCardLoader:
+    cards_root = tmp_path / "cards"
+    cards_root.mkdir()
+    for card in cards:
+        (cards_root / f"{card['card_id']}.json").write_text(
+            json.dumps(card, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    return FormulaCardLoader(cards_root=cards_root)
 
 
 def test_one_event_can_return_multiple_direction_aspects() -> None:
@@ -260,3 +378,254 @@ def test_solar_and_transit_do_not_affect_formula_test_mode_score() -> None:
     )
 
     assert result_base["score"] == result_with_debug_methods["score"]
+
+
+def test_validation_report_contains_expected_by_card() -> None:
+    service = FormulaTestModeService()
+    result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": _sample_formula_chart().model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _sample_child_birth_event().model_dump(mode="json"),
+        },
+    )
+
+    report = result["validation_report"]
+    assert report["event_type"] == "child_birth"
+    assert report["card_id"] == "RECT_CHILD_BIRTH_001"
+    assert "house_5" in report["expected_by_card"]["core_logic"]
+    assert "house_4" in report["expected_by_card"]["core_logic"]
+
+
+def test_validation_report_uses_found_and_missed_engine_data() -> None:
+    service = FormulaTestModeService()
+    result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": _sample_formula_chart().model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _sample_child_birth_event().model_dump(mode="json"),
+        },
+    )
+
+    report = result["validation_report"]
+    assert report["found_by_engine"] == result["matched_formula_aspects"]
+    assert report["missed_by_engine"] == result["missing_formula_links"]
+
+
+def test_validation_report_rejected_aspects_include_reason() -> None:
+    service = FormulaTestModeService()
+    result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": _sample_formula_chart().model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _sample_child_birth_event().model_dump(mode="json"),
+        },
+    )
+
+    report = result["validation_report"]
+    assert report["rejected_aspects"]
+    assert all(item["reason"] for item in report["rejected_aspects"])
+
+
+def test_validation_report_has_score_breakdown() -> None:
+    service = FormulaTestModeService()
+    result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": _sample_formula_chart().model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _sample_child_birth_event().model_dump(mode="json"),
+        },
+    )
+
+    breakdown = result["validation_report"]["score_breakdown"]
+    assert "matched_core_points" in breakdown
+    assert "matched_formula_aspect_points" in breakdown
+    assert "method_points" in breakdown
+
+
+def test_ekaterina_marriage_cases_are_found_and_over_orb_goes_to_rejected(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_MARRIAGE_UNION_EK_001",
+                "event_type": "marriage_union",
+                "status": "test",
+                "core_logic": ["house_7", "house_4", "venus"],
+                "houses": ["house_7", "house_4"],
+                "planets": ["venus", "jupiter", "moon", "chiron", "pluto", "neptune", "sun"],
+                "significators": ["venus", "jupiter", "moon"],
+                "aspects": ["union_axis"],
+                "method_priority": ["directions", "solars", "transits"],
+                "direction_rules": [
+                    {"id": "cusp_4_to_ruler_7", "title": "c4->r7", "source_selectors": ["cusp_4"], "target_selectors": ["ruler_7", "significators"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "ruler_1_to_cusp_7", "title": "r1->c7", "source_selectors": ["ruler_1"], "target_selectors": ["cusp_7"], "aspect_types": ["opposition"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "cusp_7_to_house_elements_4", "title": "c7->house4", "source_selectors": ["cusp_7"], "target_selectors": ["house_elements_4"], "aspect_types": ["square"], "orb_limit": 1.0, "required": False, "weight": 1.0},
+                    {"id": "chiron_to_cusp_3", "title": "chiron->c3", "source_selectors": ["chiron"], "target_selectors": ["cusp_3"], "aspect_types": ["trine"], "orb_limit": 1.0, "required": False, "weight": 1.0},
+                    {"id": "jupiter_to_cusp_7", "title": "jupiter->c7", "source_selectors": ["jupiter"], "target_selectors": ["cusp_7"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": False, "weight": 1.0},
+                    {"id": "moon_to_jupiter", "title": "moon->jupiter", "source_selectors": ["moon"], "target_selectors": ["jupiter"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": False, "weight": 1.0},
+                    {"id": "cusp_1_to_ruler_4", "title": "c1->r4", "source_selectors": ["cusp_1"], "target_selectors": ["ruler_4"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": False, "weight": 1.0},
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "venus": {"degree": 30.0, "sign": "Taurus", "house": 7},
+            "pluto": {"degree": 0.0, "sign": "Scorpio", "house": 1},
+            "sun": {"degree": 272.0, "sign": "Capricorn", "house": 4},
+            "chiron": {"degree": 180.0, "sign": "Libra", "house": 6},
+            "jupiter": {"degree": 120.0, "sign": "Leo", "house": 5},
+            "moon": {"degree": 60.0, "sign": "Gemini", "house": 2},
+            "neptune": {"degree": 330.0, "sign": "Pisces", "house": 4},
+        },
+        cusps={"1": 330.0, "2": 30.0, "3": 60.0, "4": 30.0, "5": 120.0, "6": 150.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 270.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Scorpio", "2": "Taurus", "3": "Gemini", "4": "Pisces", "5": "Leo", "6": "Virgo", "7": "Taurus", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+    result = service.evaluate(
+        event_type="marriage_union",
+        context={
+            "chart_response": chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _custom_event(title="Marriage", event_type=EventType.marriage_relationship).model_dump(mode="json"),
+            "pro_result": {"method_results": {"directions": [{"event_id": "evt_marriage"}], "solars": [{"event_id": "evt_marriage"}], "transits": [{"event_id": "evt_marriage"}]}},
+        },
+    )
+
+    found = {(item["formula_rule_matched"], item["directed_point"], item["natal_target"], item["aspect_type"]) for item in result["matched_formula_aspects"]}
+    rejected = {(item["formula_rule_matched"], item["directed_point"], item["natal_target"], item["aspect_type"], item["rejection_reason"]) for item in result["rejected_aspects"]}
+
+    assert ("cusp_4_to_ruler_7", "cusp_4", "ruler_7:venus", "conjunction") in found
+    assert ("ruler_1_to_cusp_7", "ruler_1:pluto", "cusp_7", "opposition") in found
+    assert ("chiron_to_cusp_3", "chiron", "cusp_3", "trine") in found
+    assert ("jupiter_to_cusp_7", "jupiter", "cusp_7", "sextile") in found
+    assert ("moon_to_jupiter", "moon", "jupiter", "sextile") in found
+    assert ("cusp_1_to_ruler_4", "cusp_1", "ruler_4:neptune", "conjunction") in found
+    assert ("cusp_7_to_house_elements_4", "cusp_7", "house_element_4:sun", "square", "over_orb") in rejected
+    assert result["score"] == service.evaluate(
+        event_type="marriage_union",
+        context={
+            "chart_response": chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _custom_event(title="Marriage", event_type=EventType.marriage_relationship).model_dump(mode="json"),
+            "pro_result": {"method_results": {"directions": [{"event_id": "evt_marriage"}]}},
+        },
+    )["score"]
+
+
+def test_ekaterina_death_and_child_cases_are_found(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_DEATH_CLOSE_PERSON_EK_001",
+                "event_type": "death_close_person",
+                "status": "test",
+                "core_logic": ["house_12", "neptune"],
+                "houses": ["house_12"],
+                "planets": ["neptune"],
+                "significators": ["neptune"],
+                "aspects": ["loss_axis"],
+                "method_priority": ["directions", "transits", "solars"],
+                "direction_rules": [
+                    {"id": "cusp_12_to_ruler_4", "title": "c12->r4", "source_selectors": ["cusp_12"], "target_selectors": ["ruler_4"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0}
+                ],
+            },
+            {
+                "card_id": "RECT_CHILD_BIRTH_EK_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5", "sun", "jupiter"],
+                "houses": ["house_5", "house_4", "house_10"],
+                "planets": ["sun", "jupiter"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions", "solars", "transits"],
+                "direction_rules": [
+                    {"id": "significator_5_to_jupiter", "title": "sig5->jupiter", "source_selectors": ["significators"], "target_selectors": ["jupiter"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "axis_10_4_to_cusp_5", "title": "axis->c5", "source_selectors": ["cusp_10", "cusp_4"], "target_selectors": ["cusp_5"], "aspect_types": ["trine", "sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                ],
+            },
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+
+    death_chart = _build_chart_with_rules(
+        objects={"neptune": {"degree": 330.0, "sign": "Pisces", "house": 4}},
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 90.0, "5": 120.0, "6": 150.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 270.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Pisces", "5": "Leo", "6": "Virgo", "7": "Libra", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+    death_result = service.evaluate(
+        event_type="death_close_person",
+        context={
+            "chart_response": death_chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _custom_event(title="Death", event_type=EventType.death_of_close_person).model_dump(mode="json"),
+        },
+    )
+    assert any(item["formula_rule_matched"] == "cusp_12_to_ruler_4" and item["natal_target"] == "ruler_4:neptune" for item in death_result["matched_formula_aspects"])
+
+    child_chart = _build_chart_with_rules(
+        objects={"sun": {"degree": 60.0, "sign": "Gemini", "house": 5}, "jupiter": {"degree": 120.0, "sign": "Leo", "house": 9}},
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 60.0, "5": 120.0, "6": 150.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 0.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Cancer", "5": "Leo", "6": "Virgo", "7": "Libra", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+    child_result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": child_chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _custom_event(title="Child", event_type=EventType.child_birth).model_dump(mode="json"),
+        },
+    )
+    found = {(item["formula_rule_matched"], item["directed_point"], item["natal_target"], item["aspect_type"]) for item in child_result["matched_formula_aspects"]}
+    assert ("significator_5_to_jupiter", "sun", "jupiter", "sextile") in found
+    assert ("axis_10_4_to_cusp_5", "cusp_10", "cusp_5", "trine") in found
+    assert ("axis_10_4_to_cusp_5", "cusp_4", "cusp_5", "sextile") in found
+
+
+def test_ekaterina_divorce_proserpina_case_is_missed_when_ruler_catalog_cannot_resolve_it(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_DIVORCE_BREAKUP_EK_001",
+                "event_type": "divorce_breakup",
+                "status": "test",
+                "core_logic": ["house_7", "house_8"],
+                "houses": ["house_7", "house_8", "house_10"],
+                "planets": ["venus", "proserpina"],
+                "significators": ["venus", "proserpina"],
+                "aspects": ["separation_axis"],
+                "method_priority": ["directions", "transits", "solars"],
+                "direction_rules": [
+                    {"id": "cusp_7_to_cusp_8", "title": "c7->c8", "source_selectors": ["cusp_7"], "target_selectors": ["cusp_8"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "ruler_10_to_ruler_7", "title": "r10->r7", "source_selectors": ["ruler_10"], "target_selectors": ["ruler_7"], "aspect_types": ["trine"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={"venus": {"degree": 30.0, "sign": "Taurus", "house": 7}, "proserpina": {"degree": 150.0, "sign": "Virgo", "house": 10}},
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 90.0, "5": 120.0, "6": 150.0, "7": 180.0, "8": 180.0, "9": 240.0, "10": 300.0, "11": 330.0, "12": 350.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Cancer", "5": "Leo", "6": "Virgo", "7": "Taurus", "8": "Scorpio", "9": "Sagittarius", "10": "Virgo", "11": "Aquarius", "12": "Pisces"},
+    )
+    result = service.evaluate(
+        event_type="divorce_breakup",
+        context={
+            "chart_response": chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _custom_event(title="Divorce", event_type=EventType.divorce_separation).model_dump(mode="json"),
+        },
+    )
+
+    found = {(item["formula_rule_matched"], item["directed_point"], item["natal_target"], item["aspect_type"]) for item in result["matched_formula_aspects"]}
+    assert ("cusp_7_to_cusp_8", "cusp_7", "cusp_8", "conjunction") in found
+    assert "ruler_10_to_ruler_7" in result["missing_formula_links"]
+    assert all(item["formula_rule_matched"] != "ruler_10_to_ruler_7" for item in result["matched_formula_aspects"])

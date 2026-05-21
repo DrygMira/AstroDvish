@@ -78,10 +78,8 @@ class DirectionsFormulaMatcher:
                 event=event,
                 rule=rule,
             )
-            if rule_matches["matched"]:
-                matched.extend(rule_matches["matched"])
-            if rule_matches["rejected"]:
-                rejected.extend(rule_matches["rejected"])
+            matched.extend(rule_matches["matched"])
+            rejected.extend(rule_matches["rejected"])
             if rule.required and not rule_matches["matched"]:
                 missing_rules.append(rule.id)
 
@@ -114,20 +112,20 @@ class DirectionsFormulaMatcher:
         )
         matched: list[FormulaAspectMatch] = []
         rejected: list[FormulaAspectMatch] = []
-
         seen_pairs: set[tuple[str, str, str]] = set()
+
         for source in directed_points:
             for target in natal_points:
                 if source.key == target.key:
                     continue
-                best_aspect, best_orb = self._closest_requested_aspect(
-                    source.degree,
-                    target.degree,
-                    rule.aspect_types,
-                )
+                best_aspect, best_orb = self._closest_requested_aspect(source.degree, target.degree, rule.aspect_types)
                 if best_aspect is None or best_orb is None:
                     continue
-                strength = self._strength(best_orb, rule.orb_limit)
+                key = (source.key, target.key, best_aspect)
+                if key in seen_pairs:
+                    continue
+                seen_pairs.add(key)
+
                 match = FormulaAspectMatch(
                     method="directions",
                     event_type=event.event_type.value,
@@ -136,21 +134,19 @@ class DirectionsFormulaMatcher:
                     natal_target=target.key,
                     aspect_type=best_aspect,
                     orb=round(best_orb, 4),
-                    strength=strength,
+                    strength=self._strength(best_orb, rule.orb_limit),
                     formula_rule_matched=rule.id,
                     explanation_for_expert=(
                         f"Направленная точка {source.key} образует {best_aspect} к {target.key}; "
                         f"{ASPECT_MEANINGS.get(best_aspect, 'формульная связь')}."
                     ),
+                    rejection_reason=None,
                 )
-                key = (source.key, target.key, best_aspect)
-                if key in seen_pairs:
-                    continue
-                seen_pairs.add(key)
                 if best_orb <= rule.orb_limit:
                     matched.append(match)
                 else:
-                    rejected.append(match)
+                    rejected.append(match.model_copy(update={"rejection_reason": "over_orb"}))
+
         return {"matched": matched, "rejected": rejected}
 
     def _resolve_selectors(
@@ -164,11 +160,16 @@ class DirectionsFormulaMatcher:
     ) -> list[ResolvedPoint]:
         points: list[ResolvedPoint] = []
         for selector in selectors:
-            points.extend(self._resolve_selector(chart=chart, card=card, selector=selector, directed=directed, symbolic_arc=symbolic_arc))
-        deduped: dict[str, ResolvedPoint] = {}
-        for point in points:
-            deduped[point.key] = point
-        return list(deduped.values())
+            points.extend(
+                self._resolve_selector(
+                    chart=chart,
+                    card=card,
+                    selector=selector,
+                    directed=directed,
+                    symbolic_arc=symbolic_arc,
+                )
+            )
+        return list({point.key: point for point in points}.values())
 
     def _resolve_selector(
         self,
@@ -192,8 +193,7 @@ class DirectionsFormulaMatcher:
             degree = chart.houses.cusps.get(house_num)
             if degree is None:
                 return []
-            key = f"cusp_{house_num}"
-            return [ResolvedPoint(key=key, degree=self._direct(degree, symbolic_arc, directed))]
+            return [ResolvedPoint(key=f"cusp_{house_num}", degree=self._direct(degree, symbolic_arc, directed))]
         if selector.startswith("ruler_"):
             house_num = selector.split("_", 1)[1]
             return self._resolve_house_rulers(chart=chart, house_num=house_num, directed=directed, symbolic_arc=symbolic_arc)
@@ -245,14 +245,13 @@ class DirectionsFormulaMatcher:
     ) -> list[ResolvedPoint]:
         points: list[ResolvedPoint] = []
         for name, obj in chart.objects.items():
-            if obj.house != house_num:
-                continue
-            points.append(
-                ResolvedPoint(
-                    key=f"house_element_{house_num}:{name}",
-                    degree=self._direct(obj.absolute_degree_0_360, symbolic_arc, directed),
+            if obj.house == house_num:
+                points.append(
+                    ResolvedPoint(
+                        key=f"house_element_{house_num}:{name}",
+                        degree=self._direct(obj.absolute_degree_0_360, symbolic_arc, directed),
+                    )
                 )
-            )
         return points
 
     @staticmethod

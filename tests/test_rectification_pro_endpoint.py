@@ -74,6 +74,22 @@ def test_rectification_pro_run_endpoint_contract(monkeypatch, tmp_path) -> None:
     assert "confidence" in body
 
 
+def test_rectification_pro_run_endpoint_returns_formula_test_mode_results(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=_payload(2))
+    assert response.status_code == 200
+    body = response.json()
+    assert "formula_test_mode_results" in body
+    assert isinstance(body["formula_test_mode_results"], list)
+    if body["formula_test_mode_results"]:
+        item = body["formula_test_mode_results"][0]
+        assert "matched_formula_aspects" in item
+        assert "missing_formula_links" in item
+        assert "rejected_aspects" in item
+        assert "validation_report" in item
+
+
 def test_rectification_pro_run_low_confidence_for_weak_data(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     with client:
