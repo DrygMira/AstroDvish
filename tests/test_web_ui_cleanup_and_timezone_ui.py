@@ -5,6 +5,19 @@ from fastapi.testclient import TestClient
 import web_ui.main as web_ui_main
 
 
+def test_main_ui_uses_premium_luxe_visual_markers_and_soft_transitions() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "--gold" in html
+    assert 'class="card hero-card"' in html
+    assert 'class="hero-kicker"' in html
+    assert "cubic-bezier(0.22, 1, 0.36, 1)" in html
+    assert "scroll-behavior: smooth;" in html
+
+
 def test_main_ui_uses_product_header_without_test_ports_copy() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/")

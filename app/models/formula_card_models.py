@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -14,8 +14,12 @@ class FormulaSubformula(BaseModel):
 class FormulaDirectionRule(BaseModel):
     id: str
     title: str
+    source_kind: Literal["directed"] = "directed"
+    target_kind: Literal["natal"] = "natal"
     source_selectors: list[str] = Field(default_factory=list)
     target_selectors: list[str] = Field(default_factory=list)
+    display_source: str | None = None
+    display_target: str | None = None
     aspect_types: list[str] = Field(default_factory=list)
     orb_limit: float = 1.0
     required: bool = True
@@ -56,7 +60,10 @@ class FormulaAspectMatch(BaseModel):
     directed_point: str
     natal_target: str
     aspect_type: str
+    actual_angle: float
+    exact_angle: float
     orb: float
+    orb_limit: float
     strength: str
     formula_rule_matched: str
     explanation_for_expert: str
@@ -80,7 +87,7 @@ class FormulaTestModeResult(BaseModel):
     confidence: str
     explanation_for_expert: str
     matched_formula_aspects: list[FormulaAspectMatch] = Field(default_factory=list)
-    missing_formula_links: list[str] = Field(default_factory=list)
+    missing_formula_links: list[dict[str, Any]] = Field(default_factory=list)
     rejected_aspects: list[FormulaAspectMatch] = Field(default_factory=list)
     validation_report: dict[str, Any] = Field(default_factory=dict)
     validation_report_table: str | None = None

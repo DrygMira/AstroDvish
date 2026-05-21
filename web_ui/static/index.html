@@ -6,65 +6,174 @@
   <title>Astro Web UI</title>
   <style>
     :root {
-      --bg1: #f7fbff;
-      --card: #ffffff;
-      --accent: #0f766e;
-      --accent2: #2563eb;
-      --text: #0f172a;
-      --muted: #475569;
-      --border: #dbe7f5;
-      --assistant-bg: #f0f9ff;
-      --user-bg: #ecfeff;
+      --paper: #f6f1e8;
+      --paper-soft: #fbf7f1;
+      --card: rgba(255, 255, 255, 0.82);
+      --card-strong: rgba(255, 255, 255, 0.92);
+      --ink-deep: #172235;
+      --ink: #24364f;
+      --muted: #66758d;
+      --accent: #23426f;
+      --accent2: #395f96;
+      --accent-soft: #edf3fb;
+      --gold: #b89452;
+      --gold-soft: rgba(184, 148, 82, 0.18);
+      --border: rgba(97, 120, 155, 0.18);
+      --border-strong: rgba(78, 101, 137, 0.28);
+      --shadow-soft: 0 18px 40px rgba(23, 34, 53, 0.08);
+      --shadow-strong: 0 24px 60px rgba(23, 34, 53, 0.12);
+      --assistant-bg: #f5f9ff;
+      --user-bg: #f6fbff;
+      --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    html {
+      scroll-behavior: smooth;
     }
     body {
       margin: 0;
       font-family: "Segoe UI", "Noto Sans", sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at top right, #d9edff 0, #f2f8ff 35%, #f8fbff 100%);
+      color: var(--ink-deep);
+      background:
+        radial-gradient(circle at top left, rgba(184, 148, 82, 0.08) 0, rgba(184, 148, 82, 0) 32%),
+        radial-gradient(circle at top right, rgba(57, 95, 150, 0.12) 0, rgba(57, 95, 150, 0) 38%),
+        linear-gradient(180deg, #f9f5ef 0%, #f6f7fb 44%, #eef3f9 100%);
+      background-attachment: fixed;
     }
     .wrap {
-      max-width: 1120px;
-      margin: 24px auto;
-      padding: 0 16px;
+      max-width: 1160px;
+      margin: 34px auto 56px;
+      padding: 0 20px;
     }
     .card {
+      position: relative;
+      overflow: hidden;
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
-      margin-bottom: 16px;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(18px);
+      margin-bottom: 18px;
+      transition:
+        transform 260ms var(--ease-luxe),
+        box-shadow 260ms var(--ease-luxe),
+        border-color 260ms var(--ease-luxe),
+        background-color 260ms var(--ease-luxe);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(184, 148, 82, 0.58), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+    .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-strong);
+      transform: translateY(-1px);
+    }
+    .hero-card {
+      padding: 28px 28px 26px;
+      background:
+        radial-gradient(circle at right top, rgba(57, 95, 150, 0.16) 0, rgba(57, 95, 150, 0) 36%),
+        linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247, 250, 255, 0.88) 55%, rgba(244, 237, 225, 0.72) 100%);
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 7px 12px;
+      border: 1px solid rgba(184, 148, 82, 0.22);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .hero-kicker::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #dbc48d);
+      box-shadow: 0 0 0 6px rgba(184, 148, 82, 0.1);
+    }
+    .hero-title-wrap {
+      max-width: 860px;
     }
     h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
+      margin: 0 0 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 5.2vw, 58px);
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      color: var(--ink-deep);
+      text-wrap: balance;
     }
     .muted {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
+      line-height: 1.68;
+      max-width: 760px;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.74);
+      border: 1px solid rgba(97, 120, 155, 0.16);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
-    label { display: block; font-size: 13px; margin-bottom: 4px; }
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 7px;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
     input, select, textarea, button {
       width: 100%;
       box-sizing: border-box;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 12px 14px;
       font-size: 14px;
-      background: #fff;
-      color: var(--text);
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--ink-deep);
+      transition:
+        border-color 220ms var(--ease-luxe),
+        box-shadow 220ms var(--ease-luxe),
+        background-color 220ms var(--ease-luxe),
+        transform 220ms var(--ease-luxe),
+        color 220ms var(--ease-luxe);
     }
     input[type="date"],
     input[type="time"],
     input[type="datetime-local"] {
-      background: #ffffff;
-      color: #0b1220;
-      border-color: #b7d3f2;
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--ink-deep);
+      border-color: rgba(101, 126, 164, 0.24);
       font-weight: 600;
       color-scheme: light;
     }
@@ -72,9 +181,10 @@
     select:focus,
     textarea:focus,
     button:focus {
-      outline: 2px solid #93c5fd;
+      outline: 2px solid rgba(57, 95, 150, 0.22);
       outline-offset: 1px;
-      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+      border-color: rgba(57, 95, 150, 0.42);
+      box-shadow: 0 0 0 4px rgba(57, 95, 150, 0.14);
     }
     textarea { min-height: 110px; resize: vertical; }
     .row { display: flex; gap: 8px; }
@@ -82,56 +192,67 @@
     .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .btn {
       width: auto;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      background: linear-gradient(135deg, #223a62, #3c5d95 55%, #5879b6);
       color: #fff;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.18);
       cursor: pointer;
-      font-weight: 600;
-      padding: 10px 14px;
+      font-weight: 700;
+      padding: 12px 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 14px 28px rgba(35, 66, 111, 0.18);
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 18px 34px rgba(35, 66, 111, 0.22);
     }
     .btn.secondary {
-      background: #fff;
-      color: var(--text);
-      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.82);
+      color: var(--ink-deep);
+      border: 1px solid rgba(97, 120, 155, 0.22);
+      box-shadow: none;
     }
     .btn.option {
-      background: #fff;
-      color: var(--text);
-      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.84);
+      color: var(--ink);
+      border: 1px solid rgba(97, 120, 155, 0.18);
       text-align: left;
       font-weight: 500;
       width: 100%;
+      box-shadow: none;
     }
     .btn.option.active {
       color: #fff;
       border-color: transparent;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      background: linear-gradient(135deg, #223a62, #3c5d95 55%, #5879b6);
     }
     .hint {
-      margin-top: 4px;
+      margin-top: 6px;
       font-size: 12px;
       color: var(--muted);
+      line-height: 1.58;
     }
     .hidden { display: none; }
     .tabs {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
+      background: linear-gradient(135deg, rgba(255,255,255,0.86), rgba(246, 248, 252, 0.74));
     }
     .tab-btn {
       width: auto;
-      padding: 10px 14px;
+      padding: 13px 18px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #fff;
+      border: 1px solid rgba(97, 120, 155, 0.16);
+      background: rgba(255, 255, 255, 0.76);
       cursor: pointer;
-      font-weight: 600;
-      color: var(--text);
+      font-weight: 700;
+      color: var(--ink);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
     }
     .tab-btn.active {
       border-color: transparent;
       color: #fff;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      background: linear-gradient(135deg, #223a62, #3c5d95 55%, #5879b6);
+      box-shadow: 0 14px 24px rgba(35, 66, 111, 0.2);
     }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
@@ -142,17 +263,26 @@
     }
     .interval-item {
       border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f8fbff;
-      padding: 10px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(245, 248, 253, 0.72));
+      padding: 12px 14px;
       font-size: 14px;
+      transition:
+        transform 220ms var(--ease-luxe),
+        border-color 220ms var(--ease-luxe),
+        box-shadow 220ms var(--ease-luxe);
+    }
+    .interval-item:hover {
+      border-color: rgba(97, 120, 155, 0.26);
+      box-shadow: 0 14px 30px rgba(23, 34, 53, 0.08);
+      transform: translateY(-1px);
     }
     .json-box {
       margin-top: 10px;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f8fbff;
-      padding: 10px;
+      border-radius: 16px;
+      background: rgba(248, 250, 253, 0.92);
+      padding: 12px;
       white-space: pre-wrap;
       font-size: 13px;
       max-height: 360px;
@@ -167,10 +297,10 @@
     }
     .msg {
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: 16px;
+      padding: 12px;
       font-size: 14px;
-      background: #fff;
+      background: rgba(255,255,255,0.88);
     }
     .msg.assistant { background: var(--assistant-bg); }
     .msg.user { background: var(--user-bg); }
@@ -191,9 +321,9 @@
     }
     .final-result {
       border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f8fbff;
-      padding: 10px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(245,248,253,0.74));
+      padding: 14px;
       font-size: 14px;
     }
 
@@ -321,12 +451,17 @@
     }
     .wizard-step {
       border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f8fbff;
-      padding: 10px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(245,248,253,0.74));
+      padding: 14px;
       font-size: 14px;
       display: grid;
       gap: 10px;
+      transition:
+        transform 220ms var(--ease-luxe),
+        border-color 220ms var(--ease-luxe),
+        background-color 220ms var(--ease-luxe),
+        box-shadow 220ms var(--ease-luxe);
     }
     .wizard-step-title {
       display: flex;
@@ -341,21 +476,22 @@
       line-height: 1.45;
     }
     .wizard-step.active {
-      border-color: #93c5fd;
-      background: #eef6ff;
+      border-color: rgba(57, 95, 150, 0.34);
+      background: linear-gradient(180deg, rgba(237,243,251,0.96), rgba(247,250,255,0.82));
+      box-shadow: 0 16px 28px rgba(35, 66, 111, 0.08);
     }
     .wizard-step.done {
-      border-color: #86efac;
-      background: #f0fdf4;
+      border-color: rgba(184, 148, 82, 0.22);
+      background: linear-gradient(180deg, rgba(250,247,241,0.96), rgba(255,255,255,0.78));
     }
     .wizard-step small {
       color: var(--muted);
     }
     .context-card {
       border: 1px solid var(--border);
-      border-radius: 14px;
-      background: linear-gradient(135deg, #f7fbff, #eef6ff);
-      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.88), rgba(245,248,253,0.8));
+      padding: 16px;
     }
     .context-grid {
       display: grid;
@@ -375,15 +511,33 @@
       gap: 10px;
       cursor: pointer;
       font-weight: 700;
-      background: #f8fbff;
+      background: rgba(248, 250, 253, 0.92);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 12px 14px;
+      transition:
+        border-color 220ms var(--ease-luxe),
+        box-shadow 220ms var(--ease-luxe),
+        background-color 220ms var(--ease-luxe);
+    }
+    .tech-toggle:hover {
+      border-color: rgba(97, 120, 155, 0.26);
+      box-shadow: 0 14px 30px rgba(23, 34, 53, 0.08);
     }
     .secondary-tabs {
       margin-top: 12px;
     }
     @media (max-width: 860px) {
+      .wrap {
+        margin: 20px auto 36px;
+        padding: 0 14px;
+      }
+      .hero-card {
+        padding: 22px 18px 20px;
+      }
+      h1 {
+        font-size: clamp(30px, 10vw, 42px);
+      }
       .grid { grid-template-columns: 1fr; }
       .tabs { flex-direction: column; }
       .tab-btn { width: 100%; }
@@ -411,9 +565,17 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
-      <h1>AstroDvish — ректификация времени рождения</h1>
-      <div class="muted">Введите данные рождения, пройдите этапы уточнения и проверьте расчётные окна времени.</div>
+    <div class="card hero-card">
+      <div class="hero-kicker">Expert Astrology Platform</div>
+      <div class="hero-title-wrap">
+        <h1>AstroDvish — ректификация времени рождения</h1>
+        <div class="muted">Введите данные рождения, пройдите этапы уточнения и проверьте расчётные окна времени.</div>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-pill">Точная карта и экспертная таблица</div>
+        <div class="hero-pill">Stage 1 → Stage 2 → Pro</div>
+        <div class="hero-pill">Режим для астролога и клиента</div>
+      </div>
     </div>
 
     <div class="card tabs">

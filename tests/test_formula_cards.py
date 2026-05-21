@@ -447,6 +447,160 @@ def test_validation_report_has_score_breakdown() -> None:
     assert "method_points" in breakdown
 
 
+def test_child_birth_real_formulas_resolve_directed_source_and_natal_target_explicitly(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_CHILD_BIRTH_SOURCE_TARGET_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5", "house_4"],
+                "houses": ["house_5", "house_4"],
+                "planets": ["sun", "moon", "jupiter", "chiron"],
+                "significators": ["moon"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions", "solars", "transits"],
+                "direction_rules": [
+                    {"id": "sig4_to_house5_element", "title": "Directed significator_4 -> natal house_element_5", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["moon"], "target_selectors": ["house_elements_5"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0, "display_source": "significator_4", "display_target": "house_element_5"},
+                    {"id": "cusp10_to_cusp5", "title": "Directed cusp_10 -> natal cusp_5", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_10"], "target_selectors": ["cusp_5"], "aspect_types": ["trine"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "cusp6_to_sun", "title": "Directed cusp_6 -> natal Sun", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_6"], "target_selectors": ["sun"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "cusp4_to_moon", "title": "Directed cusp_4 -> natal Moon", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_4"], "target_selectors": ["moon"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "sun_to_jupiter", "title": "Directed Sun -> natal Jupiter", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["sun"], "target_selectors": ["jupiter"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "cusp5_to_chiron", "title": "Directed cusp_5 -> natal Chiron", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_5"], "target_selectors": ["chiron"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "sun": {"degree": 180.0, "sign": "Libra", "house": 8},
+            "moon": {"degree": 60.0, "sign": "Gemini", "house": 4},
+            "jupiter": {"degree": 240.5, "sign": "Sagittarius", "house": 9},
+            "chiron": {"degree": 120.0, "sign": "Leo", "house": 6},
+            "venus": {"degree": 60.0, "sign": "Gemini", "house": 5},
+            "mars": {"degree": 200.0, "sign": "Libra", "house": 9},
+        },
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 60.0, "5": 120.0, "6": 120.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 0.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Cancer", "5": "Leo", "6": "Virgo", "7": "Libra", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+    result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _custom_event(title="Child", event_type=EventType.child_birth).model_dump(mode="json"),
+        },
+    )
+    report = result["validation_report"]
+    formulas = report["expected_by_card"]["direction_rules"]
+    assert all(rule["source_kind"] == "directed" for rule in formulas)
+    assert all(rule["target_kind"] == "natal" for rule in formulas)
+    assert any(rule["display_formula"] == "Directed significator_4 -> Natal house_element_5" for rule in formulas)
+    found = {(item["formula_rule_matched"], item["directed_point"], item["natal_target"]) for item in result["matched_formula_aspects"]}
+    assert ("sig4_to_house5_element", "moon", "house_element_5:venus") in found
+    assert ("cusp10_to_cusp5", "cusp_10", "cusp_5") in found
+    assert ("cusp6_to_sun", "cusp_6", "sun") in found
+    assert ("cusp4_to_moon", "cusp_4", "moon") in found
+    assert ("sun_to_jupiter", "sun", "jupiter") in found
+    assert ("cusp5_to_chiron", "cusp_5", "chiron") in found
+
+
+def test_house_element_5_returns_only_planets_really_in_house_5(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_CHILD_HOUSE_ELEMENTS_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5"],
+                "houses": ["house_5"],
+                "planets": ["venus", "mars"],
+                "significators": ["moon"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {"id": "sig4_to_house5_element", "title": "Directed significator_4 -> natal house_element_5", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["moon"], "target_selectors": ["house_elements_5"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0}
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "moon": {"degree": 60.0, "sign": "Gemini", "house": 4},
+            "venus": {"degree": 60.0, "sign": "Gemini", "house": 5},
+            "mars": {"degree": 60.0, "sign": "Gemini", "house": 8},
+            "saturn": {"degree": 60.0, "sign": "Gemini", "house": 9},
+        },
+        cusps={str(i): float((i - 1) * 30) for i in range(1, 13)},
+        cusp_signs={str(i): name for i, name in enumerate(["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"], start=1)},
+    )
+    result = service.evaluate(
+        event_type="child_birth",
+        context={"chart_response": chart.model_dump(mode="json"), "candidate_birth_date": date(2000, 1, 1), "event": _custom_event(title="Child", event_type=EventType.child_birth).model_dump(mode="json")},
+    )
+    targets = {item["natal_target"] for item in result["matched_formula_aspects"]}
+    assert "house_element_5:venus" in targets
+    assert "house_element_5:mars" not in targets
+    assert "house_element_5:saturn" not in targets
+
+
+def test_rejected_huge_deviation_is_not_meaningful_candidate_and_report_has_rule_debug(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_CHILD_REJECTED_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5"],
+                "houses": ["house_5"],
+                "planets": ["sun", "jupiter"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {"id": "sun_to_jupiter", "title": "Directed Sun -> natal Jupiter", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["sun"], "target_selectors": ["jupiter"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0}
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "sun": {"degree": 180.0, "sign": "Libra", "house": 5},
+            "jupiter": {"degree": 261.0, "sign": "Sagittarius", "house": 9},
+        },
+        cusps={str(i): float((i - 1) * 30) for i in range(1, 13)},
+        cusp_signs={str(i): name for i, name in enumerate(["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"], start=1)},
+    )
+    result = service.evaluate(
+        event_type="child_birth",
+        context={"chart_response": chart.model_dump(mode="json"), "candidate_birth_date": date(2000, 1, 1), "event": _custom_event(title="Child", event_type=EventType.child_birth).model_dump(mode="json")},
+    )
+    assert not result["matched_formula_aspects"]
+    assert result["rejected_aspects"]
+    rejected = result["rejected_aspects"][0]
+    assert rejected["formula_rule_matched"] == "sun_to_jupiter"
+    assert rejected["rejection_reason"] == "over_orb"
+    assert rejected["orb"] >= 20.0
+    assert rejected["actual_angle"] == 81.0
+    assert rejected["exact_angle"] == 60.0
+    report = result["validation_report"]
+    assert report["missed_by_engine"]
+    assert report["rejected_aspects"][0]["reason"] == "over_orb"
+    assert report["rule_debug"]
+    debug = report["rule_debug"][0]
+    assert debug["resolved_sources"] == ["sun"]
+    assert debug["resolved_targets"] == ["jupiter"]
+    assert debug["checked_pairs"]
+    assert debug["matched_pairs"] == []
+    assert debug["rejected_pairs"]
+
+
 def test_ekaterina_marriage_cases_are_found_and_over_orb_goes_to_rejected(tmp_path: Path) -> None:
     loader = _write_formula_cards(
         tmp_path,
@@ -627,5 +781,5 @@ def test_ekaterina_divorce_proserpina_case_is_missed_when_ruler_catalog_cannot_r
 
     found = {(item["formula_rule_matched"], item["directed_point"], item["natal_target"], item["aspect_type"]) for item in result["matched_formula_aspects"]}
     assert ("cusp_7_to_cusp_8", "cusp_7", "cusp_8", "conjunction") in found
-    assert "ruler_10_to_ruler_7" in result["missing_formula_links"]
+    assert any(item["rule_id"] == "ruler_10_to_ruler_7" for item in result["missing_formula_links"])
     assert all(item["formula_rule_matched"] != "ruler_10_to_ruler_7" for item in result["matched_formula_aspects"])

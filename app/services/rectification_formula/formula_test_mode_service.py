@@ -47,9 +47,10 @@ class FormulaTestModeService:
 
         matched_formula_aspects = []
         rejected_aspects = []
-        missing_formula_links: list[str] = []
+        missing_formula_links: list[dict[str, Any]] = []
+        rule_debug: list[dict[str, Any]] = []
         if chart is not None and event is not None and candidate_birth_date is not None and card.direction_rules:
-            matched_formula_aspects, rejected_aspects, missing_formula_links = self.directions_matcher.evaluate(
+            matched_formula_aspects, rejected_aspects, missing_formula_links, rule_debug = self.directions_matcher.evaluate(
                 card=card,
                 chart=chart,
                 candidate_birth_date=candidate_birth_date,
@@ -115,6 +116,7 @@ class FormulaTestModeService:
             matched_weak=matched_weak,
             exclusion_risks=exclusion_risks,
             score_breakdown=score_breakdown,
+            rule_debug=rule_debug,
         )
 
         return FormulaTestModeResult(
@@ -265,7 +267,7 @@ class FormulaTestModeService:
         card: FormulaCard,
         event_type: str,
         matched_formula_aspects: list[Any],
-        missing_formula_links: list[str],
+        missing_formula_links: list[dict[str, Any]],
         rejected_aspects: list[Any],
         methods_used: list[str],
         matched_core: list[str],
@@ -274,6 +276,7 @@ class FormulaTestModeService:
         matched_weak: list[str],
         exclusion_risks: list[str],
         score_breakdown: dict[str, float],
+        rule_debug: list[dict[str, Any]],
     ) -> dict[str, Any]:
         found = [item.model_dump(mode="json") if hasattr(item, "model_dump") else dict(item) for item in matched_formula_aspects]
         rejected = []
@@ -301,7 +304,13 @@ class FormulaTestModeService:
                 "houses": card.houses,
                 "planets": card.planets,
                 "significators": card.significators,
-                "direction_rules": [rule.model_dump(mode="json") for rule in card.direction_rules],
+                "direction_rules": [
+                    {
+                        **rule.model_dump(mode="json"),
+                        "display_formula": cls._display_formula(rule),
+                    }
+                    for rule in card.direction_rules
+                ],
                 "aspects": card.aspects,
             },
             "found_by_engine": found,
@@ -309,6 +318,7 @@ class FormulaTestModeService:
             "rejected_aspects": rejected,
             "extra_or_suspicious_aspects": suspicious,
             "score_breakdown": score_breakdown,
+            "rule_debug": rule_debug,
             "method_scope": {
                 "scoring_methods": ["directions"],
                 "debug_only_methods": [item for item in methods_used if item != "directions"],
@@ -339,7 +349,7 @@ class FormulaTestModeService:
     @staticmethod
     def _questions_for_expert(
         *,
-        missing_formula_links: list[str],
+        missing_formula_links: list[dict[str, Any]],
         rejected_aspects: list[dict[str, Any]],
         suspicious: list[dict[str, Any]],
         matched_core: list[str],
@@ -350,7 +360,8 @@ class FormulaTestModeService:
     ) -> list[str]:
         questions: list[str] = []
         if missing_formula_links:
-            questions.append(f"Проверить пропущенные обязательные связи: {', '.join(missing_formula_links)}.")
+            labels = [str(item.get("rule_id") or item.get("display_formula") or "unknown_rule") for item in missing_formula_links]
+            questions.append(f"Проверить пропущенные обязательные связи: {', '.join(labels)}.")
         if rejected_aspects:
             questions.append("Проверить, допустим ли больший орбис для отклонённых аспектов.")
         if suspicious:
@@ -360,6 +371,12 @@ class FormulaTestModeService:
         if exclusion_risks:
             questions.append("Проверить, не объясняется ли событие лучше исключающей категорией.")
         return questions
+
+    @staticmethod
+    def _display_formula(rule: FormulaCard | Any) -> str:
+        source = getattr(rule, "display_source", None) or ", ".join(getattr(rule, "source_selectors", []) or []) or "source"
+        target = getattr(rule, "display_target", None) or ", ".join(getattr(rule, "target_selectors", []) or []) or "target"
+        return f"Directed {source} -> Natal {target}"
 
     @staticmethod
     def _format_validation_report_table(report: dict[str, Any]) -> str:
