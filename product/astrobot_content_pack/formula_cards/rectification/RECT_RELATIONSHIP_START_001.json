@@ -7,6 +7,7 @@
   "core_logic": ["house_7", "house_5", "venus"],
   "houses": ["house_7", "house_5"],
   "planets": ["venus", "moon", "jupiter"],
+  "significators": ["venus", "moon", "jupiter"],
   "aspects": ["venus_moon_link", "ruler_7_link", "romantic_axis_activation"],
   "method_priority": ["directions", "transits", "solars"],
   "strong_confirmation": ["multiple_methods", "romantic_axis_activation"],
@@ -22,6 +23,18 @@
       "id": "formalization_pending",
       "title": "Relationship without legal union yet",
       "indicators": ["venus", "ruler_7_link"]
+    }
+  ],
+  "direction_rules": [
+    {
+      "id": "venus_to_house_7",
+      "title": "Directed Venus to natal 7th cusp/significators",
+      "source_selectors": ["venus"],
+      "target_selectors": ["cusp_7", "significators"],
+      "aspect_types": ["conjunction", "trine", "sextile", "square", "opposition", "quincunx"],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0
     }
   ],
   "notes": "Test card only. Not a final rectification formula."

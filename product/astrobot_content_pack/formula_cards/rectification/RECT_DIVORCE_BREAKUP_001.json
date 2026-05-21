@@ -7,6 +7,7 @@
   "core_logic": ["house_7", "house_8", "house_12", "saturn", "uranus", "pluto"],
   "houses": ["house_7", "house_8", "house_12"],
   "planets": ["saturn", "uranus", "pluto", "venus"],
+  "significators": ["saturn", "uranus", "pluto", "venus"],
   "aspects": ["relationship_break_signature", "uranus_hard_aspect", "pluto_separation_link"],
   "method_priority": ["directions", "transits", "solars"],
   "strong_confirmation": ["multiple_methods", "status_break_marker", "separation_axis_activation"],
@@ -22,6 +23,18 @@
       "id": "deep_breakup_transform",
       "title": "Breakup with crisis/transformation markers",
       "indicators": ["house_8", "house_12", "pluto", "uranus"]
+    }
+  ],
+  "direction_rules": [
+    {
+      "id": "uranus_to_house_7",
+      "title": "Directed Uranus to natal 7th cusp/significators",
+      "source_selectors": ["uranus"],
+      "target_selectors": ["cusp_7", "significators"],
+      "aspect_types": ["conjunction", "square", "opposition", "quincunx", "trine", "sextile"],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0
     }
   ],
   "notes": "Test card only. Not a final rectification formula."

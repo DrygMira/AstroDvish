@@ -7,6 +7,7 @@
   "core_logic": ["house_of_deceased_person", "house_8", "house_12", "saturn", "pluto"],
   "houses": ["house_of_deceased_person", "house_8", "house_12"],
   "planets": ["saturn", "pluto", "moon"],
+  "significators": ["saturn", "pluto", "moon"],
   "aspects": ["saturn_hard_aspect", "pluto_hard_aspect", "loss_axis_link"],
   "method_priority": ["directions", "transits", "solars"],
   "strong_confirmation": ["multiple_methods", "angle_to_death_house", "saturn_pluto_repetition"],
@@ -17,6 +18,18 @@
       "id": "close_person_death_axis",
       "title": "Loss houses with Saturn/Pluto pressure",
       "indicators": ["house_of_deceased_person", "house_8", "house_12", "saturn", "pluto"]
+    }
+  ],
+  "direction_rules": [
+    {
+      "id": "saturn_to_house_8",
+      "title": "Directed Saturn to natal 8th cusp",
+      "source_selectors": ["saturn"],
+      "target_selectors": ["cusp_8"],
+      "aspect_types": ["conjunction", "square", "opposition", "quincunx", "trine", "sextile"],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0
     }
   ],
   "notes": "Test card only. Not a final rectification formula."

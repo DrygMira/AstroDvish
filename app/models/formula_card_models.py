@@ -11,6 +11,17 @@ class FormulaSubformula(BaseModel):
     indicators: list[str] = Field(default_factory=list)
 
 
+class FormulaDirectionRule(BaseModel):
+    id: str
+    title: str
+    source_selectors: list[str] = Field(default_factory=list)
+    target_selectors: list[str] = Field(default_factory=list)
+    aspect_types: list[str] = Field(default_factory=list)
+    orb_limit: float = 1.0
+    required: bool = True
+    weight: float = 1.0
+
+
 class FormulaCard(BaseModel):
     card_id: str
     event_type: str
@@ -20,12 +31,14 @@ class FormulaCard(BaseModel):
     core_logic: list[str]
     houses: list[str] = Field(default_factory=list)
     planets: list[str] = Field(default_factory=list)
+    significators: list[str] = Field(default_factory=list)
     aspects: list[str]
     method_priority: list[str]
     strong_confirmation: list[str] = Field(default_factory=list)
     weak_confirmation: list[str] = Field(default_factory=list)
     exclusions: list[str] = Field(default_factory=list)
     subformulas: list[FormulaSubformula] = Field(default_factory=list)
+    direction_rules: list[FormulaDirectionRule] = Field(default_factory=list)
     notes: str | None = None
 
     @field_validator("core_logic", "aspects", "method_priority")
@@ -34,6 +47,19 @@ class FormulaCard(BaseModel):
         if not value:
             raise ValueError("must not be empty")
         return value
+
+
+class FormulaAspectMatch(BaseModel):
+    method: str
+    event_type: str
+    card_id: str
+    directed_point: str
+    natal_target: str
+    aspect_type: str
+    orb: float
+    strength: str
+    formula_rule_matched: str
+    explanation_for_expert: str
 
 
 class FormulaTestModeResult(BaseModel):
@@ -48,4 +74,7 @@ class FormulaTestModeResult(BaseModel):
     score: float
     confidence: str
     explanation_for_expert: str
+    matched_formula_aspects: list[FormulaAspectMatch] = Field(default_factory=list)
+    missing_formula_links: list[str] = Field(default_factory=list)
+    rejected_aspects: list[FormulaAspectMatch] = Field(default_factory=list)
     debug: dict[str, Any] = Field(default_factory=dict)

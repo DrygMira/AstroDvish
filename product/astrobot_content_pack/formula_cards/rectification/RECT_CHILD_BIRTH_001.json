@@ -7,6 +7,7 @@
   "core_logic": ["house_5", "house_4", "ruler_5", "moon"],
   "houses": ["house_5", "house_4"],
   "planets": ["moon", "jupiter", "venus"],
+  "significators": ["moon", "jupiter", "venus"],
   "aspects": ["angle_link", "ruler_5_angle_link", "moon_jupiter_link"],
   "method_priority": ["directions", "solars", "transits"],
   "strong_confirmation": ["multiple_methods", "jupiter_support", "family_axis_activation"],
@@ -17,6 +18,48 @@
       "id": "child_family_axis",
       "title": "House 5 and house 4 family activation",
       "indicators": ["house_5", "house_4", "family_axis_activation"]
+    }
+  ],
+  "direction_rules": [
+    {
+      "id": "ruler_5_to_cusp_4",
+      "title": "Directed ruler of 5th to natal 4th cusp",
+      "source_selectors": ["ruler_5"],
+      "target_selectors": ["cusp_4"],
+      "aspect_types": ["conjunction", "trine", "sextile", "square", "opposition", "quincunx"],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4
+    },
+    {
+      "id": "cusp_5_to_significators",
+      "title": "Directed 5th cusp to child significators",
+      "source_selectors": ["cusp_5"],
+      "target_selectors": ["significators"],
+      "aspect_types": ["conjunction", "trine", "sextile", "square", "opposition", "quincunx"],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.2
+    },
+    {
+      "id": "house_element_5_to_cusp_7",
+      "title": "Directed elements of 5th house to natal 7th cusp",
+      "source_selectors": ["house_elements_5"],
+      "target_selectors": ["cusp_7"],
+      "aspect_types": ["conjunction", "trine", "sextile", "square", "opposition", "quincunx"],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0
+    },
+    {
+      "id": "moon_to_cusp_5",
+      "title": "Directed Moon to natal 5th cusp",
+      "source_selectors": ["moon"],
+      "target_selectors": ["cusp_5"],
+      "aspect_types": ["conjunction", "trine", "sextile", "square", "opposition", "quincunx"],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0
     }
   ],
   "notes": "Test card only. Not a final rectification formula."
