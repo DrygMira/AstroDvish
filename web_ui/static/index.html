@@ -4429,7 +4429,7 @@
         block.appendChild(tableLine);
 
         const expectedLine = document.createElement("div");
-        expectedLine.textContent = `Expected: ${Array.isArray(report.expected_by_card?.direction_rules) ? report.expected_by_card.direction_rules.map((rule) => rule.id).join(", ") : "не рассчитано"}`;
+        expectedLine.textContent = `Expected: ${Array.isArray(report.expected_by_card?.direction_rules) ? report.expected_by_card.direction_rules.map((rule) => rule.display_formula || rule.id).join(", ") : "не рассчитано"}`;
         block.appendChild(expectedLine);
 
         const foundHeader = document.createElement("div");
@@ -4454,7 +4454,7 @@
         }
 
         const missedLine = document.createElement("div");
-        missedLine.textContent = `Missing: ${missingFormulaLinks.length ? missingFormulaLinks.join(", ") : "нет"}`;
+        missedLine.textContent = `Missing: ${missingFormulaLinks.length ? missingFormulaLinks.map((item) => item.display_formula || item.rule_id || "—").join(", ") : "нет"}`;
         block.appendChild(missedLine);
 
         const rejectedHeader = document.createElement("div");

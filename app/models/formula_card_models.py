@@ -30,6 +30,9 @@ class FormulaCard(BaseModel):
     card_id: str
     event_type: str
     status: str
+    card_version: str | None = None
+    card_hash: str | None = None
+    source_file_path: str | None = None
     school: str | None = None
     title: str | None = None
     core_logic: list[str]
@@ -79,6 +82,9 @@ class FormulaTestModeResult(BaseModel):
     card_id: str
     event_type: str
     status: str
+    card_version: str | None = None
+    card_hash: str | None = None
+    source_file_path: str | None = None
     source_event_id: str | None = None
     source_event_type: str | None = None
     source_event_title: str | None = None

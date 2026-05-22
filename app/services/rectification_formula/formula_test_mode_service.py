@@ -139,10 +139,16 @@ class FormulaTestModeService:
             rule_debug=rule_debug,
         )
 
+        directed_points_debug = self._build_directed_points_debug(rule_debug)
+        natal_targets_debug = self._build_natal_targets_debug(rule_debug)
+
         return FormulaTestModeResult(
             card_id=card.card_id,
             event_type=card.event_type,
             status=card.status,
+            card_version=card.card_version,
+            card_hash=card.card_hash,
+            source_file_path=card.source_file_path,
             source_event_id=event.event_id if event is not None else None,
             source_event_type=event.event_type.value if event is not None else None,
             source_event_title=event.title if event is not None else None,
@@ -161,6 +167,11 @@ class FormulaTestModeService:
             validation_report=validation_report,
             validation_report_table=self._format_validation_report_table(validation_report),
             debug={
+                "card_version": card.card_version,
+                "card_hash": card.card_hash,
+                "source_file_path": card.source_file_path,
+                "directed_points_debug": directed_points_debug,
+                "natal_targets_debug": natal_targets_debug,
                 "matched_core": matched_core,
                 "matched_aspects": matched_aspects,
                 "matched_strong": matched_strong,
@@ -341,7 +352,13 @@ class FormulaTestModeService:
         return {
             "event_type": event_type,
             "card_id": card.card_id,
+            "card_version": card.card_version,
+            "card_hash": card.card_hash,
+            "source_file_path": card.source_file_path,
             "expected_by_card": {
+                "card_version": card.card_version,
+                "card_hash": card.card_hash,
+                "source_file_path": card.source_file_path,
                 "core_logic": card.core_logic,
                 "houses": card.houses,
                 "planets": card.planets,
@@ -361,6 +378,8 @@ class FormulaTestModeService:
             "extra_or_suspicious_aspects": suspicious,
             "score_breakdown": score_breakdown,
             "rule_debug": rule_debug,
+            "directed_points_debug": cls._build_directed_points_debug(rule_debug),
+            "natal_targets_debug": cls._build_natal_targets_debug(rule_debug),
             "method_scope": {
                 "scoring_methods": ["directions"],
                 "debug_only_methods": [item for item in methods_used if item != "directions"],
@@ -415,6 +434,37 @@ class FormulaTestModeService:
         if exclusion_risks:
             questions.append("Проверить, не объясняется ли событие лучше исключающей категорией.")
         return questions
+
+    @staticmethod
+    def _build_directed_points_debug(rule_debug: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        points: dict[str, dict[str, Any]] = {}
+        for rule in rule_debug:
+            direction_arc = rule.get("direction_arc")
+            for pair in rule.get("checked_pairs", []):
+                point_name = pair.get("directed_point")
+                if not point_name:
+                    continue
+                points[point_name] = {
+                    "point_name": point_name,
+                    "natal_longitude": pair.get("source_natal_coordinate"),
+                    "directed_longitude": pair.get("directed_coordinate"),
+                    "direction_arc": direction_arc,
+                }
+        return list(points.values())
+
+    @staticmethod
+    def _build_natal_targets_debug(rule_debug: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        points: dict[str, dict[str, Any]] = {}
+        for rule in rule_debug:
+            for pair in rule.get("checked_pairs", []):
+                point_name = pair.get("natal_target")
+                if not point_name:
+                    continue
+                points[point_name] = {
+                    "point_name": point_name,
+                    "natal_longitude": pair.get("natal_coordinate"),
+                }
+        return list(points.values())
 
     @staticmethod
     def _display_formula(rule: FormulaCard | Any) -> str:

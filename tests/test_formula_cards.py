@@ -14,6 +14,22 @@ from app.services.rectification_formula.formula_card_loader import (
 )
 from app.services.rectification_formula.formula_test_mode_service import FormulaTestModeService
 
+CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS = [
+    "Directed ruler_4 -> Natal house_element_5",
+    "Directed cusp_10 -> Natal cusp_5",
+    "Directed cusp_6 -> Natal Sun",
+    "Directed cusp_4 -> Natal Moon",
+    "Directed Sun -> Natal Jupiter",
+    "Directed cusp_5 -> Natal Chiron",
+]
+
+OLD_CHILD_BIRTH_RULE_IDS = {
+    "ruler_5_to_cusp_4",
+    "cusp_5_to_significators",
+    "house_element_5_to_cusp_7",
+    "moon_to_cusp_5",
+}
+
 
 def test_all_requested_formula_cards_load_successfully() -> None:
     loader = FormulaCardLoader()
@@ -49,6 +65,21 @@ def test_child_birth_card_contains_house_5_and_house_4_core() -> None:
 
     assert "house_5" in card.core_logic
     assert "house_4" in card.core_logic
+
+
+def test_production_child_birth_card_contains_exact_confirmed_six_formulas() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card("RECT_CHILD_BIRTH_001")
+
+    formulas = [
+        f"Directed {rule.display_source or ', '.join(rule.source_selectors)} -> Natal {rule.display_target or ', '.join(rule.target_selectors)}"
+        for rule in card.direction_rules
+    ]
+    assert formulas == CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS
+    assert not OLD_CHILD_BIRTH_RULE_IDS.intersection({rule.id for rule in card.direction_rules})
+    assert card.card_hash
+    assert card.source_file_path
+    assert card.card_version == "child_birth_solar_arc_v2"
 
 
 def test_death_close_person_card_contains_expected_core_and_planets() -> None:
@@ -99,6 +130,9 @@ def test_formula_test_mode_returns_structured_json_for_mocked_context() -> None:
     assert result["card_id"] == "RECT_CHILD_BIRTH_001"
     assert result["event_type"] == "child_birth"
     assert result["status"] == "test"
+    assert result["card_hash"]
+    assert result["source_file_path"]
+    assert result["card_version"] == "child_birth_solar_arc_v2"
     assert isinstance(result["matched_indicators"], list)
     assert isinstance(result["missing_indicators"], list)
     assert isinstance(result["weak_indicators"], list)
@@ -183,6 +217,70 @@ class _FakeSolarArcEphemerisService:
         chart = _sample_formula_chart()
         progressed_sun = chart.objects["sun"].model_copy(update={"absolute_degree_0_360": 77.5})
         return chart.model_copy(update={"objects": {**chart.objects, "sun": progressed_sun}})
+
+
+def _evaluate_confirmed_child_birth_result(tmp_path: Path) -> dict:
+    class _MatchingSolarArcEphemerisService:
+        def calculate_chart(self, payload):
+            chart = _sample_formula_chart()
+            progressed_sun = chart.objects["sun"].model_copy(update={"absolute_degree_0_360": 236.0})
+            return chart.model_copy(update={"objects": {**chart.objects, "sun": progressed_sun}})
+
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_CHILD_BIRTH_SOURCE_TARGET_SOLAR_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5", "house_4"],
+                "houses": ["house_5", "house_4"],
+                "planets": ["sun", "moon", "jupiter", "chiron"],
+                "significators": ["moon"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions", "solars", "transits"],
+                "direction_rules": [
+                    {"id": "sig4_to_house5_element", "title": "Directed significator_4 -> natal house_element_5", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["moon"], "target_selectors": ["house_elements_5"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0, "display_source": "significator_4", "display_target": "house_element_5"},
+                    {"id": "cusp10_to_cusp5", "title": "Directed cusp_10 -> natal cusp_5", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_10"], "target_selectors": ["cusp_5"], "aspect_types": ["trine"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "cusp6_to_sun", "title": "Directed cusp_6 -> natal Sun", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_6"], "target_selectors": ["sun"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "cusp4_to_moon", "title": "Directed cusp_4 -> natal Moon", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_4"], "target_selectors": ["moon"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "sun_to_jupiter", "title": "Directed Sun -> natal Jupiter", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["sun"], "target_selectors": ["jupiter"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "cusp5_to_chiron", "title": "Directed cusp_5 -> natal Chiron", "source_kind": "directed", "target_kind": "natal", "source_selectors": ["cusp_5"], "target_selectors": ["chiron"], "aspect_types": ["conjunction"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(
+        loader=loader,
+        ephemeris_service=_MatchingSolarArcEphemerisService(),
+    )
+    chart = _build_chart_with_rules(
+        objects={
+            "sun": {"degree": 208.0, "sign": "Libra", "house": 8},
+            "moon": {"degree": 88.0, "sign": "Gemini", "house": 4},
+            "jupiter": {"degree": 296.0, "sign": "Sagittarius", "house": 9},
+            "chiron": {"degree": 176.0, "sign": "Leo", "house": 6},
+            "venus": {"degree": 116.0, "sign": "Cancer", "house": 5},
+            "mars": {"degree": 200.0, "sign": "Libra", "house": 9},
+        },
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 60.0, "5": 148.0, "6": 120.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 0.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Cancer", "5": "Leo", "6": "Virgo", "7": "Libra", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+    return service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _sample_child_birth_event().model_dump(mode="json"),
+            "pro_result": {
+                "method_results": {
+                    "directions": [{"event_id": "evt_001"}],
+                    "solars": [{"event_id": "evt_001"}],
+                    "transits": [{"event_id": "evt_001"}],
+                }
+            },
+        },
+    )
 
 
 def _custom_event(*, title: str, event_type: EventType = EventType.custom_major_event) -> EventCard:
@@ -302,63 +400,29 @@ def _write_formula_cards(tmp_path: Path, cards: list[dict]) -> FormulaCardLoader
     return FormulaCardLoader(cards_root=cards_root)
 
 
-def test_one_event_can_return_multiple_direction_aspects() -> None:
-    service = FormulaTestModeService()
+def test_one_event_can_return_multiple_direction_aspects(tmp_path: Path) -> None:
+    result = _evaluate_confirmed_child_birth_result(tmp_path)
 
-    result = service.evaluate(
-        event_type="child_birth",
-        context={
-            "chart_response": _sample_formula_chart().model_dump(mode="json"),
-            "candidate_birth_date": date(2000, 1, 1),
-            "event": _sample_child_birth_event().model_dump(mode="json"),
-            "pro_result": {"method_results": {"directions": [{"event_id": "evt_001"}], "solars": [{"event_id": "evt_001"}], "transits": [{"event_id": "evt_001"}]}},
-        },
-    )
-
-    assert len(result["matched_formula_aspects"]) >= 3
+    assert len(result["matched_formula_aspects"]) == 6
 
 
-def test_directed_cusp_to_natal_planet_and_cusp_aspect_is_detected() -> None:
-    service = FormulaTestModeService()
-    result = service.evaluate(
-        event_type="child_birth",
-        context={
-            "chart_response": _sample_formula_chart().model_dump(mode="json"),
-            "candidate_birth_date": date(2000, 1, 1),
-            "event": _sample_child_birth_event().model_dump(mode="json"),
-        },
-    )
+def test_directed_cusp_to_natal_planet_and_cusp_aspect_is_detected(tmp_path: Path) -> None:
+    result = _evaluate_confirmed_child_birth_result(tmp_path)
 
-    assert any(item["directed_point"].startswith("cusp_5") and item["natal_target"] == "jupiter" for item in result["matched_formula_aspects"])
-    assert any(item["natal_target"] == "cusp_4" for item in result["matched_formula_aspects"])
+    assert any(item["directed_point"] == "cusp_10" and item["natal_target"] == "cusp_5" for item in result["matched_formula_aspects"])
+    assert any(item["directed_point"] == "cusp_6" and item["natal_target"] == "sun" for item in result["matched_formula_aspects"])
 
 
-def test_ruler_based_formula_link_is_detected() -> None:
-    service = FormulaTestModeService()
-    result = service.evaluate(
-        event_type="child_birth",
-        context={
-            "chart_response": _sample_formula_chart().model_dump(mode="json"),
-            "candidate_birth_date": date(2000, 1, 1),
-            "event": _sample_child_birth_event().model_dump(mode="json"),
-        },
-    )
+def test_ruler_based_formula_link_is_detected(tmp_path: Path) -> None:
+    result = _evaluate_confirmed_child_birth_result(tmp_path)
 
-    assert any("ruler_5" in item["formula_rule_matched"] or item["directed_point"].startswith("ruler_5") for item in result["matched_formula_aspects"])
+    assert any(item["formula_rule_matched"] == "sig4_to_house5_element" for item in result["matched_formula_aspects"])
 
 
-def test_element_of_house_formula_link_is_detected() -> None:
-    service = FormulaTestModeService()
-    result = service.evaluate(
-        event_type="child_birth",
-        context={
-            "chart_response": _sample_formula_chart().model_dump(mode="json"),
-            "candidate_birth_date": date(2000, 1, 1),
-            "event": _sample_child_birth_event().model_dump(mode="json"),
-        },
-    )
+def test_element_of_house_formula_link_is_detected(tmp_path: Path) -> None:
+    result = _evaluate_confirmed_child_birth_result(tmp_path)
 
-    assert any(item["directed_point"].startswith("house_element_5:") for item in result["matched_formula_aspects"])
+    assert any(item["natal_target"] == "house_element_5:venus" for item in result["matched_formula_aspects"])
 
 
 def test_solar_and_transit_do_not_affect_formula_test_mode_score() -> None:
@@ -401,8 +465,27 @@ def test_validation_report_contains_expected_by_card() -> None:
     report = result["validation_report"]
     assert report["event_type"] == "child_birth"
     assert report["card_id"] == "RECT_CHILD_BIRTH_001"
+    assert report["card_hash"]
+    assert report["source_file_path"]
+    assert report["card_version"] == "child_birth_solar_arc_v2"
     assert "house_5" in report["expected_by_card"]["core_logic"]
     assert "house_4" in report["expected_by_card"]["core_logic"]
+
+
+def test_validation_report_expected_by_card_uses_confirmed_child_birth_formulas() -> None:
+    service = FormulaTestModeService()
+    result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": _sample_formula_chart().model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _sample_child_birth_event().model_dump(mode="json"),
+        },
+    )
+
+    rules = result["validation_report"]["expected_by_card"]["direction_rules"]
+    assert [rule["display_formula"] for rule in rules] == CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS
+    assert not OLD_CHILD_BIRTH_RULE_IDS.intersection({rule["id"] for rule in rules})
 
 
 def test_validation_report_uses_found_and_missed_engine_data() -> None:

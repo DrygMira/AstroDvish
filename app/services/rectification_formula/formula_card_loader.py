@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -43,8 +44,9 @@ class FormulaCardLoader:
         return [card for card in self.list_cards() if card.event_type == event_type]
 
     def _load_path(self, path: Path) -> FormulaCard:
+        raw_text = path.read_text(encoding="utf-8")
         try:
-            raw = json.loads(path.read_text(encoding="utf-8"))
+            raw = json.loads(raw_text)
         except json.JSONDecodeError as exc:
             raise FormulaCardValidationError(f"{path.name}: invalid JSON: {exc}") from exc
 
@@ -52,6 +54,10 @@ class FormulaCardLoader:
         if missing:
             joined = ", ".join(missing)
             raise FormulaCardValidationError(f"{path.name}: missing required fields: {joined}")
+
+        raw["source_file_path"] = str(path.resolve())
+        raw["card_hash"] = hashlib.sha256(raw_text.encode("utf-8")).hexdigest()
+        raw["card_version"] = raw.get("card_version") or raw["card_hash"][:12]
 
         try:
             return FormulaCard.model_validate(raw)

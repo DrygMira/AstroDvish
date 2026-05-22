@@ -34,6 +34,16 @@ def test_pro_ui_renders_formula_test_mode_blocks() -> None:
     assert "matched_formula_aspects" in html
 
 
+def test_pro_ui_expected_labels_render_from_display_formula_not_stale_ids() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "rule.display_formula || rule.id" in html
+    assert ".map((rule) => rule.id)" not in html
+    assert "missingFormulaLinks.map((item) => item.display_formula || item.rule_id || \"—\")" in html
+
+
 def test_pro_ui_keeps_technical_json_available() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/")

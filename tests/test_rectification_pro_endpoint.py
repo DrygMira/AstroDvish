@@ -4,6 +4,16 @@ from fastapi.testclient import TestClient
 
 from app.config import get_settings
 from app.main import create_app
+from app.services.rectification_formula.formula_card_loader import FormulaCardLoader
+
+CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS = [
+    "Directed ruler_4 -> Natal house_element_5",
+    "Directed cusp_10 -> Natal cusp_5",
+    "Directed cusp_6 -> Natal Sun",
+    "Directed cusp_4 -> Natal Moon",
+    "Directed Sun -> Natal Jupiter",
+    "Directed cusp_5 -> Natal Chiron",
+]
 
 
 def _build_client(monkeypatch, tmp_path) -> TestClient:
@@ -108,6 +118,27 @@ def test_rectification_pro_accepts_new_event_types(monkeypatch, tmp_path) -> Non
     with client:
         response = client.post("/api/v1/rectification/pro/run", json=payload)
     assert response.status_code == 200
+
+
+def test_rectification_pro_child_birth_expected_by_card_matches_production_card(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    loader = FormulaCardLoader()
+    production_card = loader.load_card("RECT_CHILD_BIRTH_001")
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    expected_rules = result["validation_report"]["expected_by_card"]["direction_rules"]
+
+    assert result["card_id"] == production_card.card_id
+    assert result["card_hash"] == production_card.card_hash
+    assert result["source_file_path"] == production_card.source_file_path
+    assert result["card_version"] == production_card.card_version
+    assert [rule["display_formula"] for rule in expected_rules] == CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS
 
 
 def test_rectification_pro_clips_candidates_to_selected_birth_date(monkeypatch, tmp_path) -> None:
