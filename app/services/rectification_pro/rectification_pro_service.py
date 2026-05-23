@@ -14,6 +14,7 @@ from app.services.rectification_formula.formula_test_mode_service import Formula
 from app.services.rectification_pro.candidate_generator import CandidateGenerator
 from app.services.rectification_pro.confidence_service import ConfidenceService
 from app.services.rectification_pro.directions_service import DirectionsService
+from app.services.rectification_pro.formula_refinement_service import FormulaRefinementService
 from app.services.rectification_pro.lunar_service import LunarService
 from app.services.rectification_pro.scoring_service import ScoringService
 from app.services.rectification_pro.solar_service import SolarService
@@ -27,6 +28,10 @@ class RectificationProService:
         self.candidate_generator = CandidateGenerator()
         self.formula_test_mode_service = FormulaTestModeService(ephemeris_service=ephemeris_service)
         self.directions_service = DirectionsService()
+        self.formula_refinement_service = FormulaRefinementService(
+            ephemeris_service=ephemeris_service,
+            formula_test_mode_service=self.formula_test_mode_service,
+        )
         self.solar_service = SolarService()
         self.lunar_service = LunarService()
         self.transit_service = TransitService()
@@ -136,9 +141,13 @@ class RectificationProService:
         best_candidates = candidate_scores[:3]
         best_candidate = best_candidates[0] if best_candidates else None
         confidence = self.confidence_service.summarize(best_candidate=best_candidate, events=payload.events)
+        formula_refinement_results = self.formula_refinement_service.refine(payload)
+        formula_refinement_results["coarse_candidate"] = self._build_coarse_candidate_summary(best_candidate)
+        refined_chart = self._chart_from_refinement_candidate(formula_refinement_results)
+        self._strip_refinement_internal_chart(formula_refinement_results)
         formula_test_mode_results = self._build_formula_test_mode_results(
             payload=payload,
-            best_chart=best_chart,
+            best_chart=refined_chart or best_chart,
             method_results=best_method_results,
         )
 
@@ -152,6 +161,7 @@ class RectificationProService:
             best_candidates=best_candidates,
             method_results=best_method_results,
             formula_test_mode_results=formula_test_mode_results,
+            formula_refinement_results=formula_refinement_results,
             confidence=confidence,
             warnings=sorted(set(warnings)),
             limitations=limitations,
@@ -196,6 +206,45 @@ class RectificationProService:
                 continue
             results.append(result)
         return results
+
+    @staticmethod
+    def _chart_from_refinement_candidate(formula_refinement_results: dict[str, object]):
+        best_candidate = formula_refinement_results.get("best_candidate")
+        if not isinstance(best_candidate, dict):
+            return None
+        chart_response = best_candidate.get("chart_response")
+        if not isinstance(chart_response, dict):
+            return None
+        from app.models.response_models import ChartResponse
+
+        return ChartResponse.model_validate(chart_response)
+
+    @staticmethod
+    def _strip_refinement_internal_chart(formula_refinement_results: dict[str, object]) -> None:
+        top_candidates = formula_refinement_results.get("top_candidates")
+        if isinstance(top_candidates, list):
+            for item in top_candidates:
+                if isinstance(item, dict):
+                    item.pop("chart_response", None)
+        best_candidate = formula_refinement_results.get("best_candidate")
+        if isinstance(best_candidate, dict):
+            best_candidate.pop("chart_response", None)
+
+    @staticmethod
+    def _build_coarse_candidate_summary(best_candidate: CandidateScore | None) -> dict[str, object] | None:
+        if best_candidate is None:
+            return None
+        return {
+            "candidate_id": best_candidate.candidate_id,
+            "candidate_time_local": best_candidate.candidate_time_local,
+            "candidate_window": best_candidate.candidate_window,
+            "score": float(best_candidate.scores.get("total") or 0.0),
+            "confidence_level": best_candidate.confidence_level,
+            "matched_events_count": best_candidate.matched_events_count,
+            "strong_events_matched_count": best_candidate.strong_events_matched_count,
+            "source_asc_interval": best_candidate.source_asc_interval,
+            "clipped_by_birth_date": best_candidate.clipped_by_birth_date,
+        }
 
     @staticmethod
     def _normalize_formula_event_type(event_type: str) -> str | None:

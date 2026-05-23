@@ -226,6 +226,8 @@ class DirectionsFormulaMatcher:
                     strength=self._strength(orb, rule.orb_limit),
                     match_status="matched" if orb <= rule.orb_limit else "rejected",
                     formula_rule_matched=rule.id,
+                    rule_weight=rule.weight,
+                    priority_tier=rule.priority_tier,
                     explanation_for_expert=(
                         f"Directed {source.key} -> Natal {target.key}: {aspect_name}; "
                         f"{ASPECT_MEANINGS.get(aspect_name, 'formula link')}."

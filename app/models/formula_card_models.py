@@ -24,6 +24,7 @@ class FormulaDirectionRule(BaseModel):
     orb_limit: float = 1.0
     required: bool = True
     weight: float = 1.0
+    priority_tier: Literal["golden", "supporting"] = "supporting"
 
 
 class FormulaCard(BaseModel):
@@ -74,6 +75,8 @@ class FormulaAspectMatch(BaseModel):
     strength: str
     match_status: str | None = None
     formula_rule_matched: str
+    rule_weight: float | None = None
+    priority_tier: Literal["golden", "supporting"] | None = None
     explanation_for_expert: str
     rejection_reason: str | None = None
 

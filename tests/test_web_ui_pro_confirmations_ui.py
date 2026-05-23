@@ -32,6 +32,7 @@ def test_pro_ui_renders_formula_test_mode_blocks() -> None:
     assert "formula_test_mode_results" in html
     assert "validation_report_table" in html
     assert "matched_formula_aspects" in html
+    assert "formula_refinement_results" in html
 
 
 def test_pro_ui_renders_direction_debug_labels_and_coordinates() -> None:
@@ -60,6 +61,29 @@ def test_pro_ui_validation_report_table_is_rendered_with_visible_detailed_fields
     assert "Actual angle" in html
     assert "Exact angle" in html
     assert "Orb limit" in html
+
+
+def test_pro_ui_renders_formula_refinement_summary() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "Refinement inside Asc window" in html
+    assert "formula_refinement_results" in html
+    assert "best_candidate" in html
+    assert "coarse_candidate" in html
+    assert "refinementBest.candidate_time_local" in html
+    assert "matched_count" in html
+    assert "rejected_count" in html
+    assert "supported_step_seconds" in html
+    assert "score_breakdown" in html
+    assert "golden_matched_count" in html
+    assert "golden_orb_sum" in html
+    assert "supporting_bonus" in html
+    assert "selection_reason" in html
+    assert "working_time_range" in html
+    assert "reference_time" in html
+    assert "Working range" in html
 
 
 def test_pro_ui_expected_labels_render_from_display_formula_not_stale_ids() -> None:

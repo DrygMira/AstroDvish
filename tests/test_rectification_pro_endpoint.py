@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 from fastapi.testclient import TestClient
 
 from app.config import get_settings
@@ -98,6 +100,25 @@ def test_rectification_pro_run_endpoint_returns_formula_test_mode_results(monkey
         assert "missing_formula_links" in item
         assert "rejected_aspects" in item
         assert "validation_report" in item
+
+
+def test_rectification_pro_run_endpoint_returns_formula_refinement_results(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert "formula_refinement_results" in body
+    refinement = body["formula_refinement_results"]
+    assert refinement["enabled"] is True
+    assert refinement["direction_method"] == "symbolic_1deg_per_year"
+    assert refinement["supported_step_seconds"] == [300, 60, 30, 10]
+    assert "best_candidate" in refinement
+    assert "top_candidates" in refinement
+    assert "coarse_candidate" in refinement
+    assert "working_time_range" in refinement
 
 
 def test_rectification_pro_run_low_confidence_for_weak_data(monkeypatch, tmp_path) -> None:
@@ -239,6 +260,227 @@ def test_rectification_pro_validation_report_table_contains_expert_visible_angle
     assert "Orb" in table
     assert "Orb limit" in table
     assert "Directed Sun -> Natal Jupiter" in table
+
+
+def test_rectification_pro_formula_refinement_finds_precise_child_birth_candidate(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["latitude"] = 40.2341666667
+    payload["longitude"] = 69.6947222222
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-19T22:55:00",
+            "end_local": "1978-03-19T23:05:00",
+            "sign_name_en": "Sagittarius",
+            "sign_name_ru": "РЎС‚СЂРµР»РµС†",
+        }
+    ]
+    payload["settings"]["formula_refinement_step_seconds"] = 30
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    refinement = response.json()["formula_refinement_results"]
+    best = refinement["best_candidate"]
+    coarse = refinement["coarse_candidate"]
+    assert refinement["scanned_candidates_count"] > 1
+    assert best["candidate_time_local"] != "1978-03-19T22:55:00"
+    reference_dt = datetime.fromisoformat("1978-03-19T22:59:45")
+    coarse_dt = datetime.fromisoformat(coarse["candidate_time_local"])
+    best_dt = datetime.fromisoformat(best["candidate_time_local"])
+    assert abs((best_dt - reference_dt).total_seconds()) < abs((coarse_dt - reference_dt).total_seconds())
+    assert abs((best_dt - reference_dt).total_seconds()) <= 180
+    assert best["matched_count"] >= 3
+    assert best["score"] > 0
+
+
+def test_rectification_pro_formula_refinement_uses_reference_triplet(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["latitude"] = 40.2341666667
+    payload["longitude"] = 69.6947222222
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-19T22:55:00",
+            "end_local": "1978-03-19T23:05:00",
+            "sign_name_en": "Sagittarius",
+            "sign_name_ru": "РЎС‚СЂРµР»РµС†",
+        }
+    ]
+    payload["settings"]["formula_refinement_step_seconds"] = 30
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    best = body["formula_refinement_results"]["best_candidate"]
+    table = best["formula_test_mode_results"][0]["validation_report_table"]
+    assert "Directed ruler_4 -> Natal house_element_5 | matched" in table
+    assert "Directed Sun -> Natal Jupiter | matched" in table
+    assert "Directed cusp_6 -> Natal Sun | matched" in table
+
+
+def test_rectification_pro_formula_refinement_returns_scoring_breakdown(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["latitude"] = 40.2341666667
+    payload["longitude"] = 69.6947222222
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-19T22:55:00",
+            "end_local": "1978-03-19T23:05:00",
+            "sign_name_en": "Sagittarius",
+            "sign_name_ru": "Стрелец",
+        }
+    ]
+    payload["settings"]["formula_refinement_step_seconds"] = 30
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    best = response.json()["formula_refinement_results"]["best_candidate"]
+    assert {"score_breakdown", "matched_count", "rejected_count", "missing_count"}.issubset(best)
+    assert {
+        "golden_formula_score",
+        "golden_orb_quality_score",
+        "supporting_formula_score",
+        "supporting_bonus",
+        "rejected_penalty",
+        "missing_penalty",
+    }.issubset(
+        best["score_breakdown"]
+    )
+
+
+def test_rectification_pro_formula_refinement_separates_golden_and_supporting(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["latitude"] = 40.2341666667
+    payload["longitude"] = 69.6947222222
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-19T22:55:00",
+            "end_local": "1978-03-19T23:05:00",
+            "sign_name_en": "Sagittarius",
+            "sign_name_ru": "Стрелец",
+        }
+    ]
+    payload["settings"]["formula_refinement_step_seconds"] = 30
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    best = response.json()["formula_refinement_results"]["best_candidate"]
+    assert {"golden_matched_count", "golden_orb_sum", "supporting_matched_count", "supporting_bonus"}.issubset(best)
+    assert best["golden_matched_count"] >= 3
+    assert best["supporting_matched_count"] >= 0
+    assert isinstance(best["selection_reason"], str) and best["selection_reason"]
+    assert "event_confirmation_score" in best
+    assert "time_refinement_score" in best
+
+
+def test_rectification_pro_formula_refinement_supporting_match_does_not_overpower_golden_ranking(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["latitude"] = 40.2341666667
+    payload["longitude"] = 69.6947222222
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-19T22:55:00",
+            "end_local": "1978-03-19T23:05:00",
+            "sign_name_en": "Sagittarius",
+            "sign_name_ru": "Стрелец",
+        }
+    ]
+    payload["settings"]["formula_refinement_step_seconds"] = 30
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    top = response.json()["formula_refinement_results"]["top_candidates"]
+    best = top[0]
+    reference = next((item for item in top if item["candidate_time_local"] == "1978-03-19T22:59:45"), None)
+    assert best["golden_matched_count"] == 3
+    assert "golden" in best["selection_reason"].lower()
+    if reference is not None:
+        assert reference["golden_matched_count"] == 3
+        assert best["golden_orb_sum"] <= reference["golden_orb_sum"]
+
+
+def test_rectification_pro_formula_refinement_returns_working_time_range_and_reference(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["latitude"] = 40.2341666667
+    payload["longitude"] = 69.6947222222
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-19T22:55:00",
+            "end_local": "1978-03-19T23:05:00",
+            "sign_name_en": "Scorpio",
+            "sign_name_ru": "Скорпион",
+        }
+    ]
+    payload["settings"]["formula_refinement_step_seconds"] = 30
+    payload["settings"]["formula_reference_time_local"] = "1978-03-19T22:59:45"
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    refinement = response.json()["formula_refinement_results"]
+    working_range = refinement["working_time_range"]
+    assert working_range["start_local"] <= "1978-03-19T22:57:00"
+    assert working_range["end_local"] >= "1978-03-19T22:59:45"
+    assert refinement["reference_time"]["provided"] == "1978-03-19T22:59:45"
+    assert refinement["reference_time"]["inside_working_time_range"] is True
+    assert refinement["best_candidate"]["candidate_time_local"] != refinement["reference_time"]["provided"]
 
 
 def test_rectification_pro_clips_candidates_to_selected_birth_date(monkeypatch, tmp_path) -> None:

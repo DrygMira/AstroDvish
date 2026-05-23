@@ -82,6 +82,19 @@ def test_production_child_birth_card_contains_exact_confirmed_six_formulas() -> 
     assert card.card_version == "child_birth_solar_arc_v2"
 
 
+def test_production_child_birth_card_marks_confirmed_golden_formulas() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card("RECT_CHILD_BIRTH_001")
+    by_id = {rule.id: rule for rule in card.direction_rules}
+
+    assert by_id["ruler_4_to_house_element_5"].priority_tier == "golden"
+    assert by_id["sun_to_jupiter"].priority_tier == "golden"
+    assert by_id["cusp_6_to_sun"].priority_tier == "golden"
+    assert by_id["cusp_10_to_cusp_5"].priority_tier == "supporting"
+    assert by_id["cusp_4_to_moon"].priority_tier == "supporting"
+    assert by_id["cusp_5_to_chiron"].priority_tier == "supporting"
+
+
 def test_death_close_person_card_contains_expected_core_and_planets() -> None:
     loader = FormulaCardLoader()
     card = loader.load_card("RECT_DEATH_CLOSE_PERSON_001")

@@ -19,6 +19,9 @@ class ProAscWindow(BaseModel):
 
 class RectificationProSettings(BaseModel):
     candidate_step_minutes: int = 5
+    formula_refinement_enabled: bool = True
+    formula_refinement_step_seconds: int = 30
+    formula_reference_time_local: str | None = None
     include_directions: bool = True
     include_solars: bool = True
     include_lunars: bool = False
@@ -43,6 +46,13 @@ class RectificationProSettings(BaseModel):
     def _validate_step(cls, value: int) -> int:
         if value not in {1, 2, 5, 10, 15}:
             raise ValueError("candidate_step_minutes must be one of 1, 2, 5, 10, 15")
+        return value
+
+    @field_validator("formula_refinement_step_seconds")
+    @classmethod
+    def _validate_refinement_step(cls, value: int) -> int:
+        if value not in {10, 30, 60, 300}:
+            raise ValueError("formula_refinement_step_seconds must be one of 10, 30, 60, 300")
         return value
 
 
@@ -109,6 +119,7 @@ class RectificationProRunResponse(BaseModel):
     best_candidates: list[CandidateScore]
     method_results: dict[str, list[MethodMatch]]
     formula_test_mode_results: list[FormulaTestModeResult] = Field(default_factory=list)
+    formula_refinement_results: dict[str, Any] = Field(default_factory=dict)
     confidence: ConfidenceSummary
     warnings: list[str] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)

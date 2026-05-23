@@ -4781,8 +4781,38 @@
     function renderProResult(data) {
       const best = Array.isArray(data.best_candidates) ? data.best_candidates : [];
       rpBestCandidatesEl.innerHTML = "";
+      const refinement = data.formula_refinement_results || null;
+      const refinementBest = refinement && refinement.best_candidate ? refinement.best_candidate : null;
+      const refinementCoarse = refinement && refinement.coarse_candidate ? refinement.coarse_candidate : null;
+      const refinementRange = refinement && refinement.working_time_range ? refinement.working_time_range : null;
+      const refinementReference = refinement && refinement.reference_time ? refinement.reference_time : null;
+      if (refinementBest) {
+        const refinementBlock = document.createElement("div");
+        refinementBlock.className = "interval-item";
+        const stepSeconds = Number.isFinite(Number(refinement.step_seconds)) ? Number(refinement.step_seconds) : null;
+        const supportedSteps = Array.isArray(refinement.supported_step_seconds) ? refinement.supported_step_seconds : [];
+        const bestFormulas = Array.isArray(refinementBest.best_formulas) ? refinementBest.best_formulas : [];
+        const scoreBreakdown = refinementBest.score_breakdown || null;
+        refinementBlock.innerHTML =
+          `<div><strong>Refinement inside Asc window</strong></div>` +
+          `<div>Best candidate: ${refinementBest.candidate_time_local || "n/a"} | score=${refinementBest.score ?? "n/a"} | matched=${refinementBest.matched_count ?? "n/a"} | rejected=${refinementBest.rejected_count ?? "n/a"}</div>` +
+          `<div>Step: ${stepSeconds != null ? `${stepSeconds}s` : "n/a"} | supported=${supportedSteps.length ? supportedSteps.join(", ") : "n/a"} | scanned=${refinement.scanned_candidates_count ?? "n/a"} | method=${refinement.direction_method || "n/a"}</div>` +
+          `<div>Working range: ${refinementRange ? `${refinementRange.start_local} → ${refinementRange.end_local}` : "n/a"} | candidates=${refinementRange?.candidate_count ?? "n/a"} | criterion=${refinementRange?.criterion ?? "n/a"}</div>` +
+          `<div>Coarse candidate: ${refinementCoarse?.candidate_time_local || "n/a"} | coarse score=${refinementCoarse?.score ?? "n/a"}</div>` +
+          `<div>Reference time: ${refinementReference?.provided || "n/a"} | inside range=${refinementReference?.inside_working_time_range ?? "n/a"} | reference score=${refinementReference?.evaluation?.score ?? "n/a"}</div>` +
+          `<div>Golden matched=${refinementBest.golden_matched_count ?? "n/a"} | golden orb sum=${refinementBest.golden_orb_sum ?? "n/a"} | supporting matched=${refinementBest.supporting_matched_count ?? "n/a"} | supporting bonus=${refinementBest.supporting_bonus ?? "n/a"}</div>` +
+          `<div>Event confirmation score=${refinementBest.event_confirmation_score ?? "n/a"} | time refinement score=${refinementBest.time_refinement_score ?? "n/a"}</div>` +
+          `<div>Best formulas: ${bestFormulas.length ? bestFormulas.join("; ") : "n/a"}</div>` +
+          `<div>Score breakdown: matched=${scoreBreakdown?.matched_formula_score ?? "n/a"} | orb=${scoreBreakdown?.orb_strength_score ?? "n/a"} | participation=${scoreBreakdown?.participant_bonus_score ?? "n/a"} | rejected_penalty=${scoreBreakdown?.rejected_penalty ?? "n/a"} | missed_penalty=${scoreBreakdown?.missing_penalty ?? "n/a"}</div>` +
+          `<div>Golden breakdown: formula=${scoreBreakdown?.golden_formula_score ?? "n/a"} | golden orb quality=${scoreBreakdown?.golden_orb_quality_score ?? "n/a"} | supporting formula=${scoreBreakdown?.supporting_formula_score ?? "n/a"} | supporting bonus=${scoreBreakdown?.supporting_bonus ?? "n/a"}</div>` +
+          `<div>Why selected: ${refinementBest.selection_reason || "n/a"}</div>` +
+          `<div class="hint">Legacy coarse candidates remain below as debug/reference.</div>`;
+        rpBestCandidatesEl.appendChild(refinementBlock);
+      }
       if (!best.length) {
-        rpBestCandidatesEl.innerHTML = "<div class='interval-item'>Кандидаты не найдены.</div>";
+        if (!refinementBest) {
+          rpBestCandidatesEl.innerHTML = "<div class='interval-item'>Кандидаты не найдены.</div>";
+        }
       } else {
         best.forEach((item, idx) => {
           const total = item.scores?.total ?? "n/a";
