@@ -1,0 +1,100 @@
+{
+  "card_id": "RECT_CHILD_BIRTH_EKATERINA_REFERENCE_001",
+  "event_type": "child_birth",
+  "status": "test",
+  "school": "ekaterina_reference",
+  "core_logic": [
+    "house_4",
+    "house_5",
+    "sun",
+    "moon",
+    "jupiter",
+    "neptune"
+  ],
+  "houses": [
+    "house_4",
+    "house_5",
+    "house_6",
+    "house_10"
+  ],
+  "planets": [
+    "sun",
+    "moon",
+    "mercury",
+    "jupiter",
+    "neptune",
+    "chiron"
+  ],
+  "significators": [
+    "sun",
+    "moon"
+  ],
+  "aspects": [
+    "child_birth_reference"
+  ],
+  "method_priority": [
+    "directions"
+  ],
+  "direction_rules": [
+    {
+      "id": "ruler_4_to_house_element_5",
+      "title": "Directed ruler_4 -> Natal house_element_5",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "house_elements_5"
+      ],
+      "aspect_types": [
+        "square"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "display_source": "ruler_4",
+      "display_target": "house_element_5"
+    },
+    {
+      "id": "sun_to_jupiter",
+      "title": "Directed Sun -> Natal Jupiter",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "aspect_types": [
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "display_source": "Sun",
+      "display_target": "Jupiter"
+    },
+    {
+      "id": "cusp_6_to_sun",
+      "title": "Directed cusp_6 -> Natal Sun",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "aspect_types": [
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "display_source": "cusp_6",
+      "display_target": "Sun"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "card_id": "RECT_CHILD_QUINCUNX_DEBUG_001",
+  "event_type": "child_birth",
+  "status": "test",
+  "core_logic": [
+    "house_5"
+  ],
+  "houses": [
+    "house_5"
+  ],
+  "planets": [
+    "sun",
+    "moon"
+  ],
+  "significators": [
+    "sun"
+  ],
+  "aspects": [
+    "child_axis"
+  ],
+  "method_priority": [
+    "directions"
+  ],
+  "direction_rules": [
+    {
+      "id": "sun_to_moon_quincunx",
+      "title": "Directed Sun -> natal Moon",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "aspect_types": [
+        "quincunx"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0
+    }
+  ]
+}

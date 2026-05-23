@@ -1,0 +1,44 @@
+{
+  "card_id": "RECT_CHILD_HOUSE_ELEMENTS_001",
+  "event_type": "child_birth",
+  "status": "test",
+  "core_logic": [
+    "house_5"
+  ],
+  "houses": [
+    "house_5"
+  ],
+  "planets": [
+    "venus",
+    "mars"
+  ],
+  "significators": [
+    "moon"
+  ],
+  "aspects": [
+    "child_axis"
+  ],
+  "method_priority": [
+    "directions"
+  ],
+  "direction_rules": [
+    {
+      "id": "sig4_to_house5_element",
+      "title": "Directed significator_4 -> natal house_element_5",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "house_elements_5"
+      ],
+      "aspect_types": [
+        "conjunction"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0
+    }
+  ]
+}

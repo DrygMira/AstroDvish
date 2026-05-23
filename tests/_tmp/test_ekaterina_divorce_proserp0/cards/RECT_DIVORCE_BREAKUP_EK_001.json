@@ -1,0 +1,64 @@
+{
+  "card_id": "RECT_DIVORCE_BREAKUP_EK_001",
+  "event_type": "divorce_breakup",
+  "status": "test",
+  "core_logic": [
+    "house_7",
+    "house_8"
+  ],
+  "houses": [
+    "house_7",
+    "house_8",
+    "house_10"
+  ],
+  "planets": [
+    "venus",
+    "proserpina"
+  ],
+  "significators": [
+    "venus",
+    "proserpina"
+  ],
+  "aspects": [
+    "separation_axis"
+  ],
+  "method_priority": [
+    "directions",
+    "transits",
+    "solars"
+  ],
+  "direction_rules": [
+    {
+      "id": "cusp_7_to_cusp_8",
+      "title": "c7->c8",
+      "source_selectors": [
+        "cusp_7"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "aspect_types": [
+        "conjunction"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0
+    },
+    {
+      "id": "ruler_10_to_ruler_7",
+      "title": "r10->r7",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_7"
+      ],
+      "aspect_types": [
+        "trine"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0
+    }
+  ]
+}
