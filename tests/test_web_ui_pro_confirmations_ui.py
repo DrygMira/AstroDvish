@@ -34,6 +34,34 @@ def test_pro_ui_renders_formula_test_mode_blocks() -> None:
     assert "matched_formula_aspects" in html
 
 
+def test_pro_ui_renders_direction_debug_labels_and_coordinates() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "Direction debug / Проверка дирекций" in html
+    assert "Directed longitude" in html
+    assert "Natal longitude" in html
+    assert "Actual angle" in html
+    assert "Exact angle" in html
+    assert "Orb limit" in html
+    assert "Reject reason" in html
+    assert "rule_debug" in html
+
+
+def test_pro_ui_validation_report_table_is_rendered_with_visible_detailed_fields() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "tableLine.style.whiteSpace = \"pre-wrap\"" in html
+    assert "Directed longitude" in html
+    assert "Natal longitude" in html
+    assert "Actual angle" in html
+    assert "Exact angle" in html
+    assert "Orb limit" in html
+
+
 def test_pro_ui_expected_labels_render_from_display_formula_not_stale_ids() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/")

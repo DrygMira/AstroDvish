@@ -31,7 +31,7 @@
       "target_selectors": ["house_elements_5"],
       "display_source": "ruler_4",
       "display_target": "house_element_5",
-      "aspect_types": ["conjunction"],
+      "aspect_types": ["square"],
       "orb_limit": 1.0,
       "required": true,
       "weight": 1.4

@@ -489,6 +489,48 @@ class FormulaTestModeService:
         )
 
     @staticmethod
+    def _format_validation_report_table(report: dict[str, Any]) -> str:
+        lines = [
+            f"Card: {report.get('card_id')} | Found: {len(report.get('found_by_engine', []))} | Missed: {len(report.get('missed_by_engine', []))} | Rejected: {len(report.get('rejected_aspects', []))} | Status: {report.get('final_status_for_expert', 'needs_expert_review')}",
+            "Formula | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Reject reason",
+        ]
+        missing_by_rule_id = {
+            str(item.get("rule_id")): item
+            for item in report.get("missed_by_engine", [])
+            if isinstance(item, dict) and item.get("rule_id")
+        }
+        for rule in report.get("rule_debug", []) or []:
+            matched_pairs = rule.get("matched_pairs") or []
+            rejected_pairs = rule.get("rejected_pairs") or []
+            checked_pairs = rule.get("checked_pairs") or []
+            sample = matched_pairs[0] if matched_pairs else (rejected_pairs[0] if rejected_pairs else (checked_pairs[0] if checked_pairs else None))
+            status = "matched" if matched_pairs else ("rejected" if rejected_pairs else "missed")
+            reject_reason = "—"
+            if status == "rejected":
+                reject_reason = str((sample or {}).get("reason") or missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "over_orb")
+            elif status == "missed":
+                reject_reason = str(missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "unresolved")
+            lines.append(
+                " | ".join(
+                    [
+                        str(rule.get("display_formula") or rule.get("title") or rule.get("rule_id") or "—"),
+                        status,
+                        str((sample or {}).get("directed_point") or ", ".join(rule.get("resolved_sources") or []) or "—"),
+                        str((sample or {}).get("directed_coordinate", "—")),
+                        str((sample or {}).get("natal_target") or ", ".join(rule.get("resolved_targets") or []) or "—"),
+                        str((sample or {}).get("natal_coordinate", "—")),
+                        str((sample or {}).get("aspect_type", "—")),
+                        str((sample or {}).get("actual_angle", "—")),
+                        str((sample or {}).get("exact_angle", "—")),
+                        str((sample or {}).get("orb", "—")),
+                        str((sample or {}).get("orb_limit", "—")),
+                        reject_reason,
+                    ]
+                )
+            )
+        return "\n".join(lines)
+
+    @staticmethod
     def _confidence_for(
         *,
         score: float,

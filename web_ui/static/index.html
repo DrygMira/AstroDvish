@@ -2559,6 +2559,100 @@
       return degreeToDms(value, expertDegreesExpanded);
     }
 
+    function formatAbsoluteDegreeWithSign(value) {
+      if (typeof value !== "number" || Number.isNaN(value)) return "—";
+      const angle = angleToSignDegree(value);
+      if (!angle) return "—";
+      return `${angle.signName} ${angle.signDegree}`;
+    }
+
+    function formatFormulaAngle(value) {
+      if (typeof value !== "number" || Number.isNaN(value)) return "—";
+      return degreeToDms(value, expertDegreesExpanded);
+    }
+
+    function buildFormulaRuleStatusRows(result) {
+      const report = result?.validation_report || {};
+      const ruleDebug = Array.isArray(report.rule_debug) ? report.rule_debug : [];
+      const missingByRule = new Map(
+        (Array.isArray(result?.missing_formula_links) ? result.missing_formula_links : [])
+          .map((item) => [item.rule_id, item])
+      );
+
+      return ruleDebug.map((rule) => {
+        const matchedPairs = Array.isArray(rule.matched_pairs) ? rule.matched_pairs : [];
+        const rejectedPairs = Array.isArray(rule.rejected_pairs) ? rule.rejected_pairs : [];
+        const checkedPairs = Array.isArray(rule.checked_pairs) ? rule.checked_pairs : [];
+        const sample = matchedPairs[0] || rejectedPairs[0] || checkedPairs[0] || null;
+        const missing = missingByRule.get(rule.rule_id) || null;
+
+        let status = "missed";
+        if (matchedPairs.length) {
+          status = "matched";
+        } else if (rejectedPairs.length) {
+          status = "rejected";
+        }
+
+        let rejectReason = "—";
+        if (status === "rejected") {
+          rejectReason = rejectedPairs[0]?.reason || missing?.reason || "over_orb";
+        } else if (status === "missed") {
+          rejectReason = missing?.reason
+            || (!Array.isArray(rule.resolved_sources) || !rule.resolved_sources.length
+              ? "unresolved_source"
+              : (!Array.isArray(rule.resolved_targets) || !rule.resolved_targets.length
+                ? "unresolved_target"
+                : "no_matching_aspect"));
+        }
+
+        return [
+          rule.display_formula || rule.title || rule.rule_id || "—",
+          status,
+          sample?.directed_point || (Array.isArray(rule.resolved_sources) && rule.resolved_sources.length ? rule.resolved_sources.join(", ") : "—"),
+          formatAbsoluteDegreeWithSign(sample?.directed_coordinate),
+          sample?.natal_target || (Array.isArray(rule.resolved_targets) && rule.resolved_targets.length ? rule.resolved_targets.join(", ") : "—"),
+          formatAbsoluteDegreeWithSign(sample?.natal_coordinate),
+          sample?.aspect_type || "—",
+          formatFormulaAngle(sample?.actual_angle),
+          formatFormulaAngle(sample?.exact_angle),
+          formatFormulaAngle(sample?.orb),
+          formatFormulaAngle(sample?.orb_limit),
+          rejectReason,
+        ];
+      });
+    }
+
+    function buildFormulaAspectRows(items) {
+      return (Array.isArray(items) ? items : []).map((match) => [
+        match.formula_rule_matched || "—",
+        match.match_status || "—",
+        match.directed_point || "—",
+        formatAbsoluteDegreeWithSign(match.directed_source_longitude),
+        match.natal_target || "—",
+        formatAbsoluteDegreeWithSign(match.natal_target_longitude),
+        match.aspect_type || "—",
+        formatFormulaAngle(match.actual_angle),
+        formatFormulaAngle(match.exact_angle),
+        formatFormulaAngle(match.orb),
+        formatFormulaAngle(match.orb_limit),
+        match.rejection_reason || "—",
+      ]);
+    }
+
+    function buildFormulaPointDebugRows(points, includeDirected) {
+      return (Array.isArray(points) ? points : []).map((point) => {
+        const row = [
+          point.point_name || "—",
+          formatAbsoluteDegreeWithSign(point.natal_longitude),
+        ];
+        if (includeDirected) {
+          row.push(formatAbsoluteDegreeWithSign(point.directed_longitude));
+          row.push(formatFormulaAngle(point.direction_arc));
+        }
+        return row;
+      });
+    }
+
     function resolveMotionPhase(obj) {
       const speed = typeof obj?.speed_longitude_deg_per_day === "number"
         ? obj.speed_longitude_deg_per_day
@@ -4430,12 +4524,44 @@
 
         const tableLine = document.createElement("div");
         tableLine.className = "hint";
+        tableLine.style.whiteSpace = "pre-wrap";
         tableLine.textContent = result.validation_report_table || "validation_report_table: не рассчитано";
         block.appendChild(tableLine);
 
         const expectedLine = document.createElement("div");
         expectedLine.textContent = `Expected: ${Array.isArray(report.expected_by_card?.direction_rules) ? report.expected_by_card.direction_rules.map((rule) => rule.display_formula || rule.id).join(", ") : "не рассчитано"}`;
         block.appendChild(expectedLine);
+
+        const debugMetaLine = document.createElement("div");
+        debugMetaLine.className = "hint";
+        debugMetaLine.textContent = "rule_debug: rule-level Directed -> Natal checks with coordinates and orb diagnostics.";
+        block.appendChild(debugMetaLine);
+
+        const debugHeader = document.createElement("div");
+        debugHeader.style.marginTop = "8px";
+        debugHeader.innerHTML = "<strong>Direction debug / Проверка дирекций</strong>";
+        block.appendChild(debugHeader);
+
+        const ruleRows = buildFormulaRuleStatusRows(result);
+        const ruleTableWrap = document.createElement("div");
+        ruleTableWrap.innerHTML = renderTable(
+          [
+            "Formula",
+            "Status",
+            "Directed source",
+            "Directed longitude",
+            "Natal target",
+            "Natal longitude",
+            "Aspect",
+            "Actual angle",
+            "Exact angle",
+            "Orb",
+            "Orb limit",
+            "Reject reason",
+          ],
+          ruleRows
+        );
+        block.appendChild(ruleTableWrap);
 
         const foundHeader = document.createElement("div");
         foundHeader.innerHTML = `<strong>matched_formula_aspects:</strong> ${matchedFormulaAspects.length}`;
@@ -4458,6 +4584,27 @@
           });
         }
 
+        const matchedRows = buildFormulaAspectRows(matchedFormulaAspects);
+        const matchedTableWrap = document.createElement("div");
+        matchedTableWrap.innerHTML = renderTable(
+          [
+            "Rule",
+            "Status",
+            "Directed source",
+            "Directed longitude",
+            "Natal target",
+            "Natal longitude",
+            "Aspect",
+            "Actual angle",
+            "Exact angle",
+            "Orb",
+            "Orb limit",
+            "Reject reason",
+          ],
+          matchedRows
+        );
+        block.appendChild(matchedTableWrap);
+
         const missedLine = document.createElement("div");
         missedLine.textContent = `Missing: ${missingFormulaLinks.length ? missingFormulaLinks.map((item) => item.display_formula || item.rule_id || "—").join(", ") : "нет"}`;
         block.appendChild(missedLine);
@@ -4471,6 +4618,51 @@
           line.textContent = `${match.directed_point} ${match.aspect_type} ${match.natal_target} | orb=${match.orb} | reason=${match.rejection_reason || match.reason || "n/a"} | rule=${match.formula_rule_matched}`;
           block.appendChild(line);
         });
+
+        const rejectedRows = buildFormulaAspectRows(rejectedAspects);
+        const rejectedTableWrap = document.createElement("div");
+        rejectedTableWrap.innerHTML = renderTable(
+          [
+            "Rule",
+            "Status",
+            "Directed source",
+            "Directed longitude",
+            "Natal target",
+            "Natal longitude",
+            "Aspect",
+            "Actual angle",
+            "Exact angle",
+            "Orb",
+            "Orb limit",
+            "Reject reason",
+          ],
+          rejectedRows
+        );
+        block.appendChild(rejectedTableWrap);
+
+        const directedPoints = Array.isArray(report.directed_points_debug) ? report.directed_points_debug : [];
+        const directedHeader = document.createElement("div");
+        directedHeader.style.marginTop = "8px";
+        directedHeader.innerHTML = "<strong>directed_points_debug</strong>";
+        block.appendChild(directedHeader);
+        const directedWrap = document.createElement("div");
+        directedWrap.innerHTML = renderTable(
+          ["Point", "Natal longitude", "Directed longitude", "Direction arc"],
+          buildFormulaPointDebugRows(directedPoints, true)
+        );
+        block.appendChild(directedWrap);
+
+        const natalTargets = Array.isArray(report.natal_targets_debug) ? report.natal_targets_debug : [];
+        const natalHeader = document.createElement("div");
+        natalHeader.style.marginTop = "8px";
+        natalHeader.innerHTML = "<strong>natal_targets_debug</strong>";
+        block.appendChild(natalHeader);
+        const natalWrap = document.createElement("div");
+        natalWrap.innerHTML = renderTable(
+          ["Point", "Natal longitude"],
+          buildFormulaPointDebugRows(natalTargets, false)
+        );
+        block.appendChild(natalWrap);
 
         const suspiciousLine = document.createElement("div");
         suspiciousLine.textContent = `Suspicious: ${suspicious.length ? suspicious.map((item) => item.formula_rule_matched || item.aspect_type || "—").join(", ") : "нет"}`;
