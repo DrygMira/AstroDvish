@@ -4423,6 +4423,11 @@
         lineCard.textContent = `Card: ${result.card_id} | Status: ${report.final_status_for_expert || result.status || "n/a"} | Confidence: ${result.confidence || "n/a"} | Score: ${result.score ?? "n/a"}`;
         block.appendChild(lineCard);
 
+        const methodLine = document.createElement("div");
+        methodLine.className = "hint";
+        methodLine.textContent = `Direction method: ${result.debug?.direction_method_label || result.validation_report?.method_scope?.mvp_direction_method_label || result.debug?.direction_method || "n/a"}`;
+        block.appendChild(methodLine);
+
         const tableLine = document.createElement("div");
         tableLine.className = "hint";
         tableLine.textContent = result.validation_report_table || "validation_report_table: не рассчитано";

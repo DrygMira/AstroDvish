@@ -141,6 +141,20 @@ def test_rectification_pro_child_birth_expected_by_card_matches_production_card(
     assert [rule["display_formula"] for rule in expected_rules] == CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS
 
 
+def test_rectification_pro_uses_symbolic_age_arc_for_formula_test_mode(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["debug"]["direction_method"] == "symbolic_1deg_per_year"
+
+
 def test_rectification_pro_clips_candidates_to_selected_birth_date(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     payload = _payload(2)

@@ -23,9 +23,7 @@ class FormulaTestModeService:
         default_direction_method: DirectionMethod | None = None,
     ) -> None:
         self.loader = loader or FormulaCardLoader()
-        self.default_direction_method: DirectionMethod = default_direction_method or (
-            "solar_arc" if ephemeris_service is not None else "symbolic_1deg_per_year"
-        )
+        self.default_direction_method: DirectionMethod = default_direction_method or "symbolic_1deg_per_year"
         self.directions_matcher = DirectionsFormulaMatcher(
             direction_chart_builder=DirectionChartBuilder(
                 ephemeris_service=ephemeris_service,
@@ -178,6 +176,11 @@ class FormulaTestModeService:
                 "matched_weak": matched_weak,
                 "method_priority": card.method_priority,
                 "direction_method": direction_method,
+                "direction_method_label": (
+                    "symbolic age arc / 1° per year"
+                    if direction_method == "symbolic_1deg_per_year"
+                    else "solar arc progressed sun"
+                ),
                 "non_scoring_methods": [item for item in methods_used if item != "directions"],
             },
         )
@@ -382,6 +385,9 @@ class FormulaTestModeService:
             "natal_targets_debug": cls._build_natal_targets_debug(rule_debug),
             "method_scope": {
                 "scoring_methods": ["directions"],
+                "mvp_direction_method": "symbolic_1deg_per_year",
+                "mvp_direction_method_label": "symbolic age arc / 1° per year",
+                "optional_debug_direction_methods": ["solar_arc"],
                 "debug_only_methods": [item for item in methods_used if item != "directions"],
                 "scoring_aspects": sorted(MVP_SCORING_ASPECTS),
                 "debug_optional_aspects": sorted(DEBUG_OPTIONAL_ASPECTS),

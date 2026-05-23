@@ -738,7 +738,7 @@ def test_formula_matcher_never_matches_natal_natal_or_directed_directed_layers(t
     assert match["actual_angle"] == pytest.approx(60.0, abs=0.2)
 
 
-def test_formula_test_mode_uses_solar_arc_when_ephemeris_available(tmp_path: Path) -> None:
+def test_formula_test_mode_uses_symbolic_age_arc_by_default_even_when_ephemeris_available(tmp_path: Path) -> None:
     loader = _write_formula_cards(
         tmp_path,
         [
@@ -762,7 +762,7 @@ def test_formula_test_mode_uses_solar_arc_when_ephemeris_available(tmp_path: Pat
     chart = _build_chart_with_rules(
         objects={
             "sun": {"degree": 62.0, "sign": "Gemini", "house": 5},
-            "jupiter": {"degree": 197.5, "sign": "Libra", "house": 9},
+            "jupiter": {"degree": 210.0, "sign": "Scorpio", "house": 9},
         },
         cusps={str(i): float((i - 1) * 30) for i in range(1, 13)},
         cusp_signs={str(i): name for i, name in enumerate(["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"], start=1)},
@@ -772,18 +772,19 @@ def test_formula_test_mode_uses_solar_arc_when_ephemeris_available(tmp_path: Pat
         context={"chart_response": chart.model_dump(mode="json"), "candidate_birth_date": date(2000, 1, 1), "event": _sample_child_birth_event().model_dump(mode="json")},
     )
 
-    assert result["debug"]["direction_method"] == "solar_arc"
+    assert result["debug"]["direction_method"] == "symbolic_1deg_per_year"
     match = result["matched_formula_aspects"][0]
-    assert match["direction_method"] == "solar_arc"
-    assert match["direction_arc"] == pytest.approx(15.5, abs=1e-6)
-    assert match["directed_source_longitude"] == pytest.approx(77.5, abs=1e-6)
-    assert match["natal_target_longitude"] == pytest.approx(197.5, abs=1e-6)
+    expected_arc = (date(2028, 1, 1) - date(2000, 1, 1)).days / 365.2425
+    assert match["direction_method"] == "symbolic_1deg_per_year"
+    assert match["direction_arc"] == pytest.approx(expected_arc, abs=1e-6)
+    assert match["directed_source_longitude"] == pytest.approx((62.0 + expected_arc) % 360.0, abs=1e-4)
+    assert match["natal_target_longitude"] == pytest.approx(210.0, abs=1e-6)
     assert match["match_status"] == "matched"
 
 
-def test_formula_test_mode_defaults_to_solar_arc_when_ephemeris_available() -> None:
+def test_formula_test_mode_defaults_to_symbolic_age_arc_when_ephemeris_available() -> None:
     service = FormulaTestModeService(ephemeris_service=_FakeSolarArcEphemerisService())
-    assert service.default_direction_method == "solar_arc"
+    assert service.default_direction_method == "symbolic_1deg_per_year"
 
 
 def test_child_birth_six_formulas_are_found_under_solar_arc(tmp_path: Path) -> None:
@@ -836,6 +837,7 @@ def test_child_birth_six_formulas_are_found_under_solar_arc(tmp_path: Path) -> N
             "chart_response": chart.model_dump(mode="json"),
             "candidate_birth_date": date(2000, 1, 1),
             "event": _sample_child_birth_event().model_dump(mode="json"),
+            "direction_method": "solar_arc",
         },
     )
 
