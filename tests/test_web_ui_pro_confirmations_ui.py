@@ -61,6 +61,8 @@ def test_pro_ui_validation_report_table_is_rendered_with_visible_detailed_fields
     assert "Actual angle" in html
     assert "Exact angle" in html
     assert "Orb limit" in html
+    assert "Formula role" in html
+    assert "Priority" in html
 
 
 def test_pro_ui_renders_formula_refinement_summary() -> None:
@@ -84,6 +86,9 @@ def test_pro_ui_renders_formula_refinement_summary() -> None:
     assert "working_time_range" in html
     assert "reference_time" in html
     assert "Working range" in html
+    assert "Reference candidate" in html
+    assert "Вклад событий в результат" in html
+    assert "contribution_to_final_candidate" in html
 
 
 def test_pro_ui_expected_labels_render_from_display_formula_not_stale_ids() -> None:

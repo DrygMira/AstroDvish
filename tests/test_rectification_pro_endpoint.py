@@ -161,6 +161,15 @@ def test_rectification_pro_child_birth_expected_by_card_matches_production_card(
     assert result["card_version"] == production_card.card_version
     assert [rule["display_formula"] for rule in expected_rules] == CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS
     assert expected_rules[0]["aspect_types"] == ["square"]
+    assert expected_rules[0]["formula"] == "Directed ruler_4 -> Natal house_element_5"
+    assert expected_rules[0]["source_layer"] == "directed"
+    assert expected_rules[0]["target_layer"] == "natal"
+    assert expected_rules[0]["priority"] == "golden"
+    assert expected_rules[0]["role"] == "event_confirmation"
+    assert expected_rules[0]["orb_limit"] == 1.0
+    assert expected_rules[0]["meaning"]
+    assert expected_rules[3]["aspect"] == "trine"
+    assert expected_rules[3]["aspect_types"] == ["trine"]
 
 
 def test_rectification_pro_uses_symbolic_age_arc_for_formula_test_mode(monkeypatch, tmp_path) -> None:
@@ -225,6 +234,25 @@ def test_rectification_pro_returns_direction_debug_fields_for_formula_results(mo
         "orb",
         "orb_limit",
     }.issubset(checked_pair)
+
+
+def test_rectification_pro_labels_multiple_rulers_with_ruler_type(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    result = response.json()["formula_test_mode_results"][0]
+    report = result["validation_report"]
+    assert any(item.get("ruler_type") for item in report["directed_points_debug"])
+    assert any(
+        pair.get("source_ruler_type") or pair.get("target_ruler_type")
+        for rule in report["rule_debug"]
+        for pair in rule.get("checked_pairs", [])
+    )
 
 
 def test_rectification_pro_validation_report_table_contains_expert_visible_angles(monkeypatch, tmp_path) -> None:
@@ -331,9 +359,9 @@ def test_rectification_pro_formula_refinement_uses_reference_triplet(monkeypatch
     body = response.json()
     best = body["formula_refinement_results"]["best_candidate"]
     table = best["formula_test_mode_results"][0]["validation_report_table"]
-    assert "Directed ruler_4 -> Natal house_element_5 | matched" in table
-    assert "Directed Sun -> Natal Jupiter | matched" in table
-    assert "Directed cusp_6 -> Natal Sun | matched" in table
+    assert "Directed ruler_4 -> Natal house_element_5 | golden | event_confirmation | matched" in table
+    assert "Directed Sun -> Natal Jupiter | golden | event_confirmation | matched" in table
+    assert "Directed cusp_6 -> Natal Sun | golden | time_refinement | matched" in table
 
 
 def test_rectification_pro_formula_refinement_returns_scoring_breakdown(monkeypatch, tmp_path) -> None:
@@ -481,6 +509,35 @@ def test_rectification_pro_formula_refinement_returns_working_time_range_and_ref
     assert refinement["reference_time"]["provided"] == "1978-03-19T22:59:45"
     assert refinement["reference_time"]["inside_working_time_range"] is True
     assert refinement["best_candidate"]["candidate_time_local"] != refinement["reference_time"]["provided"]
+
+
+def test_rectification_pro_formula_refinement_returns_event_contribution_audit(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(6)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    best = response.json()["formula_refinement_results"]["best_candidate"]
+    assert "event_contribution_audit" in best
+    assert isinstance(best["event_contribution_audit"], list)
+    assert best["event_contribution_audit"]
+    audit_item = best["event_contribution_audit"][0]
+    assert {
+        "event_type",
+        "event_date",
+        "matched_count",
+        "rejected_count",
+        "missed_count",
+        "score",
+        "contribution_to_final_candidate",
+    }.issubset(audit_item.keys())
 
 
 def test_rectification_pro_clips_candidates_to_selected_birth_date(monkeypatch, tmp_path) -> None:

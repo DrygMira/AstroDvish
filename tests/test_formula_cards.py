@@ -95,6 +95,28 @@ def test_production_child_birth_card_marks_confirmed_golden_formulas() -> None:
     assert by_id["cusp_5_to_chiron"].priority_tier == "supporting"
 
 
+def test_production_child_birth_card_uses_literal_formula_dsl_and_fixed_aspect_names() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card("RECT_CHILD_BIRTH_001")
+    by_id = {rule.id: rule for rule in card.direction_rules}
+
+    assert by_id["ruler_4_to_house_element_5"].formula == "Directed ruler_4 -> Natal house_element_5"
+    assert by_id["ruler_4_to_house_element_5"].rule == "Directed primary/modern ruler of 4th to natal element of 5th house"
+    assert by_id["ruler_4_to_house_element_5"].source == "ruler_4"
+    assert by_id["ruler_4_to_house_element_5"].target == "house_element_5"
+    assert by_id["ruler_4_to_house_element_5"].source_layer == "directed"
+    assert by_id["ruler_4_to_house_element_5"].target_layer == "natal"
+    assert by_id["ruler_4_to_house_element_5"].aspect == "square"
+    assert by_id["ruler_4_to_house_element_5"].priority == "golden"
+    assert by_id["ruler_4_to_house_element_5"].role == "event_confirmation"
+    assert by_id["ruler_4_to_house_element_5"].orb_limit == 1.0
+    assert by_id["ruler_4_to_house_element_5"].meaning
+    assert by_id["ruler_4_to_house_element_5"].comment
+
+    assert by_id["cusp_4_to_moon"].aspect_types == ["trine"]
+    assert by_id["cusp_4_to_moon"].aspect == "trine"
+
+
 def test_death_close_person_card_contains_expected_core_and_planets() -> None:
     loader = FormulaCardLoader()
     card = loader.load_card("RECT_DEATH_CLOSE_PERSON_001")
@@ -155,6 +177,63 @@ def test_formula_test_mode_returns_structured_json_for_mocked_context() -> None:
     assert result["confidence"] in {"low", "medium", "high"}
     assert result["explanation_for_expert"]
     assert "validation_report" in result
+
+
+def test_reverse_formulas_are_not_auto_created(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_LITERAL_DIRECTION_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["sun", "moon"],
+                "houses": ["house_5"],
+                "planets": ["sun", "moon"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {
+                        "id": "moon_to_sun_only",
+                        "title": "Directed Moon to natal Sun only",
+                        "formula": "Directed Moon -> Natal Sun",
+                        "rule": "Literal direction only",
+                        "source_kind": "directed",
+                        "target_kind": "natal",
+                        "source_selectors": ["moon"],
+                        "target_selectors": ["sun"],
+                        "aspect_types": ["trine"],
+                        "aspect": "trine",
+                        "orb_limit": 1.0,
+                        "required": True,
+                        "weight": 1.0,
+                    }
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "sun": {"degree": 92.0, "sign": "Cancer", "house": 5},
+            "moon": {"degree": 332.0, "sign": "Pisces", "house": 4},
+        },
+        cusps={str(i): float((i - 1) * 30) for i in range(1, 13)},
+        cusp_signs={str(i): name for i, name in enumerate(["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"], start=1)},
+    )
+    result = service.evaluate(
+        event_type="child_birth",
+        context={
+            "chart_response": chart.model_dump(mode="json"),
+            "candidate_birth_date": date(2000, 1, 1),
+            "event": _custom_event(title="Literal direction", event_type=EventType.child_birth).model_dump(mode="json"),
+        },
+    )
+
+    found = {(item["directed_point"], item["natal_target"]) for item in result["matched_formula_aspects"]}
+    assert ("moon", "sun") in found
+    assert ("sun", "moon") not in found
 
 
 def _sample_formula_chart() -> ChartResponse:

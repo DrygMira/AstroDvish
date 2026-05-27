@@ -14,6 +14,17 @@ class FormulaSubformula(BaseModel):
 class FormulaDirectionRule(BaseModel):
     id: str
     title: str
+    formula: str | None = None
+    rule: str | None = None
+    source: str | None = None
+    target: str | None = None
+    source_layer: str | None = None
+    target_layer: str | None = None
+    aspect: str | None = None
+    priority: str | None = None
+    role: str | None = None
+    meaning: str | None = None
+    comment: str | None = None
     source_kind: Literal["directed"] = "directed"
     target_kind: Literal["natal"] = "natal"
     source_selectors: list[str] = Field(default_factory=list)
@@ -64,8 +75,12 @@ class FormulaAspectMatch(BaseModel):
     direction_method: str | None = None
     direction_arc: float | None = None
     directed_point: str
+    directed_point_role: str | None = None
+    directed_point_ruler_type: str | None = None
     directed_source_longitude: float | None = None
     natal_target: str
+    natal_target_role: str | None = None
+    natal_target_ruler_type: str | None = None
     natal_target_longitude: float | None = None
     aspect_type: str
     actual_angle: float

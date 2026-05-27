@@ -142,6 +142,7 @@ class FormulaRefinementService:
         best_formulas: list[str] = []
         golden_matches_by_rule: dict[str, dict[str, Any]] = {}
         supporting_matches_by_rule: dict[str, dict[str, Any]] = {}
+        event_contribution_audit: list[dict[str, Any]] = []
 
         for result in event_results:
             matched_formula_score += float(result.get("score") or 0.0)
@@ -179,6 +180,27 @@ class FormulaRefinementService:
                 best_formulas.append(
                     f"{item.get('formula_rule_matched')}:{item.get('directed_point')}->{item.get('natal_target')}:{item.get('aspect_type')}"
                 )
+
+            event_contribution_audit.append(
+                {
+                    "event_id": result.get("source_event_id"),
+                    "event_type": result.get("source_event_type") or result.get("event_type"),
+                    "event_title": result.get("source_event_title"),
+                    "event_date": result.get("source_event_date"),
+                    "card_id": result.get("card_id"),
+                    "score": float(result.get("score") or 0.0),
+                    "matched_count": len(matched),
+                    "rejected_count": len(rejected),
+                    "missed_count": len(missing),
+                    "golden_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "") == "golden"),
+                    "supporting_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "supporting") != "golden"),
+                }
+            )
+
+        total_event_score = sum(float(item["score"]) for item in event_contribution_audit) or 0.0
+        for item in event_contribution_audit:
+            contribution = 0.0 if total_event_score <= 0 else round((float(item["score"]) / total_event_score) * 100.0, 2)
+            item["contribution_to_final_candidate"] = contribution
 
         golden_matched_count = len(golden_matches_by_rule)
         golden_orb_sum = round(sum(float(item["orb"]) for item in golden_matches_by_rule.values()), 4)
@@ -249,6 +271,7 @@ class FormulaRefinementService:
             "source_asc_interval": source_window.model_dump(mode="json"),
             "formula_test_mode_results": event_results,
             "best_formulas": best_formulas[:10],
+            "event_contribution_audit": event_contribution_audit,
             "selection_reason": "",
             "chart_response": chart_response,
         }

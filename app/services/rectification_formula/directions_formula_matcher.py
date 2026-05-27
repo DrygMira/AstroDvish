@@ -31,19 +31,28 @@ ASPECT_ANGLES: dict[str, float] = {
     "opposition": 180.0,
 }
 
-SIGN_RULERS: dict[str, list[str]] = {
-    "Aries": ["mars"],
-    "Taurus": ["venus"],
-    "Gemini": ["mercury"],
-    "Cancer": ["moon"],
-    "Leo": ["sun"],
-    "Virgo": ["mercury"],
-    "Libra": ["venus"],
-    "Scorpio": ["mars", "pluto"],
-    "Sagittarius": ["jupiter"],
-    "Capricorn": ["saturn"],
-    "Aquarius": ["saturn", "uranus"],
-    "Pisces": ["jupiter", "neptune"],
+SIGN_RULERS: dict[str, list[dict[str, str]]] = {
+    "Aries": [{"name": "mars", "ruler_type": "primary_ruler"}],
+    "Taurus": [{"name": "venus", "ruler_type": "primary_ruler"}],
+    "Gemini": [{"name": "mercury", "ruler_type": "primary_ruler"}],
+    "Cancer": [{"name": "moon", "ruler_type": "primary_ruler"}],
+    "Leo": [{"name": "sun", "ruler_type": "primary_ruler"}],
+    "Virgo": [{"name": "mercury", "ruler_type": "primary_ruler"}],
+    "Libra": [{"name": "venus", "ruler_type": "primary_ruler"}],
+    "Scorpio": [
+        {"name": "mars", "ruler_type": "primary_ruler"},
+        {"name": "pluto", "ruler_type": "modern_ruler"},
+    ],
+    "Sagittarius": [{"name": "jupiter", "ruler_type": "primary_ruler"}],
+    "Capricorn": [{"name": "saturn", "ruler_type": "primary_ruler"}],
+    "Aquarius": [
+        {"name": "saturn", "ruler_type": "primary_ruler"},
+        {"name": "uranus", "ruler_type": "modern_ruler"},
+    ],
+    "Pisces": [
+        {"name": "jupiter", "ruler_type": "primary_ruler"},
+        {"name": "neptune", "ruler_type": "modern_ruler"},
+    ],
 }
 
 
@@ -53,6 +62,8 @@ class ResolvedPoint:
     base_key: str
     natal_degree: float
     degree: float
+    role: str | None = None
+    ruler_type: str | None = None
 
 
 class DirectionsFormulaMatcher:
@@ -138,12 +149,22 @@ class DirectionsFormulaMatcher:
             "rule_id": rule.id,
             "title": rule.title,
             "display_formula": self._display_formula(rule),
+            "priority": rule.priority or rule.priority_tier,
+            "role": rule.role,
             "source_kind": "directed",
             "target_kind": "natal",
             "direction_method": direction_result.direction_method,
             "direction_arc": round(direction_result.direction_arc, 6),
             "resolved_sources": [point.key for point in directed_points],
             "resolved_targets": [point.key for point in natal_points],
+            "resolved_source_details": [
+                {"point_name": point.key, "role": point.role, "ruler_type": point.ruler_type}
+                for point in directed_points
+            ],
+            "resolved_target_details": [
+                {"point_name": point.key, "role": point.role, "ruler_type": point.ruler_type}
+                for point in natal_points
+            ],
             "checked_pairs": [],
             "matched_pairs": [],
             "rejected_pairs": [],
@@ -195,6 +216,10 @@ class DirectionsFormulaMatcher:
                 pair_payload = {
                     "directed_point": source.key,
                     "natal_target": target.key,
+                    "source_role": source.role,
+                    "target_role": target.role,
+                    "source_ruler_type": source.ruler_type,
+                    "target_ruler_type": target.ruler_type,
                     "source_coordinate_type": "directed",
                     "target_coordinate_type": "natal",
                     "source_natal_coordinate": round(source.natal_degree, 4),
@@ -215,8 +240,12 @@ class DirectionsFormulaMatcher:
                     direction_method=direction_result.direction_method,
                     direction_arc=round(direction_result.direction_arc, 6),
                     directed_point=source.key,
+                    directed_point_role=source.role,
+                    directed_point_ruler_type=source.ruler_type,
                     directed_source_longitude=round(source.degree, 4),
                     natal_target=target.key,
+                    natal_target_role=target.role,
+                    natal_target_ruler_type=target.ruler_type,
                     natal_target_longitude=round(target.degree, 4),
                     aspect_type=aspect_name,
                     actual_angle=round(actual_angle, 4),
@@ -296,7 +325,13 @@ class DirectionsFormulaMatcher:
         if selector.startswith("cusp_"):
             house_num = selector.split("_", 1)[1]
             point_key = f"cusp_{house_num}"
-            return self._point_from_base_key(point_key=point_key, base_key=point_key, direction_result=direction_result, coordinate_kind=coordinate_kind)
+            return self._point_from_base_key(
+                point_key=point_key,
+                base_key=point_key,
+                direction_result=direction_result,
+                coordinate_kind=coordinate_kind,
+                role=selector,
+            )
         if selector.startswith("ruler_"):
             house_num = selector.split("_", 1)[1]
             return self._resolve_house_rulers(
@@ -314,9 +349,21 @@ class DirectionsFormulaMatcher:
                 direction_result=direction_result,
             )
         if selector in {"asc", "mc"}:
-            return self._point_from_base_key(point_key=selector, base_key=selector, direction_result=direction_result, coordinate_kind=coordinate_kind)
+            return self._point_from_base_key(
+                point_key=selector,
+                base_key=selector,
+                direction_result=direction_result,
+                coordinate_kind=coordinate_kind,
+                role=selector,
+            )
         if selector in chart.objects:
-            return self._point_from_base_key(point_key=selector, base_key=selector, direction_result=direction_result, coordinate_kind=coordinate_kind)
+            return self._point_from_base_key(
+                point_key=selector,
+                base_key=selector,
+                direction_result=direction_result,
+                coordinate_kind=coordinate_kind,
+                role=selector,
+            )
         return []
 
     def _point_from_base_key(
@@ -326,6 +373,8 @@ class DirectionsFormulaMatcher:
         base_key: str,
         direction_result: DirectionChartBuildResult,
         coordinate_kind: Literal["directed", "natal"],
+        role: str | None = None,
+        ruler_type: str | None = None,
     ) -> list[ResolvedPoint]:
         natal_degree = direction_result.natal_coordinate(base_key)
         degree = self._coordinate(direction_result=direction_result, base_key=base_key, coordinate_kind=coordinate_kind)
@@ -337,6 +386,8 @@ class DirectionsFormulaMatcher:
                 base_key=base_key,
                 natal_degree=float(natal_degree),
                 degree=float(degree),
+                role=role,
+                ruler_type=ruler_type,
             )
         ]
 
@@ -353,13 +404,17 @@ class DirectionsFormulaMatcher:
             return []
         rulers = SIGN_RULERS.get(cusp.sign_name_en, [])
         points: list[ResolvedPoint] = []
-        for ruler_name in rulers:
+        for ruler_info in rulers:
+            ruler_name = ruler_info["name"]
+            ruler_type = ruler_info["ruler_type"]
             points.extend(
                 self._point_from_base_key(
                     point_key=f"ruler_{house_num}:{ruler_name}",
                     base_key=ruler_name,
                     direction_result=direction_result,
                     coordinate_kind=coordinate_kind,
+                    role=f"ruler_{house_num}",
+                    ruler_type=ruler_type,
                 )
             )
         return points
@@ -382,6 +437,7 @@ class DirectionsFormulaMatcher:
                     base_key=name,
                     direction_result=direction_result,
                     coordinate_kind=coordinate_kind,
+                    role=f"house_element_{house_num}",
                 )
             )
         return points
@@ -446,6 +502,8 @@ class DirectionsFormulaMatcher:
 
     @staticmethod
     def _display_formula(rule: FormulaDirectionRule) -> str:
+        if rule.formula:
+            return rule.formula
         source = rule.display_source or ", ".join(rule.source_selectors) or "source"
         target = rule.display_target or ", ".join(rule.target_selectors) or "target"
         return f"Directed {source} -> Natal {target}"

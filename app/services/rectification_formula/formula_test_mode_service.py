@@ -302,14 +302,22 @@ class FormulaTestModeService:
             for item in matched_formula_aspects
             if str(getattr(item, "aspect_type", "")).lower() in DEBUG_OPTIONAL_ASPECTS
         ]
+        unique_scoring_rules = {
+            str(getattr(item, "formula_rule_matched", ""))
+            for item in scoring_formula_aspects
+        }
+        unique_debug_rules = {
+            str(getattr(item, "formula_rule_matched", ""))
+            for item in debug_optional_formula_aspects
+        }
         return {
             "matched_core_points": len(matched_core) * 12.0,
             "matched_aspect_points": len(matched_aspects) * 8.0,
             "matched_strong_points": len(matched_strong) * 7.0,
             "matched_weak_points": len(matched_weak) * 3.0,
-            "matched_formula_aspect_points": len(scoring_formula_aspects) * 4.0,
+            "matched_formula_aspect_points": len(unique_scoring_rules) * 4.0,
             "debug_optional_formula_aspect_points": 0.0,
-            "debug_optional_formula_aspect_count": float(len(debug_optional_formula_aspects)),
+            "debug_optional_formula_aspect_count": float(len(unique_debug_rules)),
             "method_points": cls._score_methods(card.method_priority, methods_used),
             "exclusion_penalty": len(exclusion_risks) * 10.0,
         }
@@ -452,6 +460,8 @@ class FormulaTestModeService:
                     continue
                 points[point_name] = {
                     "point_name": point_name,
+                    "role": pair.get("source_role"),
+                    "ruler_type": pair.get("source_ruler_type"),
                     "natal_longitude": pair.get("source_natal_coordinate"),
                     "directed_longitude": pair.get("directed_coordinate"),
                     "direction_arc": direction_arc,
@@ -468,12 +478,16 @@ class FormulaTestModeService:
                     continue
                 points[point_name] = {
                     "point_name": point_name,
+                    "role": pair.get("target_role"),
+                    "ruler_type": pair.get("target_ruler_type"),
                     "natal_longitude": pair.get("natal_coordinate"),
                 }
         return list(points.values())
 
     @staticmethod
     def _display_formula(rule: FormulaCard | Any) -> str:
+        if getattr(rule, "formula", None):
+            return str(getattr(rule, "formula"))
         source = getattr(rule, "display_source", None) or ", ".join(getattr(rule, "source_selectors", []) or []) or "source"
         target = getattr(rule, "display_target", None) or ", ".join(getattr(rule, "target_selectors", []) or []) or "target"
         return f"Directed {source} -> Natal {target}"
@@ -492,7 +506,7 @@ class FormulaTestModeService:
     def _format_validation_report_table(report: dict[str, Any]) -> str:
         lines = [
             f"Card: {report.get('card_id')} | Found: {len(report.get('found_by_engine', []))} | Missed: {len(report.get('missed_by_engine', []))} | Rejected: {len(report.get('rejected_aspects', []))} | Status: {report.get('final_status_for_expert', 'needs_expert_review')}",
-            "Formula | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Reject reason",
+            "Formula | Priority | Formula role | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Reject reason",
         ]
         missing_by_rule_id = {
             str(item.get("rule_id")): item
@@ -514,6 +528,50 @@ class FormulaTestModeService:
                 " | ".join(
                     [
                         str(rule.get("display_formula") or rule.get("title") or rule.get("rule_id") or "—"),
+                        status,
+                        str((sample or {}).get("directed_point") or ", ".join(rule.get("resolved_sources") or []) or "—"),
+                        str((sample or {}).get("directed_coordinate", "—")),
+                        str((sample or {}).get("natal_target") or ", ".join(rule.get("resolved_targets") or []) or "—"),
+                        str((sample or {}).get("natal_coordinate", "—")),
+                        str((sample or {}).get("aspect_type", "—")),
+                        str((sample or {}).get("actual_angle", "—")),
+                        str((sample or {}).get("exact_angle", "—")),
+                        str((sample or {}).get("orb", "—")),
+                        str((sample or {}).get("orb_limit", "—")),
+                        reject_reason,
+                    ]
+                )
+            )
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_validation_report_table(report: dict[str, Any]) -> str:
+        lines = [
+            f"Card: {report.get('card_id')} | Found: {len(report.get('found_by_engine', []))} | Missed: {len(report.get('missed_by_engine', []))} | Rejected: {len(report.get('rejected_aspects', []))} | Status: {report.get('final_status_for_expert', 'needs_expert_review')}",
+            "Formula | Priority | Formula role | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Reject reason",
+        ]
+        missing_by_rule_id = {
+            str(item.get("rule_id")): item
+            for item in report.get("missed_by_engine", [])
+            if isinstance(item, dict) and item.get("rule_id")
+        }
+        for rule in report.get("rule_debug", []) or []:
+            matched_pairs = rule.get("matched_pairs") or []
+            rejected_pairs = rule.get("rejected_pairs") or []
+            checked_pairs = rule.get("checked_pairs") or []
+            sample = matched_pairs[0] if matched_pairs else (rejected_pairs[0] if rejected_pairs else (checked_pairs[0] if checked_pairs else None))
+            status = "matched" if matched_pairs else ("rejected" if rejected_pairs else "missed")
+            reject_reason = "—"
+            if status == "rejected":
+                reject_reason = str((sample or {}).get("reason") or missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "over_orb")
+            elif status == "missed":
+                reject_reason = str(missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "unresolved")
+            lines.append(
+                " | ".join(
+                    [
+                        str(rule.get("display_formula") or rule.get("title") or rule.get("rule_id") or "—"),
+                        str(rule.get("priority") or rule.get("priority_tier") or "—"),
+                        str(rule.get("role") or "—"),
                         status,
                         str((sample or {}).get("directed_point") or ", ".join(rule.get("resolved_sources") or []) or "—"),
                         str((sample or {}).get("directed_coordinate", "—")),

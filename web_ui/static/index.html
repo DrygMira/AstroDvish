@@ -2607,6 +2607,8 @@
 
         return [
           rule.display_formula || rule.title || rule.rule_id || "—",
+          rule.priority || rule.priority_tier || "—",
+          rule.role || "—",
           status,
           sample?.directed_point || (Array.isArray(rule.resolved_sources) && rule.resolved_sources.length ? rule.resolved_sources.join(", ") : "—"),
           formatAbsoluteDegreeWithSign(sample?.directed_coordinate),
@@ -4547,6 +4549,8 @@
         ruleTableWrap.innerHTML = renderTable(
           [
             "Formula",
+            "Priority",
+            "Formula role",
             "Status",
             "Directed source",
             "Directed longitude",
@@ -4799,14 +4803,35 @@
           `<div>Step: ${stepSeconds != null ? `${stepSeconds}s` : "n/a"} | supported=${supportedSteps.length ? supportedSteps.join(", ") : "n/a"} | scanned=${refinement.scanned_candidates_count ?? "n/a"} | method=${refinement.direction_method || "n/a"}</div>` +
           `<div>Working range: ${refinementRange ? `${refinementRange.start_local} → ${refinementRange.end_local}` : "n/a"} | candidates=${refinementRange?.candidate_count ?? "n/a"} | criterion=${refinementRange?.criterion ?? "n/a"}</div>` +
           `<div>Coarse candidate: ${refinementCoarse?.candidate_time_local || "n/a"} | coarse score=${refinementCoarse?.score ?? "n/a"}</div>` +
-          `<div>Reference time: ${refinementReference?.provided || "n/a"} | inside range=${refinementReference?.inside_working_time_range ?? "n/a"} | reference score=${refinementReference?.evaluation?.score ?? "n/a"}</div>` +
+          `<div>Reference candidate: ${refinementReference?.provided || "n/a"} | inside range=${refinementReference?.inside_working_time_range ?? "n/a"} | reference score=${refinementReference?.evaluation?.score ?? "n/a"}</div>` +
           `<div>Golden matched=${refinementBest.golden_matched_count ?? "n/a"} | golden orb sum=${refinementBest.golden_orb_sum ?? "n/a"} | supporting matched=${refinementBest.supporting_matched_count ?? "n/a"} | supporting bonus=${refinementBest.supporting_bonus ?? "n/a"}</div>` +
           `<div>Event confirmation score=${refinementBest.event_confirmation_score ?? "n/a"} | time refinement score=${refinementBest.time_refinement_score ?? "n/a"}</div>` +
           `<div>Best formulas: ${bestFormulas.length ? bestFormulas.join("; ") : "n/a"}</div>` +
           `<div>Score breakdown: matched=${scoreBreakdown?.matched_formula_score ?? "n/a"} | orb=${scoreBreakdown?.orb_strength_score ?? "n/a"} | participation=${scoreBreakdown?.participant_bonus_score ?? "n/a"} | rejected_penalty=${scoreBreakdown?.rejected_penalty ?? "n/a"} | missed_penalty=${scoreBreakdown?.missing_penalty ?? "n/a"}</div>` +
           `<div>Golden breakdown: formula=${scoreBreakdown?.golden_formula_score ?? "n/a"} | golden orb quality=${scoreBreakdown?.golden_orb_quality_score ?? "n/a"} | supporting formula=${scoreBreakdown?.supporting_formula_score ?? "n/a"} | supporting bonus=${scoreBreakdown?.supporting_bonus ?? "n/a"}</div>` +
-          `<div>Why selected: ${refinementBest.selection_reason || "n/a"}</div>` +
+          `<div>Selection reason: ${refinementBest.selection_reason || "n/a"}</div>` +
           `<div class="hint">Legacy coarse candidates remain below as debug/reference.</div>`;
+        const contributionAudit = Array.isArray(refinementBest.event_contribution_audit) ? refinementBest.event_contribution_audit : [];
+        if (contributionAudit.length) {
+          const auditWrap = document.createElement("div");
+          auditWrap.style.marginTop = "8px";
+          auditWrap.innerHTML = renderTable(
+            ["Вклад событий в результат", "Event type", "Date", "Score", "Contribution %", "Matched", "Rejected", "Missed", "Golden", "Supporting"],
+            contributionAudit.map((item) => [
+              item.event_title || item.event_id || "—",
+              item.event_type || "—",
+              item.event_date || "—",
+              item.score ?? "—",
+              item.contribution_to_final_candidate ?? "—",
+              item.matched_count ?? "—",
+              item.rejected_count ?? "—",
+              item.missed_count ?? "—",
+              item.golden_matched_count ?? "—",
+              item.supporting_matched_count ?? "—",
+            ])
+          );
+          refinementBlock.appendChild(auditWrap);
+        }
         rpBestCandidatesEl.appendChild(refinementBlock);
       }
       if (!best.length) {

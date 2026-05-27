@@ -5,15 +5,16 @@ AstroDvish / Astra Engine / Pro-ректификация / formula-driven refine
 
 ## 2. Latest stable deploy
 - branch: `codex/shared-birth-context-ui`
-- commit: `5b47ed4`
-- tests: `226 passed, 1 xfailed` at deploy time
+- commit: `2ac5374`
+- tests: `235 passed, 1 xfailed` at deploy time
 - deploy status: deployed
-- rollback commit: `ae80810`
+- rollback commit: `5b47ed4`
 - on server already works:
   - `formula_test_mode` connected to Pro UI
   - `validation_report_table` visible in Pro UI
   - child_birth formula 1 fixed to `square`
   - directed/natal coordinates, angles, orb, orb limit visible in UI
+  - `formula_refinement_results` show working range, best candidate, reference candidate
   - ordinary chart / Expert UI / Technical JSON work
 
 ## 3. What is already done
@@ -104,3 +105,39 @@ Every future report must include:
 - If `PROJECT_STATE.md` and `AGENTS.md` conflict:
   - `AGENTS.md` wins for permanent rules
   - `PROJECT_STATE.md` wins for current project state
+
+## 13. Current patch notes
+- child_birth card is being migrated to literal DSL fields: `formula`, `rule`, `source`, `target`, `aspect`, `priority`, `role`, `comment`
+- reverse formulas must never be auto-created; reverse direction requires a separate literal rule
+- stale aspect names must be checked against actual angle; current child_birth fix is `Directed cusp_4 -> Natal Moon = trine`
+- multiple rulers must stay visibly typed (`primary_ruler`, `modern_ruler`, etc.) in debug/report output
+- refinement now carries per-event contribution audit so Pro does not look like it fits only one child_birth event
+
+## 14. Current workflow layer
+- child_birth literal DSL is now expected to carry `formula`, `rule`, `source`, `target`, `source_layer`, `target_layer`, `aspect`, `priority`, `orb_limit`, `meaning`, `comment`
+- `source_layer` / `target_layer` must stay explicit; do not infer or auto-swap reverse formulas
+- Pro refinement should expose `event_contribution_audit` with `event_type`, `event_date`, `matched_count`, `rejected_count`, `missed_count`, `score`, `contribution_to_final_candidate`
+- UI should show a separate block: `Вклад событий в результат`
+## 15. Verification snapshot (2026-05-27)
+- full pytest: `239 passed, 1 xfailed`
+- focused rectification/UI tests: `66 passed`
+- local Pro endpoint verification passed for literal DSL / typed rulers / `event_contribution_audit`
+- verified in Pro JSON:
+  - `formula_refinement_results`
+  - `working_time_range`
+  - `best_candidate`
+  - `reference_time`
+  - `validation_report`
+  - `event_contribution_audit`
+  - literal DSL fields and `ruler_type`
+  - `score_breakdown`, `event_confirmation_score`, `time_refinement_score`
+- ordinary chart API `/api/v1/chart` returns `200`
+- browser/plugin verification:
+  - local UI opened
+  - Stage 1 final result was reproduced in browser
+  - HTML/DOM markers for `validation_report_table`, `Orb limit`, `Formula role`, `contribution_to_final_candidate` are present
+  - full rendered Pro result inside browser technical panels is still partially blocked by panel visibility/runtime interaction and should be rechecked before deploy if strict browser proof is required
+- current risk before deploy:
+  - browser live-path proof for the final rendered Pro block is weaker than API/test proof
+- next step:
+  - rerun browser proof on the final rendered Pro screen and confirm visible `Working range`, `Best candidate`, `Reference candidate`, `Validation report table`, and `Вклад событий в результат`
