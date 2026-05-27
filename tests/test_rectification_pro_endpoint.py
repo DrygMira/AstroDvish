@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from app.config import get_settings
 from app.main import create_app
 from app.services.rectification_formula.formula_card_loader import FormulaCardLoader
+from app.services.rectification_pro.formula_refinement_service import FormulaRefinementService
 
 CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS = [
     "Directed ruler_4 -> Natal house_element_5",
@@ -118,6 +119,7 @@ def test_rectification_pro_run_endpoint_returns_formula_refinement_results(monke
     assert "best_candidate" in refinement
     assert "top_candidates" in refinement
     assert "coarse_candidate" in refinement
+    assert "working_time_ranges" in refinement
     assert "working_time_range" in refinement
 
 
@@ -503,12 +505,77 @@ def test_rectification_pro_formula_refinement_returns_working_time_range_and_ref
 
     assert response.status_code == 200
     refinement = response.json()["formula_refinement_results"]
+    assert isinstance(refinement["working_time_ranges"], list)
+    assert refinement["working_time_ranges"]
     working_range = refinement["working_time_range"]
     assert working_range["start_local"] <= "1978-03-19T22:57:00"
     assert working_range["end_local"] >= "1978-03-19T22:59:45"
     assert refinement["reference_time"]["provided"] == "1978-03-19T22:59:45"
     assert refinement["reference_time"]["inside_working_time_range"] is True
     assert refinement["best_candidate"]["candidate_time_local"] != refinement["reference_time"]["provided"]
+
+
+def test_formula_refinement_service_can_build_multiple_working_time_ranges() -> None:
+    candidates = [
+        {
+            "candidate_time_local": "1978-03-19T22:55:00",
+            "golden_matched_count": 3,
+            "golden_orb_sum": 1.2,
+            "supporting_matched_count": 1,
+            "supporting_bonus": 1.0,
+            "score": 44.0,
+            "selection_reason": "",
+        },
+        {
+            "candidate_time_local": "1978-03-19T22:55:30",
+            "golden_matched_count": 3,
+            "golden_orb_sum": 1.1,
+            "supporting_matched_count": 1,
+            "supporting_bonus": 1.0,
+            "score": 45.0,
+            "selection_reason": "",
+        },
+        {
+            "candidate_time_local": "1978-03-19T22:57:00",
+            "golden_matched_count": 2,
+            "golden_orb_sum": 2.1,
+            "supporting_matched_count": 0,
+            "supporting_bonus": 0.0,
+            "score": 20.0,
+            "selection_reason": "",
+        },
+        {
+            "candidate_time_local": "1978-03-19T22:58:00",
+            "golden_matched_count": 3,
+            "golden_orb_sum": 1.3,
+            "supporting_matched_count": 0,
+            "supporting_bonus": 0.2,
+            "score": 43.0,
+            "selection_reason": "",
+        },
+        {
+            "candidate_time_local": "1978-03-19T22:58:30",
+            "golden_matched_count": 3,
+            "golden_orb_sum": 1.0,
+            "supporting_matched_count": 1,
+            "supporting_bonus": 0.9,
+            "score": 46.0,
+            "selection_reason": "",
+        },
+    ]
+    ranges = FormulaRefinementService._build_working_time_ranges(candidates, 30)
+    primary = FormulaRefinementService._select_primary_working_time_range(
+        working_time_ranges=ranges,
+        best_candidate={"candidate_time_local": "1978-03-19T22:58:30"},
+    )
+
+    assert len(ranges) == 2
+    assert ranges[0]["start_local"] == "1978-03-19T22:55:00"
+    assert ranges[0]["end_local"] == "1978-03-19T22:55:30"
+    assert ranges[1]["start_local"] == "1978-03-19T22:58:00"
+    assert ranges[1]["end_local"] == "1978-03-19T22:58:30"
+    assert ranges[1]["best_candidate"] == "1978-03-19T22:58:30"
+    assert primary == ranges[1]
 
 
 def test_rectification_pro_formula_refinement_returns_event_contribution_audit(monkeypatch, tmp_path) -> None:

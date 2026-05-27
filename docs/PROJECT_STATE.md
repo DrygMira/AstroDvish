@@ -5,15 +5,16 @@ AstroDvish / Astra Engine / Pro-ректификация / formula-driven refine
 
 ## 2. Latest stable deploy
 - branch: `codex/shared-birth-context-ui`
-- commit: `2ac5374`
-- tests: `235 passed, 1 xfailed` at deploy time
+- commit: `be3cebf`
+- tests: `239 passed, 1 xfailed` at deploy time
 - deploy status: deployed
-- rollback commit: `5b47ed4`
+- rollback commit: `2ac5374`
 - on server already works:
   - `formula_test_mode` connected to Pro UI
   - `validation_report_table` visible in Pro UI
   - child_birth formula 1 fixed to `square`
   - directed/natal coordinates, angles, orb, orb limit visible in UI
+  - literal Formula+Rule DSL, typed rulers, event contribution audit
   - `formula_refinement_results` show working range, best candidate, reference candidate
   - ordinary chart / Expert UI / Technical JSON work
 
@@ -30,7 +31,7 @@ AstroDvish / Astra Engine / Pro-ректификация / formula-driven refine
 - Pro coarse candidate оставлен как legacy/debug, refinement идёт отдельным слоем
 
 ## 4. Current unresolved issue
-Refinement уже сканирует Asc-интервал и выбирает кандидата по golden formulas, но эталон `22:59:45` пока не выбран. Текущий лучший кандидат: `22:57:00`, потому что у него лучше `golden_orb_sum`.
+Методология подтверждена Екатериной: системе не нужно попадать ровно в `22:59:45`, если лучший кандидат лежит внутри валидного экспертного диапазона. Текущий лучший кандидат: `22:57:00`; ручной эталон: `22:59:45`; оба лежат внутри рабочего диапазона. Следующий слой: поддержка нескольких рабочих диапазонов в одном Asc-интервале.
 
 ## 5. Current reference case
 - birth: `1978-03-19 22:59:45 GMT+05`
@@ -45,9 +46,14 @@ Refinement уже сканирует Asc-интервал и выбирает к
 - MVP direction method = `symbolic_1deg_per_year`
 - `solar_arc/progressed Sun` оставлен только `optional/debug`
 - comparison = `Directed source -> Natal target`
+- major aspects for MVP score: `conjunction`, `opposition`, `square`, `trine`, `sextile`
+- MVP orb = `±1°`
 - natal targets do not move
 - `formula-driven refinement` must scan Asc interval
 - formulas participate in selecting time, not only post-check
+- Chiron is allowed by role when explicitly used by formula
+- `gradarch` excluded from MVP
+- formula priorities = `golden`, `supporting`, `context`
 - one event with 3 strong formulas = working candidate, not final rectification
 
 ## 7. Scoring rules v1
@@ -56,6 +62,7 @@ Refinement уже сканирует Asc-интервал и выбирает к
 - rank by `golden_matched_count`
 - then by `golden_orb_sum`
 - then by supporting signals
+- event confirmation and time refinement stay separated
 - show `score_breakdown` in UI
 
 ## 8. Known traps / do not repeat
@@ -68,16 +75,15 @@ Refinement уже сканирует Asc-интервал и выбирает к
 - candidate selection must be live-path tested
 
 ## 9. Current next step
-Generate candidate comparison table around child_birth reference time from `22:55:00` to `23:00:30` with `30s` step.
-Show:
-- candidate time
-- golden matched count
-- each golden formula orb
-- `golden_orb_sum`
-- supporting matched count
-- final score
-- why candidate wins
-- compare `22:57:00` vs `22:59:45`
+Support multiple `working_time_ranges` in refinement output and UI.
+Show for each range:
+- `start_local`
+- `end_local`
+- `candidate_count`
+- `best_candidate`
+- `golden_matched_count`
+- `score`
+- `selection_reason`
 
 ## 10. Required report format for future Codex tasks
 Every future report must include:
@@ -91,13 +97,11 @@ Every future report must include:
 
 ## 11. Current diagnostic snapshot
 - current best candidate in refinement: `22:57:00`
-- old pre-golden best: `22:56:30`
-- reference time `22:59:45` still has `3/3` golden matches, but worse `golden_orb_sum`
-- best individual golden orbs currently split across different times:
-  - `Neptune -> Mercury`: best near `22:55:00`
-  - `Sun -> Jupiter`: best near `23:00:30`
-  - `cusp_6 -> Sun`: best at `22:57:00`
-- this means expert decision is still needed on whether formula 3 should dominate candidate selection that strongly
+- expert valid range: `22:56:47–23:01:50`
+- manual reference time: `22:59:45`
+- current best candidate `22:57:00` is inside the valid expert range
+- there can be multiple valid working ranges even within a couple of hours
+- the system should output a working range plus the best candidate inside it, not force one exact second
 
 ## 12. Document rules
 - Keep this file short and stateful.
@@ -140,4 +144,31 @@ Every future report must include:
 - current risk before deploy:
   - browser live-path proof for the final rendered Pro block is weaker than API/test proof
 - next step:
-  - rerun browser proof on the final rendered Pro screen and confirm visible `Working range`, `Best candidate`, `Reference candidate`, `Validation report table`, and `Вклад событий в результат`
+  - keep live-path proof strict after adding `working_time_ranges`
+
+## 16. Confirmed methodology (Ekaterina, 2026-05-27)
+- methodology status: confirmed
+- MVP direction method: `symbolic_1deg_per_year`
+- comparison: `Directed source -> Natal target`
+- natal targets never move
+- major aspects in MVP score: `conjunction`, `opposition`, `square`, `trine`, `sextile`
+- quincunx stays debug-only
+- orb for working MVP checks: `±1°`
+- Chiron allowed by role
+- `gradarch` excluded
+- priorities: `golden`, `supporting`, `context`
+- refinement must scan the whole Asc interval
+- event formulas participate in choosing time, not only in post-check
+- there may be multiple working ranges inside one broader Asc interval
+
+## 17. Local verification snapshot (2026-05-27, no deploy)
+- full pytest: `241 passed, 1 xfailed`
+- focused tests:
+  - `test_rectification_pro_endpoint.py`
+  - `test_web_ui_pro_confirmations_ui.py`
+  - `test_project_state_doc.py`
+  - result: `34 passed`
+- refinement now supports `working_time_ranges` plus backward-compatible `working_time_range`
+- UI now shows that several working ranges may exist
+- next deploy gate:
+  - rerun strict browser live-path proof if UI/Pro surface changes again

@@ -4789,6 +4789,7 @@
       const refinementBest = refinement && refinement.best_candidate ? refinement.best_candidate : null;
       const refinementCoarse = refinement && refinement.coarse_candidate ? refinement.coarse_candidate : null;
       const refinementRange = refinement && refinement.working_time_range ? refinement.working_time_range : null;
+      const refinementRanges = refinement && Array.isArray(refinement.working_time_ranges) ? refinement.working_time_ranges : [];
       const refinementReference = refinement && refinement.reference_time ? refinement.reference_time : null;
       if (refinementBest) {
         const refinementBlock = document.createElement("div");
@@ -4797,11 +4798,18 @@
         const supportedSteps = Array.isArray(refinement.supported_step_seconds) ? refinement.supported_step_seconds : [];
         const bestFormulas = Array.isArray(refinementBest.best_formulas) ? refinementBest.best_formulas : [];
         const scoreBreakdown = refinementBest.score_breakdown || null;
+        const rangesMarkup = refinementRanges.length
+          ? refinementRanges.map((item, idx) =>
+              `<div>#${idx + 1}: ${item.start_local} → ${item.end_local} | best=${item.best_candidate || "n/a"} | golden=${item.golden_matched_count ?? "n/a"} | score=${item.score ?? "n/a"} | candidates=${item.candidate_count ?? "n/a"} | reason=${item.selection_reason || "n/a"}</div>`
+            ).join("")
+          : "<div>n/a</div>";
         refinementBlock.innerHTML =
           `<div><strong>Refinement inside Asc window</strong></div>` +
           `<div>Best candidate: ${refinementBest.candidate_time_local || "n/a"} | score=${refinementBest.score ?? "n/a"} | matched=${refinementBest.matched_count ?? "n/a"} | rejected=${refinementBest.rejected_count ?? "n/a"}</div>` +
           `<div>Step: ${stepSeconds != null ? `${stepSeconds}s` : "n/a"} | supported=${supportedSteps.length ? supportedSteps.join(", ") : "n/a"} | scanned=${refinement.scanned_candidates_count ?? "n/a"} | method=${refinement.direction_method || "n/a"}</div>` +
           `<div>Working range: ${refinementRange ? `${refinementRange.start_local} → ${refinementRange.end_local}` : "n/a"} | candidates=${refinementRange?.candidate_count ?? "n/a"} | criterion=${refinementRange?.criterion ?? "n/a"}</div>` +
+          `<div>Working ranges: ${refinementRanges.length}</div>` +
+          `${rangesMarkup}` +
           `<div>Coarse candidate: ${refinementCoarse?.candidate_time_local || "n/a"} | coarse score=${refinementCoarse?.score ?? "n/a"}</div>` +
           `<div>Reference candidate: ${refinementReference?.provided || "n/a"} | inside range=${refinementReference?.inside_working_time_range ?? "n/a"} | reference score=${refinementReference?.evaluation?.score ?? "n/a"}</div>` +
           `<div>Golden matched=${refinementBest.golden_matched_count ?? "n/a"} | golden orb sum=${refinementBest.golden_orb_sum ?? "n/a"} | supporting matched=${refinementBest.supporting_matched_count ?? "n/a"} | supporting bonus=${refinementBest.supporting_bonus ?? "n/a"}</div>` +

@@ -33,6 +33,7 @@ class FormulaRefinementService:
                 "top_candidates": [],
                 "best_candidate": None,
                 "coarse_candidate": None,
+                "working_time_ranges": [],
                 "working_time_range": None,
                 "reference_time": {
                     "provided": payload.settings.formula_reference_time_local,
@@ -83,11 +84,17 @@ class FormulaRefinementService:
         )
         top_candidates = candidates[:5]
         self._annotate_selection_reason(top_candidates)
-        working_time_range = self._build_working_time_range(candidates)
+        working_time_ranges = self._build_working_time_ranges(candidates, step_seconds)
+        best_candidate = top_candidates[0] if top_candidates else None
+        working_time_range = self._select_primary_working_time_range(
+            working_time_ranges=working_time_ranges,
+            best_candidate=best_candidate,
+        )
         reference_time = self._build_reference_time(payload=payload)
-        if working_time_range and reference_time.get("provided"):
-            reference_time["inside_working_time_range"] = (
-                working_time_range["start_local"] <= reference_time["provided"] <= working_time_range["end_local"]
+        if working_time_ranges and reference_time.get("provided"):
+            provided = str(reference_time["provided"])
+            reference_time["inside_working_time_range"] = any(
+                item["start_local"] <= provided <= item["end_local"] for item in working_time_ranges
             )
         return {
             "enabled": True,
@@ -96,8 +103,9 @@ class FormulaRefinementService:
             "direction_method": self.formula_test_mode_service.default_direction_method,
             "scanned_candidates_count": len(candidates),
             "top_candidates": top_candidates,
-            "best_candidate": top_candidates[0] if top_candidates else None,
+            "best_candidate": best_candidate,
             "coarse_candidate": None,
+            "working_time_ranges": working_time_ranges,
             "working_time_range": working_time_range,
             "reference_time": reference_time,
             "legacy_mode": False,
@@ -413,20 +421,77 @@ class FormulaRefinementService:
         return {"provided": provided, "inside_working_time_range": False, "evaluation": evaluation}
 
     @staticmethod
-    def _build_working_time_range(candidates: list[dict[str, Any]]) -> dict[str, Any] | None:
+    def _build_working_time_ranges(candidates: list[dict[str, Any]], step_seconds: int) -> list[dict[str, Any]]:
         if not candidates:
-            return None
+            return []
         max_golden = max(int(item.get("golden_matched_count", 0)) for item in candidates)
         eligible = [item for item in candidates if int(item.get("golden_matched_count", 0)) == max_golden]
         if not eligible:
-            return None
+            return []
         eligible.sort(key=lambda item: item["candidate_time_local"])
+        ranges: list[list[dict[str, Any]]] = []
+        current_range: list[dict[str, Any]] = [eligible[0]]
+        expected_gap = timedelta(seconds=step_seconds)
+        for candidate in eligible[1:]:
+            previous = current_range[-1]
+            previous_dt = datetime.fromisoformat(previous["candidate_time_local"])
+            current_dt = datetime.fromisoformat(candidate["candidate_time_local"])
+            if current_dt - previous_dt == expected_gap:
+                current_range.append(candidate)
+                continue
+            ranges.append(current_range)
+            current_range = [candidate]
+        ranges.append(current_range)
+        return [
+            FormulaRefinementService._build_single_working_time_range(chunk, max_golden)
+            for chunk in ranges
+        ]
+
+    @staticmethod
+    def _build_single_working_time_range(
+        candidates: list[dict[str, Any]],
+        golden_matched_count: int,
+    ) -> dict[str, Any]:
+        best_candidate = min(
+            candidates,
+            key=lambda item: (
+                float(item["golden_orb_sum"]),
+                -int(item["supporting_matched_count"]),
+                -float(item["supporting_bonus"]),
+                -float(item["score"]),
+                item["candidate_time_local"],
+            ),
+        )
         return {
-            "start_local": eligible[0]["candidate_time_local"],
-            "end_local": eligible[-1]["candidate_time_local"],
-            "candidate_count": len(eligible),
-            "criterion": f"golden_matched_count={max_golden}",
+            "start_local": candidates[0]["candidate_time_local"],
+            "end_local": candidates[-1]["candidate_time_local"],
+            "candidate_count": len(candidates),
+            "criterion": f"golden_matched_count={golden_matched_count}",
+            "best_candidate": best_candidate["candidate_time_local"],
+            "golden_matched_count": int(best_candidate.get("golden_matched_count", 0)),
+            "score": float(best_candidate.get("score", 0.0)),
+            "selection_reason": str(best_candidate.get("selection_reason") or "")
+            or (
+                f"Best in range by golden_orb_sum={best_candidate.get('golden_orb_sum', 'n/a')} "
+                f"with golden_matched_count={best_candidate.get('golden_matched_count', 0)}."
+            ),
         }
+
+    @staticmethod
+    def _select_primary_working_time_range(
+        *,
+        working_time_ranges: list[dict[str, Any]],
+        best_candidate: dict[str, Any] | None,
+    ) -> dict[str, Any] | None:
+        if not working_time_ranges:
+            return None
+        if not best_candidate:
+            return working_time_ranges[0]
+        candidate_time = str(best_candidate.get("candidate_time_local") or "")
+        for item in working_time_ranges:
+            if item["start_local"] <= candidate_time <= item["end_local"]:
+                return item
+        return working_time_ranges[0]
 
     @staticmethod
     def _annotate_selection_reason(top_candidates: list[dict[str, Any]]) -> None:

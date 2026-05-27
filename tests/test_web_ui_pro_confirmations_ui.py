@@ -83,9 +83,11 @@ def test_pro_ui_renders_formula_refinement_summary() -> None:
     assert "golden_orb_sum" in html
     assert "supporting_bonus" in html
     assert "selection_reason" in html
+    assert "working_time_ranges" in html
     assert "working_time_range" in html
     assert "reference_time" in html
     assert "Working range" in html
+    assert "Working ranges" in html
     assert "Reference candidate" in html
     assert "Вклад событий в результат" in html
     assert "contribution_to_final_candidate" in html
