@@ -371,3 +371,29 @@ Every future report must include:
   - notes now explicitly say `symbolic_1deg_per_year` MVP and that `cusp_10 -> cusp_5` is `opposition` with preserved `over_orb` behavior
 - deploy state:
   - this production-card change is local only and still pending deploy
+
+## 26. Child Birth Metadata Fix Deployed (2026-05-28)
+- deployed live commit:
+  - `5130992d696eba45db1dd31b4396dac25b18e49c`
+  - message: `Finalize child birth production metadata`
+- rollback commit:
+  - `39d8746dbfa9dd59d7ae036469590f44a800fd1b`
+  - message: `Add reliable Pro/UI proof preview mode and v2 draft card support`
+- production card live status:
+  - default card remains `RECT_CHILD_BIRTH_001`
+  - draft `RECT_CHILD_BIRTH_002_DRAFT` remains inactive unless explicitly requested
+  - `card_version` now shows `child_birth_symbolic_mvp_v3`
+  - `direction_method` remains `symbolic_1deg_per_year`
+- live JSON proof:
+  - production path returns `Directed cusp_10 -> Natal cusp_5` as `opposition`, not `trine`
+  - current status for this rule remains `rejected / over_orb` under the existing orb policy
+  - live preview JSON shows `ruler_4:neptune` included and `ruler_4:jupiter` excluded via `allowed_ruler_types=["modern_ruler"]`
+  - `target=cusp_N` stays isolated and is not mixed with `Moon/Jupiter/Venus/significators`
+- live UI proof:
+  - `/api/preview/pro-result` and `/api/preview/chart-result` both return `200`
+  - `?proof_preview=pro` renders Pro refinement/debug content in live DOM, including working range(s), best candidate, validation report table content, resolver debug, and raw JSON
+  - `?proof_preview=chart` opens the ordinary chart modal in live DOM, including horoscope text, expert table container, and raw API response block
+- remaining risks:
+  - `cusp_10 -> cusp_5` may stay `over_orb` until orb policy is changed in a separate task
+  - mojibake cleanup is still a separate task and was intentionally not included here
+  - `RECT_CHILD_BIRTH_002_DRAFT` is still test-only and not part of default production flow
