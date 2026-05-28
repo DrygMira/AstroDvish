@@ -540,3 +540,41 @@ Every future report must include:
     - `RECT_CHILD_BIRTH_001` default
     - explicit `RECT_CHILD_BIRTH_002_DRAFT`
     - compact v2 comparison panel
+
+## 31. Runtime Consistency Cleanup Deployed (2026-05-29, partial live proof)
+- deployed live commit:
+  - `b4a90f1e62151d50f69d77e07e01dfc3a5bb9a5b`
+  - message: `Fix runtime consistency in beta rectification flow`
+- rollback commit:
+  - `69b4f4da26468205c970d5622e86dcf1cfd1442d`
+  - message: `Stabilize v1 vs v2 comparison proof mode`
+- pre-deploy gate:
+  - full pytest: `280 passed, 1 xfailed`
+  - changed files scan: no obvious secrets detected
+  - production defaults preserved in code:
+    - `RECT_CHILD_BIRTH_001` remains default
+    - `RECT_CHILD_BIRTH_002_DRAFT` remains explicit expert/test only
+- live checks completed:
+  - services restarted: `astro-bot-api`, `astro-bot-ui` -> `active`
+  - public `/health = 200` (immediately after restart)
+  - preview endpoints (immediately after restart):
+    - `/api/preview/pro-result = 200`
+    - `/api/preview/chart-result = 200`
+- live blockers observed after deploy:
+  - proxied Pro route `/api/rectification/pro/run` became unstable under real runs:
+    - public requests timed out or returned `502`
+    - ui logs show fallback to docker DNS name `astrodvish-api` after primary call failure
+    - direct long Pro runs were not stable enough to finish strict runtime proof within session limits
+  - later external reachability to `45.133.17.16` degraded from this workspace (timeouts), so final browser/live-path proof could not be completed in this run
+- current risk status:
+  - runtime consistency code is deployed, but strict live proof for full Pro flow is incomplete because of transport/proxy instability
+  - `/api/v1/health` remains non-public (`404`) by routing design
+  - mojibake cleanup is still separate
+  - legacy `method_results` coarse path still present as debug
+- next recommended step:
+  - stabilize `web_ui -> api` proxy timeout/fallback behavior for long `/api/rectification/pro/run` requests
+  - re-run strict live proof on:
+    - manual timezone `GMT+05:00`
+    - selected candidate consistency fields equality
+    - reset Stage2 state clearing
+    - v2 compact summary/context score visibility
