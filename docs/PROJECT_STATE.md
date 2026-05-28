@@ -172,3 +172,135 @@ Every future report must include:
 - UI now shows that several working ranges may exist
 - next deploy gate:
   - rerun strict browser live-path proof if UI/Pro surface changes again
+
+## 18. Child Birth v2 Draft State
+- added safe sandbox card: `RECT_CHILD_BIRTH_002_DRAFT`
+- production card `RECT_CHILD_BIRTH_001` remains active and unchanged
+- draft `RECT_CHILD_BIRTH_002_DRAFT` is excluded from default production-like event lookup unless explicitly requested by `card_id`
+- expanded child_birth v2 pack is still draft-only
+- source files imported:
+  - `C:\Users\user\Desktop\1  ????.txt`
+  - `C:\Users\user\Desktop\2 ????.txt`
+- current draft now contains imported child_birth v2 formulas from source files
+- imported formulas: `90`
+- imported tier counts:
+  - `golden = 22`
+  - `supporting = 37`
+  - `context = 31`
+  - `ambiguity_risk = 0`
+- malformed legacy source blocks skipped: `21`
+- reconciliation:
+  - expert expected count = `91`
+  - safe unique formulas detected = `90`
+  - duplicate groups = `51`
+  - collapsed duplicate entries = `54`
+  - remaining `91 vs 90` gap = manual count gap for expert review; not a safely reconstructable unique rule
+- 5 priority conflicts resolved in draft:
+  - `cusp_5_to_cusp_4 = golden`
+  - `ruler_5_to_house_element_4 = golden` with note `can be downgraded to supporting`
+  - `cusp_5_to_house_element_4 = context`
+  - `cusp_5_to_jupiter = supporting`
+  - `cusp_4_to_jupiter = supporting`
+- v2 literal DSL fields:
+  - `formula`, `rule`, `source`, `target`
+  - `source_layer`, `target_layer`
+  - `allowed_aspects`
+  - `priority`, `role`, `meaning`, `comment`
+- supported priority tiers in code:
+  - `golden`
+  - `supporting`
+  - `context`
+  - `ambiguity_risk`
+- validation rules:
+  - duplicate `rule_id` values fail load
+  - `allowed_aspects` must be a JSON list, not a comma-separated string
+- mirror/reverse formulas from Katya files are treated as explicit separate rules, not auto-generated
+- production scoring and production card remain unchanged; draft is still not in production flow
+- next step:
+  - expert review of the reconciled `90`-formula draft and the remaining `91 vs 90` manual-count gap
+  - validation of `RECT_CHILD_BIRTH_002_DRAFT` on multiple child_birth charts
+
+## 19. Live Deploy Verification (2026-05-28)
+- full pytest: `252 passed, 1 xfailed`
+- public live health:
+  - `/health = 200`
+  - public `/api/v1/health = 404` on `45.133.17.16` (not exposed through the public route)
+- live Pro endpoint verification: passed
+  - `formula_refinement_results`, `working_time_ranges`, `best_candidate`, `reference_time`, `validation_report`, `event_contribution_audit` present
+  - direction method in live Pro response: `symbolic_1deg_per_year`
+  - production card in live path: `RECT_CHILD_BIRTH_001`
+  - production source path in live path: `/opt/astro-bot-api/product/astrobot_content_pack/formula_cards/rectification/RECT_CHILD_BIRTH_001.json`
+  - draft card `RECT_CHILD_BIRTH_002_DRAFT` not used in production path without explicit request
+  - `ruler_type`, `event_confirmation_score`, `time_refinement_score` present
+- live browser/UI smoke:
+  - confirmed in live UI: Stage 1 dialog opens and reaches final result
+  - confirmed in live UI: Stage 2 preset events render on screen
+  - confirmed in served live HTML/DOM markers: `working_time_ranges`, `validation_report_table`, `Directed longitude`, `Natal longitude`, `Orb limit`, `Вклад событий в результат`, `rpRawBox`
+  - final rendered live Pro block after full UI click-through still needs one more strict browser proof if required as a release gate
+- current release note:
+  - live deploy is server-healthy and API-verified
+  - browser proof is strong for Stage 1 / Stage 2 and for rendered UI markers, but weaker for final Pro result block
+- next step:
+  - if strict expert-review gate requires it, rerun one more browser proof for the final rendered Pro panel on live site and capture the visible Pro result block
+
+## 20. Local v2 Draft Comparison Layer (2026-05-28, no deploy)
+- `RECT_CHILD_BIRTH_002_DRAFT` is selectable explicitly in Pro / `formula_test_mode` by `formula_card_id`
+- production default remains `RECT_CHILD_BIRTH_001` when no explicit card is selected
+- local comparison mode can request:
+  - baseline `RECT_CHILD_BIRTH_001`
+  - selected `RECT_CHILD_BIRTH_002_DRAFT`
+- comparison payload now exposes:
+  - `formula_card_comparison`
+  - `working_time_ranges_difference`
+  - `best_candidate_difference`
+  - `event_contribution_audit_difference`
+- Pro/local UI now shows:
+  - selected `card_id`
+  - `card_version`
+  - `formulas_count`
+  - `priority_counts` split into `golden`, `supporting`, `context`, `ambiguity_risk`
+  - `V1 vs V2` comparison block
+- draft card is still test-only and is not part of default production flow without explicit request
+
+## 21. Strict Live Browser Proof Status (2026-05-28, no deploy)
+- public health:
+  - `/health = 200`
+  - public `/api/v1/health = 404`
+- current interpretation:
+  - public canonical health endpoint is `/health`
+  - `/api/v1/health` is not exposed through the current public reverse-proxy path
+- live Pro JSON verification with reference-like child_birth payload works through public UI proxy when `api_base_url = http://127.0.0.1:8013`
+- verified in live Pro JSON:
+  - `formula_refinement_results`
+  - `working_time_ranges`
+  - `best_candidate`
+  - `reference_time`
+  - `validation_report`
+  - `event_contribution_audit`
+  - literal DSL fields `formula` / `rule`
+  - `ruler_type`
+  - `direction_method = symbolic_1deg_per_year`
+  - production card stays `RECT_CHILD_BIRTH_001`
+  - draft card `RECT_CHILD_BIRTH_002_DRAFT` stays inactive unless explicitly requested
+  - `Directed cusp_4 -> Natal Moon` is `trine`, not `conjunction`
+- strict browser proof result:
+  - failed as a release gate
+  - live browser plugin can read DOM and markers, but final interactive Pro screen was not reproducibly rendered end-to-end in this proof run
+  - ordinary chart modal also did not open during browser-plugin proof, so current blocker is browser-proof completeness, not backend JSON completeness
+- next step:
+  - rerun final live browser proof with a reproducible manual/browser path to the rendered Pro result block before handing off to Ekaterina as fully browser-verified
+
+## 22. Reliable Local UI Proof Mode (2026-05-28, no deploy)
+- added deterministic preview mode for browser/plugin proof:
+  - `?proof_preview=pro` -> renders final Pro panel from fixture response
+  - `?proof_preview=chart` -> opens ordinary chart modal from fixture response
+  - `?proof_preview=all` -> runs both previews
+- added preview endpoints:
+  - `/api/preview/pro-result`
+  - `/api/preview/chart-result`
+- purpose:
+  - prove final rendered UI blocks without fragile Stage1/Stage2 interaction dependency
+  - keep astrological logic and formula cards unchanged
+- public health decision unchanged:
+  - `/health` is the public health endpoint
+  - `/api/v1/health` is treated as internal/not publicly routed on current gateway

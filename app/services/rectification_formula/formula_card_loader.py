@@ -55,6 +55,8 @@ class FormulaCardLoader:
             joined = ", ".join(missing)
             raise FormulaCardValidationError(f"{path.name}: missing required fields: {joined}")
 
+        self._validate_direction_rules(path=path, raw=raw)
+
         raw["source_file_path"] = str(path.resolve())
         raw["card_hash"] = hashlib.sha256(raw_text.encode("utf-8")).hexdigest()
         raw["card_version"] = raw.get("card_version") or raw["card_hash"][:12]
@@ -63,3 +65,20 @@ class FormulaCardLoader:
             return FormulaCard.model_validate(raw)
         except ValidationError as exc:
             raise FormulaCardValidationError(f"{path.name}: {exc}") from exc
+
+    @staticmethod
+    def _validate_direction_rules(*, path: Path, raw: dict) -> None:
+        rules = raw.get("direction_rules") or []
+        seen: set[str] = set()
+        duplicates: set[str] = set()
+        for rule in rules:
+            rule_id = str(rule.get("id") or "").strip()
+            if rule_id:
+                if rule_id in seen:
+                    duplicates.add(rule_id)
+                seen.add(rule_id)
+            if "allowed_aspects" in rule and isinstance(rule.get("allowed_aspects"), str):
+                raise FormulaCardValidationError(f"{path.name}: allowed_aspects must be a list")
+        if duplicates:
+            joined = ", ".join(sorted(duplicates))
+            raise FormulaCardValidationError(f"{path.name}: duplicate rule ids: {joined}")

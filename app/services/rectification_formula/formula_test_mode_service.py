@@ -38,7 +38,18 @@ class FormulaTestModeService:
         context: dict[str, Any],
         card_id: str | None = None,
     ) -> dict[str, Any]:
-        cards = [self.loader.load_card(card_id)] if card_id else self.loader.load_by_event_type(event_type)
+        if card_id:
+            card = self.loader.load_card(card_id)
+            if str(card.event_type) != str(event_type):
+                raise ValueError(
+                    f"formula card {card_id} is configured for event_type={card.event_type}, not {event_type}"
+                )
+            cards = [card]
+        else:
+            cards = self.loader.load_by_event_type(event_type)
+            non_draft_cards = [card for card in cards if str(card.status).lower() != "draft"]
+            if non_draft_cards:
+                cards = non_draft_cards
         if not cards:
             raise ValueError(f"no formula cards configured for event_type={event_type}")
 
@@ -102,6 +113,7 @@ class FormulaTestModeService:
                 + score_breakdown["matched_weak_points"]
                 + score_breakdown["matched_formula_aspect_points"]
                 + score_breakdown["method_points"]
+                - score_breakdown["ambiguity_penalty"]
                 - score_breakdown["exclusion_penalty"],
                 1,
             ),
@@ -139,6 +151,7 @@ class FormulaTestModeService:
 
         directed_points_debug = self._build_directed_points_debug(rule_debug)
         natal_targets_debug = self._build_natal_targets_debug(rule_debug)
+        card_summary = self._card_summary(card)
 
         return FormulaTestModeResult(
             card_id=card.card_id,
@@ -147,6 +160,8 @@ class FormulaTestModeService:
             card_version=card.card_version,
             card_hash=card.card_hash,
             source_file_path=card.source_file_path,
+            formulas_count=card_summary["formulas_count"],
+            priority_counts=card_summary["priority_counts"],
             source_event_id=event.event_id if event is not None else None,
             source_event_type=event.event_type.value if event is not None else None,
             source_event_title=event.title if event is not None else None,
@@ -168,6 +183,8 @@ class FormulaTestModeService:
                 "card_version": card.card_version,
                 "card_hash": card.card_hash,
                 "source_file_path": card.source_file_path,
+                "formulas_count": card_summary["formulas_count"],
+                "priority_counts": card_summary["priority_counts"],
                 "directed_points_debug": directed_points_debug,
                 "natal_targets_debug": natal_targets_debug,
                 "matched_core": matched_core,
@@ -184,6 +201,24 @@ class FormulaTestModeService:
                 "non_scoring_methods": [item for item in methods_used if item != "directions"],
             },
         )
+
+    @staticmethod
+    def _card_summary(card: FormulaCard) -> dict[str, Any]:
+        priority_counts = {
+            "golden": 0,
+            "supporting": 0,
+            "context": 0,
+            "ambiguity_risk": 0,
+        }
+        for rule in card.direction_rules:
+            tier = str(getattr(rule, "priority_tier", "supporting") or "supporting")
+            if tier not in priority_counts:
+                priority_counts[tier] = 0
+            priority_counts[tier] += 1
+        return {
+            "formulas_count": len(card.direction_rules),
+            "priority_counts": priority_counts,
+        }
 
     @staticmethod
     def _extract_chart(context: dict[str, Any]) -> ChartResponse | None:
@@ -302,22 +337,45 @@ class FormulaTestModeService:
             for item in matched_formula_aspects
             if str(getattr(item, "aspect_type", "")).lower() in DEBUG_OPTIONAL_ASPECTS
         ]
-        unique_scoring_rules = {
-            str(getattr(item, "formula_rule_matched", ""))
-            for item in scoring_formula_aspects
-        }
+        best_matches_by_rule: dict[str, Any] = {}
+        for item in scoring_formula_aspects:
+            rule_id = str(getattr(item, "formula_rule_matched", ""))
+            if not rule_id:
+                continue
+            current = best_matches_by_rule.get(rule_id)
+            if current is None or float(getattr(item, "orb", 999.0)) < float(getattr(current, "orb", 999.0)):
+                best_matches_by_rule[rule_id] = item
         unique_debug_rules = {
             str(getattr(item, "formula_rule_matched", ""))
             for item in debug_optional_formula_aspects
         }
+        golden_formula_points = 0.0
+        supporting_formula_points = 0.0
+        context_formula_points = 0.0
+        ambiguity_penalty = 0.0
+        for item in best_matches_by_rule.values():
+            weight = float(getattr(item, "rule_weight", 1.0) or 1.0)
+            priority_tier = str(getattr(item, "priority_tier", "supporting") or "supporting")
+            if priority_tier == "golden":
+                golden_formula_points += weight * 4.0
+            elif priority_tier == "supporting":
+                supporting_formula_points += weight * 2.0
+            elif priority_tier == "context":
+                context_formula_points += weight * 0.5
+            elif priority_tier == "ambiguity_risk":
+                ambiguity_penalty += weight * 1.0
         return {
             "matched_core_points": len(matched_core) * 12.0,
             "matched_aspect_points": len(matched_aspects) * 8.0,
             "matched_strong_points": len(matched_strong) * 7.0,
             "matched_weak_points": len(matched_weak) * 3.0,
-            "matched_formula_aspect_points": len(unique_scoring_rules) * 4.0,
+            "golden_formula_points": round(golden_formula_points, 4),
+            "supporting_formula_points": round(supporting_formula_points, 4),
+            "context_formula_points": round(context_formula_points, 4),
+            "matched_formula_aspect_points": round(golden_formula_points + supporting_formula_points + context_formula_points, 4),
             "debug_optional_formula_aspect_points": 0.0,
             "debug_optional_formula_aspect_count": float(len(unique_debug_rules)),
+            "ambiguity_penalty": round(ambiguity_penalty, 4),
             "method_points": cls._score_methods(card.method_priority, methods_used),
             "exclusion_penalty": len(exclusion_risks) * 10.0,
         }
@@ -354,6 +412,7 @@ class FormulaTestModeService:
             or item.get("formula_rule_matched") not in required_rule_ids
             or item.get("aspect_type") in DEBUG_OPTIONAL_ASPECTS
         ]
+        ambiguity_risks = [item for item in found if item.get("priority_tier") == "ambiguity_risk"]
         final_status = cls._final_status(
             found_count=len(found),
             missed_count=len(missing_formula_links),
@@ -386,6 +445,7 @@ class FormulaTestModeService:
             "found_by_engine": found,
             "missed_by_engine": list(missing_formula_links),
             "rejected_aspects": rejected,
+            "ambiguity_risks": ambiguity_risks,
             "extra_or_suspicious_aspects": suspicious,
             "score_breakdown": score_breakdown,
             "rule_debug": rule_debug,
@@ -404,6 +464,7 @@ class FormulaTestModeService:
             "questions_for_ekaterina": cls._questions_for_expert(
                 missing_formula_links=missing_formula_links,
                 rejected_aspects=rejected,
+                ambiguity_risks=ambiguity_risks,
                 suspicious=suspicious,
                 matched_core=matched_core,
                 matched_aspects=matched_aspects,
@@ -428,6 +489,7 @@ class FormulaTestModeService:
         *,
         missing_formula_links: list[dict[str, Any]],
         rejected_aspects: list[dict[str, Any]],
+        ambiguity_risks: list[dict[str, Any]],
         suspicious: list[dict[str, Any]],
         matched_core: list[str],
         matched_aspects: list[str],
@@ -441,6 +503,9 @@ class FormulaTestModeService:
             questions.append(f"Проверить пропущенные обязательные связи: {', '.join(labels)}.")
         if rejected_aspects:
             questions.append("Проверить, допустим ли больший орбис для отклонённых аспектов.")
+        if ambiguity_risks:
+            labels = [str(item.get("formula_rule_matched") or item.get("directed_point") or "ambiguity_rule") for item in ambiguity_risks]
+            questions.append(f"Проверить ambiguity-risk связи: {', '.join(labels)}.")
         if suspicious:
             questions.append("Проверить, считать ли слабые или необязательные связи рабочими.")
         if matched_weak and not matched_strong:

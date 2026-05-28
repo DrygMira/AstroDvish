@@ -1,0 +1,4720 @@
+{
+    "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+    "event_type": "child_birth",
+    "status": "draft",
+    "card_version": "child_birth_literal_draft_v2_imported_2026_05_27",
+    "school": "expert_rectification_v2_draft",
+    "title": "Birth of child (draft v2 imported sandbox)",
+    "core_logic": [
+        "house_5",
+        "house_4",
+        "ruler_5",
+        "ruler_4",
+        "sun",
+        "moon",
+        "jupiter"
+    ],
+    "houses": [
+        "house_1",
+        "house_4",
+        "house_5",
+        "house_7",
+        "house_10"
+    ],
+    "planets": [
+        "sun",
+        "moon",
+        "jupiter"
+    ],
+    "significators": [
+        "sun",
+        "moon",
+        "jupiter"
+    ],
+    "aspects": [
+        "family_axis_activation",
+        "child_axis",
+        "multiple_direction_links"
+    ],
+    "method_priority": [
+        "directions",
+        "solars",
+        "transits"
+    ],
+    "strong_confirmation": [
+        "multiple_methods",
+        "jupiter_support",
+        "family_axis_activation"
+    ],
+    "weak_confirmation": [
+        "single_transit_only",
+        "house_5_without_angles"
+    ],
+    "exclusions": [
+        "house_8_12_overload",
+        "malefic_loss_signature"
+    ],
+    "direction_rules": [
+        {
+            "id": "cusp_10_to_moon",
+            "title": "Directed cusp_10 -> Natal Moon",
+            "formula": "Directed cusp_10 -> Natal Moon",
+            "rule": "cusp_10_to_moon",
+            "source": "cusp_10",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_10"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "cusp_10",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_10_to_ruler_4",
+            "title": "Directed cusp_10 -> Natal ruler_4",
+            "formula": "Directed cusp_10 -> Natal ruler_4",
+            "rule": "cusp_10_to_ruler_4",
+            "source": "cusp_10",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_10"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "cusp_10",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_10_to_ruler_5",
+            "title": "Directed cusp_10 -> Natal ruler_5",
+            "formula": "Directed cusp_10 -> Natal ruler_5",
+            "rule": "cusp_10_to_ruler_5",
+            "source": "cusp_10",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_10"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "cusp_10",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_10_to_sun",
+            "title": "Directed cusp_10 -> Natal Sun",
+            "formula": "Directed cusp_10 -> Natal Sun",
+            "rule": "cusp_10_to_sun",
+            "source": "cusp_10",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_10"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "cusp_10",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_1_to_jupiter",
+            "title": "Directed cusp_1 -> Natal Jupiter",
+            "formula": "Directed cusp_1 -> Natal Jupiter",
+            "rule": "cusp_1_to_jupiter",
+            "source": "cusp_1",
+            "source_layer": "directed",
+            "target": "jupiter",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_1"
+            ],
+            "target_selectors": [
+                "jupiter"
+            ],
+            "display_source": "cusp_1",
+            "display_target": "Jupiter",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_1_to_moon",
+            "title": "Directed cusp_1 -> Natal Moon",
+            "formula": "Directed cusp_1 -> Natal Moon",
+            "rule": "cusp_1_to_moon",
+            "source": "cusp_1",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_1"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "cusp_1",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_1_to_ruler_4",
+            "title": "Directed cusp_1 -> Natal ruler_4",
+            "formula": "Directed cusp_1 -> Natal ruler_4",
+            "rule": "cusp_1_to_ruler_4",
+            "source": "cusp_1",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_1"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "cusp_1",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_1_to_ruler_5",
+            "title": "Directed cusp_1 -> Natal ruler_5",
+            "formula": "Directed cusp_1 -> Natal ruler_5",
+            "rule": "cusp_1_to_ruler_5",
+            "source": "cusp_1",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_1"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "cusp_1",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_1_to_sun",
+            "title": "Directed cusp_1 -> Natal Sun",
+            "formula": "Directed cusp_1 -> Natal Sun",
+            "rule": "cusp_1_to_sun",
+            "source": "cusp_1",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_1"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "cusp_1",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_4_to_cusp_1",
+            "title": "Directed cusp_4 -> Natal cusp_1",
+            "formula": "Directed cusp_4 -> Natal cusp_1",
+            "rule": "cusp_4_to_cusp_1",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "cusp_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "cusp_1"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "cusp_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_4_to_cusp_10",
+            "title": "Directed cusp_4 -> Natal cusp_10",
+            "formula": "Directed cusp_4 -> Natal cusp_10",
+            "rule": "cusp_4_to_cusp_10",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "cusp_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "cusp_10"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "cusp_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_4_to_cusp_5",
+            "title": "Directed cusp_4 -> Natal cusp_5",
+            "formula": "Directed cusp_4 -> Natal cusp_5",
+            "rule": "cusp_4_to_cusp_5",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_4_to_house_element_5",
+            "title": "Directed cusp_4 -> Natal house_element_5",
+            "formula": "Directed cusp_4 -> Natal house_element_5",
+            "rule": "cusp_4_to_house_element_5",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_4_to_jupiter",
+            "title": "Directed cusp_4 -> Natal Jupiter",
+            "formula": "Directed cusp_4 -> Natal Jupiter",
+            "rule": "cusp_4_to_jupiter",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "jupiter",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "jupiter"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "Jupiter",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1.0,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_4_to_moon",
+            "title": "Directed cusp_4 -> Natal Moon",
+            "formula": "Directed cusp_4 -> Natal Moon",
+            "rule": "cusp_4_to_moon",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_4_to_ruler_5",
+            "title": "Directed cusp_4 -> Natal ruler_5",
+            "formula": "Directed cusp_4 -> Natal ruler_5",
+            "rule": "cusp_4_to_ruler_5",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_4_to_sun",
+            "title": "Directed cusp_4 -> Natal Sun",
+            "formula": "Directed cusp_4 -> Natal Sun",
+            "rule": "cusp_4_to_sun",
+            "source": "cusp_4",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_4"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "cusp_4",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_5_to_cusp_1",
+            "title": "Directed cusp_5 -> Natal cusp_1",
+            "formula": "Directed cusp_5 -> Natal cusp_1",
+            "rule": "cusp_5_to_cusp_1",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "cusp_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "cusp_1"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "cusp_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_5_to_cusp_10",
+            "title": "Directed cusp_5 -> Natal cusp_10",
+            "formula": "Directed cusp_5 -> Natal cusp_10",
+            "rule": "cusp_5_to_cusp_10",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "cusp_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "cusp_10"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "cusp_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_5_to_cusp_4",
+            "title": "Directed cusp_5 -> Natal cusp_4",
+            "formula": "Directed cusp_5 -> Natal cusp_4",
+            "rule": "cusp_5_to_cusp_4",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "cusp_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "cusp_4"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "cusp_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_5_to_cusp_7",
+            "title": "Directed cusp_5 -> Natal cusp_7",
+            "formula": "Directed cusp_5 -> Natal cusp_7",
+            "rule": "cusp_5_to_cusp_7",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "cusp_7",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "cusp_7"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "cusp_7",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_5_to_house_element_4",
+            "title": "Directed cusp_5 -> Natal house_element_4",
+            "formula": "Directed cusp_5 -> Natal house_element_4",
+            "rule": "cusp_5_to_house_element_4",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "house_element_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "house_element_4"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "house_element_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_5_to_house_element_5",
+            "title": "Directed cusp_5 -> Natal house_element_5",
+            "formula": "Directed cusp_5 -> Natal house_element_5",
+            "rule": "cusp_5_to_house_element_5",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_5_to_jupiter",
+            "title": "Directed cusp_5 -> Natal Jupiter",
+            "formula": "Directed cusp_5 -> Natal Jupiter",
+            "rule": "cusp_5_to_jupiter",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "jupiter",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "jupiter"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "Jupiter",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1.0,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_5_to_moon",
+            "title": "Directed cusp_5 -> Natal Moon",
+            "formula": "Directed cusp_5 -> Natal Moon",
+            "rule": "cusp_5_to_moon",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_5_to_ruler_10",
+            "title": "Directed cusp_5 -> Natal ruler_10",
+            "formula": "Directed cusp_5 -> Natal ruler_10",
+            "rule": "cusp_5_to_ruler_10",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "ruler_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "ruler_10"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "ruler_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "cusp_5_to_ruler_4",
+            "title": "Directed cusp_5 -> Natal ruler_4",
+            "formula": "Directed cusp_5 -> Natal ruler_4",
+            "rule": "cusp_5_to_ruler_4",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_5_to_sun",
+            "title": "Directed cusp_5 -> Natal Sun",
+            "formula": "Directed cusp_5 -> Natal Sun",
+            "rule": "cusp_5_to_sun",
+            "source": "cusp_5",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_7_to_cusp_5",
+            "title": "Directed cusp_7 -> Natal cusp_5",
+            "formula": "Directed cusp_7 -> Natal cusp_5",
+            "rule": "cusp_7_to_cusp_5",
+            "source": "cusp_7",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_7"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "cusp_7",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "cusp_7_to_moon",
+            "title": "Directed cusp_7 -> Natal Moon",
+            "formula": "Directed cusp_7 -> Natal Moon",
+            "rule": "cusp_7_to_moon",
+            "source": "cusp_7",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_7"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "cusp_7",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "cusp_7_to_sun",
+            "title": "Directed cusp_7 -> Natal Sun",
+            "formula": "Directed cusp_7 -> Natal Sun",
+            "rule": "cusp_7_to_sun",
+            "source": "cusp_7",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_7"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "cusp_7",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "house_element_4_to_cusp_5",
+            "title": "Directed house_element_4 -> Natal cusp_5",
+            "formula": "Directed house_element_4 -> Natal cusp_5",
+            "rule": "house_element_4_to_cusp_5",
+            "source": "house_element_4",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_4"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "house_element_4",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_4_to_house_element_5",
+            "title": "Directed house_element_4 -> Natal house_element_5",
+            "formula": "Directed house_element_4 -> Natal house_element_5",
+            "rule": "house_element_4_to_house_element_5",
+            "source": "house_element_4",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_4"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "house_element_4",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_4_to_moon",
+            "title": "Directed house_element_4 -> Natal Moon",
+            "formula": "Directed house_element_4 -> Natal Moon",
+            "rule": "house_element_4_to_moon",
+            "source": "house_element_4",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_4"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "house_element_4",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "house_element_4_to_ruler_5",
+            "title": "Directed house_element_4 -> Natal ruler_5",
+            "formula": "Directed house_element_4 -> Natal ruler_5",
+            "rule": "house_element_4_to_ruler_5",
+            "source": "house_element_4",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_4"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "house_element_4",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_4_to_sun",
+            "title": "Directed house_element_4 -> Natal Sun",
+            "formula": "Directed house_element_4 -> Natal Sun",
+            "rule": "house_element_4_to_sun",
+            "source": "house_element_4",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_4"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "house_element_4",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "house_element_5_to_cusp_4",
+            "title": "Directed house_element_5 -> Natal cusp_4",
+            "formula": "Directed house_element_5 -> Natal cusp_4",
+            "rule": "house_element_5_to_cusp_4",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "cusp_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "cusp_4"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "cusp_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_5_to_cusp_5",
+            "title": "Directed house_element_5 -> Natal cusp_5",
+            "formula": "Directed house_element_5 -> Natal cusp_5",
+            "rule": "house_element_5_to_cusp_5",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_5_to_house_element_4",
+            "title": "Directed house_element_5 -> Natal house_element_4",
+            "formula": "Directed house_element_5 -> Natal house_element_4",
+            "rule": "house_element_5_to_house_element_4",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "house_element_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "house_elements_4"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "house_element_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_5_to_house_element_5",
+            "title": "Directed house_element_5 -> Natal house_element_5",
+            "formula": "Directed house_element_5 -> Natal house_element_5",
+            "rule": "house_element_5_to_house_element_5",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_5_to_moon",
+            "title": "Directed house_element_5 -> Natal Moon",
+            "formula": "Directed house_element_5 -> Natal Moon",
+            "rule": "house_element_5_to_moon",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "house_element_5_to_ruler_4",
+            "title": "Directed house_element_5 -> Natal ruler_4",
+            "formula": "Directed house_element_5 -> Natal ruler_4",
+            "rule": "house_element_5_to_ruler_4",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_5_to_ruler_5",
+            "title": "Directed house_element_5 -> Natal ruler_5",
+            "formula": "Directed house_element_5 -> Natal ruler_5",
+            "rule": "house_element_5_to_ruler_5",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "house_element_5_to_sun",
+            "title": "Directed house_element_5 -> Natal Sun",
+            "formula": "Directed house_element_5 -> Natal Sun",
+            "rule": "house_element_5_to_sun",
+            "source": "house_element_5",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "house_elements_5"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "house_element_5",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "jupiter_to_cusp_1",
+            "title": "Directed Jupiter -> Natal cusp_1",
+            "formula": "Directed Jupiter -> Natal cusp_1",
+            "rule": "jupiter_to_cusp_1",
+            "source": "jupiter",
+            "source_layer": "directed",
+            "target": "cusp_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "jupiter"
+            ],
+            "target_selectors": [
+                "cusp_1"
+            ],
+            "display_source": "Jupiter",
+            "display_target": "cusp_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "jupiter_to_cusp_4",
+            "title": "Directed Jupiter -> Natal cusp_4",
+            "formula": "Directed Jupiter -> Natal cusp_4",
+            "rule": "jupiter_to_cusp_4",
+            "source": "jupiter",
+            "source_layer": "directed",
+            "target": "cusp_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "jupiter"
+            ],
+            "target_selectors": [
+                "cusp_4"
+            ],
+            "display_source": "Jupiter",
+            "display_target": "cusp_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "jupiter_to_cusp_5",
+            "title": "Directed Jupiter -> Natal cusp_5",
+            "formula": "Directed Jupiter -> Natal cusp_5",
+            "rule": "jupiter_to_cusp_5",
+            "source": "jupiter",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "jupiter"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "Jupiter",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "jupiter_to_ruler_4",
+            "title": "Directed Jupiter -> Natal ruler_4",
+            "formula": "Directed Jupiter -> Natal ruler_4",
+            "rule": "jupiter_to_ruler_4",
+            "source": "jupiter",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "jupiter"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "Jupiter",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "jupiter_to_ruler_5",
+            "title": "Directed Jupiter -> Natal ruler_5",
+            "formula": "Directed Jupiter -> Natal ruler_5",
+            "rule": "jupiter_to_ruler_5",
+            "source": "jupiter",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "jupiter"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "Jupiter",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "moon_to_cusp_1",
+            "title": "Directed Moon -> Natal cusp_1",
+            "formula": "Directed Moon -> Natal cusp_1",
+            "rule": "moon_to_cusp_1",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "cusp_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "cusp_1"
+            ],
+            "display_source": "Moon",
+            "display_target": "cusp_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "moon_to_cusp_10",
+            "title": "Directed Moon -> Natal cusp_10",
+            "formula": "Directed Moon -> Natal cusp_10",
+            "rule": "moon_to_cusp_10",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "cusp_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "cusp_10"
+            ],
+            "display_source": "Moon",
+            "display_target": "cusp_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "moon_to_cusp_4",
+            "title": "Directed Moon -> Natal cusp_4",
+            "formula": "Directed Moon -> Natal cusp_4",
+            "rule": "moon_to_cusp_4",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "cusp_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "cusp_4"
+            ],
+            "display_source": "Moon",
+            "display_target": "cusp_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "moon_to_cusp_5",
+            "title": "Directed Moon -> Natal cusp_5",
+            "formula": "Directed Moon -> Natal cusp_5",
+            "rule": "moon_to_cusp_5",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "Moon",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "moon_to_cusp_7",
+            "title": "Directed Moon -> Natal cusp_7",
+            "formula": "Directed Moon -> Natal cusp_7",
+            "rule": "moon_to_cusp_7",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "cusp_7",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "cusp_7"
+            ],
+            "display_source": "Moon",
+            "display_target": "cusp_7",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "moon_to_house_element_4",
+            "title": "Directed Moon -> Natal house_element_4",
+            "formula": "Directed Moon -> Natal house_element_4",
+            "rule": "moon_to_house_element_4",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "house_element_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "house_elements_4"
+            ],
+            "display_source": "Moon",
+            "display_target": "house_element_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "moon_to_house_element_5",
+            "title": "Directed Moon -> Natal house_element_5",
+            "formula": "Directed Moon -> Natal house_element_5",
+            "rule": "moon_to_house_element_5",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "Moon",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "moon_to_ruler_5",
+            "title": "Directed Moon -> Natal ruler_5",
+            "formula": "Directed Moon -> Natal ruler_5",
+            "rule": "moon_to_ruler_5",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "Moon",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "moon_to_sun",
+            "title": "Directed Moon -> Natal Sun",
+            "formula": "Directed Moon -> Natal Sun",
+            "rule": "moon_to_sun",
+            "source": "moon",
+            "source_layer": "directed",
+            "target": "sun",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "moon"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "Moon",
+            "display_target": "Sun",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "ruler_10_to_cusp_5",
+            "title": "Directed ruler_10 -> Natal cusp_5",
+            "formula": "Directed ruler_10 -> Natal cusp_5",
+            "rule": "ruler_10_to_cusp_5",
+            "source": "ruler_10",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_10"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "ruler_10",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_10_to_ruler_4",
+            "title": "Directed ruler_10 -> Natal ruler_4",
+            "formula": "Directed ruler_10 -> Natal ruler_4",
+            "rule": "ruler_10_to_ruler_4",
+            "source": "ruler_10",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_10"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "ruler_10",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_10_to_ruler_5",
+            "title": "Directed ruler_10 -> Natal ruler_5",
+            "formula": "Directed ruler_10 -> Natal ruler_5",
+            "rule": "ruler_10_to_ruler_5",
+            "source": "ruler_10",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_10"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "ruler_10",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_1_to_ruler_4",
+            "title": "Directed ruler_1 -> Natal ruler_4",
+            "formula": "Directed ruler_1 -> Natal ruler_4",
+            "rule": "ruler_1_to_ruler_4",
+            "source": "ruler_1",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_1"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "ruler_1",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_1_to_ruler_5",
+            "title": "Directed ruler_1 -> Natal ruler_5",
+            "formula": "Directed ruler_1 -> Natal ruler_5",
+            "rule": "ruler_1_to_ruler_5",
+            "source": "ruler_1",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_1"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "ruler_1",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_4_to_cusp_1",
+            "title": "Directed ruler_4 -> Natal cusp_1",
+            "formula": "Directed ruler_4 -> Natal cusp_1",
+            "rule": "ruler_4_to_cusp_1",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "cusp_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "cusp_1"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "cusp_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_4_to_cusp_10",
+            "title": "Directed ruler_4 -> Natal cusp_10",
+            "formula": "Directed ruler_4 -> Natal cusp_10",
+            "rule": "ruler_4_to_cusp_10",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "cusp_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "cusp_10"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "cusp_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_4_to_cusp_5",
+            "title": "Directed ruler_4 -> Natal cusp_5",
+            "formula": "Directed ruler_4 -> Natal cusp_5",
+            "rule": "ruler_4_to_cusp_5",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_4_to_house_element_5",
+            "title": "Directed ruler_4 -> Natal house_element_5",
+            "formula": "Directed ruler_4 -> Natal house_element_5",
+            "rule": "ruler_4_to_house_element_5",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_4_to_jupiter",
+            "title": "Directed ruler_4 -> Natal Jupiter",
+            "formula": "Directed ruler_4 -> Natal Jupiter",
+            "rule": "ruler_4_to_jupiter",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "jupiter",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "jupiter"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "Jupiter",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_4_to_ruler_1",
+            "title": "Directed ruler_4 -> Natal ruler_1",
+            "formula": "Directed ruler_4 -> Natal ruler_1",
+            "rule": "ruler_4_to_ruler_1",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "ruler_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "ruler_1"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "ruler_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_4_to_ruler_10",
+            "title": "Directed ruler_4 -> Natal ruler_10",
+            "formula": "Directed ruler_4 -> Natal ruler_10",
+            "rule": "ruler_4_to_ruler_10",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "ruler_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "ruler_10"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "ruler_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_4_to_ruler_5",
+            "title": "Directed ruler_4 -> Natal ruler_5",
+            "formula": "Directed ruler_4 -> Natal ruler_5",
+            "rule": "ruler_4_to_ruler_5",
+            "source": "ruler_4",
+            "source_layer": "directed",
+            "target": "ruler_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_4"
+            ],
+            "target_selectors": [
+                "ruler_5"
+            ],
+            "display_source": "ruler_4",
+            "display_target": "ruler_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_5_to_cusp_1",
+            "title": "Directed ruler_5 -> Natal cusp_1",
+            "formula": "Directed ruler_5 -> Natal cusp_1",
+            "rule": "ruler_5_to_cusp_1",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "cusp_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "cusp_1"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "cusp_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_5_to_cusp_10",
+            "title": "Directed ruler_5 -> Natal cusp_10",
+            "formula": "Directed ruler_5 -> Natal cusp_10",
+            "rule": "ruler_5_to_cusp_10",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "cusp_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "cusp_10"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "cusp_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_5_to_cusp_4",
+            "title": "Directed ruler_5 -> Natal cusp_4",
+            "formula": "Directed ruler_5 -> Natal cusp_4",
+            "rule": "ruler_5_to_cusp_4",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "cusp_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "cusp_4"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "cusp_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_5_to_cusp_5",
+            "title": "Directed ruler_5 -> Natal cusp_5",
+            "formula": "Directed ruler_5 -> Natal cusp_5",
+            "rule": "ruler_5_to_cusp_5",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_5_to_house_element_4",
+            "title": "Directed ruler_5 -> Natal house_element_4",
+            "formula": "Directed ruler_5 -> Natal house_element_4",
+            "rule": "ruler_5_to_house_element_4",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "house_element_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules. Priority resolved for draft: can be downgraded to supporting after expert review.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "house_element_4"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "house_element_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1.4,
+            "priority_tier": "golden"
+        },
+        {
+            "id": "ruler_5_to_house_element_5",
+            "title": "Directed ruler_5 -> Natal house_element_5",
+            "formula": "Directed ruler_5 -> Natal house_element_5",
+            "rule": "ruler_5_to_house_element_5",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_5_to_jupiter",
+            "title": "Directed ruler_5 -> Natal Jupiter",
+            "formula": "Directed ruler_5 -> Natal Jupiter",
+            "rule": "ruler_5_to_jupiter",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "jupiter",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "jupiter"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "Jupiter",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_5_to_moon",
+            "title": "Directed ruler_5 -> Natal Moon",
+            "formula": "Directed ruler_5 -> Natal Moon",
+            "rule": "ruler_5_to_moon",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_5_to_ruler_1",
+            "title": "Directed ruler_5 -> Natal ruler_1",
+            "formula": "Directed ruler_5 -> Natal ruler_1",
+            "rule": "ruler_5_to_ruler_1",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "ruler_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "ruler_1"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "ruler_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_5_to_ruler_10",
+            "title": "Directed ruler_5 -> Natal ruler_10",
+            "formula": "Directed ruler_5 -> Natal ruler_10",
+            "rule": "ruler_5_to_ruler_10",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "ruler_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "ruler_10"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "ruler_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "ruler_5_to_ruler_4",
+            "title": "Directed ruler_5 -> Natal ruler_4",
+            "formula": "Directed ruler_5 -> Natal ruler_4",
+            "rule": "ruler_5_to_ruler_4",
+            "source": "ruler_5",
+            "source_layer": "directed",
+            "target": "ruler_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "ruler_5"
+            ],
+            "target_selectors": [
+                "ruler_4"
+            ],
+            "display_source": "ruler_5",
+            "display_target": "ruler_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 1,
+            "priority_tier": "supporting"
+        },
+        {
+            "id": "sun_to_cusp_1",
+            "title": "Directed Sun -> Natal cusp_1",
+            "formula": "Directed Sun -> Natal cusp_1",
+            "rule": "sun_to_cusp_1",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "cusp_1",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "cusp_1"
+            ],
+            "display_source": "Sun",
+            "display_target": "cusp_1",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "sun_to_cusp_10",
+            "title": "Directed Sun -> Natal cusp_10",
+            "formula": "Directed Sun -> Natal cusp_10",
+            "rule": "sun_to_cusp_10",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "cusp_10",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "cusp_10"
+            ],
+            "display_source": "Sun",
+            "display_target": "cusp_10",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "sun_to_cusp_4",
+            "title": "Directed Sun -> Natal cusp_4",
+            "formula": "Directed Sun -> Natal cusp_4",
+            "rule": "sun_to_cusp_4",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "cusp_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "cusp_4"
+            ],
+            "display_source": "Sun",
+            "display_target": "cusp_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "sun_to_cusp_5",
+            "title": "Directed Sun -> Natal cusp_5",
+            "formula": "Directed Sun -> Natal cusp_5",
+            "rule": "sun_to_cusp_5",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "cusp_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "Sun",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "sun_to_cusp_7",
+            "title": "Directed Sun -> Natal cusp_7",
+            "formula": "Directed Sun -> Natal cusp_7",
+            "rule": "sun_to_cusp_7",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "cusp_7",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "cusp_7"
+            ],
+            "display_source": "Sun",
+            "display_target": "cusp_7",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "sun_to_house_element_4",
+            "title": "Directed Sun -> Natal house_element_4",
+            "formula": "Directed Sun -> Natal house_element_4",
+            "rule": "sun_to_house_element_4",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "house_element_4",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "house_elements_4"
+            ],
+            "display_source": "Sun",
+            "display_target": "house_element_4",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "sun_to_house_element_5",
+            "title": "Directed Sun -> Natal house_element_5",
+            "formula": "Directed Sun -> Natal house_element_5",
+            "rule": "sun_to_house_element_5",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "house_element_5",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "house_elements_5"
+            ],
+            "display_source": "Sun",
+            "display_target": "house_element_5",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        },
+        {
+            "id": "sun_to_moon",
+            "title": "Directed Sun -> Natal Moon",
+            "formula": "Directed Sun -> Natal Moon",
+            "rule": "sun_to_moon",
+            "source": "sun",
+            "source_layer": "directed",
+            "target": "moon",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "context",
+            "role": "context",
+            "meaning": "Imported literal child_birth v2 formula from Katya draft pack.",
+            "comment": "Imported from source files on 2026-05-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "moon"
+            ],
+            "display_source": "Sun",
+            "display_target": "Moon",
+            "aspect_types": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": false,
+            "weight": 0.35,
+            "priority_tier": "context"
+        }
+    ],
+    "draft_import_report": {
+        "source_files": [
+            "C:\\Users\\user\\Desktop\\1  файл.txt",
+            "C:\\Users\\user\\Desktop\\2 файл.txt"
+        ],
+        "expert_expected_count": 91,
+        "total_source_blocks_count": 165,
+        "parsed_entries_count": 144,
+        "unique_rule_count_detected": 90,
+        "imported_formula_count": 90,
+        "imported_tier_counts": {
+            "golden": 22,
+            "supporting": 37,
+            "context": 31,
+            "ambiguity_risk": 0
+        },
+        "duplicate_groups_count": 51,
+        "collapsed_duplicate_entries": 54,
+        "malformed_entries_count": 21,
+        "skipped_malformed_blocks": [
+            {
+                "rule_id": "ruler_5_to_cusp_4Allowed",
+                "raw_block": "Formula Directed ruler_5 - Natal cusp_4Rule ruler_5_to_cusp_4Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_4_to_ruler_5Allowed",
+                "raw_block": "Formula Directed cusp_4 - Natal ruler_5Rule cusp_4_to_ruler_5Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_4Allowed",
+                "raw_block": "Formula Directed cusp_5 - Natal cusp_4Rule cusp_5_to_cusp_4Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_1Allowed",
+                "raw_block": "Formula Directed ruler_5 - Natal cusp_1Rule ruler_5_to_cusp_1Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_1_to_ruler_5Allowed",
+                "raw_block": "Formula Directed cusp_1 - Natal ruler_5Rule cusp_1_to_ruler_5Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_1Allowed",
+                "raw_block": "Formula Directed cusp_5 - Natal cusp_1Rule cusp_5_to_cusp_1Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_10Allowed",
+                "raw_block": "Formula Directed ruler_5 - Natal cusp_10Rule ruler_5_to_cusp_10Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_10_to_ruler_5Allowed",
+                "raw_block": "Formula Directed cusp_10 - Natal ruler_5Rule cusp_10_to_ruler_5Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_10Allowed",
+                "raw_block": "Formula Directed cusp_5 - Natal cusp_10Rule cusp_5_to_cusp_10Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "ruler_10_to_cusp_5Allowed",
+                "raw_block": "Formula Directed ruler_10 - Natal cusp_5Rule ruler_10_to_cusp_5Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_5_to_ruler_10Allowed",
+                "raw_block": "Formula Directed cusp_5 - Natal ruler_10Rule cusp_5_to_ruler_10Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_5Allowed",
+                "raw_block": "Formula Directed ruler_5 - Natal cusp_5Rule ruler_5_to_cusp_5Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "ruler_5_to_house_element_4Allowed",
+                "raw_block": "Formula Directed ruler_5 - Natal house_element_4Rule ruler_5_to_house_element_4Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_4_to_ruler_5Allowed",
+                "raw_block": "Formula Directed cusp_4 - Natal ruler_5Rule cusp_4_to_ruler_5Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "ruler_4_to_cusp_1Allowed",
+                "raw_block": "Formula Directed ruler_4 - Natal cusp_1Rule ruler_4_to_cusp_1Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_1_to_ruler_4Allowed",
+                "raw_block": "Formula Directed cusp_1 - Natal ruler_4Rule cusp_1_to_ruler_4Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "ruler_4_to_cusp_10Allowed",
+                "raw_block": "Formula Directed ruler_4 - Natal cusp_10Rule ruler_4_to_cusp_10Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_10_to_ruler_4Allowed",
+                "raw_block": "Formula Directed cusp_10 - Natal ruler_4Rule cusp_10_to_ruler_4Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_4_to_cusp_1Allowed",
+                "raw_block": "Formula Directed cusp_4 - Natal cusp_1Rule cusp_4_to_cusp_1Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": "cusp_4_to_cusp_10Allowed",
+                "raw_block": "Formula Directed cusp_4 - Natal cusp_10Rule cusp_4_to_cusp_10Allowed aspects conjunction, square, opposition, trine, sextilePriority golden",
+                "reason": "legacy_hyphen_not_literal_arrow"
+            },
+            {
+                "rule_id": null,
+                "raw_block": "Formula Directed Jupiter - Natal cusp_5",
+                "reason": "truncated_missing_rule_and_priority"
+            }
+        ],
+        "resolved_conflict_rule_id_count": 5,
+        "resolved_conflict_rule_ids": [
+            "cusp_5_to_cusp_4",
+            "ruler_5_to_house_element_4",
+            "cusp_5_to_house_element_4",
+            "cusp_5_to_jupiter",
+            "cusp_4_to_jupiter"
+        ],
+        "conflicts_left_for_review": false,
+        "duplicates_report": [
+            {
+                "rule_id": "cusp_1_to_moon",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_1_to_sun",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_4_to_cusp_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_4_to_house_element_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_4_to_jupiter",
+                "group_type": "priority_conflict",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden",
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_4_to_ruler_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_4_to_sun",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_1",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_10",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_4",
+                "group_type": "priority_conflict",
+                "source_occurrences": 3,
+                "priorities_found": [
+                    "golden",
+                    "supporting"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 2
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_7",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_5_to_house_element_4",
+                "group_type": "priority_conflict",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden",
+                    "supporting"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_5_to_jupiter",
+                "group_type": "priority_conflict",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden",
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "cusp_5_to_moon",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_4_to_sun",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_5_to_cusp_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_5_to_cusp_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_5_to_house_element_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_5_to_house_element_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_5_to_moon",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_5_to_ruler_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "house_element_5_to_ruler_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "jupiter_to_cusp_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "jupiter_to_cusp_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "jupiter_to_ruler_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "jupiter_to_ruler_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "moon_to_cusp_1",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "moon_to_cusp_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "moon_to_cusp_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "moon_to_house_element_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "moon_to_house_element_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "moon_to_ruler_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "moon_to_sun",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_4_to_house_element_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_4_to_ruler_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_1",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 3,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 2
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_10",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "golden"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_house_element_4",
+                "group_type": "priority_conflict",
+                "source_occurrences": 3,
+                "priorities_found": [
+                    "golden",
+                    "supporting"
+                ],
+                "kept_priority": "golden",
+                "collapsed_entries": 2
+            },
+            {
+                "rule_id": "ruler_5_to_house_element_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_moon",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_ruler_1",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_ruler_10",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "ruler_5_to_ruler_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "supporting"
+                ],
+                "kept_priority": "supporting",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "sun_to_cusp_1",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "sun_to_cusp_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "sun_to_cusp_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "sun_to_house_element_4",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "sun_to_house_element_5",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            },
+            {
+                "rule_id": "sun_to_moon",
+                "group_type": "exact_duplicate",
+                "source_occurrences": 2,
+                "priorities_found": [
+                    "context"
+                ],
+                "kept_priority": "context",
+                "collapsed_entries": 1
+            }
+        ],
+        "possible_missing_formulas_count": 1,
+        "possible_missing_formulas": [
+            {
+                "status": "manual_count_gap_for_review",
+                "expert_expected_count": 91,
+                "safe_unique_formulas_detected": 90,
+                "note": "The remaining 1-formula gap is not a safely reconstructable unique rule from the supplied files. It may be a manual counting difference or a missing expert block outside the parseable literal set."
+            }
+        ],
+        "recoverable_candidates": [
+            {
+                "rule_id": "ruler_5_to_cusp_4Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_4_to_ruler_5Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_4Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_1Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_1_to_ruler_5Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_1Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_10Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_10_to_ruler_5Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_5_to_cusp_10Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "ruler_10_to_cusp_5Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_5_to_ruler_10Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "ruler_5_to_cusp_5Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "ruler_5_to_house_element_4Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_4_to_ruler_5Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "ruler_4_to_cusp_1Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_1_to_ruler_4Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "ruler_4_to_cusp_10Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_10_to_ruler_4Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_4_to_cusp_1Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": "cusp_4_to_cusp_10Allowed",
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            },
+            {
+                "rule_id": null,
+                "action": "review_only_do_not_auto_import",
+                "reason": "legacy block truncated or incomplete; needs expert confirmation before import",
+                "normalized_preview": null
+            }
+        ]
+    },
+    "notes": "Draft sandbox imported from Katya child_birth v2 files on 2026-05-27. Production RECT_CHILD_BIRTH_001 remains unchanged. Five priority conflicts were resolved for draft-only review. File 1 contained 21 malformed legacy blocks with hyphen/truncated syntax; they were preserved in reconciliation only and not auto-imported as new rules."
+}

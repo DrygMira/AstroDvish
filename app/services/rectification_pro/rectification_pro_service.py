@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 
 from app.models.rectification_pro_models import (
     CandidateScore,
@@ -41,6 +42,7 @@ class RectificationProService:
 
     def run(self, payload: RectificationProRunRequest) -> RectificationProRunResponse:
         settings = payload.settings
+        selected_formula_card_id = settings.formula_card_id or None
         generation = self.candidate_generator.generate(
             birth_date_local=payload.birth_date_local,
             timezone_name=payload.timezone_name,
@@ -141,13 +143,21 @@ class RectificationProService:
         best_candidates = candidate_scores[:3]
         best_candidate = best_candidates[0] if best_candidates else None
         confidence = self.confidence_service.summarize(best_candidate=best_candidate, events=payload.events)
-        formula_refinement_results = self.formula_refinement_service.refine(payload)
+        formula_refinement_results = self.formula_refinement_service.refine(
+            payload,
+            card_id=selected_formula_card_id,
+        )
         formula_refinement_results["coarse_candidate"] = self._build_coarse_candidate_summary(best_candidate)
         refined_chart = self._chart_from_refinement_candidate(formula_refinement_results)
         self._strip_refinement_internal_chart(formula_refinement_results)
         formula_test_mode_results = self._build_formula_test_mode_results(
             payload=payload,
             best_chart=refined_chart or best_chart,
+            method_results=best_method_results,
+            card_id=selected_formula_card_id,
+        )
+        formula_card_comparison = self._build_formula_card_comparison(
+            payload=payload,
             method_results=best_method_results,
         )
 
@@ -162,6 +172,7 @@ class RectificationProService:
             method_results=best_method_results,
             formula_test_mode_results=formula_test_mode_results,
             formula_refinement_results=formula_refinement_results,
+            formula_card_comparison=formula_card_comparison,
             confidence=confidence,
             warnings=sorted(set(warnings)),
             limitations=limitations,
@@ -184,6 +195,7 @@ class RectificationProService:
         payload: RectificationProRunRequest,
         best_chart,
         method_results: dict[str, list[MethodMatch]],
+        card_id: str | None = None,
     ) -> list:
         if best_chart is None:
             return []
@@ -201,11 +213,112 @@ class RectificationProService:
                         "event": event.model_dump(mode="json"),
                         "pro_result": {"method_results": method_results},
                     },
+                    card_id=card_id,
                 )
             except ValueError:
                 continue
             results.append(result)
         return results
+
+    def _build_formula_card_comparison(
+        self,
+        *,
+        payload: RectificationProRunRequest,
+        method_results: dict[str, list[MethodMatch]],
+    ) -> dict[str, Any]:
+        requested = self._normalize_compare_card_ids(payload.settings.compare_formula_card_ids)
+        if not requested:
+            return {}
+
+        items: list[dict[str, Any]] = []
+        for card_id in requested:
+            refinement = self.formula_refinement_service.refine(payload, card_id=card_id)
+            refinement["coarse_candidate"] = self._build_coarse_candidate_summary(None)
+            refined_chart = self._chart_from_refinement_candidate(refinement)
+            self._strip_refinement_internal_chart(refinement)
+            formula_results = self._build_formula_test_mode_results(
+                payload=payload,
+                best_chart=refined_chart,
+                method_results=method_results,
+                card_id=card_id,
+            )
+            card_meta = self._extract_formula_card_meta(formula_results, refinement, card_id)
+            items.append(
+                {
+                    **card_meta,
+                    "formula_refinement_results": refinement,
+                    "formula_test_mode_results": formula_results,
+                }
+            )
+
+        if not items:
+            return {}
+
+        selected_card_id = payload.settings.formula_card_id or items[-1]["card_id"]
+        baseline_card_id = items[0]["card_id"]
+        return {
+            "enabled": True,
+            "baseline_card_id": baseline_card_id,
+            "selected_card_id": selected_card_id,
+            "items": items,
+            "differences": self._build_formula_card_differences(items),
+        }
+
+    @staticmethod
+    def _normalize_compare_card_ids(card_ids: list[str]) -> list[str]:
+        normalized: list[str] = []
+        seen: set[str] = set()
+        for raw in card_ids:
+            value = str(raw or "").strip()
+            if not value or value in seen:
+                continue
+            seen.add(value)
+            normalized.append(value)
+        return normalized
+
+    @staticmethod
+    def _extract_formula_card_meta(
+        formula_results: list[dict[str, Any]],
+        refinement: dict[str, Any],
+        fallback_card_id: str,
+    ) -> dict[str, Any]:
+        first_result = formula_results[0] if formula_results else {}
+        return {
+            "card_id": first_result.get("card_id") or refinement.get("card_id") or fallback_card_id,
+            "card_version": first_result.get("card_version") or refinement.get("card_version"),
+            "formulas_count": first_result.get("formulas_count") or refinement.get("formulas_count"),
+            "priority_counts": first_result.get("priority_counts") or refinement.get("priority_counts") or {},
+        }
+
+    @staticmethod
+    def _build_formula_card_differences(items: list[dict[str, Any]]) -> dict[str, Any]:
+        working_ranges_difference = []
+        best_candidate_difference = {}
+        event_contribution_audit_difference = {}
+        for item in items:
+            card_id = str(item.get("card_id") or "unknown")
+            refinement = item.get("formula_refinement_results") or {}
+            best_candidate = refinement.get("best_candidate") or {}
+            working_ranges = refinement.get("working_time_ranges") or []
+            working_ranges_difference.append(
+                {
+                    "card_id": card_id,
+                    "ranges_count": len(working_ranges),
+                    "primary_range": refinement.get("working_time_range"),
+                }
+            )
+            best_candidate_difference[card_id] = {
+                "candidate_time_local": best_candidate.get("candidate_time_local"),
+                "score": best_candidate.get("score"),
+                "golden_matched_count": best_candidate.get("golden_matched_count"),
+                "golden_orb_sum": best_candidate.get("golden_orb_sum"),
+            }
+            event_contribution_audit_difference[card_id] = best_candidate.get("event_contribution_audit") or []
+        return {
+            "working_time_ranges_difference": working_ranges_difference,
+            "best_candidate_difference": best_candidate_difference,
+            "event_contribution_audit_difference": event_contribution_audit_difference,
+        }
 
     @staticmethod
     def _chart_from_refinement_candidate(formula_refinement_results: dict[str, object]):

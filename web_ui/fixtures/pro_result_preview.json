@@ -1,0 +1,133 @@
+{
+  "mode": "rectification_pro",
+  "status": "completed",
+  "confidence": {
+    "level": "expert_high",
+    "time_window_minutes": 5,
+    "explanation": "Preview payload for deterministic final Pro UI proof."
+  },
+  "best_candidates": [],
+  "warnings": [],
+  "limitations": [],
+  "formula_test_mode_results": [
+    {
+      "card_id": "RECT_CHILD_BIRTH_001",
+      "card_version": "1.1.0",
+      "formulas_count": 6,
+      "priority_counts": {
+        "golden": 3,
+        "supporting": 3,
+        "context": 0,
+        "ambiguity_risk": 0
+      },
+      "validation_report_table": "Formula | Rule | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Formula role | Priority | Reject reason\nDirected ruler_4 -> Natal house_element_5 | ruler_4_to_house_element_5 | matched | Neptune | Capricorn 15°58′ | Mercury | Aries 16°08′ | square | 90.1669° | 90° | 0.1669° | 1.0° | event_confirmation | golden | \nDirected Sun -> Natal Jupiter | sun_to_jupiter | matched | Sun | Aries 26°25′ | Jupiter | Gemini 27°18′ | sextile | 60.8916° | 60° | 0.8916° | 1.0° | event_confirmation | golden | \nDirected cusp_6 -> Natal Sun | cusp_6_to_sun | matched | cusp_6 | Taurus 28°23′ | Sun | Pisces 28°46′ | sextile | 59.6085° | 60° | 0.3915° | 1.0° | time_refinement | golden | ",
+      "validation_report": {
+        "expected_by_card": {
+          "direction_rules": [
+            {
+              "id": "ruler_4_to_house_element_5",
+              "display_formula": "Directed ruler_4 -> Natal house_element_5",
+              "formula": "Directed ruler_4 -> Natal house_element_5",
+              "rule": "Directed significator_4 -> natal house_element_5",
+              "source": "ruler_4",
+              "target": "house_element_5",
+              "aspect": "square",
+              "priority": "golden",
+              "role": "event_confirmation",
+              "comment": "preview",
+              "source_layer": "directed",
+              "target_layer": "natal"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "formula_refinement_results": {
+    "enabled": true,
+    "direction_method": "symbolic_1deg_per_year",
+    "working_time_range": {
+      "start_local": "1978-03-19T22:56:47",
+      "end_local": "1978-03-19T23:01:50",
+      "candidate_count": 8
+    },
+    "working_time_ranges": [
+      {
+        "start_local": "1978-03-19T22:56:47",
+        "end_local": "1978-03-19T23:01:50",
+        "candidate_count": 8,
+        "best_candidate": "1978-03-19T22:57:00",
+        "golden_matched_count": 3,
+        "score": 96.4,
+        "selection_reason": "Highest golden score in this range."
+      },
+      {
+        "start_local": "1978-03-19T23:10:00",
+        "end_local": "1978-03-19T23:12:00",
+        "candidate_count": 3,
+        "best_candidate": "1978-03-19T23:11:00",
+        "golden_matched_count": 2,
+        "score": 74.0,
+        "selection_reason": "Secondary working range."
+      }
+    ],
+    "reference_time": {
+      "provided": "1978-03-19T22:59:45",
+      "inside_working_time_range": true,
+      "evaluation": {
+        "score": 95.7
+      }
+    },
+    "best_candidate": {
+      "candidate_time_local": "1978-03-19T22:57:00",
+      "score": 96.4,
+      "matched_count": 3,
+      "rejected_count": 0,
+      "missed_count": 0,
+      "golden_matched_count": 3,
+      "golden_orb_sum": 1.45,
+      "supporting_matched_count": 1,
+      "supporting_bonus": 0.2,
+      "event_confirmation_score": 71.0,
+      "time_refinement_score": 25.4,
+      "selection_reason": "Selected by golden_matched_count then golden_orb_sum.",
+      "score_breakdown": {
+        "matched_formula_score": 70.0,
+        "orb_strength_score": 20.0,
+        "participant_bonus_score": 6.0,
+        "rejected_penalty": 0.0,
+        "missing_penalty": 0.0,
+        "golden_formula_score": 65.0,
+        "golden_orb_quality_score": 15.0,
+        "supporting_formula_score": 5.0,
+        "supporting_bonus": 0.2
+      },
+      "event_contribution_audit": [
+        {
+          "event_type": "child_birth",
+          "event_date": "2005-11-07",
+          "matched_count": 3,
+          "rejected_count": 0,
+          "missed_count": 0,
+          "score": 96.4,
+          "contribution_to_final_candidate": 100.0,
+          "golden_matched_count": 3,
+          "supporting_matched_count": 1
+        }
+      ],
+      "formula_test_mode_results": [
+        {
+          "validation_report_table": "Formula | Rule | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit\nDirected cusp_4 -> Natal Moon | cusp_4_to_moon | matched | cusp_4 | Scorpio 23°10′ | Moon | Cancer 23°10′ | trine | 120.0000° | 120° | 0.0000° | 1.0°"
+        }
+      ]
+    },
+    "coarse_candidate": {
+      "candidate_time_local": "1978-03-19T22:55:00",
+      "score": 81.2
+    }
+  },
+  "formula_card_comparison": {
+    "enabled": false
+  },
+  "rpRawBox": true
+}

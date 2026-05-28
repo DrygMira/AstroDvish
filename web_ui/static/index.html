@@ -1258,12 +1258,33 @@
       <div class="card">
         <strong>Профессиональная ректификация</strong>
         <div class="hint" style="margin-top:6px;">Использует Asc-окна Stage 1 и события Stage 2.</div>
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label for="rpFormulaCardId">formula_card_id</label>
+            <select id="rpFormulaCardId">
+              <option value="">auto / production default</option>
+              <option value="RECT_CHILD_BIRTH_001">RECT_CHILD_BIRTH_001</option>
+              <option value="RECT_CHILD_BIRTH_002_DRAFT">RECT_CHILD_BIRTH_002_DRAFT</option>
+            </select>
+            <div class="hint">Для экспертного теста можно явно выбрать draft-карточку без замены production default.</div>
+          </div>
+          <div>
+            <label for="rpCompareV1V2">compare_formula_card_ids</label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; text-transform:none; letter-spacing:normal;">
+              <input id="rpCompareV1V2" type="checkbox" style="width:auto;" />
+              <span>V1 vs V2 comparison</span>
+            </label>
+            <div class="hint">Сравнивает production `RECT_CHILD_BIRTH_001` с draft `RECT_CHILD_BIRTH_002_DRAFT`.</div>
+          </div>
+        </div>
         <div class="actions" style="margin-top:10px;">
           <button id="rpRunBtn" class="btn" type="button">Запустить Pro-ректификацию</button>
         </div>
         <div id="rpStatus" class="hint" style="margin-top:8px;"></div>
         <div style="margin-top:10px;"><strong>Лучшие окна времени</strong></div>
         <div id="rpBestCandidates" class="interval-list"></div>
+        <div style="margin-top:10px;"><strong>V1 vs V2</strong></div>
+        <div id="rpFormulaComparison" class="bigbox"></div>
         <div style="margin-top:10px;"><strong>Confidence</strong></div>
         <div id="rpConfidence" class="final-result">Pro-ректификация ещё не запускалась.</div>
         <div style="margin-top:10px;"><strong>Подтверждённые события / методы</strong></div>
@@ -1441,6 +1462,9 @@
     const reToggleJsonBtnEl = document.getElementById("reToggleJsonBtn");
     const rpStatusEl = document.getElementById("rpStatus");
     const rpBestCandidatesEl = document.getElementById("rpBestCandidates");
+    const rpFormulaCardIdEl = document.getElementById("rpFormulaCardId");
+    const rpCompareV1V2El = document.getElementById("rpCompareV1V2");
+    const rpFormulaComparisonEl = document.getElementById("rpFormulaComparison");
     const rpConfidenceEl = document.getElementById("rpConfidence");
     const rpMethodsSummaryEl = document.getElementById("rpMethodsSummary");
     const rpWarningsEl = document.getElementById("rpWarnings");
@@ -4516,8 +4540,13 @@
         block.appendChild(lineTypeDate);
 
         const lineCard = document.createElement("div");
-        lineCard.textContent = `Card: ${result.card_id} | Status: ${report.final_status_for_expert || result.status || "n/a"} | Confidence: ${result.confidence || "n/a"} | Score: ${result.score ?? "n/a"}`;
+        lineCard.textContent = `Card: ${result.card_id} | Version: ${result.card_version || "n/a"} | formulas_count=${result.formulas_count ?? "n/a"} | Status: ${report.final_status_for_expert || result.status || "n/a"} | Confidence: ${result.confidence || "n/a"} | Score: ${result.score ?? "n/a"}`;
         block.appendChild(lineCard);
+
+        const linePriorityCounts = document.createElement("div");
+        linePriorityCounts.className = "hint";
+        linePriorityCounts.textContent = `priority_counts: ${formatPriorityCounts(result.priority_counts)} | context/ambiguity shown separately from golden/supporting`;
+        block.appendChild(linePriorityCounts);
 
         const methodLine = document.createElement("div");
         methodLine.className = "hint";
@@ -4682,6 +4711,55 @@
       return true;
     }
 
+    function formatPriorityCounts(priorityCounts) {
+      const counts = priorityCounts || {};
+      return `golden=${counts.golden ?? 0}, supporting=${counts.supporting ?? 0}, context=${counts.context ?? 0}, ambiguity_risk=${counts.ambiguity_risk ?? 0}`;
+    }
+
+    function renderFormulaCardComparison(data) {
+      const comparison = data?.formula_card_comparison || null;
+      rpFormulaComparisonEl.textContent = "";
+      if (!comparison || !comparison.enabled) {
+        rpFormulaComparisonEl.textContent = "V1 vs V2 comparison не запрошен.";
+        return;
+      }
+
+      const items = Array.isArray(comparison.items) ? comparison.items : [];
+      const differences = comparison.differences || {};
+      const workingRangesDiff = Array.isArray(differences.working_time_ranges_difference)
+        ? differences.working_time_ranges_difference
+        : [];
+      const bestCandidateDiff = differences.best_candidate_difference || {};
+      const eventContributionDiff = differences.event_contribution_audit_difference || {};
+
+      const lines = [
+        `formula_card_comparison | baseline=${comparison.baseline_card_id || "n/a"} | selected=${comparison.selected_card_id || "n/a"}`,
+      ];
+      items.forEach((item) => {
+        lines.push(
+          `${item.card_id} | version=${item.card_version || "n/a"} | formulas_count=${item.formulas_count ?? "n/a"} | priority_counts=${formatPriorityCounts(item.priority_counts)}`
+        );
+      });
+      lines.push("working_time_ranges_difference");
+      workingRangesDiff.forEach((item) => {
+        lines.push(
+          `${item.card_id}: ranges=${item.ranges_count ?? "n/a"} | primary=${item.primary_range?.start_local || "n/a"} -> ${item.primary_range?.end_local || "n/a"}`
+        );
+      });
+      lines.push("best_candidate_difference");
+      Object.entries(bestCandidateDiff).forEach(([cardId, item]) => {
+        lines.push(
+          `${cardId}: best_candidate=${item?.candidate_time_local || "n/a"} | score=${item?.score ?? "n/a"} | golden=${item?.golden_matched_count ?? "n/a"} | golden_orb_sum=${item?.golden_orb_sum ?? "n/a"}`
+        );
+      });
+      lines.push("event_contribution_audit_difference");
+      Object.entries(eventContributionDiff).forEach(([cardId, audit]) => {
+        const list = Array.isArray(audit) ? audit : [];
+        lines.push(`${cardId}: events=${list.length}`);
+      });
+      rpFormulaComparisonEl.textContent = lines.join("\n");
+    }
+
     function renderLegacyProConfirmations(data) {
       const methods = data.method_results || {};
       const methodStats = summarizeMethodStats(methods);
@@ -4785,6 +4863,7 @@
     function renderProResult(data) {
       const best = Array.isArray(data.best_candidates) ? data.best_candidates : [];
       rpBestCandidatesEl.innerHTML = "";
+      rpFormulaComparisonEl.textContent = "";
       const refinement = data.formula_refinement_results || null;
       const refinementBest = refinement && refinement.best_candidate ? refinement.best_candidate : null;
       const refinementCoarse = refinement && refinement.coarse_candidate ? refinement.coarse_candidate : null;
@@ -4882,6 +4961,7 @@
         `<div>${confidence.explanation || ""}</div>`;
 
       renderProConfirmations(data);
+      renderFormulaCardComparison(data);
 
       const warnings = Array.isArray(data.warnings) ? data.warnings : [];
       const limitations = Array.isArray(data.limitations) ? data.limitations : [];
@@ -4891,6 +4971,39 @@
         rpExplainBodyEl.innerHTML = buildProExplainabilityHtml(data);
       }
       rpRawBoxEl.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function runUiProofPreviewFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const previewMode = params.get("proof_preview");
+      if (!previewMode) return;
+
+      if (previewMode === "pro" || previewMode === "all") {
+        const proRes = await fetch("/api/preview/pro-result");
+        if (!proRes.ok) {
+          throw new Error("Не удалось загрузить preview Pro result");
+        }
+        const proData = await proRes.json();
+        renderProResult(proData);
+        setRpStatus("Preview: финальный Pro panel загружен из fixture.");
+      }
+
+      if (previewMode === "chart" || previewMode === "all") {
+        const chartRes = await fetch("/api/preview/chart-result");
+        if (!chartRes.ok) {
+          throw new Error("Не удалось загрузить preview chart result");
+        }
+        const chartData = await chartRes.json();
+        horoscopeBoxEl.textContent = chartData.horoscope_text || "Preview horoscope text.";
+        renderExpertTables(chartData.chart_response, chartData.timezone || {}, chartData.warnings || []);
+        expertWrapEl.classList.add("hidden");
+        toggleExpertBtnEl.textContent = "Показать экспертную таблицу";
+        apiRawBoxEl.textContent = JSON.stringify(chartData.chart_response || {}, null, 2);
+        apiRawWrapEl.classList.add("hidden");
+        toggleApiRawBtnEl.textContent = "Показать ответ API целиком";
+        modalEl.classList.add("active");
+        setStatus("Preview: модальное окно обычной карты загружено из fixture.");
+      }
     }
 
     async function runProRectification() {
@@ -4932,6 +5045,10 @@
         events,
         settings: {
           candidate_step_minutes: 5,
+          formula_card_id: rpFormulaCardIdEl.value || null,
+          compare_formula_card_ids: rpCompareV1V2El.checked
+            ? ["RECT_CHILD_BIRTH_001", "RECT_CHILD_BIRTH_002_DRAFT"]
+            : [],
           include_directions: true,
           include_solars: true,
           include_lunars: false,
@@ -5299,6 +5416,10 @@
 
     loadPrompt().catch(() => setStatus("Не удалось загрузить PROMPT.md"));
     loadRectificationPrompt().catch(() => setRdStatus("Не удалось загрузить PROMPT_RECTIFICATION_STAGE1.md"));
+    runUiProofPreviewFromQuery().catch((err) => {
+      setStatus("Ошибка proof preview: " + (err?.message || "unknown"));
+      setRpStatus("Ошибка proof preview: " + (err?.message || "unknown"));
+    });
   </script>
 </body>
 </html>

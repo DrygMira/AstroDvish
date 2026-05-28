@@ -22,6 +22,7 @@ PROMPT_RECTIFICATION_STAGE1_PATH = (
     Path(__file__).resolve().parent.parent / "PROMPT_RECTIFICATION_STAGE1.md"
 )
 STATIC_DIR = Path(__file__).resolve().parent / "static"
+FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 
 TZ_OFFSET_PATTERN = re.compile(r"^[+-](?:0\d|1[0-4]):[0-5]\d$")
@@ -49,6 +50,16 @@ GEOCODE_CACHE_VERSION = 1
 
 app = FastAPI(title="astro-web-ui", docs_url=None, redoc_url=None, openapi_url=None)
 logger = logging.getLogger(__name__)
+
+
+def _load_preview_fixture(filename: str) -> dict[str, Any]:
+    path = FIXTURES_DIR / filename
+    if not path.exists():
+        raise HTTPException(status_code=404, detail=f"Preview fixture not found: {filename}")
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=500, detail=f"Invalid preview fixture JSON: {filename}") from exc
 
 
 def _read_env_file(path: Path) -> dict[str, str]:
@@ -2888,6 +2899,16 @@ def get_prompt() -> JSONResponse:
 @app.get("/api/rectification/prompt")
 def get_rectification_prompt() -> JSONResponse:
     return JSONResponse({"prompt_text": _load_rectification_prompt()})
+
+
+@app.get("/api/preview/pro-result")
+def get_preview_pro_result() -> JSONResponse:
+    return JSONResponse(_load_preview_fixture("pro_result_preview.json"))
+
+
+@app.get("/api/preview/chart-result")
+def get_preview_chart_result() -> JSONResponse:
+    return JSONResponse(_load_preview_fixture("chart_result_preview.json"))
 
 
 def _normalize_geocode_results_from_open_meteo(results: list[dict[str, Any]]) -> list[dict[str, Any]]:

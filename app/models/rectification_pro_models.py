@@ -22,6 +22,8 @@ class RectificationProSettings(BaseModel):
     formula_refinement_enabled: bool = True
     formula_refinement_step_seconds: int = 30
     formula_reference_time_local: str | None = None
+    formula_card_id: str | None = None
+    compare_formula_card_ids: list[str] = Field(default_factory=list)
     include_directions: bool = True
     include_solars: bool = True
     include_lunars: bool = False
@@ -120,6 +122,7 @@ class RectificationProRunResponse(BaseModel):
     method_results: dict[str, list[MethodMatch]]
     formula_test_mode_results: list[FormulaTestModeResult] = Field(default_factory=list)
     formula_refinement_results: dict[str, Any] = Field(default_factory=dict)
+    formula_card_comparison: dict[str, Any] = Field(default_factory=dict)
     confidence: ConfidenceSummary
     warnings: list[str] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)

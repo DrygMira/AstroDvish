@@ -30,6 +30,8 @@ OLD_CHILD_BIRTH_RULE_IDS = {
     "moon_to_cusp_5",
 }
 
+DRAFT_CHILD_BIRTH_CARD_ID = "RECT_CHILD_BIRTH_002_DRAFT"
+
 
 def test_all_requested_formula_cards_load_successfully() -> None:
     loader = FormulaCardLoader()
@@ -37,6 +39,7 @@ def test_all_requested_formula_cards_load_successfully() -> None:
 
     assert {
         "RECT_CHILD_BIRTH_001",
+        DRAFT_CHILD_BIRTH_CARD_ID,
         "RECT_DEATH_CLOSE_PERSON_001",
         "RECT_MARRIAGE_UNION_001",
         "RECT_RELATIONSHIP_START_001",
@@ -57,6 +60,71 @@ def test_invalid_card_fails_with_clear_validation_error(tmp_path: Path) -> None:
 
     assert "missing required fields" in str(exc.value)
     assert "event_type" in str(exc.value)
+
+
+def test_invalid_card_fails_on_duplicate_rule_ids(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_DUP_RULES_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5"],
+                "houses": ["house_5"],
+                "planets": ["sun", "jupiter"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {"id": "dup_rule", "title": "First", "source_selectors": ["sun"], "target_selectors": ["jupiter"], "aspect_types": ["sextile"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                    {"id": "dup_rule", "title": "Second", "source_selectors": ["sun"], "target_selectors": ["moon"], "aspect_types": ["trine"], "orb_limit": 1.0, "required": True, "weight": 1.0},
+                ],
+            }
+        ],
+    )
+
+    with pytest.raises(FormulaCardValidationError) as exc:
+        loader.list_cards()
+
+    assert "duplicate rule ids" in str(exc.value)
+    assert "dup_rule" in str(exc.value)
+
+
+def test_invalid_card_fails_when_allowed_aspects_is_not_list(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_BAD_ALLOWED_ASPECTS_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5"],
+                "houses": ["house_5"],
+                "planets": ["sun", "jupiter"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {
+                        "id": "bad_allowed_aspects",
+                        "title": "Bad aspects",
+                        "source_selectors": ["sun"],
+                        "target_selectors": ["jupiter"],
+                        "allowed_aspects": "sextile, trine",
+                        "orb_limit": 1.0,
+                        "required": True,
+                        "weight": 1.0,
+                    }
+                ],
+            }
+        ],
+    )
+
+    with pytest.raises(FormulaCardValidationError) as exc:
+        loader.list_cards()
+
+    assert "allowed_aspects must be a list" in str(exc.value)
 
 
 def test_child_birth_card_contains_house_5_and_house_4_core() -> None:
@@ -80,6 +148,25 @@ def test_production_child_birth_card_contains_exact_confirmed_six_formulas() -> 
     assert card.card_hash
     assert card.source_file_path
     assert card.card_version == "child_birth_solar_arc_v2"
+
+
+def test_child_birth_draft_card_exists_without_changing_production_card() -> None:
+    loader = FormulaCardLoader()
+    production = loader.load_card("RECT_CHILD_BIRTH_001")
+    draft = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
+
+    assert [rule.id for rule in production.direction_rules] == [
+        "ruler_4_to_house_element_5",
+        "cusp_10_to_cusp_5",
+        "cusp_6_to_sun",
+        "cusp_4_to_moon",
+        "sun_to_jupiter",
+        "cusp_5_to_chiron",
+    ]
+    assert production.card_id == "RECT_CHILD_BIRTH_001"
+    assert draft.card_id == DRAFT_CHILD_BIRTH_CARD_ID
+    assert len(draft.direction_rules) == 90
+    assert draft.card_id != production.card_id
 
 
 def test_production_child_birth_card_marks_confirmed_golden_formulas() -> None:
@@ -115,6 +202,116 @@ def test_production_child_birth_card_uses_literal_formula_dsl_and_fixed_aspect_n
 
     assert by_id["cusp_4_to_moon"].aspect_types == ["trine"]
     assert by_id["cusp_4_to_moon"].aspect == "trine"
+
+
+def test_child_birth_draft_card_supports_literal_dsl_and_allowed_aspects() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
+    by_id = {rule.id: rule for rule in card.direction_rules}
+
+    assert by_id["ruler_4_to_house_element_5"].formula == "Directed ruler_4 -> Natal house_element_5"
+    assert by_id["ruler_4_to_house_element_5"].rule
+    assert by_id["ruler_4_to_house_element_5"].source == "ruler_4"
+    assert by_id["ruler_4_to_house_element_5"].target == "house_element_5"
+    assert by_id["ruler_4_to_house_element_5"].source_layer == "directed"
+    assert by_id["ruler_4_to_house_element_5"].target_layer == "natal"
+    assert by_id["ruler_4_to_house_element_5"].allowed_aspects == ["conjunction", "square", "opposition", "trine", "sextile"]
+    assert by_id["ruler_4_to_house_element_5"].aspect_types == ["conjunction", "square", "opposition", "trine", "sextile"]
+    assert by_id["ruler_4_to_house_element_5"].priority_tier == "supporting"
+    assert by_id["sun_to_cusp_4"].priority_tier == "context"
+
+
+def test_child_birth_draft_card_import_counts_and_priority_tiers() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
+
+    assert len(card.direction_rules) == 90
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 22
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 37
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 31
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_child_birth_draft_card_includes_resolved_conflicted_rules_with_expected_priorities() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
+    by_id = {rule.id: rule for rule in card.direction_rules}
+
+    assert by_id["cusp_5_to_cusp_4"].priority_tier == "golden"
+    assert by_id["ruler_5_to_house_element_4"].priority_tier == "golden"
+    assert "can be downgraded to supporting" in (by_id["ruler_5_to_house_element_4"].comment or "")
+    assert by_id["cusp_5_to_house_element_4"].priority_tier == "context"
+    assert by_id["cusp_5_to_jupiter"].priority_tier == "supporting"
+    assert by_id["cusp_4_to_jupiter"].priority_tier == "supporting"
+
+
+def test_child_birth_draft_raw_import_report_tracks_reconciliation() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_CHILD_BIRTH_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 2
+    assert report["source_files"][0].startswith(r"C:\Users\user\Desktop\1")
+    assert report["source_files"][1].startswith(r"C:\Users\user\Desktop\2")
+    assert report["expert_expected_count"] == 91
+    assert report["parsed_entries_count"] == 144
+    assert report["unique_rule_count_detected"] == 90
+    assert report["imported_formula_count"] == 90
+    assert report["imported_tier_counts"] == {
+        "golden": 22,
+        "supporting": 37,
+        "context": 31,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 51
+    assert report["collapsed_duplicate_entries"] == 54
+    assert report["malformed_entries_count"] == 21
+    assert len(report["skipped_malformed_blocks"]) == 21
+    assert report["resolved_conflict_rule_id_count"] == 5
+    assert report["resolved_conflict_rule_ids"] == [
+        "cusp_5_to_cusp_4",
+        "ruler_5_to_house_element_4",
+        "cusp_5_to_house_element_4",
+        "cusp_5_to_jupiter",
+        "cusp_4_to_jupiter",
+    ]
+    assert report["conflicts_left_for_review"] is False
+    assert report["possible_missing_formulas_count"] == 1
+    assert report["possible_missing_formulas"][0]["status"] == "manual_count_gap_for_review"
+    assert any(item["rule_id"] == "cusp_5_to_cusp_4" and item["kept_priority"] == "golden" for item in report["duplicates_report"])
+    assert report["recoverable_candidates"]
+
+
+def test_child_birth_draft_reconciliation_report_marks_recoverable_candidates_for_review() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_CHILD_BIRTH_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    recoverable = raw["draft_import_report"]["recoverable_candidates"]
+
+    assert recoverable
+    assert all(item["action"] == "review_only_do_not_auto_import" for item in recoverable)
+
+
+def test_child_birth_draft_rules_have_literal_dsl_fields_and_list_allowed_aspects() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
+
+    for rule in card.direction_rules:
+        assert rule.formula
+        assert rule.rule
+        assert rule.source
+        assert rule.target
+        assert rule.source_layer == "directed"
+        assert rule.target_layer == "natal"
+        assert isinstance(rule.allowed_aspects, list)
+        assert rule.allowed_aspects
+        assert rule.aspect_types == rule.allowed_aspects
+        assert rule.priority in {"golden", "supporting", "context", "ambiguity_risk"}
 
 
 def test_death_close_person_card_contains_expected_core_and_planets() -> None:
@@ -483,7 +680,7 @@ def _build_chart_with_rules(*, objects: dict, cusps: dict[str, float], cusp_sign
 
 def _write_formula_cards(tmp_path: Path, cards: list[dict]) -> FormulaCardLoader:
     cards_root = tmp_path / "cards"
-    cards_root.mkdir()
+    cards_root.mkdir(parents=True, exist_ok=True)
     for card in cards:
         (cards_root / f"{card['card_id']}.json").write_text(
             json.dumps(card, ensure_ascii=False, indent=2),
@@ -1017,6 +1214,121 @@ def test_quincunx_is_debug_only_and_does_not_affect_mvp_score(tmp_path: Path) ->
     assert result["matched_formula_aspects"][0]["aspect_type"] == "quincunx"
     assert result["validation_report"]["method_scope"]["debug_optional_aspects"] == ["quincunx"]
     assert result["validation_report"]["score_breakdown"]["matched_formula_aspect_points"] == 0.0
+
+
+def test_context_priority_does_not_outscore_golden_match(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_CHILD_PRIORITY_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5"],
+                "houses": ["house_5"],
+                "planets": ["sun", "moon", "jupiter", "venus"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {"id": "golden_rule", "title": "Golden", "source_selectors": ["sun"], "target_selectors": ["jupiter"], "allowed_aspects": ["sextile"], "aspect": "sextile", "orb_limit": 1.0, "required": True, "weight": 1.4, "priority_tier": "golden"},
+                    {"id": "context_rule_1", "title": "Context 1", "source_selectors": ["cusp_4"], "target_selectors": ["moon"], "allowed_aspects": ["trine"], "aspect": "trine", "orb_limit": 1.0, "required": False, "weight": 0.4, "priority_tier": "context"},
+                    {"id": "context_rule_2", "title": "Context 2", "source_selectors": ["cusp_5"], "target_selectors": ["venus"], "allowed_aspects": ["conjunction"], "aspect": "conjunction", "orb_limit": 1.0, "required": False, "weight": 0.4, "priority_tier": "context"},
+                    {"id": "context_rule_3", "title": "Context 3", "source_selectors": ["moon"], "target_selectors": ["venus"], "allowed_aspects": ["square"], "aspect": "square", "orb_limit": 1.0, "required": False, "weight": 0.4, "priority_tier": "context"},
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "sun": {"degree": 180.0, "sign": "Libra", "house": 5},
+            "jupiter": {"degree": 240.0, "sign": "Sagittarius", "house": 9},
+            "moon": {"degree": 210.0, "sign": "Scorpio", "house": 4},
+            "venus": {"degree": 120.0, "sign": "Leo", "house": 5},
+        },
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 90.0, "5": 120.0, "6": 150.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 270.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Cancer", "5": "Leo", "6": "Virgo", "7": "Libra", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+
+    golden_result = service.evaluate(
+        event_type="child_birth",
+        context={"chart_response": chart.model_dump(mode="json"), "candidate_birth_date": date(2028, 1, 1), "event": _sample_child_birth_event().model_dump(mode="json")},
+    )
+
+    context_only_loader = _write_formula_cards(
+        tmp_path / "context_only",
+        [
+            {
+                "card_id": "RECT_CHILD_PRIORITY_002",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5"],
+                "houses": ["house_5"],
+                "planets": ["moon", "venus"],
+                "significators": ["moon"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {"id": "context_rule_1", "title": "Context 1", "source_selectors": ["cusp_4"], "target_selectors": ["moon"], "allowed_aspects": ["trine"], "aspect": "trine", "orb_limit": 1.0, "required": False, "weight": 0.4, "priority_tier": "context"},
+                    {"id": "context_rule_2", "title": "Context 2", "source_selectors": ["cusp_5"], "target_selectors": ["venus"], "allowed_aspects": ["conjunction"], "aspect": "conjunction", "orb_limit": 1.0, "required": False, "weight": 0.4, "priority_tier": "context"},
+                    {"id": "context_rule_3", "title": "Context 3", "source_selectors": ["moon"], "target_selectors": ["venus"], "allowed_aspects": ["square"], "aspect": "square", "orb_limit": 1.0, "required": False, "weight": 0.4, "priority_tier": "context"},
+                ],
+            }
+        ],
+    )
+    context_service = FormulaTestModeService(loader=context_only_loader)
+    context_only_result = context_service.evaluate(
+        event_type="child_birth",
+        context={"chart_response": chart.model_dump(mode="json"), "candidate_birth_date": date(2028, 1, 1), "event": _sample_child_birth_event().model_dump(mode="json")},
+        card_id="RECT_CHILD_PRIORITY_002",
+    )
+
+    assert golden_result["validation_report"]["score_breakdown"]["matched_formula_aspect_points"] > context_only_result["validation_report"]["score_breakdown"]["matched_formula_aspect_points"]
+    assert golden_result["score"] > context_only_result["score"]
+
+
+def test_ambiguity_risk_is_visible_but_does_not_break_calculation(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_CHILD_AMBIGUITY_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_5"],
+                "houses": ["house_5"],
+                "planets": ["sun", "jupiter", "moon"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {"id": "golden_rule", "title": "Golden", "source_selectors": ["sun"], "target_selectors": ["jupiter"], "allowed_aspects": ["sextile"], "aspect": "sextile", "orb_limit": 1.0, "required": True, "weight": 1.4, "priority_tier": "golden"},
+                    {"id": "ambiguity_rule", "title": "Ambiguity", "source_selectors": ["cusp_4"], "target_selectors": ["moon"], "allowed_aspects": ["trine"], "aspect": "trine", "orb_limit": 1.0, "required": False, "weight": 0.2, "priority_tier": "ambiguity_risk"},
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "sun": {"degree": 180.0, "sign": "Libra", "house": 5},
+            "jupiter": {"degree": 240.0, "sign": "Sagittarius", "house": 9},
+            "moon": {"degree": 210.0, "sign": "Scorpio", "house": 4},
+        },
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 90.0, "5": 120.0, "6": 150.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 270.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Cancer", "5": "Leo", "6": "Virgo", "7": "Libra", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+    result = service.evaluate(
+        event_type="child_birth",
+        context={"chart_response": chart.model_dump(mode="json"), "candidate_birth_date": date(2028, 1, 1), "event": _sample_child_birth_event().model_dump(mode="json")},
+    )
+
+    assert result["card_id"] == "RECT_CHILD_AMBIGUITY_001"
+    assert result["score"] >= 0
+    assert result["validation_report"]["ambiguity_risks"]
+    assert result["validation_report"]["ambiguity_risks"][0]["formula_rule_matched"] == "ambiguity_rule"
+    assert result["validation_report"]["score_breakdown"]["ambiguity_penalty"] >= 0.0
 
 
 def test_ekaterina_marriage_cases_are_found_and_over_orb_goes_to_rejected(tmp_path: Path) -> None:

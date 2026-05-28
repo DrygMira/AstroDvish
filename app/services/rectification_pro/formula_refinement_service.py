@@ -23,7 +23,7 @@ class FormulaRefinementService:
         self.ephemeris_service = ephemeris_service
         self.formula_test_mode_service = formula_test_mode_service
 
-    def refine(self, payload: RectificationProRunRequest) -> dict[str, Any]:
+    def refine(self, payload: RectificationProRunRequest, *, card_id: str | None = None) -> dict[str, Any]:
         if not payload.settings.formula_refinement_enabled:
             return {
                 "enabled": False,
@@ -62,7 +62,7 @@ class FormulaRefinementService:
                         sidereal_mode=payload.sidereal_mode,
                     )
                 )
-                event_results = self._evaluate_events(payload=payload, chart=chart)
+                event_results = self._evaluate_events(payload=payload, chart=chart, card_id=card_id)
                 candidate_result = self._score_candidate(
                     candidate_time_local=candidate_time_local,
                     candidate_time_utc=candidate_time_utc,
@@ -90,17 +90,22 @@ class FormulaRefinementService:
             working_time_ranges=working_time_ranges,
             best_candidate=best_candidate,
         )
-        reference_time = self._build_reference_time(payload=payload)
+        reference_time = self._build_reference_time(payload=payload, card_id=card_id)
         if working_time_ranges and reference_time.get("provided"):
             provided = str(reference_time["provided"])
             reference_time["inside_working_time_range"] = any(
                 item["start_local"] <= provided <= item["end_local"] for item in working_time_ranges
             )
+        card_meta = self._extract_card_meta(best_candidate)
         return {
             "enabled": True,
             "step_seconds": step_seconds,
             "supported_step_seconds": self.SUPPORTED_STEP_SECONDS,
             "direction_method": self.formula_test_mode_service.default_direction_method,
+            "card_id": card_meta.get("card_id"),
+            "card_version": card_meta.get("card_version"),
+            "formulas_count": card_meta.get("formulas_count"),
+            "priority_counts": card_meta.get("priority_counts", {}),
             "scanned_candidates_count": len(candidates),
             "top_candidates": top_candidates,
             "best_candidate": best_candidate,
@@ -111,7 +116,13 @@ class FormulaRefinementService:
             "legacy_mode": False,
         }
 
-    def _evaluate_events(self, *, payload: RectificationProRunRequest, chart) -> list[dict[str, Any]]:
+    def _evaluate_events(
+        self,
+        *,
+        payload: RectificationProRunRequest,
+        chart,
+        card_id: str | None = None,
+    ) -> list[dict[str, Any]]:
         results: list[dict[str, Any]] = []
         for event in payload.events:
             normalized_event_type = self._normalize_formula_event_type(str(event.event_type.value))
@@ -126,6 +137,7 @@ class FormulaRefinementService:
                         "event": event.model_dump(mode="json"),
                         "direction_method": "symbolic_1deg_per_year",
                     },
+                    card_id=card_id,
                 )
             except ValueError:
                 continue
@@ -150,6 +162,8 @@ class FormulaRefinementService:
         best_formulas: list[str] = []
         golden_matches_by_rule: dict[str, dict[str, Any]] = {}
         supporting_matches_by_rule: dict[str, dict[str, Any]] = {}
+        context_matches_by_rule: dict[str, dict[str, Any]] = {}
+        ambiguity_matches_by_rule: dict[str, dict[str, Any]] = {}
         event_contribution_audit: list[dict[str, Any]] = []
 
         for result in event_results:
@@ -178,10 +192,18 @@ class FormulaRefinementService:
                     existing = golden_matches_by_rule.get(rule_id)
                     if existing is None or orb < float(existing["orb"]):
                         golden_matches_by_rule[rule_id] = match_payload
-                else:
+                elif priority_tier == "supporting":
                     existing = supporting_matches_by_rule.get(rule_id)
                     if existing is None or orb < float(existing["orb"]):
                         supporting_matches_by_rule[rule_id] = match_payload
+                elif priority_tier == "context":
+                    existing = context_matches_by_rule.get(rule_id)
+                    if existing is None or orb < float(existing["orb"]):
+                        context_matches_by_rule[rule_id] = match_payload
+                elif priority_tier == "ambiguity_risk":
+                    existing = ambiguity_matches_by_rule.get(rule_id)
+                    if existing is None or orb < float(existing["orb"]):
+                        ambiguity_matches_by_rule[rule_id] = match_payload
                 orb_closeness_value = max(0.0, 1.0 - (orb / max(float(item.get("orb_limit") or 0.0), 0.0001)))
                 orb_strength_score += orb_closeness_value
                 participant_bonus_score += participant_bonus_value
@@ -201,7 +223,9 @@ class FormulaRefinementService:
                     "rejected_count": len(rejected),
                     "missed_count": len(missing),
                     "golden_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "") == "golden"),
-                    "supporting_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "supporting") != "golden"),
+                    "supporting_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "supporting") == "supporting"),
+                    "context_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "") == "context"),
+                    "ambiguity_risk_count": sum(1 for item in matched if str(item.get("priority_tier") or "") == "ambiguity_risk"),
                 }
             )
 
@@ -215,16 +239,20 @@ class FormulaRefinementService:
         golden_formula_score = round(sum(float(item["weight"]) * 10.0 for item in golden_matches_by_rule.values()), 4)
         golden_orb_quality_score = round(sum(float(item["orb_strength_value"]) for item in golden_matches_by_rule.values()), 4)
         supporting_matched_count = len(supporting_matches_by_rule)
+        context_matched_count = len(context_matches_by_rule)
         supporting_formula_score = round(sum(float(item["weight"]) * 3.0 for item in supporting_matches_by_rule.values()), 4)
+        context_formula_score = round(sum(float(item["weight"]) * 0.5 for item in context_matches_by_rule.values()), 4)
         supporting_bonus = round(
             sum(float(item["participant_bonus_value"]) for item in supporting_matches_by_rule.values())
-            + (sum(float(item["orb_strength_value"]) for item in supporting_matches_by_rule.values()) * 0.5),
+            + (sum(float(item["orb_strength_value"]) for item in supporting_matches_by_rule.values()) * 0.5)
+            + (sum(float(item["orb_strength_value"]) for item in context_matches_by_rule.values()) * 0.1),
             4,
         )
+        ambiguity_penalty = round(sum(float(item["weight"]) * 1.5 for item in ambiguity_matches_by_rule.values()), 4)
         event_confirmation_score = round(
             sum(
                 float(item["weight"]) * (float(item["orb_strength_value"]) + 1.0)
-                for item in [*golden_matches_by_rule.values(), *supporting_matches_by_rule.values()]
+                for item in [*golden_matches_by_rule.values(), *supporting_matches_by_rule.values(), *context_matches_by_rule.values()]
                 if str(item.get("shape") or "") == "planet_to_planet"
             ),
             4,
@@ -232,7 +260,7 @@ class FormulaRefinementService:
         time_refinement_score = round(
             sum(
                 float(item["weight"]) * (float(item["orb_strength_value"]) + 1.0)
-                for item in [*golden_matches_by_rule.values(), *supporting_matches_by_rule.values()]
+                for item in [*golden_matches_by_rule.values(), *supporting_matches_by_rule.values(), *context_matches_by_rule.values()]
                 if str(item.get("shape") or "") == "cusp_or_angle"
             ),
             4,
@@ -243,7 +271,9 @@ class FormulaRefinementService:
             golden_formula_score
             + golden_orb_quality_score
             + supporting_formula_score
+            + context_formula_score
             + supporting_bonus
+            - ambiguity_penalty
             - rejected_penalty
             - missing_penalty,
             4,
@@ -260,6 +290,7 @@ class FormulaRefinementService:
             "golden_matched_count": golden_matched_count,
             "golden_orb_sum": golden_orb_sum,
             "supporting_matched_count": supporting_matched_count,
+            "context_matched_count": context_matched_count,
             "supporting_bonus": supporting_bonus,
             "event_confirmation_score": event_confirmation_score,
             "time_refinement_score": time_refinement_score,
@@ -270,7 +301,9 @@ class FormulaRefinementService:
                 "golden_formula_score": golden_formula_score,
                 "golden_orb_quality_score": golden_orb_quality_score,
                 "supporting_formula_score": supporting_formula_score,
+                "context_formula_score": context_formula_score,
                 "supporting_bonus": supporting_bonus,
+                "ambiguity_penalty": ambiguity_penalty,
                 "event_confirmation_score": event_confirmation_score,
                 "time_refinement_score": time_refinement_score,
                 "rejected_penalty": round(rejected_penalty, 4),
@@ -385,7 +418,12 @@ class FormulaRefinementService:
             return "cusp_or_angle"
         return "mixed_symbolic"
 
-    def _build_reference_time(self, *, payload: RectificationProRunRequest) -> dict[str, Any]:
+    def _build_reference_time(
+        self,
+        *,
+        payload: RectificationProRunRequest,
+        card_id: str | None = None,
+    ) -> dict[str, Any]:
         provided = payload.settings.formula_reference_time_local
         if not provided:
             return {"provided": None, "inside_working_time_range": False, "evaluation": None}
@@ -403,7 +441,7 @@ class FormulaRefinementService:
                 sidereal_mode=payload.sidereal_mode,
             )
         )
-        event_results = self._evaluate_events(payload=payload, chart=chart)
+        event_results = self._evaluate_events(payload=payload, chart=chart, card_id=card_id)
         source_window = payload.asc_windows[0] if payload.asc_windows else ProAscWindow(
             start_local=provided,
             end_local=provided,
@@ -419,6 +457,21 @@ class FormulaRefinementService:
         )
         evaluation.pop("chart_response", None)
         return {"provided": provided, "inside_working_time_range": False, "evaluation": evaluation}
+
+    @staticmethod
+    def _extract_card_meta(candidate: dict[str, Any] | None) -> dict[str, Any]:
+        if not isinstance(candidate, dict):
+            return {}
+        formula_results = candidate.get("formula_test_mode_results")
+        if not isinstance(formula_results, list) or not formula_results:
+            return {}
+        first = formula_results[0] if isinstance(formula_results[0], dict) else {}
+        return {
+            "card_id": first.get("card_id"),
+            "card_version": first.get("card_version"),
+            "formulas_count": first.get("formulas_count"),
+            "priority_counts": first.get("priority_counts") or {},
+        }
 
     @staticmethod
     def _build_working_time_ranges(candidates: list[dict[str, Any]], step_seconds: int) -> list[dict[str, Any]]:

@@ -1,0 +1,41 @@
+{
+  "chart_status": "ok",
+  "llm_status": "ok",
+  "datetime_utc": "1978-03-19T17:59:45Z",
+  "timezone": {
+    "timezone_name": "Asia/Tashkent",
+    "timezone_offset": "+05:00",
+    "timezone_source": "geocode_result"
+  },
+  "warnings": [],
+  "horoscope_text": "Preview horoscope text.",
+  "chart_response": {
+    "natal": {
+      "planets": [
+        {
+          "name": "Sun",
+          "longitude": 358.7732,
+          "sign": "Pisces",
+          "house": 5
+        },
+        {
+          "name": "Moon",
+          "longitude": 113.0,
+          "sign": "Cancer",
+          "house": 9
+        }
+      ],
+      "houses": [
+        {
+          "house": 1,
+          "cusp_longitude": 233.0
+        },
+        {
+          "house": 6,
+          "cusp_longitude": 30.7425
+        }
+      ],
+      "aspects": []
+    }
+  }
+}

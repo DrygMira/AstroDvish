@@ -121,6 +121,7 @@ def test_rectification_pro_run_endpoint_returns_formula_refinement_results(monke
     assert "coarse_candidate" in refinement
     assert "working_time_ranges" in refinement
     assert "working_time_range" in refinement
+    assert "card_id" in refinement
 
 
 def test_rectification_pro_run_low_confidence_for_weak_data(monkeypatch, tmp_path) -> None:
@@ -172,6 +173,63 @@ def test_rectification_pro_child_birth_expected_by_card_matches_production_card(
     assert expected_rules[0]["meaning"]
     assert expected_rules[3]["aspect"] == "trine"
     assert expected_rules[3]["aspect_types"] == ["trine"]
+
+
+def test_rectification_pro_can_select_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["settings"]["formula_card_id"] = "RECT_CHILD_BIRTH_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 90
+    assert result["priority_counts"] == {
+        "golden": 22,
+        "supporting": 37,
+        "context": 31,
+        "ambiguity_risk": 0,
+    }
+    refinement = body["formula_refinement_results"]
+    assert refinement["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+    assert refinement["best_candidate"]["formula_test_mode_results"][0]["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+
+
+def test_rectification_pro_can_compare_v1_and_v2_cards(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["settings"]["formula_card_id"] = "RECT_CHILD_BIRTH_002_DRAFT"
+    payload["settings"]["compare_formula_card_ids"] = [
+        "RECT_CHILD_BIRTH_001",
+        "RECT_CHILD_BIRTH_002_DRAFT",
+    ]
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    comparison = body["formula_card_comparison"]
+    assert comparison["enabled"] is True
+    assert comparison["selected_card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+    assert comparison["baseline_card_id"] == "RECT_CHILD_BIRTH_001"
+    items = comparison["items"]
+    assert [item["card_id"] for item in items] == [
+        "RECT_CHILD_BIRTH_001",
+        "RECT_CHILD_BIRTH_002_DRAFT",
+    ]
+    assert items[0]["formulas_count"] == 6
+    assert items[1]["formulas_count"] == 90
+    assert "working_time_ranges_difference" in comparison["differences"]
+    assert "best_candidate_difference" in comparison["differences"]
+    assert "event_contribution_audit_difference" in comparison["differences"]
 
 
 def test_rectification_pro_uses_symbolic_age_arc_for_formula_test_mode(monkeypatch, tmp_path) -> None:

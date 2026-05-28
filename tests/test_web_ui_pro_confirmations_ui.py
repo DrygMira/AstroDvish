@@ -168,3 +168,67 @@ def test_pro_ui_explainability_does_not_expose_api_keys() -> None:
     html = response.text
     assert "OPENAI_API_KEY" not in html
     assert "OPENROUTER_API_KEY" not in html
+
+
+def test_pro_ui_contains_explicit_formula_card_selector_and_v1_v2_comparison_markers() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "formula_card_id" in html
+    assert "compare_formula_card_ids" in html
+    assert "RECT_CHILD_BIRTH_002_DRAFT" in html
+    assert "V1 vs V2" in html
+    assert "formula_card_comparison" in html
+    assert "working_time_ranges_difference" in html
+    assert "best_candidate_difference" in html
+    assert "event_contribution_audit_difference" in html
+
+
+def test_pro_ui_shows_formula_card_counts_and_priority_tiers() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "formulas_count" in html
+    assert "priority_counts" in html
+    assert "golden" in html
+    assert "supporting" in html
+    assert "context" in html
+    assert "ambiguity_risk" in html
+
+
+def test_pro_ui_contains_preview_mode_loader_markers() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "proof_preview" in html
+    assert "/api/preview/pro-result" in html
+    assert "/api/preview/chart-result" in html
+    assert "runUiProofPreviewFromQuery" in html
+
+
+def test_preview_pro_result_endpoint_returns_required_keys() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/api/preview/pro-result")
+    assert response.status_code == 200
+    payload = response.json()
+    assert "formula_refinement_results" in payload
+    assert "formula_test_mode_results" in payload
+    assert "validation_report_table" in payload["formula_test_mode_results"][0]
+    refinement = payload["formula_refinement_results"]
+    assert "working_time_ranges" in refinement
+    assert "best_candidate" in refinement
+    assert "reference_time" in refinement
+    assert "event_contribution_audit" in refinement["best_candidate"]
+
+
+def test_preview_chart_result_endpoint_returns_chart_payload_for_modal() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/api/preview/chart-result")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["chart_status"] == "ok"
+    assert "horoscope_text" in payload
+    assert "chart_response" in payload
