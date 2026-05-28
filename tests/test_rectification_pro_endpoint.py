@@ -215,10 +215,10 @@ def test_rectification_pro_can_select_draft_card_explicitly(monkeypatch, tmp_pat
     result = body["formula_test_mode_results"][0]
     assert result["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
     assert result["status"] == "draft"
-    assert result["formulas_count"] == 90
+    assert result["formulas_count"] == 94
     assert result["priority_counts"] == {
-        "golden": 22,
-        "supporting": 37,
+        "golden": 24,
+        "supporting": 39,
         "context": 31,
         "ambiguity_risk": 0,
     }
@@ -252,10 +252,55 @@ def test_rectification_pro_can_compare_v1_and_v2_cards(monkeypatch, tmp_path) ->
         "RECT_CHILD_BIRTH_002_DRAFT",
     ]
     assert items[0]["formulas_count"] == 6
-    assert items[1]["formulas_count"] == 90
+    assert items[1]["formulas_count"] == 94
     assert "working_time_ranges_difference" in comparison["differences"]
     assert "best_candidate_difference" in comparison["differences"]
     assert "event_contribution_audit_difference" in comparison["differences"]
+    assert "shared_rules" in comparison["differences"]
+    assert "v1_only_rules" in comparison["differences"]
+    assert "v2_added_rules" in comparison["differences"]
+    assert "why_result_changed" in comparison["differences"]
+    assert comparison["differences"]["v1_only_rules"] == []
+    assert any(rule["id"] == "cusp_10_to_cusp_5" and rule["inherited_from_v1"] for rule in comparison["differences"]["shared_rules"])
+
+
+def test_rectification_pro_comparison_includes_compact_summary(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["settings"]["formula_card_id"] = "RECT_CHILD_BIRTH_002_DRAFT"
+    payload["settings"]["compare_formula_card_ids"] = [
+        "RECT_CHILD_BIRTH_001",
+        "RECT_CHILD_BIRTH_002_DRAFT",
+    ]
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    comparison = response.json()["formula_card_comparison"]
+    summary = comparison["summary"]
+    assert summary["baseline_card_id"] == "RECT_CHILD_BIRTH_001"
+    assert summary["selected_card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+    assert "items" in summary and len(summary["items"]) == 2
+    assert {"card_id", "formulas_count", "working_range", "best_candidate", "matched", "rejected", "missed", "event_contribution_score"}.issubset(summary["items"][0])
+    assert "top_rejected_reasons" in summary["items"][1]
+    assert "why_result_changed" in summary
+
+
+def test_rectification_pro_supporting_count_consistent_between_summary_and_event_audit(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["settings"]["formula_card_id"] = "RECT_CHILD_BIRTH_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    best = response.json()["formula_refinement_results"]["best_candidate"]
+    total_supporting = sum(int(item.get("supporting_matched_count", 0)) for item in best["event_contribution_audit"])
+    assert best["supporting_matched_count"] == total_supporting
 
 
 def test_rectification_pro_uses_symbolic_age_arc_for_formula_test_mode(monkeypatch, tmp_path) -> None:

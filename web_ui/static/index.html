@@ -4645,33 +4645,50 @@
         const rejectedHeader = document.createElement("div");
         rejectedHeader.textContent = `Rejected: ${rejectedAspects.length}`;
         block.appendChild(rejectedHeader);
+        const rejectedReasonCounts = {};
         rejectedAspects.forEach((match) => {
+          const reasonKey = match.rejection_reason || match.reason || "unknown";
+          rejectedReasonCounts[reasonKey] = (rejectedReasonCounts[reasonKey] || 0) + 1;
+        });
+        const rejectedReasonLine = document.createElement("div");
+        rejectedReasonLine.className = "hint";
+        rejectedReasonLine.textContent = `Top rejected reasons: ${Object.entries(rejectedReasonCounts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([reason, count]) => `${reason}=${count}`).join(", ") || "none"}`;
+        block.appendChild(rejectedReasonLine);
+        rejectedAspects.slice(0, 5).forEach((match) => {
           const line = document.createElement("div");
           line.className = "hint";
           line.textContent = `${match.directed_point} ${match.aspect_type} ${match.natal_target} | orb=${match.orb} | reason=${match.rejection_reason || match.reason || "n/a"} | rule=${match.formula_rule_matched}`;
           block.appendChild(line);
         });
+        if (rejectedAspects.length > 5) {
+          const truncatedLine = document.createElement("div");
+          truncatedLine.className = "hint";
+          truncatedLine.textContent = `Main summary truncated: ${rejectedAspects.length - 5} more rejected aspects are available in raw/debug JSON.`;
+          block.appendChild(truncatedLine);
+        }
 
-        const rejectedRows = buildFormulaAspectRows(rejectedAspects);
-        const rejectedTableWrap = document.createElement("div");
-        rejectedTableWrap.innerHTML = renderTable(
-          [
-            "Rule",
-            "Status",
-            "Directed source",
-            "Directed longitude",
-            "Natal target",
-            "Natal longitude",
-            "Aspect",
-            "Actual angle",
-            "Exact angle",
-            "Orb",
-            "Orb limit",
-            "Reject reason",
-          ],
-          rejectedRows
-        );
-        block.appendChild(rejectedTableWrap);
+        if (rejectedAspects.length <= 20) {
+          const rejectedRows = buildFormulaAspectRows(rejectedAspects);
+          const rejectedTableWrap = document.createElement("div");
+          rejectedTableWrap.innerHTML = renderTable(
+            [
+              "Rule",
+              "Status",
+              "Directed source",
+              "Directed longitude",
+              "Natal target",
+              "Natal longitude",
+              "Aspect",
+              "Actual angle",
+              "Exact angle",
+              "Orb",
+              "Orb limit",
+              "Reject reason",
+            ],
+            rejectedRows
+          );
+          block.appendChild(rejectedTableWrap);
+        }
 
         const directedPoints = Array.isArray(report.directed_points_debug) ? report.directed_points_debug : [];
         const directedHeader = document.createElement("div");
@@ -4716,6 +4733,25 @@
       return `golden=${counts.golden ?? 0}, supporting=${counts.supporting ?? 0}, context=${counts.context ?? 0}, ambiguity_risk=${counts.ambiguity_risk ?? 0}`;
     }
 
+    function formatRuleListCompact(rules, limit = 8) {
+      const list = Array.isArray(rules) ? rules : [];
+      if (!list.length) return "none";
+      const visible = list.slice(0, limit).map((item) => {
+        if (typeof item === "string") return item;
+        const formula = item?.display_formula || item?.formula || item?.id || "—";
+        const inherited = item?.inherited_from_v1 ? " [inherited_from_v1]" : "";
+        return `${formula}${inherited}`;
+      });
+      const suffix = list.length > limit ? ` (+${list.length - limit} more)` : "";
+      return `${visible.join("; ")}${suffix}`;
+    }
+
+    function formatRejectedReasonsCompact(reasons) {
+      const list = Array.isArray(reasons) ? reasons : [];
+      if (!list.length) return "none";
+      return list.map((item) => `${item.reason || "unknown"}=${item.count ?? 0}`).join(", ");
+    }
+
     function renderFormulaCardComparison(data) {
       const comparison = data?.formula_card_comparison || null;
       rpFormulaComparisonEl.textContent = "";
@@ -4731,10 +4767,24 @@
         : [];
       const bestCandidateDiff = differences.best_candidate_difference || {};
       const eventContributionDiff = differences.event_contribution_audit_difference || {};
+      const sharedRules = Array.isArray(differences.shared_rules) ? differences.shared_rules : [];
+      const v1OnlyRules = Array.isArray(differences.v1_only_rules) ? differences.v1_only_rules : [];
+      const v2AddedRules = Array.isArray(differences.v2_added_rules) ? differences.v2_added_rules : [];
+      const compactSummary = comparison.summary || {};
+      const compactItems = Array.isArray(compactSummary.items) ? compactSummary.items : [];
 
       const lines = [
         `formula_card_comparison | baseline=${comparison.baseline_card_id || "n/a"} | selected=${comparison.selected_card_id || "n/a"}`,
       ];
+      lines.push("Comparison summary");
+      compactItems.forEach((item) => {
+        const workingRange = item.working_range
+          ? `${item.working_range.start_local || "n/a"} -> ${item.working_range.end_local || "n/a"}`
+          : "n/a";
+        lines.push(
+          `${item.card_id} | formulas_count=${item.formulas_count ?? "n/a"} | working_range=${workingRange} | best_candidate=${item.best_candidate || "n/a"} | matched/rejected/missed=${item.matched ?? "n/a"}/${item.rejected ?? "n/a"}/${item.missed ?? "n/a"} | golden/supporting/context=${item.golden_matched ?? "n/a"}/${item.supporting_matched ?? "n/a"}/${item.context_matched ?? "n/a"} | event_contribution_score=${item.event_contribution_score ?? "n/a"} | top_rejected_reasons=${formatRejectedReasonsCompact(item.top_rejected_reasons)}`
+        );
+      });
       items.forEach((item) => {
         lines.push(
           `${item.card_id} | version=${item.card_version || "n/a"} | formulas_count=${item.formulas_count ?? "n/a"} | priority_counts=${formatPriorityCounts(item.priority_counts)}`
@@ -4757,6 +4807,10 @@
         const list = Array.isArray(audit) ? audit : [];
         lines.push(`${cardId}: events=${list.length}`);
       });
+      lines.push(`shared_rules: ${formatRuleListCompact(sharedRules)}`);
+      lines.push(`v1_only_rules: ${formatRuleListCompact(v1OnlyRules)}`);
+      lines.push(`v2_added_rules: ${formatRuleListCompact(v2AddedRules)}`);
+      lines.push(`why_result_changed: ${compactSummary.why_result_changed || differences.why_result_changed || "n/a"}`);
       rpFormulaComparisonEl.textContent = lines.join("\n");
     }
 
@@ -4978,14 +5032,21 @@
       const previewMode = params.get("proof_preview");
       if (!previewMode) return;
 
-      if (previewMode === "pro" || previewMode === "all") {
+      if (previewMode === "pro" || previewMode === "all" || previewMode === "comparison") {
         const proRes = await fetch("/api/preview/pro-result");
         if (!proRes.ok) {
           throw new Error("Не удалось загрузить preview Pro result");
         }
         const proData = await proRes.json();
         renderProResult(proData);
-        setRpStatus("Preview: финальный Pro panel загружен из fixture.");
+        if (previewMode === "comparison") {
+          setTechnicalMode(true);
+          setTab("rect-events");
+          rpFormulaComparisonEl.scrollIntoView({ behavior: "auto", block: "center" });
+          setRpStatus("Preview: V1 vs V2 comparison panel загружен из fixture.");
+        } else {
+          setRpStatus("Preview: финальный Pro panel загружен из fixture.");
+        }
       }
 
       if (previewMode === "chart" || previewMode === "all") {

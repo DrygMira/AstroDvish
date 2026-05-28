@@ -165,6 +165,7 @@ class FormulaRefinementService:
         context_matches_by_rule: dict[str, dict[str, Any]] = {}
         ambiguity_matches_by_rule: dict[str, dict[str, Any]] = {}
         event_contribution_audit: list[dict[str, Any]] = []
+        rejected_reason_counts: dict[str, int] = {}
 
         for result in event_results:
             matched_formula_score += float(result.get("score") or 0.0)
@@ -210,6 +211,30 @@ class FormulaRefinementService:
                 best_formulas.append(
                     f"{item.get('formula_rule_matched')}:{item.get('directed_point')}->{item.get('natal_target')}:{item.get('aspect_type')}"
                 )
+            for item in rejected:
+                reason = str(item.get("rejection_reason") or item.get("reason") or "unknown")
+                rejected_reason_counts[reason] = rejected_reason_counts.get(reason, 0) + 1
+
+            event_golden_rules = {
+                str(item.get("formula_rule_matched") or "")
+                for item in matched
+                if str(item.get("priority_tier") or "") == "golden"
+            }
+            event_supporting_rules = {
+                str(item.get("formula_rule_matched") or "")
+                for item in matched
+                if str(item.get("priority_tier") or "supporting") == "supporting"
+            }
+            event_context_rules = {
+                str(item.get("formula_rule_matched") or "")
+                for item in matched
+                if str(item.get("priority_tier") or "") == "context"
+            }
+            event_ambiguity_rules = {
+                str(item.get("formula_rule_matched") or "")
+                for item in matched
+                if str(item.get("priority_tier") or "") == "ambiguity_risk"
+            }
 
             event_contribution_audit.append(
                 {
@@ -222,10 +247,10 @@ class FormulaRefinementService:
                     "matched_count": len(matched),
                     "rejected_count": len(rejected),
                     "missed_count": len(missing),
-                    "golden_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "") == "golden"),
-                    "supporting_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "supporting") == "supporting"),
-                    "context_matched_count": sum(1 for item in matched if str(item.get("priority_tier") or "") == "context"),
-                    "ambiguity_risk_count": sum(1 for item in matched if str(item.get("priority_tier") or "") == "ambiguity_risk"),
+                    "golden_matched_count": len(event_golden_rules),
+                    "supporting_matched_count": len(event_supporting_rules),
+                    "context_matched_count": len(event_context_rules),
+                    "ambiguity_risk_count": len(event_ambiguity_rules),
                 }
             )
 
@@ -312,6 +337,10 @@ class FormulaRefinementService:
             "source_asc_interval": source_window.model_dump(mode="json"),
             "formula_test_mode_results": event_results,
             "best_formulas": best_formulas[:10],
+            "top_rejected_reasons": [
+                {"reason": reason, "count": count}
+                for reason, count in sorted(rejected_reason_counts.items(), key=lambda item: (-item[1], item[0]))[:5]
+            ],
             "event_contribution_audit": event_contribution_audit,
             "selection_reason": "",
             "chart_response": chart_response,

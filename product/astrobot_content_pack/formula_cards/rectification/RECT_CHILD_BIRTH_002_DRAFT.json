@@ -3924,6 +3924,170 @@
             "required": false,
             "weight": 0.35,
             "priority_tier": "context"
+        },
+        {
+            "id": "cusp_10_to_cusp_5",
+            "title": "Directed 10th cusp to natal 5th cusp",
+            "formula": "Directed cusp_10 -> Natal cusp_5",
+            "rule": "Directed cusp_10 to natal cusp_5",
+            "source": "cusp_10",
+            "target": "cusp_5",
+            "source_layer": "directed",
+            "target_layer": "natal",
+            "aspect": "opposition",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "time_refinement",
+            "meaning": "Inherited from production child_birth v1 to keep expert comparison against the same baseline rule pack.",
+            "comment": "Inherited from RECT_CHILD_BIRTH_001 on 2026-05-28 for explicit expert/test comparison. Production default remains RECT_CHILD_BIRTH_001.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_10"
+            ],
+            "target_selectors": [
+                "cusp_5"
+            ],
+            "display_source": "cusp_10",
+            "display_target": "cusp_5",
+            "aspect_types": [
+                "opposition"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.2,
+            "priority_tier": "supporting",
+            "inherited_from_v1": true,
+            "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+            "id": "cusp_6_to_sun",
+            "title": "Directed 6th cusp to natal Sun",
+            "formula": "Directed cusp_6 -> Natal Sun",
+            "rule": "Directed cusp_6 to natal Sun",
+            "source": "cusp_6",
+            "target": "Sun",
+            "source_layer": "directed",
+            "target_layer": "natal",
+            "aspect": "sextile",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "time_refinement",
+            "meaning": "Inherited from production child_birth v1 to preserve the confirmed cusp-based timer inside v2 expert/test comparisons.",
+            "comment": "Inherited from RECT_CHILD_BIRTH_001 on 2026-05-28 for explicit expert/test comparison. Production default remains RECT_CHILD_BIRTH_001.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_6"
+            ],
+            "target_selectors": [
+                "sun"
+            ],
+            "display_source": "cusp_6",
+            "display_target": "Sun",
+            "aspect_types": [
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.1,
+            "priority_tier": "golden",
+            "inherited_from_v1": true,
+            "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+            "id": "sun_to_jupiter",
+            "title": "Directed Sun to natal Jupiter",
+            "formula": "Directed Sun -> Natal Jupiter",
+            "rule": "Directed Sun to natal Jupiter",
+            "source": "Sun",
+            "target": "Jupiter",
+            "source_layer": "directed",
+            "target_layer": "natal",
+            "aspect": "sextile",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "golden",
+            "role": "event_confirmation",
+            "meaning": "Inherited from production child_birth v1 to preserve the confirmed Sun/Jupiter child-birth signal inside v2 expert/test comparisons.",
+            "comment": "Inherited from RECT_CHILD_BIRTH_001 on 2026-05-28 for explicit expert/test comparison. Production default remains RECT_CHILD_BIRTH_001.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "sun"
+            ],
+            "target_selectors": [
+                "jupiter"
+            ],
+            "display_source": "Sun",
+            "display_target": "Jupiter",
+            "aspect_types": [
+                "sextile"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1.1,
+            "priority_tier": "golden",
+            "inherited_from_v1": true,
+            "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+            "id": "cusp_5_to_chiron",
+            "title": "Directed 5th cusp to natal Chiron",
+            "formula": "Directed cusp_5 -> Natal Chiron",
+            "rule": "Directed cusp_5 to natal Chiron",
+            "source": "cusp_5",
+            "target": "Chiron",
+            "source_layer": "directed",
+            "target_layer": "natal",
+            "aspect": "conjunction",
+            "allowed_aspects": [
+                "conjunction",
+                "square",
+                "opposition",
+                "trine",
+                "sextile"
+            ],
+            "priority": "supporting",
+            "role": "event_confirmation",
+            "meaning": "Inherited from production child_birth v1 to keep the same supporting Chiron signal visible in v2 expert/test comparisons.",
+            "comment": "Inherited from RECT_CHILD_BIRTH_001 on 2026-05-28 for explicit expert/test comparison. Production default remains RECT_CHILD_BIRTH_001.",
+            "source_kind": "directed",
+            "target_kind": "natal",
+            "source_selectors": [
+                "cusp_5"
+            ],
+            "target_selectors": [
+                "chiron"
+            ],
+            "display_source": "cusp_5",
+            "display_target": "Chiron",
+            "aspect_types": [
+                "conjunction"
+            ],
+            "orb_limit": 1,
+            "required": true,
+            "weight": 1,
+            "priority_tier": "supporting",
+            "inherited_from_v1": true,
+            "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
         }
     ],
     "draft_import_report": {
@@ -3936,9 +4100,17 @@
         "parsed_entries_count": 144,
         "unique_rule_count_detected": 90,
         "imported_formula_count": 90,
+        "inherited_from_v1_count": 4,
         "imported_tier_counts": {
             "golden": 22,
             "supporting": 37,
+            "context": 31,
+            "ambiguity_risk": 0
+        },
+        "effective_direction_rules_count": 94,
+        "effective_tier_counts": {
+            "golden": 24,
+            "supporting": 39,
             "context": 31,
             "ambiguity_risk": 0
         },
@@ -4716,5 +4888,5 @@
             }
         ]
     },
-    "notes": "Draft sandbox imported from Katya child_birth v2 files on 2026-05-27. Production RECT_CHILD_BIRTH_001 remains unchanged. Five priority conflicts were resolved for draft-only review. File 1 contained 21 malformed legacy blocks with hyphen/truncated syntax; they were preserved in reconciliation only and not auto-imported as new rules."
+    "notes": "Draft sandbox imported from Katya child_birth v2 files on 2026-05-27. Production RECT_CHILD_BIRTH_001 remains unchanged. Five priority conflicts were resolved for draft-only review. File 1 contained 21 malformed legacy blocks with hyphen/truncated syntax; they were preserved in reconciliation only and not auto-imported as new rules. On 2026-05-28 four confirmed production child_birth rules were inherited from RECT_CHILD_BIRTH_001 for explicit v1 vs v2 expert/test comparison only."
 }

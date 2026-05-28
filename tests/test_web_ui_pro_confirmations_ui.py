@@ -190,6 +190,22 @@ def test_pro_ui_contains_explicit_formula_card_selector_and_v1_v2_comparison_mar
     assert "working_time_ranges_difference" in html
     assert "best_candidate_difference" in html
     assert "event_contribution_audit_difference" in html
+    assert "shared_rules" in html
+    assert "v1_only_rules" in html
+    assert "v2_added_rules" in html
+    assert "why_result_changed" in html
+
+
+def test_pro_ui_contains_compact_v1_v2_summary_markers() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "Comparison summary" in html
+    assert "Working range" in html
+    assert "Best candidate" in html
+    assert "matched/rejected/missed" in html
+    assert "top_rejected_reasons" in html
 
 
 def test_pro_ui_shows_formula_card_counts_and_priority_tiers() -> None:
@@ -216,6 +232,16 @@ def test_pro_ui_contains_preview_mode_loader_markers() -> None:
     assert "runUiProofPreviewFromQuery" in html
 
 
+def test_pro_ui_contains_comparison_preview_mode_markers() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert 'previewMode === "comparison"' in html
+    assert 'setTab("rect-events")' in html
+    assert "rpFormulaComparisonEl.scrollIntoView" in html
+
+
 def test_preview_pro_result_endpoint_returns_required_keys() -> None:
     with TestClient(web_ui_main.app) as client:
         response = client.get("/api/preview/pro-result")
@@ -239,6 +265,38 @@ def test_preview_pro_result_endpoint_returns_required_keys() -> None:
     assert report["rejected_aspects"][0]["aspect_type"] == "opposition"
     assert report["missed_by_engine"][0]["reason"] == "over_orb_only"
     assert "ruler_type" in str(payload["formula_test_mode_results"][0]["validation_report"])
+
+
+def test_preview_pro_result_endpoint_includes_enabled_v1_v2_comparison_summary() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/api/preview/pro-result")
+    assert response.status_code == 200
+    payload = response.json()
+    comparison = payload["formula_card_comparison"]
+    assert comparison["enabled"] is True
+    assert comparison["baseline_card_id"] == "RECT_CHILD_BIRTH_001"
+    assert comparison["selected_card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+    assert [item["card_id"] for item in comparison["items"]] == [
+        "RECT_CHILD_BIRTH_001",
+        "RECT_CHILD_BIRTH_002_DRAFT",
+    ]
+    summary = comparison["summary"]
+    assert [item["card_id"] for item in summary["items"]] == [
+        "RECT_CHILD_BIRTH_001",
+        "RECT_CHILD_BIRTH_002_DRAFT",
+    ]
+    assert summary["items"][0]["formulas_count"] == 6
+    assert summary["items"][1]["formulas_count"] == 94
+    assert summary["items"][1]["top_rejected_reasons"][0]["reason"] == "over_orb"
+    shared_rule_ids = {item["id"] for item in comparison["differences"]["shared_rules"]}
+    assert {
+        "cusp_10_to_cusp_5",
+        "cusp_6_to_sun",
+        "sun_to_jupiter",
+        "cusp_5_to_chiron",
+    }.issubset(shared_rule_ids)
+    assert comparison["differences"]["v1_only_rules"] == []
+    assert comparison["differences"]["why_result_changed"]
 
 
 def test_preview_chart_result_endpoint_returns_chart_payload_for_modal() -> None:

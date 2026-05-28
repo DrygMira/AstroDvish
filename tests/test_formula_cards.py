@@ -165,7 +165,7 @@ def test_child_birth_draft_card_exists_without_changing_production_card() -> Non
     ]
     assert production.card_id == "RECT_CHILD_BIRTH_001"
     assert draft.card_id == DRAFT_CHILD_BIRTH_CARD_ID
-    assert len(draft.direction_rules) == 90
+    assert len(draft.direction_rules) == 94
     assert draft.card_id != production.card_id
 
 
@@ -224,6 +224,42 @@ def test_child_birth_draft_card_supports_literal_dsl_and_allowed_aspects() -> No
     assert by_id["sun_to_cusp_4"].priority_tier == "context"
 
 
+def test_child_birth_draft_card_inherits_missing_v1_rules_explicitly() -> None:
+    loader = FormulaCardLoader()
+    production = loader.load_card("RECT_CHILD_BIRTH_001")
+    draft = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
+    draft_by_id = {rule.id: rule for rule in draft.direction_rules}
+
+    inherited_ids = {
+        "cusp_10_to_cusp_5",
+        "cusp_6_to_sun",
+        "sun_to_jupiter",
+        "cusp_5_to_chiron",
+    }
+    assert inherited_ids.issubset(draft_by_id.keys())
+
+    for rule_id in inherited_ids:
+        source_rule = next(rule for rule in production.direction_rules if rule.id == rule_id)
+        draft_rule = draft_by_id[rule_id]
+        assert draft_rule.inherited_from_v1 is True
+        assert draft_rule.inherited_from_card_id == "RECT_CHILD_BIRTH_001"
+        assert draft_rule.formula == source_rule.formula
+        assert draft_rule.source == source_rule.source
+        assert draft_rule.target == source_rule.target
+        assert draft_rule.aspect_types == source_rule.aspect_types
+
+
+def test_child_birth_draft_card_marks_v1_inherited_rules_as_supporting_or_golden_from_source() -> None:
+    loader = FormulaCardLoader()
+    draft = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
+    by_id = {rule.id: rule for rule in draft.direction_rules}
+
+    assert by_id["cusp_10_to_cusp_5"].priority_tier == "supporting"
+    assert by_id["cusp_6_to_sun"].priority_tier == "golden"
+    assert by_id["sun_to_jupiter"].priority_tier == "golden"
+    assert by_id["cusp_5_to_chiron"].priority_tier == "supporting"
+
+
 def test_child_birth_draft_card_uses_major_allowed_aspects_policy() -> None:
     loader = FormulaCardLoader()
     card = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
@@ -231,7 +267,10 @@ def test_child_birth_draft_card_uses_major_allowed_aspects_policy() -> None:
 
     for rule in card.direction_rules:
         assert rule.allowed_aspects == expected_major
-        assert rule.aspect_types == expected_major
+        if rule.inherited_from_v1:
+            assert rule.aspect_types
+        else:
+            assert rule.aspect_types == expected_major
 
 
 def test_target_literal_filter_does_not_mix_cusp_and_significators(tmp_path: Path) -> None:
@@ -441,9 +480,9 @@ def test_child_birth_draft_card_import_counts_and_priority_tiers() -> None:
     loader = FormulaCardLoader()
     card = loader.load_card(DRAFT_CHILD_BIRTH_CARD_ID)
 
-    assert len(card.direction_rules) == 90
-    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 22
-    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 37
+    assert len(card.direction_rules) == 94
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 24
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 39
     assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 31
     assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
 
@@ -476,9 +515,17 @@ def test_child_birth_draft_raw_import_report_tracks_reconciliation() -> None:
     assert report["parsed_entries_count"] == 144
     assert report["unique_rule_count_detected"] == 90
     assert report["imported_formula_count"] == 90
+    assert report["inherited_from_v1_count"] == 4
     assert report["imported_tier_counts"] == {
         "golden": 22,
         "supporting": 37,
+        "context": 31,
+        "ambiguity_risk": 0,
+    }
+    assert report["effective_direction_rules_count"] == 94
+    assert report["effective_tier_counts"] == {
+        "golden": 24,
+        "supporting": 39,
         "context": 31,
         "ambiguity_risk": 0,
     }
@@ -526,7 +573,10 @@ def test_child_birth_draft_rules_have_literal_dsl_fields_and_list_allowed_aspect
         assert rule.target_layer == "natal"
         assert isinstance(rule.allowed_aspects, list)
         assert rule.allowed_aspects
-        assert rule.aspect_types == rule.allowed_aspects
+        if rule.inherited_from_v1:
+            assert rule.aspect_types
+        else:
+            assert rule.aspect_types == rule.allowed_aspects
         assert rule.priority in {"golden", "supporting", "context", "ambiguity_risk"}
 
 

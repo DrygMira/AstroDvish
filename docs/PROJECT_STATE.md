@@ -397,3 +397,99 @@ Every future report must include:
   - `cusp_10 -> cusp_5` may stay `over_orb` until orb policy is changed in a separate task
   - mojibake cleanup is still a separate task and was intentionally not included here
   - `RECT_CHILD_BIRTH_002_DRAFT` is still test-only and not part of default production flow
+
+## 27. V1 vs V2 Comparison Stabilized Locally (2026-05-28, no deploy)
+- explicit expert/test mode stays safe:
+  - default production card is still `RECT_CHILD_BIRTH_001`
+  - `RECT_CHILD_BIRTH_002_DRAFT` is still explicit-only and not used without `formula_card_id`
+- v2 inheritance decision:
+  - draft card now acts as a superset of v1 for expert comparison
+  - inherited from v1 into draft with `inherited_from_v1=true` and `inherited_from_card_id=RECT_CHILD_BIRTH_001`:
+    - `cusp_10_to_cusp_5`
+    - `cusp_6_to_sun`
+    - `sun_to_jupiter`
+    - `cusp_5_to_chiron`
+  - draft effective rule count is now `94`
+- comparison cleanup:
+  - compact `V1 vs V2` summary now includes:
+    - `card_id`
+    - `formulas_count`
+    - `working_range`
+    - `best_candidate`
+    - `matched/rejected/missed`
+    - `golden/supporting/context`
+    - `event_contribution_score`
+    - `top_rejected_reasons`
+    - `shared_rules`
+    - `v1_only_rules`
+    - `v2_added_rules`
+    - `why_result_changed`
+- aggregation cleanup:
+  - `supporting_matched_count` in candidate summary now matches the event audit counting logic for the same candidate/event set
+- noise control:
+  - main Pro screen now shows top rejected reasons and truncates long rejected lists
+  - full rejected list stays in raw/debug JSON
+- remaining risks:
+  - v2 draft is now better for comparison, but it is still a mixed source pack: imported v2 formulas plus inherited v1 baseline rules
+  - very large rejected counts in v2 are expected because the draft pack is broad; the compact summary reduces UI noise but does not change scoring logic
+
+## 28. Local Browser Smoke For V1 vs V2 Panel (2026-05-28, no deploy)
+- local preview sync:
+  - `web_ui/fixtures/pro_result_preview.json` now enables `formula_card_comparison`
+  - preview fixture includes compact comparison summary for:
+    - `RECT_CHILD_BIRTH_001`
+    - `RECT_CHILD_BIRTH_002_DRAFT`
+  - preview fixture now shows inherited/shared rules and v2-added rules in rendered UI, not only in raw JSON
+- local browser proof:
+  - fresh local API/UI were started on `127.0.0.1:8017` and `127.0.0.1:8018`
+  - `http://127.0.0.1:8018/?proof_preview=pro` now renders the `V1 vs V2` panel with:
+    - `card_id`
+    - `formulas_count`
+    - `working_range`
+    - `best_candidate`
+    - `matched/rejected/missed`
+    - `golden/supporting/context`
+    - `event_contribution_score`
+    - `shared_rules`
+    - inherited v1 markers
+    - `v2_added_rules`
+    - `why_result_changed`
+- comparison safety:
+  - default production card remains `RECT_CHILD_BIRTH_001`
+  - draft card remains explicit-only and is not auto-activated in production flow
+- remaining risks:
+  - preview comparison uses fixture data for stable UI proof; live expert runs must still be checked against real backend payload before deploy if comparison UI changes again
+  - v2 rejected counts remain intentionally compact in the main panel; full detail stays in raw/debug JSON
+
+## 29. Final Comparison Proof Mode Added (2026-05-28, no deploy)
+- new local proof mode:
+  - `?proof_preview=comparison`
+  - immediately opens the technical/events surface and scrolls to the rendered `V1 vs V2` comparison panel
+- proof modes status:
+  - `?proof_preview=pro` still loads the final Pro preview payload
+  - `?proof_preview=chart` still opens the ordinary chart modal
+  - `?proof_preview=all` still loads both Pro preview data and chart modal
+  - `?proof_preview=comparison` is now the shortest expert-facing comparison proof link
+- local browser verification passed on fresh servers:
+  - API `127.0.0.1:8017`
+  - UI `127.0.0.1:8018`
+  - visible in rendered comparison panel:
+    - `RECT_CHILD_BIRTH_001`
+    - `RECT_CHILD_BIRTH_002_DRAFT`
+    - `formulas_count`
+    - `working_range`
+    - `best_candidate`
+    - `matched/rejected/missed`
+    - `golden/supporting/context`
+    - `event_contribution_score`
+    - `shared_rules`
+    - inherited v1 markers
+    - `v2_added_rules`
+    - `why_result_changed`
+- pre-deploy gate:
+  - focused UI tests passed
+  - full pytest passed
+  - local state is ready for safe deploy
+- remaining risks:
+  - browser comparison proof is still fixture-based; after deploy, one live verification pass is still required
+  - comparison panel is text-first and compact by design; if Ekaterina needs side-by-side cards later, that is a separate UX task

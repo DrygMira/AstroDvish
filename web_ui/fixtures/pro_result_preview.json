@@ -351,7 +351,377 @@
     }
   },
   "formula_card_comparison": {
-    "enabled": false
+    "enabled": true,
+    "baseline_card_id": "RECT_CHILD_BIRTH_001",
+    "selected_card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+    "items": [
+      {
+        "card_id": "RECT_CHILD_BIRTH_001",
+        "card_version": "child_birth_symbolic_mvp_v3",
+        "formulas_count": 6,
+        "priority_counts": {
+          "golden": 3,
+          "supporting": 3,
+          "context": 0,
+          "ambiguity_risk": 0
+        }
+      },
+      {
+        "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+        "card_version": "child_birth_v2_draft_001",
+        "formulas_count": 94,
+        "priority_counts": {
+          "golden": 24,
+          "supporting": 39,
+          "context": 31,
+          "ambiguity_risk": 0
+        }
+      }
+    ],
+    "summary": {
+      "baseline_card_id": "RECT_CHILD_BIRTH_001",
+      "selected_card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+      "items": [
+        {
+          "card_id": "RECT_CHILD_BIRTH_001",
+          "formulas_count": 6,
+          "priority_counts": {
+            "golden": 3,
+            "supporting": 3,
+            "context": 0,
+            "ambiguity_risk": 0
+          },
+          "working_range": {
+            "start_local": "1990-05-12T14:00:00",
+            "end_local": "1990-05-12T14:20:00",
+            "candidate_count": 41,
+            "criterion": "golden_matched_count=0",
+            "best_candidate": "1990-05-12T14:00:00",
+            "golden_matched_count": 0,
+            "score": -5.5,
+            "selection_reason": "Won by supporting_bonus after golden tie: 0.0 vs 0.0."
+          },
+          "best_candidate": "1990-05-12T14:00:00",
+          "matched": 0,
+          "rejected": 8,
+          "missed": 6,
+          "golden_matched": 0,
+          "supporting_matched": 0,
+          "context_matched": 0,
+          "event_contribution_score": 0.0,
+          "top_rejected_reasons": [
+            {
+              "reason": "over_orb",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+          "formulas_count": 94,
+          "priority_counts": {
+            "golden": 24,
+            "supporting": 39,
+            "context": 31,
+            "ambiguity_risk": 0
+          },
+          "working_range": {
+            "start_local": "1990-05-12T14:00:00",
+            "end_local": "1990-05-12T14:02:30",
+            "candidate_count": 6,
+            "criterion": "golden_matched_count=3",
+            "best_candidate": "1990-05-12T14:00:00",
+            "golden_matched_count": 3,
+            "score": -2.425,
+            "selection_reason": "Won by golden_orb_sum: 0.8665 vs 0.9989 with equal golden_matched_count=3."
+          },
+          "best_candidate": "1990-05-12T14:00:00",
+          "matched": 10,
+          "rejected": 135,
+          "missed": 22,
+          "golden_matched": 3,
+          "supporting_matched": 4,
+          "context_matched": 3,
+          "event_contribution_score": 105.3,
+          "top_rejected_reasons": [
+            {
+              "reason": "over_orb",
+              "count": 135
+            }
+          ]
+        }
+      ],
+      "shared_rules": [
+        {
+          "id": "cusp_10_to_cusp_5",
+          "display_formula": "Directed cusp_10 -> Natal cusp_5",
+          "priority": "supporting",
+          "aspect": "opposition",
+          "role": "time_refinement",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+          "id": "cusp_4_to_moon",
+          "display_formula": "Directed cusp_4 -> Natal Moon",
+          "priority": "context",
+          "aspect": "conjunction",
+          "role": "context",
+          "inherited_from_v1": false,
+          "inherited_from_card_id": null
+        },
+        {
+          "id": "cusp_5_to_chiron",
+          "display_formula": "Directed cusp_5 -> Natal Chiron",
+          "priority": "supporting",
+          "aspect": "conjunction",
+          "role": "event_confirmation",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+          "id": "cusp_6_to_sun",
+          "display_formula": "Directed cusp_6 -> Natal Sun",
+          "priority": "golden",
+          "aspect": "sextile",
+          "role": "time_refinement",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+          "id": "ruler_4_to_house_element_5",
+          "display_formula": "Directed ruler_4 -> Natal house_element_5",
+          "priority": "supporting",
+          "aspect": "conjunction",
+          "role": "event_confirmation",
+          "inherited_from_v1": false,
+          "inherited_from_card_id": null
+        },
+        {
+          "id": "sun_to_jupiter",
+          "display_formula": "Directed Sun -> Natal Jupiter",
+          "priority": "golden",
+          "aspect": "sextile",
+          "role": "event_confirmation",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        }
+      ],
+      "v1_only_rules": [],
+      "v2_added_rules": [
+        {
+          "id": "cusp_10_to_moon",
+          "display_formula": "Directed cusp_10 -> Natal Moon"
+        },
+        {
+          "id": "cusp_10_to_ruler_4",
+          "display_formula": "Directed cusp_10 -> Natal ruler_4"
+        },
+        {
+          "id": "cusp_10_to_ruler_5",
+          "display_formula": "Directed cusp_10 -> Natal ruler_5"
+        },
+        {
+          "id": "cusp_10_to_sun",
+          "display_formula": "Directed cusp_10 -> Natal Sun"
+        },
+        {
+          "id": "cusp_1_to_jupiter",
+          "display_formula": "Directed cusp_1 -> Natal Jupiter"
+        },
+        {
+          "id": "cusp_1_to_moon",
+          "display_formula": "Directed cusp_1 -> Natal Moon"
+        },
+        {
+          "id": "cusp_1_to_ruler_4",
+          "display_formula": "Directed cusp_1 -> Natal ruler_4"
+        },
+        {
+          "id": "cusp_1_to_ruler_5",
+          "display_formula": "Directed cusp_1 -> Natal ruler_5"
+        },
+        {
+          "id": "cusp_1_to_sun",
+          "display_formula": "Directed cusp_1 -> Natal Sun"
+        },
+        {
+          "id": "cusp_4_to_cusp_1",
+          "display_formula": "Directed cusp_4 -> Natal cusp_1"
+        }
+      ],
+      "why_result_changed": "v2 adds a larger child_birth rule pack, so candidate ranking is driven by more golden/supporting confirmations than v1."
+    },
+    "differences": {
+      "working_time_ranges_difference": [
+        {
+          "card_id": "RECT_CHILD_BIRTH_001",
+          "ranges_count": 1,
+          "primary_range": {
+            "start_local": "1990-05-12T14:00:00",
+            "end_local": "1990-05-12T14:20:00",
+            "candidate_count": 41,
+            "criterion": "golden_matched_count=0",
+            "best_candidate": "1990-05-12T14:00:00",
+            "golden_matched_count": 0,
+            "score": -5.5,
+            "selection_reason": "Won by supporting_bonus after golden tie: 0.0 vs 0.0."
+          }
+        },
+        {
+          "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+          "ranges_count": 2,
+          "primary_range": {
+            "start_local": "1990-05-12T14:00:00",
+            "end_local": "1990-05-12T14:02:30",
+            "candidate_count": 6,
+            "criterion": "golden_matched_count=3",
+            "best_candidate": "1990-05-12T14:00:00",
+            "golden_matched_count": 3,
+            "score": -2.425,
+            "selection_reason": "Won by golden_orb_sum: 0.8665 vs 0.9989 with equal golden_matched_count=3."
+          }
+        }
+      ],
+      "best_candidate_difference": {
+        "RECT_CHILD_BIRTH_001": {
+          "candidate_time_local": "1990-05-12T14:00:00",
+          "score": -5.5,
+          "golden_matched_count": 0,
+          "golden_orb_sum": 0.0
+        },
+        "RECT_CHILD_BIRTH_002_DRAFT": {
+          "candidate_time_local": "1990-05-12T14:00:00",
+          "score": -2.425,
+          "golden_matched_count": 3,
+          "golden_orb_sum": 0.8665
+        }
+      },
+      "event_contribution_audit_difference": {
+        "RECT_CHILD_BIRTH_001": [
+          {
+            "event_type": "child_birth",
+            "event_date": "2010-05-12",
+            "matched_count": 0,
+            "rejected_count": 8,
+            "missed_count": 6,
+            "score": 0.0,
+            "contribution_to_final_candidate": 0.0
+          }
+        ],
+        "RECT_CHILD_BIRTH_002_DRAFT": [
+          {
+            "event_type": "child_birth",
+            "event_date": "2010-05-12",
+            "matched_count": 10,
+            "rejected_count": 135,
+            "missed_count": 22,
+            "score": 105.3,
+            "contribution_to_final_candidate": 105.3
+          }
+        ]
+      },
+      "shared_rules": [
+        {
+          "id": "cusp_10_to_cusp_5",
+          "display_formula": "Directed cusp_10 -> Natal cusp_5",
+          "priority": "supporting",
+          "aspect": "opposition",
+          "role": "time_refinement",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+          "id": "cusp_4_to_moon",
+          "display_formula": "Directed cusp_4 -> Natal Moon",
+          "priority": "context",
+          "aspect": "conjunction",
+          "role": "context",
+          "inherited_from_v1": false,
+          "inherited_from_card_id": null
+        },
+        {
+          "id": "cusp_5_to_chiron",
+          "display_formula": "Directed cusp_5 -> Natal Chiron",
+          "priority": "supporting",
+          "aspect": "conjunction",
+          "role": "event_confirmation",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+          "id": "cusp_6_to_sun",
+          "display_formula": "Directed cusp_6 -> Natal Sun",
+          "priority": "golden",
+          "aspect": "sextile",
+          "role": "time_refinement",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        },
+        {
+          "id": "ruler_4_to_house_element_5",
+          "display_formula": "Directed ruler_4 -> Natal house_element_5",
+          "priority": "supporting",
+          "aspect": "conjunction",
+          "role": "event_confirmation",
+          "inherited_from_v1": false,
+          "inherited_from_card_id": null
+        },
+        {
+          "id": "sun_to_jupiter",
+          "display_formula": "Directed Sun -> Natal Jupiter",
+          "priority": "golden",
+          "aspect": "sextile",
+          "role": "event_confirmation",
+          "inherited_from_v1": true,
+          "inherited_from_card_id": "RECT_CHILD_BIRTH_001"
+        }
+      ],
+      "v1_only_rules": [],
+      "v2_added_rules": [
+        {
+          "id": "cusp_10_to_moon",
+          "display_formula": "Directed cusp_10 -> Natal Moon"
+        },
+        {
+          "id": "cusp_10_to_ruler_4",
+          "display_formula": "Directed cusp_10 -> Natal ruler_4"
+        },
+        {
+          "id": "cusp_10_to_ruler_5",
+          "display_formula": "Directed cusp_10 -> Natal ruler_5"
+        },
+        {
+          "id": "cusp_10_to_sun",
+          "display_formula": "Directed cusp_10 -> Natal Sun"
+        },
+        {
+          "id": "cusp_1_to_jupiter",
+          "display_formula": "Directed cusp_1 -> Natal Jupiter"
+        },
+        {
+          "id": "cusp_1_to_moon",
+          "display_formula": "Directed cusp_1 -> Natal Moon"
+        },
+        {
+          "id": "cusp_1_to_ruler_4",
+          "display_formula": "Directed cusp_1 -> Natal ruler_4"
+        },
+        {
+          "id": "cusp_1_to_ruler_5",
+          "display_formula": "Directed cusp_1 -> Natal ruler_5"
+        },
+        {
+          "id": "cusp_1_to_sun",
+          "display_formula": "Directed cusp_1 -> Natal Sun"
+        },
+        {
+          "id": "cusp_4_to_cusp_1",
+          "display_formula": "Directed cusp_4 -> Natal cusp_1"
+        }
+      ],
+      "why_result_changed": "v2 adds a larger child_birth rule pack, so candidate ranking is driven by more golden/supporting confirmations than v1."
+    }
   },
   "rpRawBox": true
 }

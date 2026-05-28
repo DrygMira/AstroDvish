@@ -41,6 +41,8 @@ class FormulaDirectionRule(BaseModel):
     required: bool = True
     weight: float = 1.0
     priority_tier: PriorityTier = "supporting"
+    inherited_from_v1: bool = False
+    inherited_from_card_id: str | None = None
 
     @field_validator("allowed_aspects", "allowed_ruler_types", "aspect_types", mode="before")
     @classmethod

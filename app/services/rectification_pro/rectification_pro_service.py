@@ -256,12 +256,19 @@ class RectificationProService:
 
         selected_card_id = payload.settings.formula_card_id or items[-1]["card_id"]
         baseline_card_id = items[0]["card_id"]
+        differences = self._build_formula_card_differences(items)
         return {
             "enabled": True,
             "baseline_card_id": baseline_card_id,
             "selected_card_id": selected_card_id,
             "items": items,
-            "differences": self._build_formula_card_differences(items),
+            "differences": differences,
+            "summary": self._build_formula_card_comparison_summary(
+                baseline_card_id=baseline_card_id,
+                selected_card_id=selected_card_id,
+                items=items,
+                differences=differences,
+            ),
         }
 
     @staticmethod
@@ -288,6 +295,10 @@ class RectificationProService:
             "card_version": first_result.get("card_version") or refinement.get("card_version"),
             "formulas_count": first_result.get("formulas_count") or refinement.get("formulas_count"),
             "priority_counts": first_result.get("priority_counts") or refinement.get("priority_counts") or {},
+            "validation_report": first_result.get("validation_report") or {},
+            "matched_formula_aspects": first_result.get("matched_formula_aspects") or [],
+            "rejected_aspects": first_result.get("rejected_aspects") or [],
+            "missing_formula_links": first_result.get("missing_formula_links") or [],
         }
 
     @staticmethod
@@ -295,11 +306,27 @@ class RectificationProService:
         working_ranges_difference = []
         best_candidate_difference = {}
         event_contribution_audit_difference = {}
+        rules_by_card: dict[str, dict[str, dict[str, Any]]] = {}
         for item in items:
             card_id = str(item.get("card_id") or "unknown")
             refinement = item.get("formula_refinement_results") or {}
             best_candidate = refinement.get("best_candidate") or {}
             working_ranges = refinement.get("working_time_ranges") or []
+            validation_report = item.get("validation_report") or {}
+            expected_rules = ((validation_report.get("expected_by_card") or {}).get("direction_rules") or [])
+            rules_by_card[card_id] = {
+                str(rule.get("id") or ""): {
+                    "id": rule.get("id"),
+                    "display_formula": rule.get("display_formula") or rule.get("formula") or rule.get("id"),
+                    "priority": rule.get("priority"),
+                    "aspect": rule.get("aspect"),
+                    "role": rule.get("role"),
+                    "inherited_from_v1": bool(rule.get("inherited_from_v1")),
+                    "inherited_from_card_id": rule.get("inherited_from_card_id"),
+                }
+                for rule in expected_rules
+                if str(rule.get("id") or "").strip()
+            }
             working_ranges_difference.append(
                 {
                     "card_id": card_id,
@@ -314,10 +341,71 @@ class RectificationProService:
                 "golden_orb_sum": best_candidate.get("golden_orb_sum"),
             }
             event_contribution_audit_difference[card_id] = best_candidate.get("event_contribution_audit") or []
+        baseline_card_id = str(items[0].get("card_id") or "unknown")
+        selected_card_id = str(items[-1].get("card_id") or "unknown")
+        baseline_rules = rules_by_card.get(baseline_card_id, {})
+        selected_rules = rules_by_card.get(selected_card_id, {})
+        shared_rule_ids = sorted(set(baseline_rules).intersection(selected_rules))
+        v1_only_rule_ids = sorted(set(baseline_rules) - set(selected_rules))
+        v2_added_rule_ids = sorted(set(selected_rules) - set(baseline_rules))
+        shared_rules = [selected_rules.get(rule_id) or baseline_rules.get(rule_id) for rule_id in shared_rule_ids]
+        v1_only_rules = [baseline_rules[rule_id] for rule_id in v1_only_rule_ids]
+        v2_added_rules = [selected_rules[rule_id] for rule_id in v2_added_rule_ids]
+        why_result_changed = (
+            "v2 adds a larger child_birth rule pack, so candidate ranking is driven by more golden/supporting confirmations than v1."
+            if v2_added_rules
+            else "v1 and v2 use the same visible rule set; result changes come only from scoring differences."
+        )
         return {
             "working_time_ranges_difference": working_ranges_difference,
             "best_candidate_difference": best_candidate_difference,
             "event_contribution_audit_difference": event_contribution_audit_difference,
+            "shared_rules": shared_rules,
+            "v1_only_rules": v1_only_rules,
+            "v2_added_rules": v2_added_rules,
+            "why_result_changed": why_result_changed,
+        }
+
+    @staticmethod
+    def _build_formula_card_comparison_summary(
+        *,
+        baseline_card_id: str,
+        selected_card_id: str,
+        items: list[dict[str, Any]],
+        differences: dict[str, Any],
+    ) -> dict[str, Any]:
+        summary_items: list[dict[str, Any]] = []
+        for item in items:
+            refinement = item.get("formula_refinement_results") or {}
+            best_candidate = refinement.get("best_candidate") or {}
+            working_range = refinement.get("working_time_range") or {}
+            event_audit = best_candidate.get("event_contribution_audit") or []
+            event_contribution_score = round(sum(float(audit.get("score") or 0.0) for audit in event_audit), 4)
+            summary_items.append(
+                {
+                    "card_id": item.get("card_id"),
+                    "formulas_count": item.get("formulas_count"),
+                    "priority_counts": item.get("priority_counts") or {},
+                    "working_range": working_range,
+                    "best_candidate": best_candidate.get("candidate_time_local"),
+                    "matched": best_candidate.get("matched_count"),
+                    "rejected": best_candidate.get("rejected_count"),
+                    "missed": best_candidate.get("missing_count"),
+                    "golden_matched": best_candidate.get("golden_matched_count"),
+                    "supporting_matched": best_candidate.get("supporting_matched_count"),
+                    "context_matched": best_candidate.get("context_matched_count"),
+                    "event_contribution_score": event_contribution_score,
+                    "top_rejected_reasons": best_candidate.get("top_rejected_reasons") or [],
+                }
+            )
+        return {
+            "baseline_card_id": baseline_card_id,
+            "selected_card_id": selected_card_id,
+            "items": summary_items,
+            "shared_rules": differences.get("shared_rules") or [],
+            "v1_only_rules": differences.get("v1_only_rules") or [],
+            "v2_added_rules": differences.get("v2_added_rules") or [],
+            "why_result_changed": differences.get("why_result_changed"),
         }
 
     @staticmethod
