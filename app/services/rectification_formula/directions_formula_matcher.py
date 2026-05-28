@@ -30,6 +30,7 @@ ASPECT_ANGLES: dict[str, float] = {
     "quincunx": 150.0,
     "opposition": 180.0,
 }
+MAJOR_ASPECTS: tuple[str, ...] = ("conjunction", "sextile", "square", "trine", "opposition")
 
 SIGN_RULERS: dict[str, list[dict[str, str]]] = {
     "Aries": [{"name": "mars", "ruler_type": "primary_ruler"}],
@@ -130,19 +131,24 @@ class DirectionsFormulaMatcher:
         event: EventCard,
         rule: FormulaDirectionRule,
     ) -> dict[str, Any]:
-        directed_points = self._resolve_selectors(
+        source_selectors, source_selector_decisions = self._effective_selectors(rule=rule, selectors=rule.source_selectors, field_value=rule.source)
+        target_selectors, target_selector_decisions = self._effective_selectors(rule=rule, selectors=rule.target_selectors, field_value=rule.target)
+
+        directed_points, source_groups = self._resolve_selectors(
             chart=chart,
             card=card,
-            selectors=rule.source_selectors,
+            selectors=source_selectors,
             coordinate_kind="directed",
             direction_result=direction_result,
+            rule=rule,
         )
-        natal_points = self._resolve_selectors(
+        natal_points, target_groups = self._resolve_selectors(
             chart=chart,
             card=card,
-            selectors=rule.target_selectors,
+            selectors=target_selectors,
             coordinate_kind="natal",
             direction_result=direction_result,
+            rule=rule,
         )
 
         debug: dict[str, Any] = {
@@ -157,6 +163,12 @@ class DirectionsFormulaMatcher:
             "direction_arc": round(direction_result.direction_arc, 6),
             "resolved_sources": [point.key for point in directed_points],
             "resolved_targets": [point.key for point in natal_points],
+            "resolved_source_group": source_groups,
+            "resolved_target_group": target_groups,
+            "resolved_source_groups": source_groups,
+            "resolved_target_groups": target_groups,
+            "source_selector_decisions": source_selector_decisions,
+            "target_selector_decisions": target_selector_decisions,
             "resolved_source_details": [
                 {"point_name": point.key, "role": point.role, "ruler_type": point.ruler_type}
                 for point in directed_points
@@ -168,7 +180,20 @@ class DirectionsFormulaMatcher:
             "checked_pairs": [],
             "matched_pairs": [],
             "rejected_pairs": [],
+            "warnings": [],
         }
+        debug["source_ruler_resolution"] = self._build_ruler_resolution_debug(
+            chart=chart,
+            selectors=source_selectors,
+            resolved_points=directed_points,
+            allowed_ruler_types=rule.allowed_ruler_types,
+        )
+        debug["target_ruler_resolution"] = self._build_ruler_resolution_debug(
+            chart=chart,
+            selectors=target_selectors,
+            resolved_points=natal_points,
+            allowed_ruler_types=rule.allowed_ruler_types,
+        )
         matched: list[FormulaAspectMatch] = []
         rejected: list[FormulaAspectMatch] = []
         missing: list[dict[str, Any]] = []
@@ -220,6 +245,8 @@ class DirectionsFormulaMatcher:
                     "target_role": target.role,
                     "source_ruler_type": source.ruler_type,
                     "target_ruler_type": target.ruler_type,
+                    "source_type": self._point_type(source.key),
+                    "target_type": self._point_type(target.key),
                     "source_coordinate_type": "directed",
                     "target_coordinate_type": "natal",
                     "source_natal_coordinate": round(source.natal_degree, 4),
@@ -270,15 +297,30 @@ class DirectionsFormulaMatcher:
                 else:
                     rejected_match = match.model_copy(update={"rejection_reason": "over_orb"})
                     rejected.append(rejected_match)
-                    debug["rejected_pairs"].append({**pair_payload, "reason": "over_orb"})
+                    closest_major_name, closest_major_orb, _, closest_major_exact = self._closest_requested_aspect(
+                        source.degree,
+                        target.degree,
+                        MAJOR_ASPECTS,
+                    )
+                    rejected_payload = {**pair_payload, "reason": "over_orb"}
+                    if closest_major_name and closest_major_name not in rule.aspect_types:
+                        rejected_payload["closest_major_aspect"] = closest_major_name
+                        rejected_payload["closest_major_orb"] = round(float(closest_major_orb or 0.0), 4)
+                        rejected_payload["closest_major_exact_angle"] = round(float(closest_major_exact or 0.0), 4)
+                    debug["rejected_pairs"].append(rejected_payload)
 
         if rule.required and not matched:
             reason = "over_orb_only" if rejected else "no_matching_aspect"
+            mismatch_hint = self._rule_aspect_mismatch_hint(rule=rule, debug=debug)
+            if mismatch_hint:
+                reason = "closest_major_aspect_mismatch"
+                debug["warnings"].append(mismatch_hint)
             missing.append(
                 {
                     "rule_id": rule.id,
                     "reason": reason,
                     "display_formula": self._display_formula(rule),
+                    "details": mismatch_hint,
                 }
             )
 
@@ -292,18 +334,24 @@ class DirectionsFormulaMatcher:
         selectors: Iterable[str],
         coordinate_kind: Literal["directed", "natal"],
         direction_result: DirectionChartBuildResult,
-    ) -> list[ResolvedPoint]:
+        rule: FormulaDirectionRule,
+    ) -> tuple[list[ResolvedPoint], dict[str, list[str]]]:
         points: dict[str, ResolvedPoint] = {}
+        groups: dict[str, list[str]] = {}
         for selector in selectors:
+            resolved_keys: list[str] = []
             for point in self._resolve_selector(
                 chart=chart,
                 card=card,
                 selector=selector,
                 coordinate_kind=coordinate_kind,
                 direction_result=direction_result,
+                rule=rule,
             ):
                 points[point.key] = point
-        return list(points.values())
+                resolved_keys.append(point.key)
+            groups[selector] = sorted(dict.fromkeys(resolved_keys))
+        return list(points.values()), groups
 
     def _resolve_selector(
         self,
@@ -313,15 +361,18 @@ class DirectionsFormulaMatcher:
         selector: str,
         coordinate_kind: Literal["directed", "natal"],
         direction_result: DirectionChartBuildResult,
+        rule: FormulaDirectionRule,
     ) -> list[ResolvedPoint]:
         if selector == "significators":
-            return self._resolve_selectors(
+            points, _ = self._resolve_selectors(
                 chart=chart,
                 card=card,
                 selectors=card.significators,
                 coordinate_kind=coordinate_kind,
                 direction_result=direction_result,
+                rule=rule,
             )
+            return points
         if selector.startswith("cusp_"):
             house_num = selector.split("_", 1)[1]
             point_key = f"cusp_{house_num}"
@@ -339,6 +390,7 @@ class DirectionsFormulaMatcher:
                 house_num=house_num,
                 coordinate_kind=coordinate_kind,
                 direction_result=direction_result,
+                allowed_ruler_types=rule.allowed_ruler_types,
             )
         if selector.startswith("house_elements_"):
             house_num = int(selector.split("_")[-1])
@@ -398,6 +450,7 @@ class DirectionsFormulaMatcher:
         house_num: str,
         coordinate_kind: Literal["directed", "natal"],
         direction_result: DirectionChartBuildResult,
+        allowed_ruler_types: list[str],
     ) -> list[ResolvedPoint]:
         cusp = chart.houses.cusp_details.get(str(house_num))
         if cusp is None:
@@ -407,6 +460,8 @@ class DirectionsFormulaMatcher:
         for ruler_info in rulers:
             ruler_name = ruler_info["name"]
             ruler_type = ruler_info["ruler_type"]
+            if allowed_ruler_types and ruler_type not in allowed_ruler_types:
+                continue
             points.extend(
                 self._point_from_base_key(
                     point_key=f"ruler_{house_num}:{ruler_name}",
@@ -418,6 +473,147 @@ class DirectionsFormulaMatcher:
                 )
             )
         return points
+
+    @staticmethod
+    def _point_type(point_key: str) -> str:
+        if point_key.startswith("cusp_"):
+            return "cusp"
+        if point_key.startswith("house_element_"):
+            return "house_element"
+        if point_key.startswith("ruler_"):
+            return "ruler"
+        return "planet_or_point"
+
+    @staticmethod
+    def _rule_aspect_mismatch_hint(*, rule: FormulaDirectionRule, debug: dict[str, Any]) -> dict[str, Any] | None:
+        rejected_pairs = debug.get("rejected_pairs") or []
+        if not rejected_pairs:
+            return None
+        with_major = [pair for pair in rejected_pairs if pair.get("closest_major_aspect")]
+        if not with_major:
+            return None
+        best = sorted(with_major, key=lambda item: float(item.get("closest_major_orb", 999.0)))[0]
+        return {
+            "rule_id": rule.id,
+            "configured_aspects": list(rule.aspect_types),
+            "closest_major_aspect": best.get("closest_major_aspect"),
+            "closest_major_orb": best.get("closest_major_orb"),
+            "closest_major_exact_angle": best.get("closest_major_exact_angle"),
+            "actual_angle": best.get("actual_angle"),
+        }
+
+    @classmethod
+    def _effective_selectors(
+        cls,
+        *,
+        rule: FormulaDirectionRule,
+        selectors: list[str],
+        field_value: str | None,
+    ) -> tuple[list[str], list[dict[str, Any]]]:
+        if not selectors:
+            return [], []
+        if not field_value:
+            return selectors, [{"selector": item, "status": "included", "reason": "no_literal_filter"} for item in selectors]
+        requested_tokens = [item.strip().lower() for item in str(field_value).split(",") if item.strip()]
+        if not requested_tokens:
+            return selectors, [{"selector": item, "status": "included", "reason": "empty_literal_filter"} for item in selectors]
+        effective: list[str] = []
+        decisions: list[dict[str, Any]] = []
+        for selector in selectors:
+            normalized = selector.strip().lower()
+            aliases = cls._selector_aliases(normalized)
+            is_allowed = any(token in aliases for token in requested_tokens)
+            if is_allowed:
+                effective.append(selector)
+                decisions.append(
+                    {
+                        "selector": selector,
+                        "status": "included",
+                        "reason": "literal_match",
+                        "include_reason": "literal_match",
+                        "exclude_reason": None,
+                        "literal": field_value,
+                    }
+                )
+            else:
+                decisions.append(
+                    {
+                        "selector": selector,
+                        "status": "excluded",
+                        "reason": "literal_filter_mismatch",
+                        "include_reason": None,
+                        "exclude_reason": "literal_filter_mismatch",
+                        "literal": field_value,
+                    }
+                )
+        if not effective:
+            return selectors, decisions
+        return effective, decisions
+
+    @staticmethod
+    def _selector_aliases(token: str) -> set[str]:
+        aliases = {token}
+        if token.startswith("house_element_"):
+            aliases.add(token.replace("house_element_", "house_elements_", 1))
+        if token.startswith("house_elements_"):
+            aliases.add(token.replace("house_elements_", "house_element_", 1))
+        if token in {"sun", "moon", "jupiter", "venus", "mars", "mercury", "saturn", "uranus", "neptune", "pluto", "chiron", "proserpina", "lilith", "selena"}:
+            aliases.add("significators")
+        return aliases
+
+    @classmethod
+    def _build_ruler_resolution_debug(
+        cls,
+        *,
+        chart: ChartResponse,
+        selectors: Iterable[str],
+        resolved_points: list[ResolvedPoint],
+        allowed_ruler_types: list[str],
+    ) -> list[dict[str, Any]]:
+        resolved_keys = {item.key for item in resolved_points}
+        debug_items: list[dict[str, Any]] = []
+        for selector in selectors:
+            if not selector.startswith("ruler_"):
+                continue
+            house_num = selector.split("_", 1)[1]
+            cusp = chart.houses.cusp_details.get(str(house_num))
+            if cusp is None:
+                debug_items.append(
+                    {
+                        "selector": selector,
+                        "status": "excluded",
+                        "exclude_reason": "missing_cusp",
+                    }
+                )
+                continue
+            for candidate in SIGN_RULERS.get(cusp.sign_name_en, []):
+                point_key = f"ruler_{house_num}:{candidate['name']}"
+                ruler_type = candidate["ruler_type"]
+                if allowed_ruler_types and ruler_type not in allowed_ruler_types:
+                    debug_items.append(
+                        {
+                            "selector": selector,
+                            "point_name": point_key,
+                            "ruler_type": ruler_type,
+                            "status": "excluded",
+                            "include_reason": None,
+                            "exclude_reason": "ruler_type_not_allowed",
+                            "allowed_ruler_types": list(allowed_ruler_types),
+                        }
+                    )
+                    continue
+                debug_items.append(
+                    {
+                        "selector": selector,
+                        "point_name": point_key,
+                        "ruler_type": ruler_type,
+                        "status": "included" if point_key in resolved_keys else "excluded",
+                        "include_reason": "cusp_sign_ruler_match" if point_key in resolved_keys else None,
+                        "exclude_reason": None if point_key in resolved_keys else "point_not_present_in_chart",
+                        "allowed_ruler_types": list(allowed_ruler_types),
+                    }
+                )
+        return debug_items
 
     def _resolve_house_elements(
         self,

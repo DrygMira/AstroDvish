@@ -304,3 +304,70 @@ Every future report must include:
 - public health decision unchanged:
   - `/health` is the public health endpoint
   - `/api/v1/health` is treated as internal/not publicly routed on current gateway
+
+## 23. Resolver Precision Cleanup (2026-05-28, no deploy)
+- Ekaterina feedback captured:
+  - some rules showed widened targets/rulers in debug
+  - `cusp_10 -> cusp_5` can be geometrically closer to another major aspect than configured narrow aspect
+- cleanup target:
+  - strict literal selector filtering from `source` / `target` fields
+  - no silent mixing of `cusp_N` and `significators` inside one resolved target group
+  - ruler resolution supports `allowed_ruler_types` and reports `ruler_type`
+  - validation report debug shows selector include/exclude reasons, source/target groups, and closest-major-aspect mismatch warnings
+- production flow unchanged:
+  - no activation switch
+  - no direction math core change
+
+## 24. Resolver Cleanup Verification Snapshot (2026-05-28, no deploy)
+- resolver precision cleaned up:
+  - literal `target=cusp_N` now resolves only to natal `cusp_N`
+  - literal `target=house_element_N` resolves only to natal house elements of house `N`
+  - `significators` stay isolated and are not silently mixed into `cusp_N` target rows
+  - validation debug now shows `resolved_source_group`, `resolved_target_group`, `source_type`, `target_type`, selector include/exclude reasons, and ruler resolution reasons
+- ruler precision cleaned up:
+  - rules can restrict `allowed_ruler_types`
+  - current child_birth production card metadata uses `allowed_ruler_types=["modern_ruler"]` for `ruler_4_to_house_element_5`, so Neptune is scored and Jupiter is excluded for this rule
+  - excluded rulers are now visible in debug with reason
+- aspect mismatch policy:
+  - no core math change
+  - no blind production aspect rewrite
+  - if actual geometry is closer to another major aspect, report now shows `closest_major_aspect_mismatch` with configured aspect, closest major aspect, actual angle, exact angle, orb to configured, orb to closest
+  - current open expert decision remains `cusp_10 -> cusp_5`: keep narrow rule + warning, or switch to `opposition`, or move to `allowed_aspects`
+- preview fixture sync:
+  - `web_ui/fixtures/pro_result_preview.json` synced with real Pro JSON shape
+  - preview now carries `ruler_type`, resolver groups, include/exclude reasons, mismatch warning, literal Formula/Rule fields, and `event_contribution_audit`
+- local proof status:
+  - focused tests: `88 passed`
+  - full pytest: `262 passed, 1 xfailed`
+  - fresh local UI proof run on `http://127.0.0.1:8015/?proof_preview=pro|chart|all`
+  - Pro preview visibly shows working ranges, best/reference candidate, formula table columns with coordinates/angles/orbs, raw JSON, and keeps default card `RECT_CHILD_BIRTH_001`
+  - chart preview visibly opens modal, expert table, and raw API JSON
+- draft status:
+  - `RECT_CHILD_BIRTH_002_DRAFT` still exists but is not activated in default production flow
+- next step:
+  - get Ekaterina decision on `cusp_10 -> cusp_5` aspect policy
+  - then do one more live/server proof before deploy
+
+## 25. Ekaterina Confirmation Applied Locally (2026-05-28, no deploy)
+- expert confirmation applied to policy layer only; no direction math/core change
+- production card `RECT_CHILD_BIRTH_001` updated locally:
+  - `Directed cusp_10 -> Natal cusp_5` now uses `opposition` instead of `trine`
+  - the old `closest_major_aspect_mismatch` warning for this exact rule is removed; production path should now show `opposition` and, if outside orb, `rejected/over_orb`
+  - `allowed_ruler_types=["modern_ruler"]` remains on `ruler_4_to_house_element_5`, so Neptune stays included and Jupiter stays excluded for this rule
+- significators policy clarified:
+  - significators are stable card metadata, not dynamic house-ruler substitutions
+  - if a formula explicitly names a planet, resolver uses that planet only
+  - if a formula explicitly uses `significators`, resolver uses only configured significators and does not mix them with `cusp_N`
+- v2 / draft policy:
+  - draft formulas continue to use explicit `allowed_aspects` major list only:
+    `conjunction`, `square`, `opposition`, `trine`, `sextile`
+  - this major-list policy is for v2/draft DSL and is not auto-expanded across all production v1 rules
+- preview sync:
+  - `web_ui/fixtures/pro_result_preview.json` now mirrors the updated policy:
+    `cusp_10 -> cusp_5` is shown as `opposition`
+    it remains visible as expected/rejected by orb when outside the current production orb limit
+- metadata naming:
+  - misleading production `card_version=child_birth_solar_arc_v2` renamed locally to `child_birth_symbolic_mvp_v3`
+  - notes now explicitly say `symbolic_1deg_per_year` MVP and that `cusp_10 -> cusp_5` is `opposition` with preserved `over_orb` behavior
+- deploy state:
+  - this production-card change is local only and still pending deploy

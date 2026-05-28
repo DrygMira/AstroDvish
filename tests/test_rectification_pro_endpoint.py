@@ -171,8 +171,34 @@ def test_rectification_pro_child_birth_expected_by_card_matches_production_card(
     assert expected_rules[0]["role"] == "event_confirmation"
     assert expected_rules[0]["orb_limit"] == 1.0
     assert expected_rules[0]["meaning"]
+    assert expected_rules[1]["aspect"] == "opposition"
+    assert expected_rules[1]["aspect_types"] == ["opposition"]
     assert expected_rules[3]["aspect"] == "trine"
     assert expected_rules[3]["aspect_types"] == ["trine"]
+
+
+def test_rectification_pro_child_birth_cusp_10_to_cusp_5_is_opposition_and_over_orb(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    expected_rules = result["validation_report"]["expected_by_card"]["direction_rules"]
+    cusp_rule = next(rule for rule in expected_rules if rule["id"] == "cusp_10_to_cusp_5")
+    assert cusp_rule["aspect"] == "opposition"
+    assert cusp_rule["aspect_types"] == ["opposition"]
+
+    rejected = next(item for item in result["rejected_aspects"] if item["formula_rule_matched"] == "cusp_10_to_cusp_5")
+    assert rejected["aspect_type"] == "opposition"
+    assert rejected["rejection_reason"] == "over_orb"
+
+    missed = next(item for item in result["missing_formula_links"] if item["rule_id"] == "cusp_10_to_cusp_5")
+    assert missed["reason"] == "over_orb_only"
 
 
 def test_rectification_pro_can_select_draft_card_explicitly(monkeypatch, tmp_path) -> None:
@@ -284,6 +310,8 @@ def test_rectification_pro_returns_direction_debug_fields_for_formula_results(mo
     assert {
         "directed_point",
         "natal_target",
+        "source_type",
+        "target_type",
         "source_coordinate_type",
         "target_coordinate_type",
         "source_natal_coordinate",
@@ -294,6 +322,10 @@ def test_rectification_pro_returns_direction_debug_fields_for_formula_results(mo
         "orb",
         "orb_limit",
     }.issubset(checked_pair)
+    assert "resolved_source_group" in report["rule_debug"][0]
+    assert "resolved_target_group" in report["rule_debug"][0]
+    assert "source_selector_decisions" in report["rule_debug"][0]
+    assert "target_selector_decisions" in report["rule_debug"][0]
 
 
 def test_rectification_pro_labels_multiple_rulers_with_ruler_type(monkeypatch, tmp_path) -> None:
@@ -347,6 +379,10 @@ def test_rectification_pro_validation_report_table_contains_expert_visible_angle
     assert "Exact angle" in table
     assert "Orb" in table
     assert "Orb limit" in table
+    assert "Source type" in table
+    assert "Target type" in table
+    assert "Resolved source group" in table
+    assert "Resolved target group" in table
     assert "Directed Sun -> Natal Jupiter" in table
 
 
@@ -419,9 +455,9 @@ def test_rectification_pro_formula_refinement_uses_reference_triplet(monkeypatch
     body = response.json()
     best = body["formula_refinement_results"]["best_candidate"]
     table = best["formula_test_mode_results"][0]["validation_report_table"]
-    assert "Directed ruler_4 -> Natal house_element_5 | golden | event_confirmation | matched" in table
-    assert "Directed Sun -> Natal Jupiter | golden | event_confirmation | matched" in table
-    assert "Directed cusp_6 -> Natal Sun | golden | time_refinement | matched" in table
+    assert "Directed ruler_4 -> Natal house_element_5 | ruler_4_to_house_element_5 | golden | event_confirmation | matched" in table
+    assert "Directed Sun -> Natal Jupiter | sun_to_jupiter | golden | event_confirmation | matched" in table
+    assert "Directed cusp_6 -> Natal Sun | cusp_6_to_sun | golden | time_refinement | matched" in table
 
 
 def test_rectification_pro_formula_refinement_returns_scoring_breakdown(monkeypatch, tmp_path) -> None:

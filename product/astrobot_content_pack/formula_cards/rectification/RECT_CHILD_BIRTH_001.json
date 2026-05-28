@@ -2,7 +2,7 @@
   "card_id": "RECT_CHILD_BIRTH_001",
   "event_type": "child_birth",
   "status": "test",
-  "card_version": "child_birth_solar_arc_v2",
+  "card_version": "child_birth_symbolic_mvp_v3",
   "school": "expert_rectification_v0",
   "title": "Birth of child",
   "core_logic": ["house_5", "house_4", "ruler_4", "sun", "moon"],
@@ -40,6 +40,7 @@
       "source_kind": "directed",
       "target_kind": "natal",
       "source_selectors": ["ruler_4"],
+      "allowed_ruler_types": ["modern_ruler"],
       "target_selectors": ["house_elements_5"],
       "display_source": "ruler_4",
       "display_target": "house_element_5",
@@ -58,18 +59,18 @@
       "target": "cusp_5",
       "source_layer": "directed",
       "target_layer": "natal",
-      "aspect": "trine",
+      "aspect": "opposition",
       "priority": "supporting",
       "role": "time_refinement",
       "meaning": "Career and family cusps can resonate as a supporting child-birth timer.",
-      "comment": "Keep literal current direction only. Expert-corrected direction is still pending; do not auto-infer reverse rule.",
+      "comment": "Expert confirmed opposition for the current literal direction. Do not auto-infer reverse rule.",
       "source_kind": "directed",
       "target_kind": "natal",
       "source_selectors": ["cusp_10"],
       "target_selectors": ["cusp_5"],
       "display_source": "cusp_10",
       "display_target": "cusp_5",
-      "aspect_types": ["trine"],
+      "aspect_types": ["opposition"],
       "orb_limit": 1.0,
       "required": true,
       "weight": 1.2,
@@ -179,5 +180,5 @@
       "priority_tier": "supporting"
     }
   ],
-  "notes": "Production child_birth card aligned to confirmed solar arc MVP formulas."
+  "notes": "Production child_birth card aligned to confirmed symbolic_1deg_per_year MVP formulas. cusp_10 -> cusp_5 uses opposition by expert confirmation; over-orb remains rejected until orb policy changes."
 }

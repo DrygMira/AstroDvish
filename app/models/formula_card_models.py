@@ -35,13 +35,14 @@ class FormulaDirectionRule(BaseModel):
     display_source: str | None = None
     display_target: str | None = None
     allowed_aspects: list[str] = Field(default_factory=list)
+    allowed_ruler_types: list[str] = Field(default_factory=list)
     aspect_types: list[str] = Field(default_factory=list)
     orb_limit: float = 1.0
     required: bool = True
     weight: float = 1.0
     priority_tier: PriorityTier = "supporting"
 
-    @field_validator("allowed_aspects", "aspect_types", mode="before")
+    @field_validator("allowed_aspects", "allowed_ruler_types", "aspect_types", mode="before")
     @classmethod
     def _validate_aspect_lists(cls, value: Any) -> list[str]:
         if value is None:

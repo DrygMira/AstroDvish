@@ -559,19 +559,9 @@ class FormulaTestModeService:
 
     @staticmethod
     def _format_validation_report_table(report: dict[str, Any]) -> str:
-        return (
-            f"Карточка: {report.get('card_id')} | "
-            f"Найдено: {len(report.get('found_by_engine', []))} | "
-            f"Пропущено: {len(report.get('missed_by_engine', []))} | "
-            f"Отклонено: {len(report.get('rejected_aspects', []))} | "
-            f"Статус: {report.get('final_status_for_expert', 'needs_expert_review')}"
-        )
-
-    @staticmethod
-    def _format_validation_report_table(report: dict[str, Any]) -> str:
         lines = [
             f"Card: {report.get('card_id')} | Found: {len(report.get('found_by_engine', []))} | Missed: {len(report.get('missed_by_engine', []))} | Rejected: {len(report.get('rejected_aspects', []))} | Status: {report.get('final_status_for_expert', 'needs_expert_review')}",
-            "Formula | Priority | Formula role | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Reject reason",
+            "Formula | Rule | Priority | Formula role | Status | Directed source | Source type | Directed longitude | Natal target | Target type | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Ruler type | Resolved source group | Resolved target group | Include reason | Exclude reason | Reject reason | closest_major_aspect_mismatch",
         ]
         missing_by_rule_id = {
             str(item.get("rule_id")): item
@@ -584,70 +574,75 @@ class FormulaTestModeService:
             checked_pairs = rule.get("checked_pairs") or []
             sample = matched_pairs[0] if matched_pairs else (rejected_pairs[0] if rejected_pairs else (checked_pairs[0] if checked_pairs else None))
             status = "matched" if matched_pairs else ("rejected" if rejected_pairs else "missed")
-            reject_reason = "—"
+            reject_reason = "-"
+            mismatch_payload = None
             if status == "rejected":
                 reject_reason = str((sample or {}).get("reason") or missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "over_orb")
             elif status == "missed":
                 reject_reason = str(missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "unresolved")
-            lines.append(
-                " | ".join(
-                    [
-                        str(rule.get("display_formula") or rule.get("title") or rule.get("rule_id") or "—"),
-                        status,
-                        str((sample or {}).get("directed_point") or ", ".join(rule.get("resolved_sources") or []) or "—"),
-                        str((sample or {}).get("directed_coordinate", "—")),
-                        str((sample or {}).get("natal_target") or ", ".join(rule.get("resolved_targets") or []) or "—"),
-                        str((sample or {}).get("natal_coordinate", "—")),
-                        str((sample or {}).get("aspect_type", "—")),
-                        str((sample or {}).get("actual_angle", "—")),
-                        str((sample or {}).get("exact_angle", "—")),
-                        str((sample or {}).get("orb", "—")),
-                        str((sample or {}).get("orb_limit", "—")),
-                        reject_reason,
-                    ]
+                mismatch_payload = missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("details")
+            if mismatch_payload is None:
+                mismatch_payload = next(
+                    (
+                        item
+                        for item in (rule.get("warnings") or [])
+                        if isinstance(item, dict) and item.get("closest_major_aspect")
+                    ),
+                    None,
                 )
-            )
-        return "\n".join(lines)
-
-    @staticmethod
-    def _format_validation_report_table(report: dict[str, Any]) -> str:
-        lines = [
-            f"Card: {report.get('card_id')} | Found: {len(report.get('found_by_engine', []))} | Missed: {len(report.get('missed_by_engine', []))} | Rejected: {len(report.get('rejected_aspects', []))} | Status: {report.get('final_status_for_expert', 'needs_expert_review')}",
-            "Formula | Priority | Formula role | Status | Directed source | Directed longitude | Natal target | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Reject reason",
-        ]
-        missing_by_rule_id = {
-            str(item.get("rule_id")): item
-            for item in report.get("missed_by_engine", [])
-            if isinstance(item, dict) and item.get("rule_id")
-        }
-        for rule in report.get("rule_debug", []) or []:
-            matched_pairs = rule.get("matched_pairs") or []
-            rejected_pairs = rule.get("rejected_pairs") or []
-            checked_pairs = rule.get("checked_pairs") or []
-            sample = matched_pairs[0] if matched_pairs else (rejected_pairs[0] if rejected_pairs else (checked_pairs[0] if checked_pairs else None))
-            status = "matched" if matched_pairs else ("rejected" if rejected_pairs else "missed")
-            reject_reason = "—"
-            if status == "rejected":
-                reject_reason = str((sample or {}).get("reason") or missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "over_orb")
-            elif status == "missed":
-                reject_reason = str(missing_by_rule_id.get(str(rule.get("rule_id")), {}).get("reason") or "unresolved")
+            selector_decisions = list(rule.get("source_selector_decisions") or []) + list(rule.get("target_selector_decisions") or [])
+            include_reason = ", ".join(
+                sorted({str(item.get("selector")) for item in selector_decisions if item.get("include_reason")})
+            ) or "-"
+            exclude_reason = ", ".join(
+                sorted(
+                    {
+                        f"{item.get('selector')}:{item.get('exclude_reason')}"
+                        for item in selector_decisions
+                        if item.get("exclude_reason")
+                    }
+                )
+            ) or "-"
+            ruler_resolution = list(rule.get("source_ruler_resolution") or []) + list(rule.get("target_ruler_resolution") or [])
+            ruler_types = ", ".join(
+                sorted({str(item.get("ruler_type")) for item in ruler_resolution if item.get("ruler_type")})
+            ) or str((sample or {}).get("source_ruler_type") or (sample or {}).get("target_ruler_type") or "-")
+            mismatch_text = "-"
+            if mismatch_payload:
+                mismatch_text = (
+                    f"configured={','.join(mismatch_payload.get('configured_aspects', []))}; "
+                    f"closest={mismatch_payload.get('closest_major_aspect')}; "
+                    f"actual={mismatch_payload.get('actual_angle')}; "
+                    f"exact={mismatch_payload.get('closest_major_exact_angle')}; "
+                    f"orb_to_configured={(sample or {}).get('orb', '-')}; "
+                    f"orb_to_closest={mismatch_payload.get('closest_major_orb')}"
+                )
             lines.append(
                 " | ".join(
                     [
-                        str(rule.get("display_formula") or rule.get("title") or rule.get("rule_id") or "—"),
-                        str(rule.get("priority") or rule.get("priority_tier") or "—"),
-                        str(rule.get("role") or "—"),
+                        str(rule.get("display_formula") or rule.get("title") or rule.get("rule_id") or "-"),
+                        str(rule.get("rule_id") or "-"),
+                        str(rule.get("priority") or rule.get("priority_tier") or "-"),
+                        str(rule.get("role") or "-"),
                         status,
-                        str((sample or {}).get("directed_point") or ", ".join(rule.get("resolved_sources") or []) or "—"),
-                        str((sample or {}).get("directed_coordinate", "—")),
-                        str((sample or {}).get("natal_target") or ", ".join(rule.get("resolved_targets") or []) or "—"),
-                        str((sample or {}).get("natal_coordinate", "—")),
-                        str((sample or {}).get("aspect_type", "—")),
-                        str((sample or {}).get("actual_angle", "—")),
-                        str((sample or {}).get("exact_angle", "—")),
-                        str((sample or {}).get("orb", "—")),
-                        str((sample or {}).get("orb_limit", "—")),
+                        str((sample or {}).get("directed_point") or ", ".join(rule.get("resolved_sources") or []) or "-"),
+                        str((sample or {}).get("source_type") or "-"),
+                        str((sample or {}).get("directed_coordinate", "-")),
+                        str((sample or {}).get("natal_target") or ", ".join(rule.get("resolved_targets") or []) or "-"),
+                        str((sample or {}).get("target_type") or "-"),
+                        str((sample or {}).get("natal_coordinate", "-")),
+                        str((sample or {}).get("aspect_type", "-")),
+                        str((sample or {}).get("actual_angle", "-")),
+                        str((sample or {}).get("exact_angle", "-")),
+                        str((sample or {}).get("orb", "-")),
+                        str((sample or {}).get("orb_limit", "-")),
+                        ruler_types,
+                        str(rule.get("resolved_source_group") or rule.get("resolved_source_groups") or "-"),
+                        str(rule.get("resolved_target_group") or rule.get("resolved_target_groups") or "-"),
+                        include_reason,
+                        exclude_reason,
                         reject_reason,
+                        mismatch_text,
                     ]
                 )
             )

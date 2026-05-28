@@ -63,6 +63,13 @@ def test_pro_ui_validation_report_table_is_rendered_with_visible_detailed_fields
     assert "Orb limit" in html
     assert "Formula role" in html
     assert "Priority" in html
+    assert "Source type" in html
+    assert "Target type" in html
+    assert "Resolved source group" in html
+    assert "Resolved target group" in html
+    assert "Include reason" in html
+    assert "Exclude reason" in html
+    assert "closest_major_aspect_mismatch" in html
 
 
 def test_pro_ui_renders_formula_refinement_summary() -> None:
@@ -222,6 +229,16 @@ def test_preview_pro_result_endpoint_returns_required_keys() -> None:
     assert "best_candidate" in refinement
     assert "reference_time" in refinement
     assert "event_contribution_audit" in refinement["best_candidate"]
+    report = payload["formula_test_mode_results"][0]["validation_report"]
+    first_rule_debug = report["rule_debug"][0]
+    assert "resolved_source_group" in first_rule_debug
+    assert "resolved_target_group" in first_rule_debug
+    assert "source_ruler_resolution" in first_rule_debug
+    assert "source_selector_decisions" in first_rule_debug
+    assert report["expected_by_card"]["direction_rules"][1]["aspect"] == "opposition"
+    assert report["rejected_aspects"][0]["aspect_type"] == "opposition"
+    assert report["missed_by_engine"][0]["reason"] == "over_orb_only"
+    assert "ruler_type" in str(payload["formula_test_mode_results"][0]["validation_report"])
 
 
 def test_preview_chart_result_endpoint_returns_chart_payload_for_modal() -> None:
