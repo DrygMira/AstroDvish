@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from typing import Literal
+from zoneinfo import ZoneInfo
 
 from app.models.event_models import DatePrecision, EventCard
 from app.models.request_models import ChartRequest
@@ -17,6 +18,10 @@ class DirectionChartBuildResult:
     direction_method: DirectionMethod
     direction_arc: float
     event_date: date
+    event_datetime_used: str
+    candidate_birth_datetime_local: str | None
+    candidate_birth_datetime_utc: str | None
+    timezone_used: str | None
     natal_points: dict[str, float]
     directed_points: dict[str, float]
 
@@ -42,6 +47,10 @@ class DirectionChartBuilder:
         *,
         natal_chart: ChartResponse,
         candidate_birth_date: date,
+        candidate_birth_datetime_local: str | None = None,
+        candidate_birth_datetime_utc: str | None = None,
+        timezone_used: str | None = None,
+        timezone_offset_used: str | None = None,
         event: EventCard,
         direction_method: DirectionMethod | None = None,
     ) -> DirectionChartBuildResult:
@@ -49,7 +58,15 @@ class DirectionChartBuilder:
         if event_date is None:
             raise ValueError("event_date_unknown_for_directions")
 
-        age_years = self._age_in_tropical_years(candidate_birth_date, event_date)
+        birth_local_dt, birth_utc_dt = self._resolve_birth_datetimes(
+            candidate_birth_date=candidate_birth_date,
+            candidate_birth_datetime_local=candidate_birth_datetime_local,
+            candidate_birth_datetime_utc=candidate_birth_datetime_utc,
+            timezone_used=timezone_used,
+            timezone_offset_used=timezone_offset_used,
+        )
+        event_anchor_dt = datetime.combine(event_date, time(0, 0, 0), tzinfo=birth_local_dt.tzinfo)
+        age_years = self._age_in_tropical_years(birth_local_dt, event_anchor_dt)
         if age_years < 0:
             raise ValueError("event_before_birth_date")
 
@@ -59,7 +76,6 @@ class DirectionChartBuilder:
         elif method == "solar_arc":
             direction_arc = self._solar_arc(
                 natal_chart=natal_chart,
-                candidate_birth_date=candidate_birth_date,
                 age_years=age_years,
             )
         else:
@@ -74,6 +90,10 @@ class DirectionChartBuilder:
             direction_method=method,
             direction_arc=round(direction_arc, 6),
             event_date=event_date,
+            event_datetime_used=event_anchor_dt.isoformat(timespec="seconds"),
+            candidate_birth_datetime_local=birth_local_dt.isoformat(timespec="seconds"),
+            candidate_birth_datetime_utc=birth_utc_dt.isoformat(timespec="seconds").replace("+00:00", "Z"),
+            timezone_used=timezone_used,
             natal_points=natal_points,
             directed_points=directed_points,
         )
@@ -90,14 +110,13 @@ class DirectionChartBuilder:
         return None
 
     @staticmethod
-    def _age_in_tropical_years(candidate_birth_date: date, event_date: date) -> float:
-        return (event_date - candidate_birth_date).days / 365.2425
+    def _age_in_tropical_years(candidate_birth_datetime: datetime, event_datetime: datetime) -> float:
+        return (event_datetime - candidate_birth_datetime).total_seconds() / 86400.0 / 365.2425
 
     def _solar_arc(
         self,
         *,
         natal_chart: ChartResponse,
-        candidate_birth_date: date,
         age_years: float,
     ) -> float:
         if self.ephemeris_service is None:
@@ -132,6 +151,50 @@ class DirectionChartBuilder:
         if parsed.tzinfo is None:
             parsed = parsed.replace(tzinfo=timezone.utc)
         return parsed.astimezone(timezone.utc)
+
+    @classmethod
+    def _resolve_birth_datetimes(
+        cls,
+        *,
+        candidate_birth_date: date,
+        candidate_birth_datetime_local: str | None,
+        candidate_birth_datetime_utc: str | None,
+        timezone_used: str | None,
+        timezone_offset_used: str | None,
+    ) -> tuple[datetime, datetime]:
+        tzinfo = cls._timezone_info(timezone_used=timezone_used, timezone_offset_used=timezone_offset_used)
+        if candidate_birth_datetime_local:
+            local_dt = cls._parse_local_datetime(candidate_birth_datetime_local, tzinfo)
+            return local_dt, local_dt.astimezone(timezone.utc)
+        if candidate_birth_datetime_utc:
+            utc_dt = cls._parse_chart_datetime(candidate_birth_datetime_utc)
+            return utc_dt.astimezone(tzinfo), utc_dt
+        local_dt = datetime.combine(candidate_birth_date, time(0, 0, 0), tzinfo=tzinfo)
+        return local_dt, local_dt.astimezone(timezone.utc)
+
+    @staticmethod
+    def _parse_local_datetime(raw: str, tzinfo) -> datetime:
+        parsed = datetime.fromisoformat(raw)
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=tzinfo)
+        return parsed.astimezone(tzinfo)
+
+    @staticmethod
+    def _timezone_info(*, timezone_used: str | None, timezone_offset_used: str | None):
+        if timezone_offset_used:
+            sign = 1 if timezone_offset_used.startswith("+") else -1
+            hours = int(timezone_offset_used[1:3])
+            minutes = int(timezone_offset_used[4:6])
+            return timezone(sign * timedelta(hours=hours, minutes=minutes))
+        if timezone_used and timezone_used.startswith("GMT") and len(timezone_used) >= 9:
+            offset = timezone_used[3:]
+            sign = 1 if offset.startswith("+") else -1
+            hours = int(offset[1:3])
+            minutes = int(offset[4:6])
+            return timezone(sign * timedelta(hours=hours, minutes=minutes))
+        if timezone_used:
+            return ZoneInfo(timezone_used)
+        return timezone.utc
 
     @staticmethod
     def _collect_natal_points(chart: ChartResponse) -> dict[str, float]:

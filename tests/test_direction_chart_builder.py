@@ -72,6 +72,32 @@ def test_all_directed_points_shift_by_same_direction_arc_for_symbolic_method() -
         assert delta == expected_arc
 
 
+def test_symbolic_method_uses_exact_candidate_birth_datetime_and_timezone() -> None:
+    builder = DirectionChartBuilder()
+    chart = _sample_direction_chart()
+
+    date_only = builder.build(
+        natal_chart=chart,
+        candidate_birth_date=date(2000, 1, 1),
+        event=_sample_child_birth_event(),
+        direction_method="symbolic_1deg_per_year",
+    )
+    exact = builder.build(
+        natal_chart=chart,
+        candidate_birth_date=date(2000, 1, 1),
+        candidate_birth_datetime_local="2000-01-01T12:00:00",
+        timezone_used="GMT+05:00",
+        timezone_offset_used="+05:00",
+        event=_sample_child_birth_event(),
+        direction_method="symbolic_1deg_per_year",
+    )
+
+    assert exact.direction_arc < date_only.direction_arc
+    assert exact.candidate_birth_datetime_local == "2000-01-01T12:00:00+05:00"
+    assert exact.event_datetime_used == "2028-01-01T00:00:00+05:00"
+    assert exact.timezone_used == "GMT+05:00"
+
+
 def test_solar_arc_uses_progressed_sun_minus_natal_sun() -> None:
     builder = DirectionChartBuilder(ephemeris_service=_FakeEphemerisService())
     chart = _sample_direction_chart()

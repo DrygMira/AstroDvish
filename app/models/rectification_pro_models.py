@@ -63,6 +63,8 @@ class RectificationProRunRequest(BaseModel):
     latitude: float = Field(ge=-90, le=90)
     longitude: float = Field(ge=-180, le=180)
     timezone_name: str
+    timezone_mode: Literal["auto", "manual"] = "auto"
+    timezone_offset: str | None = None
     house_system: str = Field(default="P", min_length=1, max_length=1)
     zodiac_mode: ZodiacMode = ZodiacMode.tropical
     sidereal_mode: SiderealMode | None = None

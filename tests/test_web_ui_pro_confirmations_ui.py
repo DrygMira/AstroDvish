@@ -96,6 +96,10 @@ def test_pro_ui_renders_formula_refinement_summary() -> None:
     assert "Working range" in html
     assert "Working ranges" in html
     assert "Reference candidate" in html
+    assert "Expert compact mode" in html
+    assert "context score" in html
+    assert "unresolved_source_summary" in html
+    assert "Candidate consistency" in html
     assert "Вклад событий в результат" in html
     assert "contribution_to_final_candidate" in html
 
@@ -255,6 +259,10 @@ def test_preview_pro_result_endpoint_returns_required_keys() -> None:
     assert "best_candidate" in refinement
     assert "reference_time" in refinement
     assert "event_contribution_audit" in refinement["best_candidate"]
+    assert "selected_candidate_time" in refinement["best_candidate"]
+    assert "timezone_used" in refinement["best_candidate"]
+    assert "context_score" in refinement["best_candidate"]
+    assert "unresolved_source_summary" in refinement["best_candidate"]
     report = payload["formula_test_mode_results"][0]["validation_report"]
     first_rule_debug = report["rule_debug"][0]
     assert "resolved_source_group" in first_rule_debug
@@ -288,6 +296,8 @@ def test_preview_pro_result_endpoint_includes_enabled_v1_v2_comparison_summary()
     assert summary["items"][0]["formulas_count"] == 6
     assert summary["items"][1]["formulas_count"] == 94
     assert summary["items"][1]["top_rejected_reasons"][0]["reason"] == "over_orb"
+    assert "context_score" in summary["items"][1]
+    assert "unresolved_source_summary" in summary["items"][1]
     shared_rule_ids = {item["id"] for item in comparison["differences"]["shared_rules"]}
     assert {
         "cusp_10_to_cusp_5",
@@ -297,6 +307,16 @@ def test_preview_pro_result_endpoint_includes_enabled_v1_v2_comparison_summary()
     }.issubset(shared_rule_ids)
     assert comparison["differences"]["v1_only_rules"] == []
     assert comparison["differences"]["why_result_changed"]
+
+
+def test_preview_pro_result_endpoint_contains_context_score_in_event_audit() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/api/preview/pro-result")
+    assert response.status_code == 200
+    payload = response.json()
+    audit = payload["formula_refinement_results"]["best_candidate"]["event_contribution_audit"]
+    assert audit
+    assert "context_score" in audit[0]
 
 
 def test_preview_chart_result_endpoint_returns_chart_payload_for_modal() -> None:

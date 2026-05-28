@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone, tzinfo
 from zoneinfo import ZoneInfo
 
 from app.models.rectification_pro_models import CandidateGenerationResult, CandidateTime, ProAscWindow
@@ -11,13 +11,14 @@ class CandidateGenerator:
         self,
         *,
         birth_date_local: date,
-        timezone_name: str,
+        timezone_info: tzinfo | None = None,
+        timezone_name: str | None = None,
         asc_windows: list[ProAscWindow],
         step_minutes: int,
         max_candidates: int,
     ) -> CandidateGenerationResult:
         warnings: list[str] = []
-        tz = ZoneInfo(timezone_name)
+        tz = timezone_info or ZoneInfo(timezone_name or "UTC")
         candidate_times: list[CandidateTime] = []
         day_start = datetime.combine(birth_date_local, time(0, 0, 0))
         day_end = day_start + timedelta(days=1)

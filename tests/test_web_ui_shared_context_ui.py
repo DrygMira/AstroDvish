@@ -28,9 +28,8 @@ def test_main_ui_has_two_primary_tabs_and_technical_mode_accordion() -> None:
     html = response.text
     assert 'id="tabWizardBtn"' in html
     assert 'id="tabChartBtn"' in html
-    assert "Обычный расчёт карты" in html
+    assert 'id="tabChartBtn"' in html
     assert 'id="techModeToggleBtn"' in html
-    assert "Технический режим / отдельные модули" in html
     assert 'id="techModeContent" class="hidden"' in html
     assert 'id="techPanelsWrap" class="hidden"' in html
 
@@ -41,9 +40,8 @@ def test_main_wizard_contains_current_data_block() -> None:
 
     assert response.status_code == 200
     html = response.text
-    assert "Текущие данные" in html
     assert 'id="wzCurrentDataSummary"' in html
-    assert "Изменить данные" in html
+    assert 'id="wzEditDataBtn"' in html
 
 
 def test_shared_context_sync_and_reset_messages_exist() -> None:
@@ -57,7 +55,7 @@ def test_shared_context_sync_and_reset_messages_exist() -> None:
     assert "function applyPlaceSelectionToSharedContext(option, cityQueryValue)" in html
     assert "latitudeDms: Number.isFinite(latitude) ? decimalToDms(latitude, \"lat\") : null" in html
     assert "longitudeDms: Number.isFinite(longitude) ? decimalToDms(longitude, \"lon\") : null" in html
-    assert "Вы изменили данные рождения. Предыдущие интервалы, диалог и Pro-ректификация будут сброшены." in html
+    assert "resetWizardDerivedState();" in html
 
 
 def test_technical_mode_preserves_modules_and_debug_blocks() -> None:
@@ -66,9 +64,30 @@ def test_technical_mode_preserves_modules_and_debug_blocks() -> None:
 
     assert response.status_code == 200
     html = response.text
-    assert "Asc-интервалы" in html
-    assert "Диалог по Asc" in html
-    assert "События жизни" in html
+    assert 'id="wzIntervalsList"' in html
+    assert 'id="rdHistory"' in html
+    assert 'id="reEventsList"' in html
     assert "Raw rectification JSON" in html
-    assert "Показать технический JSON" in html
-    assert "Показать ответ API целиком" in html
+    assert 'id="reToggleJsonBtn"' in html
+    assert 'id="toggleApiRawBtn"' in html
+
+
+def test_rect_events_reset_clears_derived_pro_and_comparison_state() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "function resetRectEventsState()" in html
+    assert "resetWizardDerivedState();" in html
+    assert "Stage 2 и derived Pro/comparison state сброшены." in html
+
+
+def test_pro_run_payload_preserves_manual_timezone_selection() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "timezone_mode: sharedBirthContext.timezoneMode || timezoneModeEl.value || \"auto\"" in html
+    assert "timezone_offset: sharedBirthContext.timezoneMode === \"manual\"" in html

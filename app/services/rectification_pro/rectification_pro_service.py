@@ -19,6 +19,7 @@ from app.services.rectification_pro.formula_refinement_service import FormulaRef
 from app.services.rectification_pro.lunar_service import LunarService
 from app.services.rectification_pro.scoring_service import ScoringService
 from app.services.rectification_pro.solar_service import SolarService
+from app.services.rectification_pro.timezone_context import resolve_pro_timezone
 from app.services.rectification_pro.totem_service import TotemService
 from app.services.rectification_pro.transit_service import TransitService
 
@@ -43,9 +44,10 @@ class RectificationProService:
     def run(self, payload: RectificationProRunRequest) -> RectificationProRunResponse:
         settings = payload.settings
         selected_formula_card_id = settings.formula_card_id or None
+        timezone_info, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
         generation = self.candidate_generator.generate(
             birth_date_local=payload.birth_date_local,
-            timezone_name=payload.timezone_name,
+            timezone_info=timezone_info,
             asc_windows=payload.asc_windows,
             step_minutes=settings.candidate_step_minutes,
             max_candidates=settings.max_candidates,
@@ -79,6 +81,7 @@ class RectificationProService:
             "totems": [],
         }
         best_chart = None
+        best_generation_candidate = None
         top_total = -1.0
         top_candidate_id = ""
 
@@ -131,6 +134,7 @@ class RectificationProService:
                 top_total = total_score
                 top_candidate_id = candidate.candidate_id
                 best_chart = chart
+                best_generation_candidate = candidate
                 best_method_results = {
                     "directions": method_results_for_candidate.get("directions", []),
                     "solars": method_results_for_candidate.get("solar", []),
@@ -155,6 +159,16 @@ class RectificationProService:
             best_chart=refined_chart or best_chart,
             method_results=best_method_results,
             card_id=selected_formula_card_id,
+            candidate_time_local=(
+                (formula_refinement_results.get("best_candidate") or {}).get("candidate_time_local")
+                or (best_generation_candidate.datetime_local if best_generation_candidate else None)
+            ),
+            candidate_time_utc=(
+                (formula_refinement_results.get("best_candidate") or {}).get("candidate_time_utc")
+                or (best_generation_candidate.datetime_utc if best_generation_candidate else None)
+            ),
+            timezone_used=timezone_used,
+            timezone_offset_used=timezone_offset_used,
         )
         formula_card_comparison = self._build_formula_card_comparison(
             payload=payload,
@@ -196,6 +210,10 @@ class RectificationProService:
         best_chart,
         method_results: dict[str, list[MethodMatch]],
         card_id: str | None = None,
+        candidate_time_local: str | None = None,
+        candidate_time_utc: str | None = None,
+        timezone_used: str | None = None,
+        timezone_offset_used: str | None = None,
     ) -> list:
         if best_chart is None:
             return []
@@ -210,6 +228,16 @@ class RectificationProService:
                     context={
                         "chart_response": best_chart.model_dump(mode="json"),
                         "candidate_birth_date": payload.birth_date_local.isoformat(),
+                        "candidate_birth_datetime_local": candidate_time_local,
+                        "candidate_birth_datetime_utc": candidate_time_utc,
+                        "selected_candidate_time": candidate_time_local,
+                        "chart_build_time": candidate_time_local,
+                        "natal_houses_time": candidate_time_local,
+                        "rulers_resolved_time": candidate_time_local,
+                        "house_elements_resolved_time": candidate_time_local,
+                        "directed_points_time": candidate_time_local,
+                        "timezone_used": timezone_used or payload.timezone_name,
+                        "timezone_offset_used": timezone_offset_used,
                         "event": event.model_dump(mode="json"),
                         "pro_result": {"method_results": method_results},
                     },
@@ -241,6 +269,10 @@ class RectificationProService:
                 best_chart=refined_chart,
                 method_results=method_results,
                 card_id=card_id,
+                candidate_time_local=(refinement.get("best_candidate") or {}).get("candidate_time_local"),
+                candidate_time_utc=(refinement.get("best_candidate") or {}).get("candidate_time_utc"),
+                timezone_used=refinement.get("timezone_used") or payload.timezone_name,
+                timezone_offset_used=refinement.get("timezone_offset_used"),
             )
             card_meta = self._extract_formula_card_meta(formula_results, refinement, card_id)
             items.append(
@@ -394,8 +426,10 @@ class RectificationProService:
                     "golden_matched": best_candidate.get("golden_matched_count"),
                     "supporting_matched": best_candidate.get("supporting_matched_count"),
                     "context_matched": best_candidate.get("context_matched_count"),
+                    "context_score": best_candidate.get("context_score"),
                     "event_contribution_score": event_contribution_score,
                     "top_rejected_reasons": best_candidate.get("top_rejected_reasons") or [],
+                    "unresolved_source_summary": best_candidate.get("unresolved_source_summary") or [],
                 }
             )
         return {

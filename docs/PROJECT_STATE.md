@@ -493,3 +493,50 @@ Every future report must include:
 - remaining risks:
   - browser comparison proof is still fixture-based; after deploy, one live verification pass is still required
   - comparison panel is text-first and compact by design; if Ekaterina needs side-by-side cards later, that is a separate UX task
+
+## 30. Runtime Consistency Cleanup After Ekaterina Live Review (2026-05-28, no deploy)
+- Ekaterina live-review findings confirmed:
+  - best candidate time and formula debug could drift because symbolic directions used `candidate_birth_date` only, while refinement selected an exact `candidate_time_local`
+  - Pro run could ignore manual timezone selection and fall back to `timezone_name`
+  - Stage 2 reset could leave derived Pro/comparison state visible
+  - v2 main report needed compact rejected/context visibility
+- fixes applied:
+  - exact candidate context now propagates through Pro/formula path:
+    - `candidate_birth_datetime_local`
+    - `candidate_birth_datetime_utc`
+    - `selected_candidate_time`
+    - `chart_build_time`
+    - `natal_houses_time`
+    - `rulers_resolved_time`
+    - `house_elements_resolved_time`
+    - `directed_points_time`
+    - `timezone_used`
+    - `timezone_offset_used`
+    - `event_date_used`
+    - `direction_arc`
+  - symbolic directions now use exact candidate datetime + event date at local midnight, not only birth date
+  - Pro payload now preserves manual timezone mode/offset; manual `GMT+05:00` is no longer auto-overridden by geocoded timezone
+  - Stage 2 reset now clears derived Pro/comparison state together with collected events
+  - refinement/comparison summary now show:
+    - `context_matched_count`
+    - `context_score`
+    - `top_rejected_reasons`
+    - `unresolved_source_summary`
+    - `Expert compact mode`
+  - ruler debug now carries `ruler_type`, `allowed_ruler_types`, include/exclude reason, and rule weight
+- verification:
+  - focused tests passed
+  - full pytest: `280 passed, 1 xfailed`
+  - local real browser smoke passed via headless Edge on `127.0.0.1:8019`
+    - `?proof_preview=comparison` rendered `V1 vs V2` panel
+    - `?proof_preview=pro` rendered refinement summary with compact expert block and candidate consistency markers
+- current blockers before deploy:
+  - no live deploy for this cleanup yet
+  - comparison/proof remains preview-based for browser smoke; after deploy, one live pass is still required
+- next recommended step:
+  - safe deploy this consistency cleanup
+  - run one live proof for:
+    - manual timezone `GMT+05:00`
+    - `RECT_CHILD_BIRTH_001` default
+    - explicit `RECT_CHILD_BIRTH_002_DRAFT`
+    - compact v2 comparison panel

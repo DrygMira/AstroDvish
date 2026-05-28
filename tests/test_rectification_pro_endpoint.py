@@ -288,6 +288,25 @@ def test_rectification_pro_comparison_includes_compact_summary(monkeypatch, tmp_
     assert "why_result_changed" in summary
 
 
+def test_rectification_pro_comparison_summary_includes_context_score_and_unresolved_summary(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["settings"]["formula_card_id"] = "RECT_CHILD_BIRTH_002_DRAFT"
+    payload["settings"]["compare_formula_card_ids"] = [
+        "RECT_CHILD_BIRTH_001",
+        "RECT_CHILD_BIRTH_002_DRAFT",
+    ]
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    summary_items = response.json()["formula_card_comparison"]["summary"]["items"]
+    assert "context_score" in summary_items[0]
+    assert "unresolved_source_summary" in summary_items[1]
+
+
 def test_rectification_pro_supporting_count_consistent_between_summary_and_event_audit(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     payload = _payload(1)
@@ -301,6 +320,23 @@ def test_rectification_pro_supporting_count_consistent_between_summary_and_event
     best = response.json()["formula_refinement_results"]["best_candidate"]
     total_supporting = sum(int(item.get("supporting_matched_count", 0)) for item in best["event_contribution_audit"])
     assert best["supporting_matched_count"] == total_supporting
+
+
+def test_rectification_pro_context_score_is_visible_in_best_candidate_and_event_audit(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["settings"]["formula_card_id"] = "RECT_CHILD_BIRTH_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    best = response.json()["formula_refinement_results"]["best_candidate"]
+    assert "context_score" in best
+    assert "context_formula_score" in best["score_breakdown"]
+    assert "context_matched_count" in best
+    assert all("context_score" in item for item in best["event_contribution_audit"])
 
 
 def test_rectification_pro_uses_symbolic_age_arc_for_formula_test_mode(monkeypatch, tmp_path) -> None:
@@ -371,6 +407,82 @@ def test_rectification_pro_returns_direction_debug_fields_for_formula_results(mo
     assert "resolved_target_group" in report["rule_debug"][0]
     assert "source_selector_decisions" in report["rule_debug"][0]
     assert "target_selector_decisions" in report["rule_debug"][0]
+
+
+def test_rectification_pro_candidate_consistency_uses_best_candidate_time_and_manual_timezone(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["birth_date_local"] = "1978-03-19"
+    payload["latitude"] = 40.2341666667
+    payload["longitude"] = 69.6947222222
+    payload["timezone_name"] = "Asia/Yekaterinburg"
+    payload["timezone_mode"] = "manual"
+    payload["timezone_offset"] = "+05:00"
+    payload["asc_windows"] = [
+        {
+            "start_local": "1978-03-19T22:55:00",
+            "end_local": "1978-03-19T23:05:00",
+            "sign_name_en": "Scorpio",
+            "sign_name_ru": "Скорпион",
+        }
+    ]
+    payload["settings"]["formula_refinement_step_seconds"] = 30
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["date_text"] = "2005-11-07"
+    payload["events"][0]["start_date"] = "2005-11-07"
+    payload["events"][0]["end_date"] = "2005-11-07"
+    payload["events"][0]["title"] = "Child birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    best = body["formula_refinement_results"]["best_candidate"]
+    consistency_fields = {
+        "selected_candidate_time",
+        "chart_build_time",
+        "natal_houses_time",
+        "rulers_resolved_time",
+        "house_elements_resolved_time",
+        "directed_points_time",
+        "timezone_used",
+    }
+    assert consistency_fields.issubset(best)
+    assert best["selected_candidate_time"] == best["candidate_time_local"]
+    assert best["chart_build_time"] == best["candidate_time_local"]
+    assert best["natal_houses_time"] == best["candidate_time_local"]
+    assert best["rulers_resolved_time"] == best["candidate_time_local"]
+    assert best["house_elements_resolved_time"] == best["candidate_time_local"]
+    assert best["directed_points_time"] == best["candidate_time_local"]
+    assert best["timezone_used"] == "GMT+05:00"
+
+    formula_result = body["formula_test_mode_results"][0]
+    candidate_consistency = formula_result["validation_report"]["candidate_consistency"]
+    assert candidate_consistency["selected_candidate_time"] == best["candidate_time_local"]
+    assert candidate_consistency["timezone_used"] == "GMT+05:00"
+    assert "event_date_used" in formula_result["validation_report_table"]
+
+
+def test_rectification_pro_ruler_resolution_debug_includes_type_and_weight(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "child_birth"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    rule_debug = response.json()["formula_test_mode_results"][0]["validation_report"]["rule_debug"]
+    resolution_items = [
+        item
+        for rule in rule_debug
+        for item in [*(rule.get("source_ruler_resolution") or []), *(rule.get("target_ruler_resolution") or [])]
+        if item.get("ruler_type")
+    ]
+    assert resolution_items
+    assert all("weight" in item for item in resolution_items)
+    assert any(item.get("exclude_reason") == "ruler_type_not_allowed" for item in resolution_items)
 
 
 def test_rectification_pro_labels_multiple_rulers_with_ruler_type(monkeypatch, tmp_path) -> None:

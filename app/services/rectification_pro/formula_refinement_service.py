@@ -9,6 +9,7 @@ from app.models.rectification_pro_models import ProAscWindow, RectificationProRu
 from app.models.request_models import ChartRequest
 from app.services.ephemeris_service import EphemerisService
 from app.services.rectification_formula.formula_test_mode_service import FormulaTestModeService
+from app.services.rectification_pro.timezone_context import resolve_pro_timezone
 
 
 class FormulaRefinementService:
@@ -43,12 +44,13 @@ class FormulaRefinementService:
                 "legacy_mode": True,
             }
 
+        timezone_info, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
         candidates: list[dict[str, Any]] = []
         step_seconds = payload.settings.formula_refinement_step_seconds
         for window in payload.asc_windows:
             for candidate_time_local, candidate_time_utc in self._iter_window_candidates(
                 birth_date_local=payload.birth_date_local,
-                timezone_name=payload.timezone_name,
+                timezone_info=timezone_info,
                 window=window,
                 step_seconds=step_seconds,
             ):
@@ -62,13 +64,23 @@ class FormulaRefinementService:
                         sidereal_mode=payload.sidereal_mode,
                     )
                 )
-                event_results = self._evaluate_events(payload=payload, chart=chart, card_id=card_id)
+                event_results = self._evaluate_events(
+                    payload=payload,
+                    chart=chart,
+                    card_id=card_id,
+                    candidate_time_local=candidate_time_local,
+                    candidate_time_utc=candidate_time_utc,
+                    timezone_used=timezone_used,
+                    timezone_offset_used=timezone_offset_used,
+                )
                 candidate_result = self._score_candidate(
                     candidate_time_local=candidate_time_local,
                     candidate_time_utc=candidate_time_utc,
                     source_window=window,
                     event_results=event_results,
                     chart_response=chart.model_dump(mode="json"),
+                    timezone_used=timezone_used,
+                    timezone_offset_used=timezone_offset_used,
                 )
                 candidates.append(candidate_result)
 
@@ -102,6 +114,8 @@ class FormulaRefinementService:
             "step_seconds": step_seconds,
             "supported_step_seconds": self.SUPPORTED_STEP_SECONDS,
             "direction_method": self.formula_test_mode_service.default_direction_method,
+            "timezone_used": timezone_used,
+            "timezone_offset_used": timezone_offset_used,
             "card_id": card_meta.get("card_id"),
             "card_version": card_meta.get("card_version"),
             "formulas_count": card_meta.get("formulas_count"),
@@ -122,6 +136,10 @@ class FormulaRefinementService:
         payload: RectificationProRunRequest,
         chart,
         card_id: str | None = None,
+        candidate_time_local: str,
+        candidate_time_utc: str,
+        timezone_used: str,
+        timezone_offset_used: str | None,
     ) -> list[dict[str, Any]]:
         results: list[dict[str, Any]] = []
         for event in payload.events:
@@ -134,6 +152,16 @@ class FormulaRefinementService:
                     context={
                         "chart_response": chart.model_dump(mode="json"),
                         "candidate_birth_date": payload.birth_date_local.isoformat(),
+                        "candidate_birth_datetime_local": candidate_time_local,
+                        "candidate_birth_datetime_utc": candidate_time_utc,
+                        "selected_candidate_time": candidate_time_local,
+                        "chart_build_time": candidate_time_local,
+                        "natal_houses_time": candidate_time_local,
+                        "rulers_resolved_time": candidate_time_local,
+                        "house_elements_resolved_time": candidate_time_local,
+                        "directed_points_time": candidate_time_local,
+                        "timezone_used": timezone_used,
+                        "timezone_offset_used": timezone_offset_used,
                         "event": event.model_dump(mode="json"),
                         "direction_method": "symbolic_1deg_per_year",
                     },
@@ -152,6 +180,8 @@ class FormulaRefinementService:
         source_window: ProAscWindow,
         event_results: list[dict[str, Any]],
         chart_response: dict[str, Any],
+        timezone_used: str,
+        timezone_offset_used: str | None,
     ) -> dict[str, Any]:
         matched_count = 0
         rejected_count = 0
@@ -166,6 +196,7 @@ class FormulaRefinementService:
         ambiguity_matches_by_rule: dict[str, dict[str, Any]] = {}
         event_contribution_audit: list[dict[str, Any]] = []
         rejected_reason_counts: dict[str, int] = {}
+        unresolved_source_counts: dict[str, int] = {}
 
         for result in event_results:
             matched_formula_score += float(result.get("score") or 0.0)
@@ -214,6 +245,10 @@ class FormulaRefinementService:
             for item in rejected:
                 reason = str(item.get("rejection_reason") or item.get("reason") or "unknown")
                 rejected_reason_counts[reason] = rejected_reason_counts.get(reason, 0) + 1
+            for item in missing:
+                reason = str(item.get("reason") or "unknown")
+                if reason.startswith("unresolved_source"):
+                    unresolved_source_counts[reason] = unresolved_source_counts.get(reason, 0) + 1
 
             event_golden_rules = {
                 str(item.get("formula_rule_matched") or "")
@@ -235,6 +270,14 @@ class FormulaRefinementService:
                 for item in matched
                 if str(item.get("priority_tier") or "") == "ambiguity_risk"
             }
+            event_context_score = round(
+                sum(
+                    float(item.get("rule_weight") or 1.0) * 0.5
+                    for item in matched
+                    if str(item.get("priority_tier") or "") == "context"
+                ),
+                4,
+            )
 
             event_contribution_audit.append(
                 {
@@ -250,6 +293,7 @@ class FormulaRefinementService:
                     "golden_matched_count": len(event_golden_rules),
                     "supporting_matched_count": len(event_supporting_rules),
                     "context_matched_count": len(event_context_rules),
+                    "context_score": event_context_score,
                     "ambiguity_risk_count": len(event_ambiguity_rules),
                 }
             )
@@ -316,6 +360,7 @@ class FormulaRefinementService:
             "golden_orb_sum": golden_orb_sum,
             "supporting_matched_count": supporting_matched_count,
             "context_matched_count": context_matched_count,
+            "context_score": context_formula_score,
             "supporting_bonus": supporting_bonus,
             "event_confirmation_score": event_confirmation_score,
             "time_refinement_score": time_refinement_score,
@@ -341,8 +386,20 @@ class FormulaRefinementService:
                 {"reason": reason, "count": count}
                 for reason, count in sorted(rejected_reason_counts.items(), key=lambda item: (-item[1], item[0]))[:5]
             ],
+            "unresolved_source_summary": [
+                {"reason": reason, "count": count}
+                for reason, count in sorted(unresolved_source_counts.items(), key=lambda item: (-item[1], item[0]))[:5]
+            ],
             "event_contribution_audit": event_contribution_audit,
             "selection_reason": "",
+            "selected_candidate_time": candidate_time_local,
+            "chart_build_time": candidate_time_local,
+            "natal_houses_time": candidate_time_local,
+            "rulers_resolved_time": candidate_time_local,
+            "house_elements_resolved_time": candidate_time_local,
+            "directed_points_time": candidate_time_local,
+            "timezone_used": timezone_used,
+            "timezone_offset_used": timezone_offset_used,
             "chart_response": chart_response,
         }
 
@@ -350,11 +407,10 @@ class FormulaRefinementService:
     def _iter_window_candidates(
         *,
         birth_date_local: date,
-        timezone_name: str,
+        timezone_info,
         window: ProAscWindow,
         step_seconds: int,
     ) -> list[tuple[str, str]]:
-        tz = ZoneInfo(timezone_name)
         day_start = datetime.combine(birth_date_local, time(0, 0, 0))
         day_end = day_start + timedelta(days=1)
         start_local = max(datetime.fromisoformat(window.start_local), day_start)
@@ -366,7 +422,7 @@ class FormulaRefinementService:
         probe = start_local
         out: list[tuple[str, str]] = []
         while probe <= end_local:
-            utc_dt = probe.replace(tzinfo=tz).astimezone(timezone.utc)
+            utc_dt = probe.replace(tzinfo=timezone_info).astimezone(timezone.utc)
             out.append(
                 (
                     probe.isoformat(timespec="seconds"),
@@ -457,9 +513,9 @@ class FormulaRefinementService:
         if not provided:
             return {"provided": None, "inside_working_time_range": False, "evaluation": None}
 
-        tz = ZoneInfo(payload.timezone_name)
+        timezone_info, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
         local_dt = datetime.fromisoformat(provided)
-        utc_dt = local_dt.replace(tzinfo=tz).astimezone(timezone.utc)
+        utc_dt = local_dt.replace(tzinfo=timezone_info).astimezone(timezone.utc)
         chart = self.ephemeris_service.calculate_chart(
             ChartRequest(
                 datetime_utc=utc_dt.isoformat(timespec="seconds").replace("+00:00", "Z"),
@@ -470,7 +526,15 @@ class FormulaRefinementService:
                 sidereal_mode=payload.sidereal_mode,
             )
         )
-        event_results = self._evaluate_events(payload=payload, chart=chart, card_id=card_id)
+        event_results = self._evaluate_events(
+            payload=payload,
+            chart=chart,
+            card_id=card_id,
+            candidate_time_local=provided,
+            candidate_time_utc=utc_dt.isoformat(timespec="seconds").replace("+00:00", "Z"),
+            timezone_used=timezone_used,
+            timezone_offset_used=timezone_offset_used,
+        )
         source_window = payload.asc_windows[0] if payload.asc_windows else ProAscWindow(
             start_local=provided,
             end_local=provided,
@@ -483,6 +547,8 @@ class FormulaRefinementService:
             source_window=source_window,
             event_results=event_results,
             chart_response=chart.model_dump(mode="json"),
+            timezone_used=timezone_used,
+            timezone_offset_used=timezone_offset_used,
         )
         evaluation.pop("chart_response", None)
         return {"provided": provided, "inside_working_time_range": False, "evaluation": evaluation}

@@ -278,6 +278,7 @@
   "formula_refinement_results": {
     "enabled": true,
     "direction_method": "symbolic_1deg_per_year",
+    "timezone_used": "GMT+05:00",
     "working_time_range": {
       "start_local": "1978-03-19T22:56:47",
       "end_local": "1978-03-19T23:01:50",
@@ -303,6 +304,13 @@
     },
     "best_candidate": {
       "candidate_time_local": "1978-03-19T22:57:00",
+      "selected_candidate_time": "1978-03-19T22:57:00",
+      "chart_build_time": "1978-03-19T22:57:00",
+      "natal_houses_time": "1978-03-19T22:57:00",
+      "rulers_resolved_time": "1978-03-19T22:57:00",
+      "house_elements_resolved_time": "1978-03-19T22:57:00",
+      "directed_points_time": "1978-03-19T22:57:00",
+      "timezone_used": "GMT+05:00",
       "score": 96.4,
       "matched_count": 2,
       "rejected_count": 1,
@@ -310,9 +318,12 @@
       "golden_matched_count": 2,
       "golden_orb_sum": 1.0585,
       "supporting_matched_count": 0,
+      "context_matched_count": 0,
+      "context_score": 0.0,
       "supporting_bonus": 0.0,
       "event_confirmation_score": 71.0,
       "time_refinement_score": 25.4,
+      "unresolved_source_summary": [],
       "selection_reason": "Selected by golden matched count, with supporting opposition aligned to expert confirmation but still outside orb.",
       "score_breakdown": {
         "matched_formula_score": 70.0,
@@ -323,6 +334,7 @@
         "golden_formula_score": 65.0,
         "golden_orb_quality_score": 15.0,
         "supporting_formula_score": 5.0,
+        "context_formula_score": 0.0,
         "supporting_bonus": 0.0
       },
       "event_contribution_audit": [
@@ -335,7 +347,9 @@
           "score": 96.4,
           "contribution_to_final_candidate": 100.0,
           "golden_matched_count": 2,
-          "supporting_matched_count": 0
+          "supporting_matched_count": 0,
+          "context_matched_count": 0,
+          "context_score": 0.0
         }
       ],
       "formula_test_mode_results": [
@@ -408,7 +422,9 @@
           "golden_matched": 0,
           "supporting_matched": 0,
           "context_matched": 0,
+          "context_score": 0.0,
           "event_contribution_score": 0.0,
+          "unresolved_source_summary": [],
           "top_rejected_reasons": [
             {
               "reason": "over_orb",
@@ -442,7 +458,14 @@
           "golden_matched": 3,
           "supporting_matched": 4,
           "context_matched": 3,
+          "context_score": 1.5,
           "event_contribution_score": 105.3,
+          "unresolved_source_summary": [
+            {
+              "reason": "unresolved_source",
+              "count": 2
+            }
+          ],
           "top_rejected_reasons": [
             {
               "reason": "over_orb",

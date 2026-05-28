@@ -66,6 +66,11 @@ class FormulaTestModeService:
         chart = self._extract_chart(context)
         event = self._extract_event(context)
         candidate_birth_date = self._extract_birth_date(context)
+        candidate_birth_datetime_local = self._extract_candidate_datetime(context, "candidate_birth_datetime_local")
+        candidate_birth_datetime_utc = self._extract_candidate_datetime(context, "candidate_birth_datetime_utc")
+        timezone_used = self._extract_context_text(context, "timezone_used")
+        timezone_offset_used = self._extract_context_text(context, "timezone_offset_used")
+        candidate_consistency = self._build_candidate_consistency(context)
 
         indicators = {str(item) for item in context.get("indicators", [])}
         weak_context = {str(item) for item in context.get("weak_indicators", [])}
@@ -82,6 +87,10 @@ class FormulaTestModeService:
                 card=card,
                 chart=chart,
                 candidate_birth_date=candidate_birth_date,
+                candidate_birth_datetime_local=candidate_birth_datetime_local,
+                candidate_birth_datetime_utc=candidate_birth_datetime_utc,
+                timezone_used=timezone_used,
+                timezone_offset_used=timezone_offset_used,
                 event=event,
                 direction_method=direction_method,
             )
@@ -147,6 +156,7 @@ class FormulaTestModeService:
             exclusion_risks=exclusion_risks,
             score_breakdown=score_breakdown,
             rule_debug=rule_debug,
+            candidate_consistency=candidate_consistency,
         )
 
         directed_points_debug = self._build_directed_points_debug(rule_debug)
@@ -187,6 +197,7 @@ class FormulaTestModeService:
                 "priority_counts": card_summary["priority_counts"],
                 "directed_points_debug": directed_points_debug,
                 "natal_targets_debug": natal_targets_debug,
+                "candidate_consistency": candidate_consistency,
                 "matched_core": matched_core,
                 "matched_aspects": matched_aspects,
                 "matched_strong": matched_strong,
@@ -198,6 +209,8 @@ class FormulaTestModeService:
                     if direction_method == "symbolic_1deg_per_year"
                     else "solar arc progressed sun"
                 ),
+                "timezone_used": timezone_used,
+                "timezone_offset_used": timezone_offset_used,
                 "non_scoring_methods": [item for item in methods_used if item != "directions"],
             },
         )
@@ -259,6 +272,35 @@ class FormulaTestModeService:
         if raw in {"symbolic_1deg_per_year", "solar_arc"}:
             return raw
         return None
+
+    @staticmethod
+    def _extract_candidate_datetime(context: dict[str, Any], key: str) -> str | None:
+        raw = context.get(key)
+        if raw is None:
+            return None
+        return str(raw)
+
+    @staticmethod
+    def _extract_context_text(context: dict[str, Any], key: str) -> str | None:
+        raw = context.get(key)
+        if raw is None or raw == "":
+            return None
+        return str(raw)
+
+    @staticmethod
+    def _build_candidate_consistency(context: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "selected_candidate_time": context.get("selected_candidate_time"),
+            "chart_build_time": context.get("chart_build_time"),
+            "natal_houses_time": context.get("natal_houses_time"),
+            "rulers_resolved_time": context.get("rulers_resolved_time"),
+            "house_elements_resolved_time": context.get("house_elements_resolved_time"),
+            "directed_points_time": context.get("directed_points_time"),
+            "candidate_birth_datetime_local": context.get("candidate_birth_datetime_local"),
+            "candidate_birth_datetime_utc": context.get("candidate_birth_datetime_utc"),
+            "timezone_used": context.get("timezone_used"),
+            "timezone_offset_used": context.get("timezone_offset_used"),
+        }
 
     @staticmethod
     def _derived_indicators(*, matches: list[Any]) -> set[str]:
@@ -397,6 +439,7 @@ class FormulaTestModeService:
         exclusion_risks: list[str],
         score_breakdown: dict[str, float],
         rule_debug: list[dict[str, Any]],
+        candidate_consistency: dict[str, Any],
     ) -> dict[str, Any]:
         found = [item.model_dump(mode="json") if hasattr(item, "model_dump") else dict(item) for item in matched_formula_aspects]
         rejected = []
@@ -451,6 +494,7 @@ class FormulaTestModeService:
             "rule_debug": rule_debug,
             "directed_points_debug": cls._build_directed_points_debug(rule_debug),
             "natal_targets_debug": cls._build_natal_targets_debug(rule_debug),
+            "candidate_consistency": candidate_consistency,
             "method_scope": {
                 "scoring_methods": ["directions"],
                 "mvp_direction_method": "symbolic_1deg_per_year",
@@ -559,8 +603,21 @@ class FormulaTestModeService:
 
     @staticmethod
     def _format_validation_report_table(report: dict[str, Any]) -> str:
+        candidate_consistency = report.get("candidate_consistency") or {}
         lines = [
             f"Card: {report.get('card_id')} | Found: {len(report.get('found_by_engine', []))} | Missed: {len(report.get('missed_by_engine', []))} | Rejected: {len(report.get('rejected_aspects', []))} | Status: {report.get('final_status_for_expert', 'needs_expert_review')}",
+            (
+                "Candidate consistency | "
+                f"selected_candidate_time={candidate_consistency.get('selected_candidate_time') or '-'} | "
+                f"chart_build_time={candidate_consistency.get('chart_build_time') or '-'} | "
+                f"natal_houses_time={candidate_consistency.get('natal_houses_time') or '-'} | "
+                f"rulers_resolved_time={candidate_consistency.get('rulers_resolved_time') or '-'} | "
+                f"house_elements_resolved_time={candidate_consistency.get('house_elements_resolved_time') or '-'} | "
+                f"directed_points_time={candidate_consistency.get('directed_points_time') or '-'} | "
+                f"timezone_used={candidate_consistency.get('timezone_used') or '-'} | "
+                f"event_date_used={(report.get('rule_debug') or [{}])[0].get('event_date_used', '-') if report.get('rule_debug') else '-'} | "
+                f"direction_arc={(report.get('rule_debug') or [{}])[0].get('direction_arc', '-') if report.get('rule_debug') else '-'}"
+            ),
             "Formula | Rule | Priority | Formula role | Status | Directed source | Source type | Directed longitude | Natal target | Target type | Natal longitude | Aspect | Actual angle | Exact angle | Orb | Orb limit | Ruler type | Resolved source group | Resolved target group | Include reason | Exclude reason | Reject reason | closest_major_aspect_mismatch",
         ]
         missing_by_rule_id = {

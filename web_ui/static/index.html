@@ -2194,6 +2194,7 @@
       rpConfidenceEl.textContent = "Pro-ректификация ещё не запускалась.";
       rpMethodsSummaryEl.textContent = "";
       rpWarningsEl.textContent = "";
+      rpFormulaComparisonEl.textContent = "";
       if (rpExplainBodyEl) {
         rpExplainBodyEl.textContent = "";
       }
@@ -3327,6 +3328,7 @@
       reQuestionMetaEl.textContent = "";
       reQuestionTextEl.textContent = "";
       resetRectEventsInputs();
+      resetWizardDerivedState();
     }
 
     function renderRectEventsQuestion() {
@@ -4752,6 +4754,12 @@
       return list.map((item) => `${item.reason || "unknown"}=${item.count ?? 0}`).join(", ");
     }
 
+    function formatUnresolvedSummaryCompact(reasons) {
+      const list = Array.isArray(reasons) ? reasons : [];
+      if (!list.length) return "none";
+      return list.map((item) => `${item.reason || "unknown"}=${item.count ?? 0}`).join(", ");
+    }
+
     function renderFormulaCardComparison(data) {
       const comparison = data?.formula_card_comparison || null;
       rpFormulaComparisonEl.textContent = "";
@@ -4782,7 +4790,7 @@
           ? `${item.working_range.start_local || "n/a"} -> ${item.working_range.end_local || "n/a"}`
           : "n/a";
         lines.push(
-          `${item.card_id} | formulas_count=${item.formulas_count ?? "n/a"} | working_range=${workingRange} | best_candidate=${item.best_candidate || "n/a"} | matched/rejected/missed=${item.matched ?? "n/a"}/${item.rejected ?? "n/a"}/${item.missed ?? "n/a"} | golden/supporting/context=${item.golden_matched ?? "n/a"}/${item.supporting_matched ?? "n/a"}/${item.context_matched ?? "n/a"} | event_contribution_score=${item.event_contribution_score ?? "n/a"} | top_rejected_reasons=${formatRejectedReasonsCompact(item.top_rejected_reasons)}`
+          `${item.card_id} | formulas_count=${item.formulas_count ?? "n/a"} | working_range=${workingRange} | best_candidate=${item.best_candidate || "n/a"} | matched/rejected/missed=${item.matched ?? "n/a"}/${item.rejected ?? "n/a"}/${item.missed ?? "n/a"} | golden/supporting/context=${item.golden_matched ?? "n/a"}/${item.supporting_matched ?? "n/a"}/${item.context_matched ?? "n/a"} | context_score=${item.context_score ?? "n/a"} | event_contribution_score=${item.event_contribution_score ?? "n/a"} | top_rejected_reasons=${formatRejectedReasonsCompact(item.top_rejected_reasons)} | unresolved_source_summary=${formatUnresolvedSummaryCompact(item.unresolved_source_summary)}`
         );
       });
       items.forEach((item) => {
@@ -4931,6 +4939,17 @@
         const supportedSteps = Array.isArray(refinement.supported_step_seconds) ? refinement.supported_step_seconds : [];
         const bestFormulas = Array.isArray(refinementBest.best_formulas) ? refinementBest.best_formulas : [];
         const scoreBreakdown = refinementBest.score_breakdown || null;
+        const rejectedReasons = formatRejectedReasonsCompact(refinementBest.top_rejected_reasons);
+        const unresolvedSummary = formatUnresolvedSummaryCompact(refinementBest.unresolved_source_summary);
+        const candidateConsistency = [
+          `selected_candidate_time=${refinementBest.selected_candidate_time || "n/a"}`,
+          `chart_build_time=${refinementBest.chart_build_time || "n/a"}`,
+          `natal_houses_time=${refinementBest.natal_houses_time || "n/a"}`,
+          `rulers_resolved_time=${refinementBest.rulers_resolved_time || "n/a"}`,
+          `house_elements_resolved_time=${refinementBest.house_elements_resolved_time || "n/a"}`,
+          `directed_points_time=${refinementBest.directed_points_time || "n/a"}`,
+          `timezone_used=${refinementBest.timezone_used || refinement.timezone_used || "n/a"}`,
+        ].join(" | ");
         const rangesMarkup = refinementRanges.length
           ? refinementRanges.map((item, idx) =>
               `<div>#${idx + 1}: ${item.start_local} → ${item.end_local} | best=${item.best_candidate || "n/a"} | golden=${item.golden_matched_count ?? "n/a"} | score=${item.score ?? "n/a"} | candidates=${item.candidate_count ?? "n/a"} | reason=${item.selection_reason || "n/a"}</div>`
@@ -4945,11 +4964,13 @@
           `${rangesMarkup}` +
           `<div>Coarse candidate: ${refinementCoarse?.candidate_time_local || "n/a"} | coarse score=${refinementCoarse?.score ?? "n/a"}</div>` +
           `<div>Reference candidate: ${refinementReference?.provided || "n/a"} | inside range=${refinementReference?.inside_working_time_range ?? "n/a"} | reference score=${refinementReference?.evaluation?.score ?? "n/a"}</div>` +
-          `<div>Golden matched=${refinementBest.golden_matched_count ?? "n/a"} | golden orb sum=${refinementBest.golden_orb_sum ?? "n/a"} | supporting matched=${refinementBest.supporting_matched_count ?? "n/a"} | supporting bonus=${refinementBest.supporting_bonus ?? "n/a"}</div>` +
+          `<div>Golden matched=${refinementBest.golden_matched_count ?? "n/a"} | golden orb sum=${refinementBest.golden_orb_sum ?? "n/a"} | supporting matched=${refinementBest.supporting_matched_count ?? "n/a"} | context matched=${refinementBest.context_matched_count ?? "n/a"} | context score=${refinementBest.context_score ?? "n/a"} | supporting bonus=${refinementBest.supporting_bonus ?? "n/a"}</div>` +
           `<div>Event confirmation score=${refinementBest.event_confirmation_score ?? "n/a"} | time refinement score=${refinementBest.time_refinement_score ?? "n/a"}</div>` +
+          `<div><strong>Expert compact mode</strong>: top_rejected_reasons=${rejectedReasons} | unresolved_source_summary=${unresolvedSummary}</div>` +
+          `<div>Candidate consistency: ${candidateConsistency}</div>` +
           `<div>Best formulas: ${bestFormulas.length ? bestFormulas.join("; ") : "n/a"}</div>` +
           `<div>Score breakdown: matched=${scoreBreakdown?.matched_formula_score ?? "n/a"} | orb=${scoreBreakdown?.orb_strength_score ?? "n/a"} | participation=${scoreBreakdown?.participant_bonus_score ?? "n/a"} | rejected_penalty=${scoreBreakdown?.rejected_penalty ?? "n/a"} | missed_penalty=${scoreBreakdown?.missing_penalty ?? "n/a"}</div>` +
-          `<div>Golden breakdown: formula=${scoreBreakdown?.golden_formula_score ?? "n/a"} | golden orb quality=${scoreBreakdown?.golden_orb_quality_score ?? "n/a"} | supporting formula=${scoreBreakdown?.supporting_formula_score ?? "n/a"} | supporting bonus=${scoreBreakdown?.supporting_bonus ?? "n/a"}</div>` +
+          `<div>Golden breakdown: formula=${scoreBreakdown?.golden_formula_score ?? "n/a"} | golden orb quality=${scoreBreakdown?.golden_orb_quality_score ?? "n/a"} | supporting formula=${scoreBreakdown?.supporting_formula_score ?? "n/a"} | context formula=${scoreBreakdown?.context_formula_score ?? "n/a"} | supporting bonus=${scoreBreakdown?.supporting_bonus ?? "n/a"}</div>` +
           `<div>Selection reason: ${refinementBest.selection_reason || "n/a"}</div>` +
           `<div class="hint">Legacy coarse candidates remain below as debug/reference.</div>`;
         const contributionAudit = Array.isArray(refinementBest.event_contribution_audit) ? refinementBest.event_contribution_audit : [];
@@ -4957,7 +4978,7 @@
           const auditWrap = document.createElement("div");
           auditWrap.style.marginTop = "8px";
           auditWrap.innerHTML = renderTable(
-            ["Вклад событий в результат", "Event type", "Date", "Score", "Contribution %", "Matched", "Rejected", "Missed", "Golden", "Supporting"],
+            ["Вклад событий в результат", "Event type", "Date", "Score", "Contribution %", "Matched", "Rejected", "Missed", "Golden", "Supporting", "Context", "Context score"],
             contributionAudit.map((item) => [
               item.event_title || item.event_id || "—",
               item.event_type || "—",
@@ -4969,6 +4990,8 @@
               item.missed_count ?? "—",
               item.golden_matched_count ?? "—",
               item.supporting_matched_count ?? "—",
+              item.context_matched_count ?? "—",
+              item.context_score ?? "—",
             ])
           );
           refinementBlock.appendChild(auditWrap);
@@ -5097,6 +5120,10 @@
         latitude: Number(sharedBirthContext.latitude ?? document.getElementById("rdLatitude").value),
         longitude: Number(sharedBirthContext.longitude ?? document.getElementById("rdLongitude").value),
         timezone_name: sharedBirthContext.timezoneName || timezoneNameEl.value || "Europe/Moscow",
+        timezone_mode: sharedBirthContext.timezoneMode || timezoneModeEl.value || "auto",
+        timezone_offset: sharedBirthContext.timezoneMode === "manual"
+          ? (sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || "")
+          : (timezoneModeEl.value === "manual" ? (timezoneOffsetEl.value || "") : ""),
         house_system: sharedBirthContext.houseSystem || document.getElementById("rdHouseSystem").value,
         zodiac_mode: sharedBirthContext.zodiacMode || rdZodiacModeEl.value,
         sidereal_mode: (sharedBirthContext.zodiacMode || rdZodiacModeEl.value) === "sidereal"
@@ -5284,7 +5311,7 @@
     document.getElementById("reResetBtn").addEventListener("click", () => {
       resetRectEventsState();
       updateWizardContextFromCurrentStates();
-      setReStatus("Stage 2 сброшен.");
+      setReStatus("Stage 2 и derived Pro/comparison state сброшены.");
     });
     document.getElementById("reAnswerBtn").addEventListener("click", () => continueRectEventsFlow(false));
     document.getElementById("reSkipBtn").addEventListener("click", () => continueRectEventsFlow(true));

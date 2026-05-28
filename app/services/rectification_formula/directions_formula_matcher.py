@@ -77,6 +77,10 @@ class DirectionsFormulaMatcher:
         card: FormulaCard,
         chart: ChartResponse,
         candidate_birth_date: date,
+        candidate_birth_datetime_local: str | None = None,
+        candidate_birth_datetime_utc: str | None = None,
+        timezone_used: str | None = None,
+        timezone_offset_used: str | None = None,
         event: EventCard,
         direction_method: DirectionMethod | None = None,
     ) -> tuple[list[FormulaAspectMatch], list[FormulaAspectMatch], list[dict[str, Any]], list[dict[str, Any]]]:
@@ -96,6 +100,10 @@ class DirectionsFormulaMatcher:
         direction_result = self.direction_chart_builder.build(
             natal_chart=chart,
             candidate_birth_date=candidate_birth_date,
+            candidate_birth_datetime_local=candidate_birth_datetime_local,
+            candidate_birth_datetime_utc=candidate_birth_datetime_utc,
+            timezone_used=timezone_used,
+            timezone_offset_used=timezone_offset_used,
             event=event,
             direction_method=direction_method,
         )
@@ -161,6 +169,10 @@ class DirectionsFormulaMatcher:
             "target_kind": "natal",
             "direction_method": direction_result.direction_method,
             "direction_arc": round(direction_result.direction_arc, 6),
+            "event_date_used": direction_result.event_datetime_used,
+            "candidate_birth_datetime_local": direction_result.candidate_birth_datetime_local,
+            "candidate_birth_datetime_utc": direction_result.candidate_birth_datetime_utc,
+            "timezone_used": direction_result.timezone_used,
             "resolved_sources": [point.key for point in directed_points],
             "resolved_targets": [point.key for point in natal_points],
             "resolved_source_group": source_groups,
@@ -170,11 +182,21 @@ class DirectionsFormulaMatcher:
             "source_selector_decisions": source_selector_decisions,
             "target_selector_decisions": target_selector_decisions,
             "resolved_source_details": [
-                {"point_name": point.key, "role": point.role, "ruler_type": point.ruler_type}
+                {
+                    "point_name": point.key,
+                    "role": point.role,
+                    "ruler_type": point.ruler_type,
+                    "weight": rule.weight,
+                }
                 for point in directed_points
             ],
             "resolved_target_details": [
-                {"point_name": point.key, "role": point.role, "ruler_type": point.ruler_type}
+                {
+                    "point_name": point.key,
+                    "role": point.role,
+                    "ruler_type": point.ruler_type,
+                    "weight": rule.weight,
+                }
                 for point in natal_points
             ],
             "checked_pairs": [],
@@ -187,12 +209,14 @@ class DirectionsFormulaMatcher:
             selectors=source_selectors,
             resolved_points=directed_points,
             allowed_ruler_types=rule.allowed_ruler_types,
+            rule_weight=rule.weight,
         )
         debug["target_ruler_resolution"] = self._build_ruler_resolution_debug(
             chart=chart,
             selectors=target_selectors,
             resolved_points=natal_points,
             allowed_ruler_types=rule.allowed_ruler_types,
+            rule_weight=rule.weight,
         )
         matched: list[FormulaAspectMatch] = []
         rejected: list[FormulaAspectMatch] = []
@@ -569,6 +593,7 @@ class DirectionsFormulaMatcher:
         selectors: Iterable[str],
         resolved_points: list[ResolvedPoint],
         allowed_ruler_types: list[str],
+        rule_weight: float,
     ) -> list[dict[str, Any]]:
         resolved_keys = {item.key for item in resolved_points}
         debug_items: list[dict[str, Any]] = []
@@ -595,6 +620,7 @@ class DirectionsFormulaMatcher:
                             "selector": selector,
                             "point_name": point_key,
                             "ruler_type": ruler_type,
+                            "weight": rule_weight,
                             "status": "excluded",
                             "include_reason": None,
                             "exclude_reason": "ruler_type_not_allowed",
@@ -607,6 +633,7 @@ class DirectionsFormulaMatcher:
                         "selector": selector,
                         "point_name": point_key,
                         "ruler_type": ruler_type,
+                        "weight": rule_weight,
                         "status": "included" if point_key in resolved_keys else "excluded",
                         "include_reason": "cusp_sign_ruler_match" if point_key in resolved_keys else None,
                         "exclude_reason": None if point_key in resolved_keys else "point_not_present_in_chart",
