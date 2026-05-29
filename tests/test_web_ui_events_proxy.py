@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import httpx
 from fastapi.testclient import TestClient
 
 import web_ui.main as web_ui_main
@@ -175,6 +176,7 @@ def test_web_ui_rectification_pro_proxy_success(monkeypatch) -> None:
     assert response.status_code == 200
     assert response.json()["mode"] == "rectification_pro"
     assert captured["path"] == "/api/v1/rectification/pro/run"
+    assert captured["timeout"] == web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS
 
 
 def test_web_ui_rectification_pro_proxy_preserves_backend_422(monkeypatch) -> None:
@@ -213,6 +215,82 @@ def test_web_ui_rectification_pro_proxy_preserves_backend_422(monkeypatch) -> No
     assert response.status_code == 422
     detail = response.json()["detail"]
     assert detail[0]["loc"] == ["body", "events", 0, "event_id"]
+
+
+def test_web_ui_rectification_pro_proxy_returns_controlled_504_on_timeout(monkeypatch) -> None:
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        raise httpx.ReadTimeout("timed out")
+
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/pro/run",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {
+                "birth_date_local": "1990-05-12",
+                "latitude": 53.9006,
+                "longitude": 27.5590,
+                "timezone_name": "Europe/Moscow",
+                "asc_windows": [],
+                "events": [],
+            },
+        },
+    )
+
+    assert response.status_code == 504
+    detail = response.json()["detail"]
+    assert detail["reason"] == "upstream_timeout"
+    assert detail["timeout_seconds"] == web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS
+    assert "Pro-" in detail["user_message"]
+
+
+def test_post_to_api_with_fallback_does_not_retry_on_timeout(monkeypatch) -> None:
+    calls: list[str] = []
+
+    def fake_post(url: str, json: dict, timeout: int):
+        calls.append(url)
+        raise httpx.ReadTimeout("timed out")
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    try:
+        web_ui_main._post_to_api_with_fallback(
+            base_url="http://127.0.0.1:8013",
+            path="/api/v1/rectification/pro/run",
+            payload={"ok": True},
+            timeout=120,
+        )
+    except httpx.ReadTimeout:
+        pass
+    else:
+        raise AssertionError("expected timeout to be re-raised")
+
+    assert calls == ["http://127.0.0.1:8013/api/v1/rectification/pro/run"]
+
+
+def test_post_to_api_with_fallback_retries_on_connect_error(monkeypatch) -> None:
+    calls: list[str] = []
+
+    def fake_post(url: str, json: dict, timeout: int):
+        calls.append(url)
+        if len(calls) == 1:
+            raise httpx.ConnectError("connect failed")
+        return _DummyResponse(200, {"ok": True})
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+    response = web_ui_main._post_to_api_with_fallback(
+        base_url="http://127.0.0.1:8013",
+        path="/api/v1/rectification/pro/run",
+        payload={"ok": True},
+        timeout=120,
+    )
+
+    assert response.status_code == 200
+    assert calls == [
+        "http://127.0.0.1:8013/api/v1/rectification/pro/run",
+        f"{web_ui_main.DOCKER_COMPOSE_API_BASE_URL.rstrip('/')}/api/v1/rectification/pro/run",
+    ]
 
 
 def test_web_ui_rectification_pro_proxy_accepts_repeated_eventcards(monkeypatch) -> None:

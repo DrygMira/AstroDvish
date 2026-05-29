@@ -73,6 +73,97 @@ def _payload(events_count: int) -> dict:
     }
 
 
+def _four_children_payload() -> dict:
+    return {
+        "birth_date_local": "1978-03-19",
+        "latitude": 40.234167,
+        "longitude": 69.694722,
+        "timezone_name": "Etc/GMT-5",
+        "timezone_mode": "manual",
+        "timezone_offset": "+05:00",
+        "asc_windows": [
+            {
+                "start_local": "1978-03-19T22:55:00",
+                "end_local": "1978-03-19T23:01:00",
+                "sign_name_en": "Scorpio",
+                "sign_name_ru": "Scorpio",
+            }
+        ],
+        "events": [
+            {
+                "event_id": "ev1",
+                "event_type": "child_birth",
+                "title": "child 1",
+                "date_text": "2000-01-01",
+                "date_precision": "exact",
+                "start_date": "2000-01-01",
+                "end_date": "2000-01-01",
+                "impact_level": 5,
+                "reversibility": "irreversible",
+                "life_area": "family",
+                "sequence_number": 1,
+                "notes": "",
+                "user_skipped": False,
+            },
+            {
+                "event_id": "ev2",
+                "event_type": "child_birth",
+                "title": "child 2",
+                "date_text": "2002-02-02",
+                "date_precision": "exact",
+                "start_date": "2002-02-02",
+                "end_date": "2002-02-02",
+                "impact_level": 5,
+                "reversibility": "irreversible",
+                "life_area": "family",
+                "sequence_number": 2,
+                "notes": "",
+                "user_skipped": False,
+            },
+            {
+                "event_id": "ev3",
+                "event_type": "child_birth",
+                "title": "child 3",
+                "date_text": "2004-03-03",
+                "date_precision": "exact",
+                "start_date": "2004-03-03",
+                "end_date": "2004-03-03",
+                "impact_level": 5,
+                "reversibility": "irreversible",
+                "life_area": "family",
+                "sequence_number": 3,
+                "notes": "",
+                "user_skipped": False,
+            },
+            {
+                "event_id": "ev4",
+                "event_type": "child_birth",
+                "title": "child 4",
+                "date_text": "2005-11-07",
+                "date_precision": "exact",
+                "start_date": "2005-11-07",
+                "end_date": "2005-11-07",
+                "impact_level": 5,
+                "reversibility": "irreversible",
+                "life_area": "family",
+                "sequence_number": 4,
+                "notes": "",
+                "user_skipped": False,
+            },
+        ],
+        "settings": {
+            "candidate_step_minutes": 1,
+            "formula_refinement_step_seconds": 30,
+            "include_directions": True,
+            "include_solars": True,
+            "include_lunars": False,
+            "include_transits": True,
+            "include_totems": False,
+            "formula_card_id": "RECT_CHILD_BIRTH_001",
+        },
+    }
+
+
 def test_rectification_pro_run_endpoint_contract(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     with client:
@@ -118,6 +209,25 @@ def test_rectification_pro_run_endpoint_returns_formula_refinement_results(monke
     assert refinement["supported_step_seconds"] == [300, 60, 30, 10]
     assert "best_candidate" in refinement
     assert "top_candidates" in refinement
+
+
+def test_rectification_pro_handles_four_child_birth_events_and_exposes_performance_debug(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _four_children_payload()
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert "formula_refinement_results" in body
+    refinement = body["formula_refinement_results"]
+    assert refinement["card_id"] == "RECT_CHILD_BIRTH_001"
+    performance = body["performance_debug"]
+    assert performance["event_count"] == 4
+    assert performance["candidate_count"] >= 1
+    assert performance["formula_count"] >= 1
+    assert performance["card_id"] == "RECT_CHILD_BIRTH_001"
+    assert performance["total_runtime_ms"] >= 0
+    assert performance["slowest_stage"] in performance["stage_timings_ms"]
     assert "coarse_candidate" in refinement
     assert "working_time_ranges" in refinement
     assert "working_time_range" in refinement

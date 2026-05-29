@@ -94,6 +94,7 @@ def _env(name: str, default: str = "") -> str:
 
 
 DOCKER_COMPOSE_API_BASE_URL = _env("DOCKER_COMPOSE_API_BASE_URL", "http://astrodvish-api:8013")
+RECTIFICATION_PRO_TIMEOUT_SECONDS = int(_env("RECTIFICATION_PRO_TIMEOUT_SECONDS", "600") or "600")
 
 QUESTION_BANK: list[dict[str, Any]] = [
     {
@@ -2178,8 +2179,12 @@ def _post_to_api_with_fallback(*, base_url: str, path: str, payload: dict[str, A
     primary_url = base_url.rstrip("/") + path
     try:
         return httpx.post(primary_url, json=payload, timeout=timeout)
+    except httpx.TimeoutException:
+        raise
     except httpx.HTTPError as primary_error:
         if not _is_localhost_base_url(base_url):
+            raise primary_error
+        if not isinstance(primary_error, (httpx.ConnectError, httpx.ConnectTimeout, httpx.NetworkError)):
             raise primary_error
 
         fallback_url = DOCKER_COMPOSE_API_BASE_URL.rstrip("/") + path
@@ -2844,14 +2849,29 @@ def _post_rectification_events(
     base_url: str,
     path: str,
     payload: dict[str, Any],
+    timeout: int = 120,
 ) -> dict[str, Any]:
     try:
         response = _post_to_api_with_fallback(
             base_url=base_url,
             path=path,
             payload=payload,
-            timeout=120,
+            timeout=timeout,
         )
+    except httpx.TimeoutException as exc:
+        raise HTTPException(
+            status_code=504,
+            detail={
+                "message": "Rectification request timed out",
+                "user_message": (
+                    "Pro-расчёт занял слишком много времени. "
+                    "Попробуйте повторить запуск позже или временно уменьшить объём сравнения."
+                ),
+                "reason": "upstream_timeout",
+                "path": path,
+                "timeout_seconds": timeout,
+            },
+        ) from exc
     except httpx.HTTPError as exc:
         raise HTTPException(status_code=502, detail=f"API request failed: {exc}") from exc
 
@@ -3339,6 +3359,7 @@ def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
         base_url=payload.api_base_url,
         path="/api/v1/rectification/pro/run",
         payload=payload.payload,
+        timeout=RECTIFICATION_PRO_TIMEOUT_SECONDS,
     )
     return JSONResponse(response_json)
 

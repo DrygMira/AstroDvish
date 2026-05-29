@@ -125,6 +125,7 @@ class RectificationProRunResponse(BaseModel):
     formula_test_mode_results: list[FormulaTestModeResult] = Field(default_factory=list)
     formula_refinement_results: dict[str, Any] = Field(default_factory=dict)
     formula_card_comparison: dict[str, Any] = Field(default_factory=dict)
+    performance_debug: dict[str, Any] = Field(default_factory=dict)
     confidence: ConfidenceSummary
     warnings: list[str] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)

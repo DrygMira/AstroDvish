@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from time import perf_counter
 from typing import Any
 
 from app.models.rectification_pro_models import (
@@ -42,9 +43,12 @@ class RectificationProService:
         self.confidence_service = ConfidenceService()
 
     def run(self, payload: RectificationProRunRequest) -> RectificationProRunResponse:
+        started_at = perf_counter()
+        stage_timings: dict[str, float] = {}
         settings = payload.settings
         selected_formula_card_id = settings.formula_card_id or None
         timezone_info, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
+        generation_started_at = perf_counter()
         generation = self.candidate_generator.generate(
             birth_date_local=payload.birth_date_local,
             timezone_info=timezone_info,
@@ -52,6 +56,7 @@ class RectificationProService:
             step_minutes=settings.candidate_step_minutes,
             max_candidates=settings.max_candidates,
         )
+        stage_timings["candidate_generation_ms"] = round((perf_counter() - generation_started_at) * 1000, 2)
         warnings = list(generation.warnings)
         limitations = [
             "MVP: directions/solar/transits are lightweight scoring proxies, not full master-level event interpretation.",
@@ -85,6 +90,7 @@ class RectificationProService:
         top_total = -1.0
         top_candidate_id = ""
 
+        coarse_scoring_started_at = perf_counter()
         for candidate in generation.candidate_times:
             chart = self._chart_for_candidate(candidate.datetime_utc, payload)
             method_results_for_candidate: dict[str, list[MethodMatch]] = {}
@@ -142,18 +148,22 @@ class RectificationProService:
                     "transits": method_results_for_candidate.get("transits", []),
                     "totems": method_results_for_candidate.get("totem", []),
                 }
+        stage_timings["coarse_scoring_ms"] = round((perf_counter() - coarse_scoring_started_at) * 1000, 2)
 
         candidate_scores.sort(key=lambda item: float(item.scores.get("total") or 0.0), reverse=True)
         best_candidates = candidate_scores[:3]
         best_candidate = best_candidates[0] if best_candidates else None
         confidence = self.confidence_service.summarize(best_candidate=best_candidate, events=payload.events)
+        refinement_started_at = perf_counter()
         formula_refinement_results = self.formula_refinement_service.refine(
             payload,
             card_id=selected_formula_card_id,
         )
+        stage_timings["formula_refinement_ms"] = round((perf_counter() - refinement_started_at) * 1000, 2)
         formula_refinement_results["coarse_candidate"] = self._build_coarse_candidate_summary(best_candidate)
         refined_chart = self._chart_from_refinement_candidate(formula_refinement_results)
         self._strip_refinement_internal_chart(formula_refinement_results)
+        formula_test_mode_started_at = perf_counter()
         formula_test_mode_results = self._build_formula_test_mode_results(
             payload=payload,
             best_chart=refined_chart or best_chart,
@@ -170,15 +180,37 @@ class RectificationProService:
             timezone_used=timezone_used,
             timezone_offset_used=timezone_offset_used,
         )
+        stage_timings["formula_test_mode_ms"] = round((perf_counter() - formula_test_mode_started_at) * 1000, 2)
+        comparison_started_at = perf_counter()
         formula_card_comparison = self._build_formula_card_comparison(
             payload=payload,
             method_results=best_method_results,
         )
+        stage_timings["formula_card_comparison_ms"] = round((perf_counter() - comparison_started_at) * 1000, 2)
 
         if confidence.level in {"low", "medium"}:
             warnings.append("do_not_present_as_exact_birth_time")
         if len(payload.events) < 3:
             warnings.append("insufficient_events_for_strong_rectification")
+
+        formulas_count = formula_refinement_results.get("formulas_count")
+        if formulas_count is None and formula_test_mode_results:
+            formulas_count = len(
+                (formula_test_mode_results[0].expected_by_card or {}).get("direction_rules", [])
+            )
+        total_runtime_ms = round((perf_counter() - started_at) * 1000, 2)
+        slowest_stage = None
+        if stage_timings:
+            slowest_stage = max(stage_timings.items(), key=lambda item: float(item[1]))[0]
+        performance_debug = {
+            "card_id": formula_refinement_results.get("card_id") or selected_formula_card_id,
+            "formula_count": formulas_count,
+            "event_count": len(payload.events),
+            "candidate_count": len(generation.candidate_times),
+            "total_runtime_ms": total_runtime_ms,
+            "slowest_stage": slowest_stage,
+            "stage_timings_ms": stage_timings,
+        }
 
         return RectificationProRunResponse(
             candidate_windows=candidate_scores,
@@ -187,6 +219,7 @@ class RectificationProService:
             formula_test_mode_results=formula_test_mode_results,
             formula_refinement_results=formula_refinement_results,
             formula_card_comparison=formula_card_comparison,
+            performance_debug=performance_debug,
             confidence=confidence,
             warnings=sorted(set(warnings)),
             limitations=limitations,
