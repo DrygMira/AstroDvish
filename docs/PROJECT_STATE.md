@@ -578,3 +578,53 @@ Every future report must include:
     - selected candidate consistency fields equality
     - reset Stage2 state clearing
     - v2 compact summary/context score visibility
+
+## 32. Live Pro Timeout / 502 Hotfix (2026-05-29)
+- root cause confirmed:
+  - heavy Pro run was not failing inside `astro-bot-api`
+  - direct live API on `127.0.0.1:8013` handled 4 child-birth events quickly
+  - live failure was in `web_ui` proxy policy:
+    - `_post_to_api_with_fallback()` treated timeout like any other `httpx.HTTPError`
+    - after localhost timeout/failure it retried via `http://astrodvish-api:8013`
+    - on live host that docker hostname is not valid, so the user saw `502`
+- hotfix deployed:
+  - `web_ui` Pro proxy timeout is now separate and longer (`RECTIFICATION_PRO_TIMEOUT_SECONDS`, default `600`)
+  - timeout no longer falls through to docker fallback
+  - Pro timeout now returns controlled `504` with human-readable `user_message`
+  - fallback is kept only for connect/network errors, not long-running upstream timeouts
+  - top-level Pro response now includes `performance_debug`:
+    - `card_id`
+    - `formula_count`
+    - `event_count`
+    - `candidate_count`
+    - `total_runtime_ms`
+    - `slowest_stage`
+    - `stage_timings_ms`
+- deployed live commit:
+  - `6db9dcbfd3d4cfcc57368aed93d6e179e4934676`
+  - message: `Harden live pro proxy timeout handling`
+- rollback commit:
+  - `b4a90f1e62151d50f69d77e07e01dfc3a5bb9a5b`
+  - message: `Fix runtime consistency in beta rectification flow`
+- live proof after hotfix:
+  - `/health = 200`
+  - `/api/preview/pro-result = 200`
+  - `/api/preview/chart-result = 200`
+  - ordinary chart public `/api/generate = 200`
+  - public Pro run, `RECT_CHILD_BIRTH_001`, `1` event:
+    - `200`
+    - end-to-end from workspace: about `1.0s`
+    - backend `performance_debug.total_runtime_ms`: about `118ms`
+  - public Pro run, `RECT_CHILD_BIRTH_001`, `4` child-birth events:
+    - `200`
+    - end-to-end from workspace: about `3.1s`
+    - backend `performance_debug.total_runtime_ms`: about `1635ms`
+  - public Pro run, explicit `RECT_CHILD_BIRTH_002_DRAFT` + v1/v2 comparison, `4` child-birth events:
+    - `200`
+    - end-to-end from workspace: about `17.5s`
+    - backend `performance_debug.total_runtime_ms`: about `4914ms`
+- current safety status:
+  - live Pro no longer reproduces the earlier false `502` on the tested 4-child payload
+  - formula logic was not changed
+  - draft card is still explicit-only
+  - remaining risk is genuine long computation beyond `600s`; that now should surface as controlled `504`, not docker-fallback `502`
