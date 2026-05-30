@@ -224,3 +224,14 @@ def test_main_ui_supports_humanized_geocode_error_and_technical_debug() -> None:
     html = response.text
     assert "detail?.user_message" in html
     assert 'id="geocodeDebugBox"' in html
+
+
+def test_main_ui_humanizes_non_json_proxy_errors() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    html = response.text
+    assert "function humanizeNonJsonError(res, text)" in html
+    assert 'normalized.includes("gateway time-out")' in html
+    assert 'normalized.includes("temporary failure in name resolution")' in html

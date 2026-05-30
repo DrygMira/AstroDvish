@@ -2487,7 +2487,7 @@
       const jsonPayload = tryParseResponseJson(text);
       return {
         jsonPayload,
-        errorText: jsonPayload ? extractErrorText(jsonPayload) : (text || "empty response body"),
+        errorText: jsonPayload ? extractErrorText(jsonPayload) : humanizeNonJsonError(res, text),
       };
     }
 
@@ -2869,6 +2869,21 @@
       }
       if (payload.error && payload.error.message) return payload.error.message;
       return JSON.stringify(payload, null, 2);
+    }
+
+    function humanizeNonJsonError(res, text) {
+      const safeText = typeof text === "string" ? text : "";
+      const normalized = safeText.toLowerCase();
+      if (res?.status === 504 || normalized.includes("gateway time-out") || normalized.includes("gateway timeout")) {
+        return "Расчёт занял слишком много времени. Попробуйте меньше событий или Beta/V1 режим.";
+      }
+      if (res?.status === 502 || normalized.includes("temporary failure in name resolution")) {
+        return "Сервис Pro-ректификации временно недоступен. Попробуйте повторить позже.";
+      }
+      if (normalized.includes("<html") || normalized.includes("<!doctype html")) {
+        return "Сервис временно недоступен. Попробуйте повторить позже.";
+      }
+      return safeText || "empty response body";
     }
 
     function normalizeLlmReason(reason) {

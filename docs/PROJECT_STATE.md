@@ -1,5 +1,12 @@
 # PROJECT_STATE.md
 
+State owner note:
+- Permanent repository rules now live in `docs/AGENTS.md`.
+- This file is for current project state only: focus, latest deploy, blockers, cards, risks, next step.
+- If `docs/AGENTS.md` and this file conflict:
+  - `docs/AGENTS.md` wins for permanent rules
+  - `PROJECT_STATE.md` wins for current state
+
 ## 1. Current focus
 AstroDvish / Astra Engine / Pro-ректификация / formula-driven refinement.
 
@@ -106,9 +113,7 @@ Every future report must include:
 ## 12. Document rules
 - Keep this file short and stateful.
 - Update it after every meaningful fix, deploy, or expert feedback.
-- If `PROJECT_STATE.md` and `AGENTS.md` conflict:
-  - `AGENTS.md` wins for permanent rules
-  - `PROJECT_STATE.md` wins for current project state
+- Permanent instructions belong in `docs/AGENTS.md`, not here.
 
 ## 13. Current patch notes
 - child_birth card is being migrated to literal DSL fields: `formula`, `rule`, `source`, `target`, `aspect`, `priority`, `role`, `comment`
@@ -628,3 +633,77 @@ Every future report must include:
   - formula logic was not changed
   - draft card is still explicit-only
   - remaining risk is genuine long computation beyond `600s`; that now should surface as controlled `504`, not docker-fallback `502`
+
+## 33. Live Nginx 504 Timeout Alignment (2026-05-29)
+- new live root cause confirmed:
+  - after the proxy fallback hotfix, one more public failure path still remained
+  - live nginx for `45.133.17.16` still had `proxy_read_timeout 300`
+  - `web_ui` Pro proxy and backend timeout budget were already `600s`
+  - because of that mismatch, heavy public Pro requests could still die at nginx first and return raw HTML `504 Gateway Time-out`
+- live infra fix applied:
+  - `/etc/nginx/sites-available/astro-bot-ip`
+  - previous:
+    - `proxy_read_timeout 300`
+  - current:
+    - `proxy_connect_timeout 60`
+    - `proxy_send_timeout 610`
+    - `proxy_read_timeout 610`
+    - `send_timeout 610`
+  - nginx config test: `ok`
+  - nginx reload: `ok`
+- public live proof after nginx alignment:
+  - `/health = 200`
+  - `/api/preview/pro-result = 200`
+  - `/api/preview/chart-result = 200`
+  - ordinary chart public `/api/generate = 200`
+  - public Pro run, `RECT_CHILD_BIRTH_001`, `1` event:
+    - `200`
+    - end-to-end from workspace: about `1.03s`
+    - backend `performance_debug.total_runtime_ms`: about `130ms`
+  - public Pro run, `RECT_CHILD_BIRTH_001`, `4` child-birth events:
+    - `200`
+    - end-to-end from workspace: about `1.89s`
+    - backend `performance_debug.total_runtime_ms`: about `469ms`
+  - public Pro run, explicit `RECT_CHILD_BIRTH_002_DRAFT` + v1/v2 comparison, `4` child-birth events:
+    - `200`
+    - end-to-end from workspace: about `17.45s`
+    - backend `performance_debug.total_runtime_ms`: about `4389ms`
+- current interpretation:
+  - the tested heavy 4-child public path no longer reproduces raw nginx `504`
+  - V1 remains stable
+  - explicit V2 comparison remains much heavier, but now completes on the tested public payload
+  - no astrology, formula, or card logic was changed in this fix
+- remaining risks:
+  - truly much heavier expert cases can still exceed the `600s` application budget
+  - if that happens now, the preferred failure mode is controlled app `504` JSON rather than nginx HTML
+  - async job/polling mode is still the longer-term solution for very heavy Pro runs
+
+## 34. Live DNS Fallback Cleanup (2026-05-30)
+- new live root cause confirmed:
+  - after nginx timeout alignment, another failure mode still remained on public Pro runs
+  - `web_ui` could still enter `_post_to_api_with_fallback()` connect/network fallback path
+  - fallback target was `http://astrodvish-api:8013`
+  - on live systemd deployment that docker hostname is not resolvable, so users could see:
+    - `API request failed: [Errno -3] Temporary failure in name resolution`
+    - `502`
+- code-path diagnosis:
+  - failing hostname: `astrodvish-api`
+  - component: `web_ui.main._post_to_api_with_fallback`
+  - trigger: primary localhost upstream connect/network failure
+  - bad assumption: docker-compose fallback was treated as universally valid, but live host runs services from systemd on `/opt/astro-bot-api`
+- fix applied:
+  - docker-compose fallback is now explicit opt-in via `DOCKER_COMPOSE_API_FALLBACK_ENABLED`
+  - default behavior for non-container/live path: no docker DNS fallback
+  - docker-compose keeps fallback enabled through compose env
+  - connect/DNS failures now return controlled `502` JSON with:
+    - `user_message`
+    - `reason=upstream_unavailable`
+    - `upstream_host`
+    - `fallback_enabled`
+  - UI now humanizes non-JSON proxy errors too:
+    - raw nginx `504` HTML -> compact timeout message
+    - raw DNS text -> compact temporary-unavailable message
+- intended live result:
+  - no raw `Temporary failure in name resolution` text on user screen
+  - no dependency on `astrodvish-api` hostname in live systemd mode
+  - if upstream is unavailable, user gets controlled message instead of raw proxy/error text

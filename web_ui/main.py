@@ -93,7 +93,12 @@ def _env(name: str, default: str = "") -> str:
     return os.getenv(name, ENV_FILE_VALUES.get(name, default))
 
 
+def _env_flag(name: str, default: str = "0") -> bool:
+    return (_env(name, default) or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 DOCKER_COMPOSE_API_BASE_URL = _env("DOCKER_COMPOSE_API_BASE_URL", "http://astrodvish-api:8013")
+DOCKER_COMPOSE_API_FALLBACK_ENABLED = _env_flag("DOCKER_COMPOSE_API_FALLBACK_ENABLED", "0")
 RECTIFICATION_PRO_TIMEOUT_SECONDS = int(_env("RECTIFICATION_PRO_TIMEOUT_SECONDS", "600") or "600")
 
 QUESTION_BANK: list[dict[str, Any]] = [
@@ -2107,6 +2112,47 @@ def _is_localhost_base_url(base_url: str) -> bool:
     return parsed.hostname in {"127.0.0.1", "localhost"}
 
 
+def _should_use_docker_compose_fallback(base_url: str) -> bool:
+    return DOCKER_COMPOSE_API_FALLBACK_ENABLED and _is_localhost_base_url(base_url)
+
+
+def _build_upstream_unavailable_detail(
+    *,
+    base_url: str,
+    path: str,
+    timeout: int,
+    exc: Exception,
+) -> dict[str, Any]:
+    try:
+        upstream_host = urlparse(base_url).hostname
+    except ValueError:
+        upstream_host = None
+
+    if path == "/api/v1/chart":
+        user_message = "Сервис расчёта карты временно недоступен. Попробуйте повторить позже."
+    elif path.startswith("/api/v1/rectification/"):
+        user_message = "Сервис Pro-ректификации временно недоступен. Попробуйте повторить позже."
+    else:
+        user_message = "Внутренний сервис временно недоступен. Попробуйте повторить позже."
+
+    detail: dict[str, Any] = {
+        "message": "Upstream service unavailable",
+        "user_message": user_message,
+        "reason": "upstream_unavailable",
+        "path": path,
+        "timeout_seconds": timeout,
+        "upstream_host": upstream_host,
+        "fallback_enabled": _should_use_docker_compose_fallback(base_url),
+        "error_type": type(exc).__name__,
+    }
+    if _should_use_docker_compose_fallback(base_url):
+        try:
+            detail["fallback_host"] = urlparse(DOCKER_COMPOSE_API_BASE_URL).hostname
+        except ValueError:
+            detail["fallback_host"] = None
+    return detail
+
+
 def _load_geocode_cache() -> dict[str, dict[str, Any]]:
     if not GEOCODE_CACHE_PATH.exists():
         return {}
@@ -2182,7 +2228,7 @@ def _post_to_api_with_fallback(*, base_url: str, path: str, payload: dict[str, A
     except httpx.TimeoutException:
         raise
     except httpx.HTTPError as primary_error:
-        if not _is_localhost_base_url(base_url):
+        if not _should_use_docker_compose_fallback(base_url):
             raise primary_error
         if not isinstance(primary_error, (httpx.ConnectError, httpx.ConnectTimeout, httpx.NetworkError)):
             raise primary_error
@@ -2829,7 +2875,16 @@ def _fetch_rectification_document(payload: RectificationIntervalsRequest) -> dic
             timeout=120,
         )
     except httpx.HTTPError as exc:
-        raise HTTPException(status_code=502, detail=f"API request failed: {exc}") from exc
+        logger.warning("Rectification upstream unavailable: path=%s base_url=%s error=%s", path, payload.api_base_url, exc)
+        raise HTTPException(
+            status_code=502,
+            detail=_build_upstream_unavailable_detail(
+                base_url=payload.api_base_url,
+                path=path,
+                timeout=120,
+                exc=exc,
+            ),
+        ) from exc
 
     if response.status_code != 200:
         raise HTTPException(
@@ -2873,7 +2928,16 @@ def _post_rectification_events(
             },
         ) from exc
     except httpx.HTTPError as exc:
-        raise HTTPException(status_code=502, detail=f"API request failed: {exc}") from exc
+        logger.warning("Rectification upstream unavailable: path=%s base_url=%s error=%s", path, base_url, exc)
+        raise HTTPException(
+            status_code=502,
+            detail=_build_upstream_unavailable_detail(
+                base_url=base_url,
+                path=path,
+                timeout=timeout,
+                exc=exc,
+            ),
+        ) from exc
 
     if response.status_code != 200:
         if 400 <= response.status_code < 500:
@@ -3170,7 +3234,16 @@ def generate(payload: GenerateRequest) -> JSONResponse:
             timeout=120,
         )
     except httpx.HTTPError as exc:
-        raise HTTPException(status_code=502, detail=f"API request failed: {exc}") from exc
+        logger.warning("Chart upstream unavailable: path=%s base_url=%s error=%s", path, payload.api_base_url, exc)
+        raise HTTPException(
+            status_code=502,
+            detail=_build_upstream_unavailable_detail(
+                base_url=payload.api_base_url,
+                path=path,
+                timeout=120,
+                exc=exc,
+            ),
+        ) from exc
 
     if response.status_code != 200:
         raise HTTPException(

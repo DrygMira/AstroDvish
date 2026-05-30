@@ -278,6 +278,7 @@ def test_post_to_api_with_fallback_retries_on_connect_error(monkeypatch) -> None
             raise httpx.ConnectError("connect failed")
         return _DummyResponse(200, {"ok": True})
 
+    monkeypatch.setattr(web_ui_main, "DOCKER_COMPOSE_API_FALLBACK_ENABLED", True)
     monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
     response = web_ui_main._post_to_api_with_fallback(
         base_url="http://127.0.0.1:8013",
@@ -291,6 +292,61 @@ def test_post_to_api_with_fallback_retries_on_connect_error(monkeypatch) -> None
         "http://127.0.0.1:8013/api/v1/rectification/pro/run",
         f"{web_ui_main.DOCKER_COMPOSE_API_BASE_URL.rstrip('/')}/api/v1/rectification/pro/run",
     ]
+
+
+def test_post_to_api_with_fallback_does_not_retry_on_connect_error_when_disabled(monkeypatch) -> None:
+    calls: list[str] = []
+
+    def fake_post(url: str, json: dict, timeout: int):
+        calls.append(url)
+        raise httpx.ConnectError("connect failed")
+
+    monkeypatch.setattr(web_ui_main, "DOCKER_COMPOSE_API_FALLBACK_ENABLED", False)
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    try:
+        web_ui_main._post_to_api_with_fallback(
+            base_url="http://127.0.0.1:8013",
+            path="/api/v1/rectification/pro/run",
+            payload={"ok": True},
+            timeout=120,
+        )
+    except httpx.ConnectError:
+        pass
+    else:
+        raise AssertionError("expected connect error to be re-raised")
+
+    assert calls == ["http://127.0.0.1:8013/api/v1/rectification/pro/run"]
+
+
+def test_web_ui_rectification_pro_proxy_returns_controlled_502_on_dns_error(monkeypatch) -> None:
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        raise httpx.ConnectError("[Errno -3] Temporary failure in name resolution")
+
+    monkeypatch.setattr(web_ui_main, "DOCKER_COMPOSE_API_FALLBACK_ENABLED", False)
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/pro/run",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {
+                "birth_date_local": "1990-05-12",
+                "latitude": 53.9006,
+                "longitude": 27.5590,
+                "timezone_name": "Europe/Moscow",
+                "asc_windows": [],
+                "events": [],
+            },
+        },
+    )
+
+    assert response.status_code == 502
+    detail = response.json()["detail"]
+    assert detail["reason"] == "upstream_unavailable"
+    assert detail["fallback_enabled"] is False
+    assert detail["upstream_host"] == "127.0.0.1"
+    assert "временно недоступен" in detail["user_message"]
 
 
 def test_web_ui_rectification_pro_proxy_accepts_repeated_eventcards(monkeypatch) -> None:
