@@ -245,6 +245,34 @@ def test_web_ui_rectification_pro_proxy_returns_controlled_504_on_timeout(monkey
     assert "Pro-" in detail["user_message"]
 
 
+def test_web_ui_rectification_pro_proxy_humanizes_non_json_upstream_504(monkeypatch) -> None:
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        return _DummyResponse(504, {}, text="<html><title>504 Gateway Time-out</title></html>")
+
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/pro/run",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {
+                "birth_date_local": "1990-05-12",
+                "latitude": 53.9006,
+                "longitude": 27.5590,
+                "timezone_name": "Europe/Moscow",
+                "asc_windows": [],
+                "events": [],
+            },
+        },
+    )
+
+    assert response.status_code == 504
+    detail = response.json()["detail"]
+    assert detail["reason"] == "upstream_timeout"
+    assert "V1" in detail["user_message"]
+    assert detail["technical_message"] == "upstream_status=504"
+
+
 def test_post_to_api_with_fallback_does_not_retry_on_timeout(monkeypatch) -> None:
     calls: list[str] = []
 

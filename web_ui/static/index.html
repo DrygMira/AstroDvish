@@ -2491,6 +2491,24 @@
       };
     }
 
+    async function fetchWithTimeout(url, options = {}, timeoutMs = 180000) {
+      const controller = new AbortController();
+      const timerId = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        return await fetch(url, {
+          ...options,
+          signal: controller.signal,
+        });
+      } catch (err) {
+        if (err?.name === "AbortError") {
+          throw new Error("Расчёт занял слишком много времени. Попробуйте V1, меньше событий или повторите позже.");
+        }
+        throw err;
+      } finally {
+        clearTimeout(timerId);
+      }
+    }
+
     function closeModal() {
       modalEl.classList.remove("active");
       expertWrapEl.classList.add("hidden");
@@ -2884,6 +2902,17 @@
         return "Сервис временно недоступен. Попробуйте повторить позже.";
       }
       return safeText || "empty response body";
+    }
+
+    function getHeavyProRunWarning(payload) {
+      const eventsCount = Array.isArray(payload?.events) ? payload.events.length : 0;
+      const isV2Card = payload?.settings?.formula_card_id === "RECT_CHILD_BIRTH_002_DRAFT";
+      const isComparison = Array.isArray(payload?.settings?.compare_formula_card_ids)
+        && payload.settings.compare_formula_card_ids.length > 1;
+      if ((isV2Card || isComparison) && eventsCount >= 4) {
+        return "V2 comparison may take up to 2 minutes.";
+      }
+      return "";
     }
 
     function normalizeLlmReason(reason) {
@@ -5181,18 +5210,19 @@
         return;
       }
 
-      setRpStatus("Запускаем Pro-ректификацию...");
-      setWzProStatus("Запускаем Pro-ректификацию...");
-      showLlmOverlay("Запуск Pro-ректификации...");
+      const heavyProWarning = getHeavyProRunWarning(payload);
+      setRpStatus(heavyProWarning || "Запускаем Pro-ректификацию...");
+      setWzProStatus(heavyProWarning || "Запускаем Pro-ректификацию...");
+      showLlmOverlay(heavyProWarning ? `${heavyProWarning} Запускаем Pro-ректификацию...` : "Запуск Pro-ректификации...");
       try {
-        const res = await fetch("/api/rectification/pro/run", {
+        const res = await fetchWithTimeout("/api/rectification/pro/run", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             api_base_url: document.getElementById("reApiBaseUrl").value.trim(),
             payload,
           }),
-        });
+        }, 620000);
         const { jsonPayload, errorText } = await parseResponseBody(res);
         if (!res.ok) {
           throw new Error(errorText);

@@ -235,3 +235,6 @@ def test_main_ui_humanizes_non_json_proxy_errors() -> None:
     assert "function humanizeNonJsonError(res, text)" in html
     assert 'normalized.includes("gateway time-out")' in html
     assert 'normalized.includes("temporary failure in name resolution")' in html
+    assert "function fetchWithTimeout(url, options = {}, timeoutMs = 180000)" in html
+    assert "V2 comparison may take up to 2 minutes." in html
+    assert '}, 620000);' in html

@@ -2153,6 +2153,47 @@ def _build_upstream_unavailable_detail(
     return detail
 
 
+def _build_upstream_http_status_detail(
+    *,
+    status_code: int,
+    path: str,
+    body_text: str,
+) -> dict[str, Any]:
+    safe_body = (body_text or "")[:2000]
+    normalized = safe_body.lower()
+    is_timeout = status_code == 504 or "gateway time-out" in normalized or "gateway timeout" in normalized
+
+    if path.startswith("/api/v1/rectification/"):
+        user_message = (
+            "Расчёт занял слишком много времени. "
+            "Попробуйте V1, меньше событий или повторите позже."
+            if is_timeout
+            else "Сервис Pro-ректификации временно недоступен. Попробуйте повторить позже."
+        )
+    elif path == "/api/v1/chart":
+        user_message = (
+            "Расчёт карты занял слишком много времени. Попробуйте повторить позже."
+            if is_timeout
+            else "Сервис расчёта карты временно недоступен. Попробуйте повторить позже."
+        )
+    else:
+        user_message = (
+            "Внутренний сервис занял слишком много времени. Попробуйте повторить позже."
+            if is_timeout
+            else "Внутренний сервис временно недоступен. Попробуйте повторить позже."
+        )
+
+    return {
+        "message": "Upstream returned non-200 status",
+        "user_message": user_message,
+        "technical_message": f"upstream_status={status_code}",
+        "reason": "upstream_timeout" if is_timeout else "upstream_unavailable",
+        "path": path,
+        "status_code": status_code,
+        "body": safe_body,
+    }
+
+
 def _load_geocode_cache() -> dict[str, dict[str, Any]]:
     if not GEOCODE_CACHE_PATH.exists():
         return {}
@@ -2888,12 +2929,12 @@ def _fetch_rectification_document(payload: RectificationIntervalsRequest) -> dic
 
     if response.status_code != 200:
         raise HTTPException(
-            status_code=502,
-            detail={
-                "message": "Rectification API returned non-200 status",
-                "status_code": response.status_code,
-                "body": response.text[:2000],
-            },
+            status_code=response.status_code if response.status_code in {502, 504} else 502,
+            detail=_build_upstream_http_status_detail(
+                status_code=response.status_code,
+                path=path,
+                body_text=response.text,
+            ),
         )
 
     return response.json()
@@ -2947,13 +2988,12 @@ def _post_rectification_events(
                 detail = response.text[:2000]
             raise HTTPException(status_code=response.status_code, detail=detail)
         raise HTTPException(
-            status_code=502,
-            detail={
-                "message": "Rectification events API returned non-200 status",
-                "status_code": response.status_code,
-                "body": response.text[:2000],
-                "path": path,
-            },
+            status_code=response.status_code if response.status_code in {502, 504} else 502,
+            detail=_build_upstream_http_status_detail(
+                status_code=response.status_code,
+                path=path,
+                body_text=response.text,
+            ),
         )
 
     try:
@@ -3247,12 +3287,12 @@ def generate(payload: GenerateRequest) -> JSONResponse:
 
     if response.status_code != 200:
         raise HTTPException(
-            status_code=502,
-            detail={
-                "message": "Chart API returned non-200 status",
-                "status_code": response.status_code,
-                "body": response.text[:2000],
-            },
+            status_code=response.status_code if response.status_code in {502, 504} else 502,
+            detail=_build_upstream_http_status_detail(
+                status_code=response.status_code,
+                path=path,
+                body_text=response.text,
+            ),
         )
 
     chart_response = response.json()
