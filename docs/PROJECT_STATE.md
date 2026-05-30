@@ -707,3 +707,46 @@ Every future report must include:
   - no raw `Temporary failure in name resolution` text on user screen
   - no dependency on `astrodvish-api` hostname in live systemd mode
   - if upstream is unavailable, user gets controlled message instead of raw proxy/error text
+
+## 35. Live Pro Stability Hardening (2026-05-31)
+- goal of this pass:
+  - harden all user-visible Pro/V2/comparison error paths
+  - eliminate raw nginx HTML and raw Python exception text from the UI
+  - keep astrology, formula cards, and scoring unchanged
+- code hardening deployed:
+  - live commit:
+    - `9cb780e577351d42c8b05b81f2c9ae8feb1b7559`
+    - message: `Harden live pro error handling`
+  - rollback commit:
+    - `ac340b87fc02985777207af324dd8abbdb21c9af`
+    - message: `Harden live proxy DNS fallback handling`
+  - backend/web_ui changes:
+    - non-JSON upstream `502/504` are now mapped to structured safe error payloads
+    - frontend now humanizes raw non-JSON proxy responses too
+    - frontend fetch for Pro uses explicit timeout handling with user message
+    - V2/comparison UI warns in advance that heavy comparison can take up to 2 minutes
+- infrastructure hardening:
+  - nginx `/api/` path now has dedicated intercept handling for upstream `502/504`
+  - timeout alignment remains:
+    - `proxy_connect_timeout 60`
+    - `proxy_send_timeout 610`
+    - `proxy_read_timeout 610`
+    - `send_timeout 610`
+    - app/web_ui Pro timeout: `600s`
+- verified live/public behavior:
+  - public negative path with invalid upstream now returns controlled `502` with:
+    - `reason=upstream_unavailable`
+    - `user_message`
+    - `upstream_host=127.0.0.1`
+    - `fallback_enabled=false`
+  - public Pro V1 with 4 child-birth events returns `200`
+  - public Pro V2 / comparison heavy paths can still be long, but user-visible handling is now humanized
+  - live config confirms no active docker fallback in systemd mode:
+    - `DOCKER_COMPOSE_API_FALLBACK_ENABLED=false`
+- current remaining risk:
+  - very heavy `V2` / comparison responses are still expensive and can stress the public path
+  - async job/polling is still the recommended later step
+  - for now the target is graceful degradation:
+    - result `200`
+    - or controlled timeout/unavailable message
+    - but not raw nginx HTML or raw DNS exception text
