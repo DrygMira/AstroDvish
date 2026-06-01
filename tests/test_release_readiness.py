@@ -32,3 +32,10 @@ def test_dockerfile_prebuilds_project_venv_for_container_startup() -> None:
     dockerfile = (PROJECT_ROOT / "Dockerfile").read_text(encoding="utf-8")
     assert "python -m venv /app/.venv" in dockerfile
     assert "/app/.venv/bin/pip install --no-cache-dir -r /app/requirements.txt" in dockerfile
+
+
+def test_server_compose_exposes_only_http_entrypoint() -> None:
+    compose = (PROJECT_ROOT / "scripts" / "docker-compose.server.yml").read_text(encoding="utf-8")
+    assert '"80:8014"' in compose
+    assert '"8013:8013"' not in compose
+    assert '"8014:8014"' not in compose
