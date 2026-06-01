@@ -582,6 +582,33 @@ button { font-family: var(--font-ui); }
   overflow: auto;
 }
 
+.followup-wrap {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(197, 131, 43, 0.18);
+  border-radius: 14px;
+  background: rgba(197, 131, 43, 0.06);
+}
+
+.followup-title {
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e7cf97;
+}
+
+.followup-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.followup-actions .btn {
+  flex: 1 1 260px;
+}
+
 /* --------------------------------------------------------------------------
    Чат (шаг 3)
    -------------------------------------------------------------------------- */

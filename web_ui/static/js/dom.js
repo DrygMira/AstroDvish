@@ -39,6 +39,9 @@
     export const aspectOrbProfileEl = document.getElementById("aspectOrbProfile");
     export const modalEl = document.getElementById("resultModal");
     export const horoscopeBoxEl = document.getElementById("horoscopeBox");
+    export const horoscopeFollowUpWrapEl = document.getElementById("horoscopeFollowUpWrap");
+    export const horoscopeFollowUpPracticalBtnEl = document.getElementById("horoscopeFollowUpPracticalBtn");
+    export const horoscopeFollowUpAspectsBtnEl = document.getElementById("horoscopeFollowUpAspectsBtn");
     export const toggleExpertBtnEl = document.getElementById("toggleExpertBtn");
     export const expertWrapEl = document.getElementById("expertWrap");
     export const expertObjectsEl = document.getElementById("expertObjects");

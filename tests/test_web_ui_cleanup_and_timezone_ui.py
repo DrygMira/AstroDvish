@@ -232,3 +232,16 @@ def test_main_ui_does_not_hardcode_browser_localhost_api_base() -> None:
     assert response.status_code == 200
     assert 'value="http://127.0.0.1:8013"' not in html
     assert "По умолчанию используется внутренний API сервера." in html
+
+
+def test_main_ui_has_horoscope_followup_actions_for_llm_cta() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert 'id="horoscopeFollowUpWrap"' in html
+    assert 'id="horoscopeFollowUpPracticalBtn"' in html
+    assert 'id="horoscopeFollowUpAspectsBtn"' in html
+    assert 'generate({ followUpMode: "practical" })' in html
+    assert 'generate({ followUpMode: "aspects" })' in html
+    assert "разобрать аспекты по пунктам" in html.lower()

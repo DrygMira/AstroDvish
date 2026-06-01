@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: chart.
-import { apiRawBoxEl, apiRawWrapEl, aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBoxEl, modalEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
+import { apiRawBoxEl, apiRawWrapEl, aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBoxEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpPracticalBtnEl, horoscopeFollowUpWrapEl, modalEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
 import { appState, sharedBirthContext } from "./state.js";
 import { degreeToDms, extractErrorText, formatWarnings, renderTable, resolveAspectStrengthLabel, resolveMotionPhase } from "./format.js";
 import { setDateTimeWithSeconds } from "./coords.js";
@@ -126,6 +126,43 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       return { signName: signs[signIndex], signDegree: formatDegreeForExpert(signDegree) };
     }
 
+    function normalizePromptBase(promptText) {
+      const normalized = (promptText || "").trim();
+      return normalized || "Сделай гороскоп по этим данным.";
+    }
+
+    function buildFollowUpPrompt(basePrompt, followUpMode) {
+      const normalizedBasePrompt = normalizePromptBase(basePrompt);
+      if (followUpMode === "practical") {
+        return `${normalizedBasePrompt}\n\nПродолжи предыдущую трактовку. Сделай короткий практический разбор по сферам: что помогает, что мешает, на что опираться. Не повторяй исходный текст целиком, дай только полезное продолжение.`;
+      }
+      if (followUpMode === "aspects") {
+        return `${normalizedBasePrompt}\n\nПродолжи предыдущую трактовку. Отдельно разбери аспекты по пунктам: аспект, смысл, сильная сторона, риск и как это проявляется на практике. Не повторяй исходный текст целиком.`;
+      }
+      return normalizedBasePrompt;
+    }
+
+    function extractHoroscopeFollowUpModes(text) {
+      const normalized = String(text || "").toLowerCase();
+      const modes = [];
+      if (normalized.includes("что помогает") && normalized.includes("что мешает") && normalized.includes("на что опираться")) {
+        modes.push("practical");
+      }
+      if (normalized.includes("разобрать аспекты по пунктам")) {
+        modes.push("aspects");
+      }
+      return modes;
+    }
+
+    function renderHoroscopeFollowUps(horoscopeText) {
+      const modes = extractHoroscopeFollowUpModes(horoscopeText);
+      const hasPractical = modes.includes("practical");
+      const hasAspects = modes.includes("aspects");
+      horoscopeFollowUpPracticalBtnEl.classList.toggle("hidden", !hasPractical);
+      horoscopeFollowUpAspectsBtnEl.classList.toggle("hidden", !hasAspects);
+      horoscopeFollowUpWrapEl.classList.toggle("hidden", !(hasPractical || hasAspects));
+    }
+
     export function renderExpertTables(chartResponse, timezonePayload, warnings) {
       appState.lastExpertRenderPayload = { chartResponse, timezonePayload, warnings };
 
@@ -233,7 +270,8 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       );
     }
 
-    export async function generate() {
+    export async function generate(options = {}) {
+      const followUpMode = options.followUpMode || null;
       const chartContext = getChartContextPatch();
       syncSharedBirthContext(chartContext, { silent: false });
       setStatus("Выполняем расчёт...");
@@ -243,6 +281,12 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       });
       const zodiacMode = zodiacModeEl.value;
       const sidMode = siderealModeEl.value || null;
+      const promptInputEl = document.getElementById("promptText");
+      const currentPromptText = promptInputEl.value;
+      if (!followUpMode) {
+        appState.lastChartPromptBase = normalizePromptBase(currentPromptText);
+      }
+      const promptText = buildFollowUpPrompt(appState.lastChartPromptBase || currentPromptText, followUpMode);
       const body = {
         api_base_url: document.getElementById("apiBaseUrl").value.trim(),
         datetime_local: normalizedDateTime,
@@ -255,7 +299,7 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
         aspect_orb_profile: aspectOrbProfileEl.value,
         zodiac_mode: zodiacMode,
         sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,
-        prompt_text: document.getElementById("promptText").value || "Сделай гороскоп по этим данным.",
+        prompt_text: promptText,
       };
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -282,8 +326,10 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
         || "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Попробуйте повторить позже.";
       if (data.llm_status === "unavailable" || data.horoscope_text == null) {
         horoscopeBoxEl.textContent = llmUnavailableMessage;
+        horoscopeFollowUpWrapEl.classList.add("hidden");
       } else {
         horoscopeBoxEl.textContent = data.horoscope_text;
+        renderHoroscopeFollowUps(data.horoscope_text);
       }
       renderExpertTables(data.chart_response, data.timezone, data.warnings);
       expertWrapEl.classList.add("hidden");

@@ -11,6 +11,7 @@ export const appState = {
       lastGenerateTechnicalDebug: null,
       lastGeocodeTechnicalDebug: null,
       lastProRunPayload: null,
+      lastChartPromptBase: null,
       activeCoordinateInputId: null,
 };
 
