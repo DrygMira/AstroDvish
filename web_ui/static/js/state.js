@@ -81,7 +81,7 @@ export const appState = {
     };
 
     export const sharedBirthContext = {
-      apiBaseUrl: "http://127.0.0.1:8013",
+      apiBaseUrl: "",
       birthDateLocal: null,
       birthDateTimeLocal: null,
       cityQuery: null,

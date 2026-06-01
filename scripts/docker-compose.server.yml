@@ -22,6 +22,7 @@ services:
     environment:
       WEB_UI_HOST: "0.0.0.0"
       WEB_UI_PORT: "8014"
+      WEB_UI_INTERNAL_API_BASE_URL: "http://astrodvish-api:8013"
       DOCKER_COMPOSE_API_BASE_URL: "http://astrodvish-api:8013"
       DOCKER_COMPOSE_API_FALLBACK_ENABLED: "1"
     command: ["/app/scripts/start_web_ui.sh"]

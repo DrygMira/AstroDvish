@@ -223,3 +223,12 @@ def test_main_ui_humanizes_non_json_proxy_errors() -> None:
     assert "function fetchWithTimeout(url, options = {}, timeoutMs = 180000)" in html
     assert "V2 comparison may take up to 2 minutes." in html
     assert '}, 620000);' in html
+
+
+def test_main_ui_does_not_hardcode_browser_localhost_api_base() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert 'value="http://127.0.0.1:8013"' not in html
+    assert "По умолчанию используется внутренний API сервера." in html

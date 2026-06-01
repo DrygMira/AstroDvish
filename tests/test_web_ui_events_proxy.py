@@ -58,6 +58,42 @@ def test_web_ui_events_start_proxy_success(monkeypatch) -> None:
     assert captured["timeout"] == 120
 
 
+def test_web_ui_events_start_proxy_uses_internal_default_when_api_base_blank(monkeypatch) -> None:
+    captured: dict = {}
+
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        captured["base_url"] = base_url
+        return _DummyResponse(
+            200,
+            {
+                "status": "ask_question",
+                "step_index": 1,
+                "events_collected_count": 0,
+                "warnings": [],
+                "question": {
+                    "question_id": "ev_child_birth_01",
+                    "event_type": "child_birth",
+                    "question_text": "test",
+                    "options": [{"id": "yes", "text": "Да"}],
+                    "repeatable": True,
+                    "requires_sequence_number": True,
+                },
+                "dialog_history": [],
+            },
+        )
+
+    monkeypatch.setattr(web_ui_main, "WEB_UI_INTERNAL_API_BASE_URL", "http://astrodvish-api:8013")
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/events/start",
+        json={"api_base_url": "", "dialog_history": []},
+    )
+
+    assert response.status_code == 200
+    assert captured["base_url"] == "http://astrodvish-api:8013"
+
+
 def test_web_ui_events_continue_proxy_payload(monkeypatch) -> None:
     captured: dict = {}
 

@@ -99,6 +99,7 @@ def _env_flag(name: str, default: str = "0") -> bool:
 
 DOCKER_COMPOSE_API_BASE_URL = _env("DOCKER_COMPOSE_API_BASE_URL", "http://astrodvish-api:8013")
 DOCKER_COMPOSE_API_FALLBACK_ENABLED = _env_flag("DOCKER_COMPOSE_API_FALLBACK_ENABLED", "0")
+WEB_UI_INTERNAL_API_BASE_URL = _env("WEB_UI_INTERNAL_API_BASE_URL", "http://127.0.0.1:8013")
 RECTIFICATION_PRO_TIMEOUT_SECONDS = int(_env("RECTIFICATION_PRO_TIMEOUT_SECONDS", "600") or "600")
 
 QUESTION_BANK: list[dict[str, Any]] = [
@@ -492,7 +493,7 @@ class GeocodeRequest(BaseModel):
 
 
 class GenerateRequest(BaseModel):
-    api_base_url: str = "http://127.0.0.1:8013"
+    api_base_url: str = ""
     datetime_local: str
     timezone_mode: Literal["auto", "manual"] = "auto"
     timezone_offset: str = ""
@@ -507,7 +508,7 @@ class GenerateRequest(BaseModel):
 
 
 class RectificationIntervalsRequest(BaseModel):
-    api_base_url: str = "http://127.0.0.1:8013"
+    api_base_url: str = ""
     birth_date_local: str
     latitude: float
     longitude: float
@@ -523,7 +524,7 @@ class DialogUserResponse(BaseModel):
 
 
 class RectificationDialogStartRequest(BaseModel):
-    api_base_url: str = "http://127.0.0.1:8013"
+    api_base_url: str = ""
     birth_date_local: str
     latitude: float
     longitude: float
@@ -545,7 +546,7 @@ class RectificationDialogContinueRequest(BaseModel):
 
 
 class RectificationEventsStartRequest(BaseModel):
-    api_base_url: str = "http://127.0.0.1:8013"
+    api_base_url: str = ""
     dialog_history: list[dict[str, Any]] = Field(default_factory=list)
 
 
@@ -564,18 +565,18 @@ class EventAnswerWebInput(BaseModel):
 
 
 class RectificationEventsContinueRequest(BaseModel):
-    api_base_url: str = "http://127.0.0.1:8013"
+    api_base_url: str = ""
     dialog_history: list[dict[str, Any]] = Field(default_factory=list)
     last_answer: EventAnswerWebInput | None = None
 
 
 class RectificationEventsFinalizeRequest(BaseModel):
-    api_base_url: str = "http://127.0.0.1:8013"
+    api_base_url: str = ""
     dialog_history: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class RectificationProRunRequest(BaseModel):
-    api_base_url: str = "http://127.0.0.1:8013"
+    api_base_url: str = ""
     payload: dict[str, Any]
 
 
@@ -2283,6 +2284,13 @@ def _post_to_api_with_fallback(*, base_url: str, path: str, payload: dict[str, A
         return httpx.post(fallback_url, json=payload, timeout=timeout)
 
 
+def _resolve_api_base_url(base_url: str | None) -> str:
+    normalized = (base_url or "").strip()
+    if normalized:
+        return normalized
+    return WEB_UI_INTERNAL_API_BASE_URL
+
+
 def _extract_chat_completion_text(payload: dict[str, Any]) -> str:
     choices = payload.get("choices")
     if not isinstance(choices, list) or not choices:
@@ -2903,6 +2911,7 @@ def _call_rectification_llm(
 
 def _fetch_rectification_document(payload: RectificationIntervalsRequest) -> dict[str, Any]:
     path = "/api/v1/rectification/asc-sign-intervals"
+    resolved_api_base_url = _resolve_api_base_url(payload.api_base_url)
     api_payload = {
         "birth_date_local": payload.birth_date_local,
         "latitude": payload.latitude,
@@ -2913,17 +2922,17 @@ def _fetch_rectification_document(payload: RectificationIntervalsRequest) -> dic
     }
     try:
         response = _post_to_api_with_fallback(
-            base_url=payload.api_base_url,
+            base_url=resolved_api_base_url,
             path=path,
             payload=api_payload,
             timeout=120,
         )
     except httpx.HTTPError as exc:
-        logger.warning("Rectification upstream unavailable: path=%s base_url=%s error=%s", path, payload.api_base_url, exc)
+        logger.warning("Rectification upstream unavailable: path=%s base_url=%s error=%s", path, resolved_api_base_url, exc)
         raise HTTPException(
             status_code=502,
             detail=_build_upstream_unavailable_detail(
-                base_url=payload.api_base_url,
+                base_url=resolved_api_base_url,
                 path=path,
                 timeout=120,
                 exc=exc,
@@ -2950,9 +2959,10 @@ def _post_rectification_events(
     payload: dict[str, Any],
     timeout: int = 120,
 ) -> dict[str, Any]:
+    resolved_api_base_url = _resolve_api_base_url(base_url)
     try:
         response = _post_to_api_with_fallback(
-            base_url=base_url,
+            base_url=resolved_api_base_url,
             path=path,
             payload=payload,
             timeout=timeout,
@@ -2972,11 +2982,11 @@ def _post_rectification_events(
             },
         ) from exc
     except httpx.HTTPError as exc:
-        logger.warning("Rectification upstream unavailable: path=%s base_url=%s error=%s", path, base_url, exc)
+        logger.warning("Rectification upstream unavailable: path=%s base_url=%s error=%s", path, resolved_api_base_url, exc)
         raise HTTPException(
             status_code=502,
             detail=_build_upstream_unavailable_detail(
-                base_url=base_url,
+                base_url=resolved_api_base_url,
                 path=path,
                 timeout=timeout,
                 exc=exc,
@@ -3255,6 +3265,7 @@ def geocode_city(payload: GeocodeRequest) -> JSONResponse:
 
 @app.post("/api/generate")
 def generate(payload: GenerateRequest) -> JSONResponse:
+    resolved_api_base_url = _resolve_api_base_url(payload.api_base_url)
     timezone_context, timezone_warnings = _resolve_timezone_context(payload)
     datetime_utc = timezone_context["datetime_utc"]
 
@@ -3271,17 +3282,17 @@ def generate(payload: GenerateRequest) -> JSONResponse:
     path = "/api/v1/chart"
     try:
         response = _post_to_api_with_fallback(
-            base_url=payload.api_base_url,
+            base_url=resolved_api_base_url,
             path=path,
             payload=chart_payload,
             timeout=120,
         )
     except httpx.HTTPError as exc:
-        logger.warning("Chart upstream unavailable: path=%s base_url=%s error=%s", path, payload.api_base_url, exc)
+        logger.warning("Chart upstream unavailable: path=%s base_url=%s error=%s", path, resolved_api_base_url, exc)
         raise HTTPException(
             status_code=502,
             detail=_build_upstream_unavailable_detail(
-                base_url=payload.api_base_url,
+                base_url=resolved_api_base_url,
                 path=path,
                 timeout=120,
                 exc=exc,

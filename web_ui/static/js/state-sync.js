@@ -61,7 +61,7 @@ import { resetWizardDerivedState } from "./wizard.js";
         preferredSource: options.coordinateSource || "decimal",
       });
       return {
-        apiBaseUrl: document.getElementById("apiBaseUrl").value.trim() || "http://127.0.0.1:8013",
+        apiBaseUrl: document.getElementById("apiBaseUrl").value.trim() || "",
         birthDateLocal: normalizedDateTime ? normalizedDateTime.slice(0, 10) : sharedBirthContext.birthDateLocal,
         birthDateTimeLocal: normalizedDateTime || null,
         cityQuery: document.getElementById("cityQuery").value.trim() || null,
@@ -85,7 +85,7 @@ import { resetWizardDerivedState } from "./wizard.js";
         preferredSource: options.coordinateSource || "decimal",
       });
       return {
-        apiBaseUrl: wzApiBaseUrlEl.value.trim() || "http://127.0.0.1:8013",
+        apiBaseUrl: wzApiBaseUrlEl.value.trim() || "",
         birthDateLocal: wzBirthDateEl.value || null,
         cityQuery: wzCityQueryEl.value.trim() || null,
         latitude: coords.latitude,
@@ -104,7 +104,7 @@ import { resetWizardDerivedState } from "./wizard.js";
 
     export function getRectContextPatch() {
       return {
-        apiBaseUrl: document.getElementById("rectApiBaseUrl").value.trim() || "http://127.0.0.1:8013",
+        apiBaseUrl: document.getElementById("rectApiBaseUrl").value.trim() || "",
         birthDateLocal: document.getElementById("rectBirthDate").value || null,
         cityQuery: document.getElementById("rectCityQuery").value.trim() || null,
         latitude: Number(document.getElementById("rectLatitude").value),
@@ -117,7 +117,7 @@ import { resetWizardDerivedState } from "./wizard.js";
 
     export function getRectDialogContextPatch() {
       return {
-        apiBaseUrl: document.getElementById("rdApiBaseUrl").value.trim() || "http://127.0.0.1:8013",
+        apiBaseUrl: document.getElementById("rdApiBaseUrl").value.trim() || "",
         birthDateLocal: document.getElementById("rdBirthDate").value || null,
         cityQuery: document.getElementById("rdCityQuery").value.trim() || null,
         latitude: Number(document.getElementById("rdLatitude").value),

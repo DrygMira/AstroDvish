@@ -19,7 +19,7 @@ import { renderSharedCurrentData, setGenerateTechnicalDebug } from "./ui.js";
     }
 
     export function applySharedContextToForms() {
-      const apiBase = sharedBirthContext.apiBaseUrl || "http://127.0.0.1:8013";
+      const apiBase = sharedBirthContext.apiBaseUrl || "";
       document.getElementById("apiBaseUrl").value = apiBase;
       document.getElementById("rectApiBaseUrl").value = apiBase;
       document.getElementById("rdApiBaseUrl").value = apiBase;
