@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: chart.
-import { apiRawBoxEl, apiRawWrapEl, aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBoxEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpPracticalBtnEl, horoscopeFollowUpWrapEl, modalEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
+import { apiRawBoxEl, apiRawWrapEl, aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBoxEl, horoscopeContinuationBoxEl, horoscopeContinuationTitleEl, horoscopeContinuationWrapEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, horoscopeFollowUpWrapEl, modalEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
 import { appState, sharedBirthContext } from "./state.js";
 import { degreeToDms, extractErrorText, formatWarnings, renderTable, resolveAspectStrengthLabel, resolveMotionPhase } from "./format.js";
 import { setDateTimeWithSeconds } from "./coords.js";
@@ -133,34 +133,52 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
 
     function buildFollowUpPrompt(basePrompt, followUpMode) {
       const normalizedBasePrompt = normalizePromptBase(basePrompt);
-      if (followUpMode === "practical") {
-        return `${normalizedBasePrompt}\n\nПродолжи предыдущую трактовку. Сделай короткий практический разбор по сферам: что помогает, что мешает, на что опираться. Не повторяй исходный текст целиком, дай только полезное продолжение.`;
+      if (followUpMode === "helpful") {
+        return `${normalizedBasePrompt}\n\nПродолжи предыдущую трактовку. Сфокусируйся только на том, что помогает и что мешает. Дай короткий практический разбор без повтора исходного текста целиком.`;
+      }
+      if (followUpMode === "support") {
+        return `${normalizedBasePrompt}\n\nПродолжи предыдущую трактовку. Сфокусируйся только на том, на что человеку лучше опираться: сильные качества, рабочие опоры, полезные стратегии. Не повторяй исходный текст целиком.`;
       }
       if (followUpMode === "aspects") {
         return `${normalizedBasePrompt}\n\nПродолжи предыдущую трактовку. Отдельно разбери аспекты по пунктам: аспект, смысл, сильная сторона, риск и как это проявляется на практике. Не повторяй исходный текст целиком.`;
       }
+      if (followUpMode === "recommendations") {
+        return `${normalizedBasePrompt}\n\nПродолжи предыдущую трактовку. Дай ключевые рекомендации: 5-7 коротких практических выводов, на что обратить внимание и как лучше действовать. Не повторяй исходный текст целиком.`;
+      }
       return normalizedBasePrompt;
     }
 
-    function extractHoroscopeFollowUpModes(text) {
-      const normalized = String(text || "").toLowerCase();
-      const modes = [];
-      if (normalized.includes("что помогает") && normalized.includes("что мешает") && normalized.includes("на что опираться")) {
-        modes.push("practical");
+    function getFollowUpMeta(followUpMode) {
+      if (followUpMode === "helpful") {
+        return { title: "Что помогает / что мешает" };
       }
-      if (normalized.includes("разобрать аспекты по пунктам")) {
-        modes.push("aspects");
+      if (followUpMode === "support") {
+        return { title: "На что опираться" };
       }
-      return modes;
+      if (followUpMode === "aspects") {
+        return { title: "Разбор аспектов" };
+      }
+      if (followUpMode === "recommendations") {
+        return { title: "Ключевые рекомендации" };
+      }
+      return { title: "Продолжение трактовки" };
     }
 
-    function renderHoroscopeFollowUps(horoscopeText) {
-      const modes = extractHoroscopeFollowUpModes(horoscopeText);
-      const hasPractical = modes.includes("practical");
-      const hasAspects = modes.includes("aspects");
-      horoscopeFollowUpPracticalBtnEl.classList.toggle("hidden", !hasPractical);
-      horoscopeFollowUpAspectsBtnEl.classList.toggle("hidden", !hasAspects);
-      horoscopeFollowUpWrapEl.classList.toggle("hidden", !(hasPractical || hasAspects));
+    function resetHoroscopeContinuation() {
+      horoscopeContinuationTitleEl.textContent = "Продолжение трактовки";
+      horoscopeContinuationBoxEl.textContent = "";
+      horoscopeContinuationWrapEl.classList.add("hidden");
+    }
+
+    function renderHoroscopeFollowUps() {
+      horoscopeFollowUpWrapEl.classList.remove("hidden");
+    }
+
+    function renderHoroscopeContinuation(followUpMode, text) {
+      const meta = getFollowUpMeta(followUpMode);
+      horoscopeContinuationTitleEl.textContent = meta.title;
+      horoscopeContinuationBoxEl.textContent = text || "Продолжение трактовки недоступно.";
+      horoscopeContinuationWrapEl.classList.remove("hidden");
     }
 
     export function renderExpertTables(chartResponse, timezonePayload, warnings) {
@@ -285,6 +303,7 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       const currentPromptText = promptInputEl.value;
       if (!followUpMode) {
         appState.lastChartPromptBase = normalizePromptBase(currentPromptText);
+        resetHoroscopeContinuation();
       }
       const promptText = buildFollowUpPrompt(appState.lastChartPromptBase || currentPromptText, followUpMode);
       const body = {
@@ -325,11 +344,21 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       const llmUnavailableMessage = data.llm_message
         || "Карта рассчитана, но текстовая интерпретация сейчас недоступна. Попробуйте повторить позже.";
       if (data.llm_status === "unavailable" || data.horoscope_text == null) {
-        horoscopeBoxEl.textContent = llmUnavailableMessage;
+        if (followUpMode) {
+          renderHoroscopeContinuation(followUpMode, llmUnavailableMessage);
+        } else {
+          horoscopeBoxEl.textContent = llmUnavailableMessage;
+          resetHoroscopeContinuation();
+        }
         horoscopeFollowUpWrapEl.classList.add("hidden");
       } else {
-        horoscopeBoxEl.textContent = data.horoscope_text;
-        renderHoroscopeFollowUps(data.horoscope_text);
+        if (followUpMode) {
+          renderHoroscopeContinuation(followUpMode, data.horoscope_text);
+        } else {
+          horoscopeBoxEl.textContent = data.horoscope_text;
+          appState.lastHoroscopeBaseText = data.horoscope_text;
+        }
+        renderHoroscopeFollowUps();
       }
       renderExpertTables(data.chart_response, data.timezone, data.warnings);
       expertWrapEl.classList.add("hidden");

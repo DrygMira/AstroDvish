@@ -1,5 +1,5 @@
 // Bootstrap: импорт модулей + навешивание обработчиков + init.
-import { cityBlockEl, cityResultsEl, coordModeEl, coordValueFormatEl, datetimeLocalEl, datetimeLocalSecondsEl, expertDegreesExpandedToggleEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpPracticalBtnEl, latitudeDmsEl, latitudeEl, longitudeDmsEl, longitudeEl, modalEl, rdCityBlockEl, rdCityResultsEl, rdCoordModeEl, rdPromptWrapEl, rdShowPromptToggleEl, rdSiderealModeEl, rdZodiacModeEl, reTechJsonWrapEl, reToggleJsonBtnEl, rectCityBlockEl, rectCityResultsEl, rectCoordModeEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeToggleBtnEl, timezoneModeEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, wzBirthDateEl, wzCityQueryEl, wzCityResultsEl, wzCoordValueFormatEl, wzLatitudeDmsEl, wzLatitudeEl, wzLongitudeDmsEl, wzLongitudeEl, wzSiderealModeEl, wzTimezoneOffsetEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
+import { cityBlockEl, cityResultsEl, coordModeEl, coordValueFormatEl, datetimeLocalEl, datetimeLocalSecondsEl, expertDegreesExpandedToggleEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, latitudeDmsEl, latitudeEl, longitudeDmsEl, longitudeEl, modalEl, rdCityBlockEl, rdCityResultsEl, rdCoordModeEl, rdPromptWrapEl, rdShowPromptToggleEl, rdSiderealModeEl, rdZodiacModeEl, reTechJsonWrapEl, reToggleJsonBtnEl, rectCityBlockEl, rectCityResultsEl, rectCoordModeEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeToggleBtnEl, timezoneModeEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, wzBirthDateEl, wzCityQueryEl, wzCityResultsEl, wzCoordValueFormatEl, wzLatitudeDmsEl, wzLatitudeEl, wzLongitudeDmsEl, wzLongitudeEl, wzSiderealModeEl, wzTimezoneOffsetEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
 import { appState, rectificationWizardState, sharedBirthContext } from "./state.js";
 import { normalizeCoordinateNumber, normalizeSecondValue } from "./validation.js";
 import { loadPrompt, loadRectificationPrompt } from "./api.js";
@@ -77,8 +77,10 @@ import { applyWizardBirthDataFromUi, renderWizardProgress, resetWizardDerivedSta
     });
 
     document.getElementById("generateBtn").addEventListener("click", generate);
-    horoscopeFollowUpPracticalBtnEl.addEventListener("click", () => generate({ followUpMode: "practical" }));
+    horoscopeFollowUpHelpfulBtnEl.addEventListener("click", () => generate({ followUpMode: "helpful" }));
+    horoscopeFollowUpSupportBtnEl.addEventListener("click", () => generate({ followUpMode: "support" }));
     horoscopeFollowUpAspectsBtnEl.addEventListener("click", () => generate({ followUpMode: "aspects" }));
+    horoscopeFollowUpRecommendationsBtnEl.addEventListener("click", () => generate({ followUpMode: "recommendations" }));
     document.getElementById("rectRunBtn").addEventListener("click", runRectification);
     document.getElementById("wzCalcAscBtn").addEventListener("click", runWizardStep1);
     document.getElementById("wzResetBtn").addEventListener("click", resetWizardScenario);

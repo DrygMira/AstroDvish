@@ -240,8 +240,14 @@ def test_main_ui_has_horoscope_followup_actions_for_llm_cta() -> None:
 
     assert response.status_code == 200
     assert 'id="horoscopeFollowUpWrap"' in html
-    assert 'id="horoscopeFollowUpPracticalBtn"' in html
+    assert 'id="horoscopeFollowUpHelpfulBtn"' in html
+    assert 'id="horoscopeFollowUpSupportBtn"' in html
     assert 'id="horoscopeFollowUpAspectsBtn"' in html
-    assert 'generate({ followUpMode: "practical" })' in html
+    assert 'id="horoscopeFollowUpRecommendationsBtn"' in html
+    assert 'id="horoscopeContinuationWrap"' in html
+    assert 'id="horoscopeContinuationBox"' in html
+    assert 'generate({ followUpMode: "helpful" })' in html
+    assert 'generate({ followUpMode: "support" })' in html
     assert 'generate({ followUpMode: "aspects" })' in html
-    assert "разобрать аспекты по пунктам" in html.lower()
+    assert 'generate({ followUpMode: "recommendations" })' in html
+    assert "ключевые рекомендации" in html.lower()

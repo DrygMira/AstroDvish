@@ -12,6 +12,7 @@ export const appState = {
       lastGeocodeTechnicalDebug: null,
       lastProRunPayload: null,
       lastChartPromptBase: null,
+      lastHoroscopeBaseText: null,
       activeCoordinateInputId: null,
 };
 
