@@ -57,6 +57,28 @@ def test_llm_provider_openai_uses_openai_client(monkeypatch) -> None:
     assert "test-openai-key" not in str(result)
 
 
+def test_llm_provider_openai_uses_max_completion_tokens_for_gpt5_models(monkeypatch) -> None:
+    _set_openai_env(monkeypatch)
+    captured: dict[str, Any] = {}
+
+    def fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: int) -> _FakeOpenAIResponse:
+        captured["json"] = json
+        return _FakeOpenAIResponse()
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    web_ui_main._call_llm_chat(
+        system_prompt="sys",
+        user_prompt="usr",
+        request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
+        route_label="/api/generate",
+    )
+
+    assert "max_completion_tokens" in captured["json"]
+    assert captured["json"]["max_completion_tokens"] == 8000
+    assert "max_tokens" not in captured["json"]
+
+
 def test_generate_does_not_use_openrouter_when_provider_openai(monkeypatch) -> None:
     _set_openai_env(monkeypatch)
 

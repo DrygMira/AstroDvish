@@ -2347,8 +2347,11 @@ def _call_openai_chat(
             {"role": "user", "content": user_prompt},
         ],
         "temperature": 0,
-        "max_tokens": applied_max_tokens,
     }
+    if scenario_model.startswith("gpt-5"):
+        body["max_completion_tokens"] = applied_max_tokens
+    else:
+        body["max_tokens"] = applied_max_tokens
     try:
         response = httpx.post(
             f"{settings['base_url']}/chat/completions",
