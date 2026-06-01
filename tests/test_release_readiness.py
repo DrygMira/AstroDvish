@@ -21,3 +21,8 @@ def test_readme_contains_release_checklist_link() -> None:
     readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
     assert "docs/RELEASE_CHECKLIST.md" in readme
 
+
+def test_dockerfile_includes_runtime_formula_cards_and_data_dirs() -> None:
+    dockerfile = (PROJECT_ROOT / "Dockerfile").read_text(encoding="utf-8")
+    assert "COPY product /app/product" in dockerfile
+    assert "COPY data /app/data" in dockerfile

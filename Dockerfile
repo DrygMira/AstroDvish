@@ -13,7 +13,9 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY app /app/app
+COPY product /app/product
 COPY web_ui /app/web_ui
+COPY data /app/data
 COPY scripts /app/scripts
 COPY PROMPT.md /app/PROMPT.md
 COPY PROMPT_RECTIFICATION_STAGE1.md /app/PROMPT_RECTIFICATION_STAGE1.md
