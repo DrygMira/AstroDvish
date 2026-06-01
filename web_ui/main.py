@@ -3477,9 +3477,31 @@ def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
     return JSONResponse(response_json)
 
 
-@app.get("/static/{filename}")
+# Явные MIME-типы: на Windows стандартный mimetypes часто отдаёт .js как
+# text/plain, из-за чего браузер отказывается грузить ES6-модули
+# ("Failed to load module script: ... MIME type 'text/plain'").
+_STATIC_MEDIA_TYPES = {
+    ".js": "text/javascript",
+    ".mjs": "text/javascript",
+    ".css": "text/css",
+    ".json": "application/json",
+    ".map": "application/json",
+    ".svg": "image/svg+xml",
+    ".woff2": "font/woff2",
+    ".woff": "font/woff",
+    ".ico": "image/x-icon",
+    ".html": "text/html",
+}
+
+
+@app.get("/static/{filename:path}")
 def static_files(filename: str) -> FileResponse:
-    file_path = STATIC_DIR / filename
-    if not file_path.exists():
+    # Защита от выхода за пределы каталога static (path traversal).
+    file_path = (STATIC_DIR / filename).resolve()
+    if STATIC_DIR.resolve() not in file_path.parents and file_path != STATIC_DIR.resolve():
         raise HTTPException(status_code=404, detail="Not found")
-    return FileResponse(file_path)
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Not found")
+    media_type = _STATIC_MEDIA_TYPES.get(file_path.suffix.lower())
+    # no-cache: браузер всегда ревалидирует — иначе старые styles.css/js залипают в кэше.
+    return FileResponse(file_path, media_type=media_type, headers={"Cache-Control": "no-cache"})

@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
+from tests.ui_bundle import get_main_ui_bundle
 import web_ui.main as web_ui_main
 
 
 def test_shared_birth_context_exists_with_required_fields() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    html = response.text
     assert "const sharedBirthContext = {" in html
     assert "apiBaseUrl:" in html
     assert "birthDateLocal:" in html
@@ -22,10 +22,9 @@ def test_shared_birth_context_exists_with_required_fields() -> None:
 
 def test_main_ui_has_two_primary_tabs_and_technical_mode_accordion() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    html = response.text
     assert 'id="tabWizardBtn"' in html
     assert 'id="tabChartBtn"' in html
     assert 'id="tabChartBtn"' in html
@@ -36,20 +35,18 @@ def test_main_ui_has_two_primary_tabs_and_technical_mode_accordion() -> None:
 
 def test_main_wizard_contains_current_data_block() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    html = response.text
     assert 'id="wzCurrentDataSummary"' in html
     assert 'id="wzEditDataBtn"' in html
 
 
 def test_shared_context_sync_and_reset_messages_exist() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    html = response.text
     assert "function applySharedContextToForms()" in html
     assert "function syncSharedBirthContext(patch, options = {})" in html
     assert "function applyPlaceSelectionToSharedContext(option, cityQueryValue)" in html
@@ -60,10 +57,9 @@ def test_shared_context_sync_and_reset_messages_exist() -> None:
 
 def test_technical_mode_preserves_modules_and_debug_blocks() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    html = response.text
     assert 'id="wzIntervalsList"' in html
     assert 'id="rdHistory"' in html
     assert 'id="reEventsList"' in html
@@ -74,10 +70,9 @@ def test_technical_mode_preserves_modules_and_debug_blocks() -> None:
 
 def test_rect_events_reset_clears_derived_pro_and_comparison_state() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    html = response.text
     assert "function resetRectEventsState()" in html
     assert "resetWizardDerivedState();" in html
     assert "Stage 2 и derived Pro/comparison state сброшены." in html
@@ -85,9 +80,8 @@ def test_rect_events_reset_clears_derived_pro_and_comparison_state() -> None:
 
 def test_pro_run_payload_preserves_manual_timezone_selection() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    html = response.text
     assert "timezone_mode: sharedBirthContext.timezoneMode || timezoneModeEl.value || \"auto\"" in html
     assert "timezone_offset: sharedBirthContext.timezoneMode === \"manual\"" in html

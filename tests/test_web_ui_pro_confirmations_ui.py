@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
+from tests.ui_bundle import get_main_ui_bundle
 import web_ui.main as web_ui_main
 
 
 def test_pro_ui_renders_human_confirmations_instead_of_raw_entries_summary() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "renderProConfirmations" in html
     assert "extractProMatchDetails" in html
     assert "entries=" not in html
@@ -18,17 +18,15 @@ def test_pro_ui_renders_human_confirmations_instead_of_raw_entries_summary() -> 
 
 def test_pro_ui_confirmations_do_not_use_only_first_match_per_event() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "extractProMatchDetails(item.matches[0])" not in html
 
 
 def test_pro_ui_renders_formula_test_mode_blocks() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "formula_test_mode_results" in html
     assert "validation_report_table" in html
     assert "matched_formula_aspects" in html
@@ -37,9 +35,8 @@ def test_pro_ui_renders_formula_test_mode_blocks() -> None:
 
 def test_pro_ui_renders_direction_debug_labels_and_coordinates() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "Direction debug / Проверка дирекций" in html
     assert "Directed longitude" in html
     assert "Natal longitude" in html
@@ -52,9 +49,8 @@ def test_pro_ui_renders_direction_debug_labels_and_coordinates() -> None:
 
 def test_pro_ui_validation_report_table_is_rendered_with_visible_detailed_fields() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "tableLine.style.whiteSpace = \"pre-wrap\"" in html
     assert "Directed longitude" in html
     assert "Natal longitude" in html
@@ -74,9 +70,8 @@ def test_pro_ui_validation_report_table_is_rendered_with_visible_detailed_fields
 
 def test_pro_ui_renders_formula_refinement_summary() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "Refinement inside Asc window" in html
     assert "formula_refinement_results" in html
     assert "best_candidate" in html
@@ -106,9 +101,8 @@ def test_pro_ui_renders_formula_refinement_summary() -> None:
 
 def test_pro_ui_expected_labels_render_from_display_formula_not_stale_ids() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "rule.display_formula || rule.id" in html
     assert ".map((rule) => rule.id)" not in html
     assert "missingFormulaLinks.map((item) => item.display_formula || item.rule_id || \"—\")" in html
@@ -116,36 +110,32 @@ def test_pro_ui_expected_labels_render_from_display_formula_not_stale_ids() -> N
 
 def test_pro_ui_keeps_technical_json_available() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert 'id="rpRawBox"' in html
     assert "rpRawBoxEl.textContent = JSON.stringify(data, null, 2);" in html
 
 
 def test_pro_ui_contains_window_width_explanation_text() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "Ширина окна:" in html or "РЁРёСЂРёРЅР° РѕРєРЅР°:" in html
     assert "Это не точное время рождения." in html or "Р­С‚Рѕ РЅРµ С‚РѕС‡РЅРѕРµ РІСЂРµРјСЏ СЂРѕР¶РґРµРЅРёСЏ." in html
 
 
 def test_pro_ui_contains_source_interval_and_clipping_explanation() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
-    assert "Источник Asc-интервала:" in html or "РСЃС‚РѕС‡РЅРёРє Asc-РёРЅС‚РµСЂРІР°Р»Р°:" in html
-    assert "Окно было ограничено границами выбранной даты рождения." in html or "РћРєРЅРѕ Р±С‹Р»Рѕ РѕРіСЂР°РЅРёС‡РµРЅРѕ РіСЂР°РЅРёС†Р°РјРё РІС‹Р±СЂР°РЅРЅРѕР№ РґР°С‚С‹ СЂРѕР¶РґРµРЅРёСЏ." in html
+    assert "Источник Asc:" in html or "РСЃС‚РѕС‡РЅРёРє Asc:" in html
+    assert "Окно ограничено границами выбранной даты рождения." in html or "РћРєРЅРѕ РѕРіСЂР°РЅРёС‡РµРЅРѕ РіСЂР°РЅРёС†Р°РјРё РІС‹Р±СЂР°РЅРЅРѕР№ РґР°С‚С‹ СЂРѕР¶РґРµРЅРёСЏ." in html
 
 
 def test_pro_ui_contains_expert_explainability_section() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert 'id="rpExplainDetails"' in html
     assert 'id="rpExplainBody"' in html
     assert "buildProExplainabilityHtml" in html
@@ -153,9 +143,8 @@ def test_pro_ui_contains_expert_explainability_section() -> None:
 
 def test_pro_ui_explainability_mentions_stage1_events_methods_and_limitations() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "Element scores" in html
     assert "Cross/Modality scores" in html
     assert "Метод пока является промежуточной проверкой, не финальным Direction Formula Engine." in html
@@ -165,27 +154,24 @@ def test_pro_ui_explainability_mentions_stage1_events_methods_and_limitations() 
 
 def test_pro_ui_hides_inactive_lunars_totems_in_main_confirmations() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert 'methodName === "lunars" || methodName === "totems"' in html
     assert "isMethodInactive(methodStats, methodName)" in html
 
 
 def test_pro_ui_explainability_does_not_expose_api_keys() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "OPENAI_API_KEY" not in html
     assert "OPENROUTER_API_KEY" not in html
 
 
 def test_pro_ui_contains_explicit_formula_card_selector_and_v1_v2_comparison_markers() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "formula_card_id" in html
     assert "compare_formula_card_ids" in html
     assert "RECT_CHILD_BIRTH_002_DRAFT" in html
@@ -202,9 +188,8 @@ def test_pro_ui_contains_explicit_formula_card_selector_and_v1_v2_comparison_mar
 
 def test_pro_ui_contains_compact_v1_v2_summary_markers() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "Comparison summary" in html
     assert "Working range" in html
     assert "Best candidate" in html
@@ -214,9 +199,8 @@ def test_pro_ui_contains_compact_v1_v2_summary_markers() -> None:
 
 def test_pro_ui_shows_formula_card_counts_and_priority_tiers() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "formulas_count" in html
     assert "priority_counts" in html
     assert "golden" in html
@@ -227,9 +211,8 @@ def test_pro_ui_shows_formula_card_counts_and_priority_tiers() -> None:
 
 def test_pro_ui_contains_preview_mode_loader_markers() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert "proof_preview" in html
     assert "/api/preview/pro-result" in html
     assert "/api/preview/chart-result" in html
@@ -238,9 +221,8 @@ def test_pro_ui_contains_preview_mode_loader_markers() -> None:
 
 def test_pro_ui_contains_comparison_preview_mode_markers() -> None:
     with TestClient(web_ui_main.app) as client:
-        response = client.get("/")
+        response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    html = response.text
     assert 'previewMode === "comparison"' in html
     assert 'setTab("rect-events")' in html
     assert "rpFormulaComparisonEl.scrollIntoView" in html
