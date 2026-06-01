@@ -1,7 +1,8 @@
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:${PATH}"
 
 WORKDIR /app
 
@@ -10,7 +11,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN python -m venv /app/.venv \
+    && /app/.venv/bin/pip install --no-cache-dir -r /app/requirements.txt
 
 COPY app /app/app
 COPY product /app/product

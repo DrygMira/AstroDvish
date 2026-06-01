@@ -26,3 +26,9 @@ def test_dockerfile_includes_runtime_formula_cards_and_data_dirs() -> None:
     dockerfile = (PROJECT_ROOT / "Dockerfile").read_text(encoding="utf-8")
     assert "COPY product /app/product" in dockerfile
     assert "COPY data /app/data" in dockerfile
+
+
+def test_dockerfile_prebuilds_project_venv_for_container_startup() -> None:
+    dockerfile = (PROJECT_ROOT / "Dockerfile").read_text(encoding="utf-8")
+    assert "python -m venv /app/.venv" in dockerfile
+    assert "/app/.venv/bin/pip install --no-cache-dir -r /app/requirements.txt" in dockerfile
