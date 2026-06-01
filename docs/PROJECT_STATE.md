@@ -750,3 +750,60 @@ Every future report must include:
     - result `200`
     - or controlled timeout/unavailable message
     - but not raw nginx HTML or raw DNS exception text
+
+## 36. Final Live Stability Acceptance (2026-05-31)
+- acceptance scope:
+  - public live path only
+  - no astrology/formula/scoring changes
+  - verification plus minimal safe hardening only
+- additional live infra hotfix:
+  - nginx intercepted `/api/` `502/504` bodies were corrected from pseudo-JSON to valid JSON
+  - backup created on server:
+    - `/etc/nginx/sites-available/astro-bot-ip.bak-20260531-valid-json`
+- final public sequential matrix from the server against `http://45.133.17.16`:
+  - ordinary chart:
+    - `3/3 = 200`
+    - durations about `12.42s`, `13.25s`, `9.93s`
+  - Pro V1, `RECT_CHILD_BIRTH_001`, `4` child-birth events:
+    - `3/3 = 200`
+    - durations about `0.93s`, `0.55s`, `0.55s`
+    - `performance_debug`:
+      - `formula_count = 6`
+      - `candidate_count = 7`
+      - slowest stage = `formula_refinement_ms`
+  - Pro V2 explicit, `RECT_CHILD_BIRTH_002_DRAFT`, `4` child-birth events:
+    - `3/3 = 200`
+    - durations about `3.33s`, `3.30s`, `3.29s`
+    - `performance_debug`:
+      - `formula_count = 94`
+      - `candidate_count = 7`
+      - slowest stage = `formula_refinement_ms`
+  - V1/V2 comparison, `4` child-birth events:
+    - `3/3 = 200`
+    - durations about `7.54s`, `8.64s`, `8.49s`
+    - `performance_debug`:
+      - `formula_count = 94`
+      - `candidate_count = 7`
+      - slowest stage = `formula_card_comparison_ms`
+- browser/live proof:
+  - `?proof_preview=comparison` renders on live
+  - headless live DOM proof confirms Stage 2 reset clears derived Pro/comparison state:
+    - status after reset: `Stage 2 и derived Pro/comparison state сброшены.`
+    - `rpFormulaComparison` cleared
+    - `rpRawBox` cleared
+- failure-path status:
+  - no new raw nginx HTML seen in final acceptance matrix
+  - no new raw `Temporary failure in name resolution` text seen in final acceptance matrix
+  - older `502/504` and timeout log lines remain in history from pre-fix runs and one self-induced flood/OOM window
+- important diagnostic note:
+  - one earlier `astro-bot-api` crash at `2026-05-30 21:25:57 UTC` was confirmed as OOM kill during a burst of many repeated probe requests
+  - this did not reproduce in the final sequential acceptance matrix
+- test status at acceptance time:
+  - relevant focused tests: `48 passed`
+  - full pytest: `287 passed, 1 xfailed, 1 failed`
+  - current failing test is unrelated to Pro stability:
+    - `tests/test_web_ui_cleanup_and_timezone_ui.py::test_main_ui_uses_premium_luxe_visual_markers_and_soft_transitions`
+    - expected `--gold` marker is absent in current HTML
+- readiness:
+  - Pro stability path is ready for Ekaterina retest
+  - repository-wide test suite is not fully green because of the unrelated premium-style UI marker test
