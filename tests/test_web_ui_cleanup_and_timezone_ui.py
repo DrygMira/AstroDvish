@@ -13,7 +13,8 @@ def test_main_ui_uses_premium_luxe_visual_markers_and_soft_transitions() -> None
     assert response.status_code == 200
     assert 'href="static/css/styles.css"' in html
     assert 'class="card hero-card"' in html
-    assert 'class="hero-kicker"' in html
+    assert 'class="hero-title-wrap"' in html
+    assert 'class="hero-kicker"' not in html
     assert "--accent-primary" in html
     assert "cubic-bezier(0.22, 1, 0.36, 1)" in html
     assert "scroll-behavior: smooth;" in html
@@ -24,7 +25,8 @@ def test_main_ui_uses_product_header_without_test_ports_copy() -> None:
         response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    assert "AstroDvish — ректификация времени рождения" in html
+    assert "Ректификация времени рождения" in html
+    assert "AstroDvish — ректификация времени рождения" not in html
     assert "Введите данные рождения, пройдите этапы уточнения и проверьте расчётные окна времени." in html
     assert "Тестовая веб-морда астросервиса" not in html
     assert "UI работает на порту 8014" not in html
