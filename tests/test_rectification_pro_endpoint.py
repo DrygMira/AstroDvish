@@ -335,6 +335,9 @@ def test_rectification_pro_can_select_draft_card_explicitly(monkeypatch, tmp_pat
     refinement = body["formula_refinement_results"]
     assert refinement["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
     assert refinement["best_candidate"]["formula_test_mode_results"][0]["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+    assert refinement["top_candidates"]
+    assert "formula_test_mode_results" not in refinement["top_candidates"][0]
+    assert "chart_response" not in refinement["top_candidates"][0]
 
 
 def test_rectification_pro_can_compare_v1_and_v2_cards(monkeypatch, tmp_path) -> None:
@@ -372,6 +375,10 @@ def test_rectification_pro_can_compare_v1_and_v2_cards(monkeypatch, tmp_path) ->
     assert "why_result_changed" in comparison["differences"]
     assert comparison["differences"]["v1_only_rules"] == []
     assert any(rule["id"] == "cusp_10_to_cusp_5" and rule["inherited_from_v1"] for rule in comparison["differences"]["shared_rules"])
+    assert "formula_refinement_results" not in items[0]
+    assert "formula_test_mode_results" not in items[0]
+    assert "formula_refinement_results" not in items[1]
+    assert "formula_test_mode_results" not in items[1]
 
 
 def test_rectification_pro_comparison_includes_compact_summary(monkeypatch, tmp_path) -> None:

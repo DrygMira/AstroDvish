@@ -326,7 +326,7 @@ class RectificationProService:
             "enabled": True,
             "baseline_card_id": baseline_card_id,
             "selected_card_id": selected_card_id,
-            "items": items,
+            "items": self._build_formula_card_public_items(items),
             "differences": differences,
             "summary": self._build_formula_card_comparison_summary(
                 baseline_card_id=baseline_card_id,
@@ -474,6 +474,23 @@ class RectificationProService:
             "v2_added_rules": differences.get("v2_added_rules") or [],
             "why_result_changed": differences.get("why_result_changed"),
         }
+
+    @staticmethod
+    def _build_formula_card_public_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        public_items: list[dict[str, Any]] = []
+        for item in items:
+            refinement = item.get("formula_refinement_results") or {}
+            public_items.append(
+                {
+                    "card_id": item.get("card_id"),
+                    "card_version": item.get("card_version"),
+                    "formulas_count": item.get("formulas_count"),
+                    "priority_counts": item.get("priority_counts") or {},
+                    "working_time_range": refinement.get("working_time_range") or {},
+                    "best_candidate": (refinement.get("best_candidate") or {}).get("candidate_time_local"),
+                }
+            )
+        return public_items
 
     @staticmethod
     def _chart_from_refinement_candidate(formula_refinement_results: dict[str, object]):

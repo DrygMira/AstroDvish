@@ -121,7 +121,7 @@ class FormulaRefinementService:
             "formulas_count": card_meta.get("formulas_count"),
             "priority_counts": card_meta.get("priority_counts", {}),
             "scanned_candidates_count": len(candidates),
-            "top_candidates": top_candidates,
+            "top_candidates": [self._build_public_candidate_summary(item) for item in top_candidates],
             "best_candidate": best_candidate,
             "coarse_candidate": None,
             "working_time_ranges": working_time_ranges,
@@ -171,6 +171,40 @@ class FormulaRefinementService:
                 continue
             results.append(result)
         return results
+
+    @staticmethod
+    def _build_public_candidate_summary(candidate: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "candidate_time_local": candidate.get("candidate_time_local"),
+            "candidate_time_utc": candidate.get("candidate_time_utc"),
+            "score": candidate.get("score"),
+            "matched_count": candidate.get("matched_count"),
+            "rejected_count": candidate.get("rejected_count"),
+            "missing_count": candidate.get("missing_count"),
+            "golden_matched_count": candidate.get("golden_matched_count"),
+            "golden_orb_sum": candidate.get("golden_orb_sum"),
+            "supporting_matched_count": candidate.get("supporting_matched_count"),
+            "context_matched_count": candidate.get("context_matched_count"),
+            "context_score": candidate.get("context_score"),
+            "supporting_bonus": candidate.get("supporting_bonus"),
+            "event_confirmation_score": candidate.get("event_confirmation_score"),
+            "time_refinement_score": candidate.get("time_refinement_score"),
+            "best_formulas": candidate.get("best_formulas") or [],
+            "top_rejected_reasons": candidate.get("top_rejected_reasons") or [],
+            "unresolved_source_summary": candidate.get("unresolved_source_summary") or [],
+            "event_contribution_audit": candidate.get("event_contribution_audit") or [],
+            "selection_reason": candidate.get("selection_reason") or "",
+            "source_asc_interval": candidate.get("source_asc_interval") or {},
+            "score_breakdown": candidate.get("score_breakdown") or {},
+            "selected_candidate_time": candidate.get("selected_candidate_time"),
+            "chart_build_time": candidate.get("chart_build_time"),
+            "natal_houses_time": candidate.get("natal_houses_time"),
+            "rulers_resolved_time": candidate.get("rulers_resolved_time"),
+            "house_elements_resolved_time": candidate.get("house_elements_resolved_time"),
+            "directed_points_time": candidate.get("directed_points_time"),
+            "timezone_used": candidate.get("timezone_used"),
+            "timezone_offset_used": candidate.get("timezone_offset_used"),
+        }
 
     @staticmethod
     def _score_candidate(
