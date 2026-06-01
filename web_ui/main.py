@@ -1664,10 +1664,10 @@ def _load_openai_settings() -> dict[str, Any]:
             raise HTTPException(status_code=500, detail=f"{name} must be > 0")
 
     models_by_scenario = {
-        OPENROUTER_REQUEST_KIND_DEFAULT: _env("OPENAI_MODEL_DEFAULT", "gpt-4.1").strip() or "gpt-4.1",
-        OPENROUTER_REQUEST_KIND_GENERATE: _env("OPENAI_MODEL_GENERATE", "gpt-4.1").strip() or "gpt-4.1",
-        OPENROUTER_REQUEST_KIND_STAGE1: _env("OPENAI_MODEL_STAGE1", "gpt-4.1").strip() or "gpt-4.1",
-        OPENROUTER_REQUEST_KIND_PRO: _env("OPENAI_MODEL_PRO", "gpt-4.1").strip() or "gpt-4.1",
+        OPENROUTER_REQUEST_KIND_DEFAULT: _env("OPENAI_MODEL_DEFAULT", "gpt-5.4-mini").strip() or "gpt-5.4-mini",
+        OPENROUTER_REQUEST_KIND_GENERATE: _env("OPENAI_MODEL_GENERATE", "gpt-5.4-mini").strip() or "gpt-5.4-mini",
+        OPENROUTER_REQUEST_KIND_STAGE1: _env("OPENAI_MODEL_STAGE1", "gpt-5.4-mini").strip() or "gpt-5.4-mini",
+        OPENROUTER_REQUEST_KIND_PRO: _env("OPENAI_MODEL_PRO", "gpt-5.4-mini").strip() or "gpt-5.4-mini",
     }
 
     return {
@@ -1707,7 +1707,7 @@ def _load_openrouter_settings() -> dict[str, Any]:
     api_key_backup_1 = _env("OPENROUTER_API_KEY_BACKUP_1", "").strip()
     api_key_backup_2 = _env("OPENROUTER_API_KEY_BACKUP_2", "").strip()
     base_url = _env("OPENROUTER_BASE_URL", OPENROUTER_DEFAULT_BASE_URL).strip().rstrip("/")
-    model = _env("OPENROUTER_MODEL", "openai/gpt-4.1").strip()
+    model = _env("OPENROUTER_MODEL", "openai/gpt-5.4-mini").strip()
     llm_model_generate_primary = _env("LLM_MODEL_GENERATE_PRIMARY", "").strip()
     llm_model_generate_fallback = _env("LLM_MODEL_GENERATE_FALLBACK", "").strip()
     llm_model_stage1_primary = _env("LLM_MODEL_STAGE1_PRIMARY", "").strip()

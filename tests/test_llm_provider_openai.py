@@ -23,9 +23,9 @@ class _FakeOpenAIResponse:
 def _set_openai_env(monkeypatch) -> None:
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
-    monkeypatch.setenv("OPENAI_MODEL_GENERATE", "gpt-4.1")
-    monkeypatch.setenv("OPENAI_MODEL_STAGE1", "gpt-4.1")
-    monkeypatch.setenv("OPENAI_MODEL_PRO", "gpt-4.1")
+    monkeypatch.setenv("OPENAI_MODEL_GENERATE", "gpt-5.4-mini")
+    monkeypatch.setenv("OPENAI_MODEL_STAGE1", "gpt-5.4-mini")
+    monkeypatch.setenv("OPENAI_MODEL_PRO", "gpt-5.4-mini")
     monkeypatch.setenv("OPENAI_MAX_TOKENS_GENERATE", "8000")
     monkeypatch.setenv("OPENAI_MAX_TOKENS_STAGE1", "3000")
     monkeypatch.setenv("OPENAI_MAX_TOKENS_PRO", "12000")
@@ -53,7 +53,7 @@ def test_llm_provider_openai_uses_openai_client(monkeypatch) -> None:
     assert "api.openai.com/v1/chat/completions" in captured["url"]
     assert "openrouter.ai" not in captured["url"]
     assert result["provider"] == "openai"
-    assert result["model"] == "gpt-4.1"
+    assert result["model"] == "gpt-5.4-mini"
     assert "test-openai-key" not in str(result)
 
 

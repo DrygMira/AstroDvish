@@ -25,14 +25,14 @@ def _set_openrouter_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
     monkeypatch.setenv("OPENROUTER_API_KEY_BACKUP_1", "test-key-backup-1")
     monkeypatch.setenv("OPENROUTER_API_KEY_BACKUP_2", "test-key-backup-2")
-    monkeypatch.setenv("OPENROUTER_MODEL", "openai/gpt-4.1")
-    monkeypatch.setenv("OPENROUTER_MODEL_RECTIFICATION", "openai/gpt-4.1")
-    monkeypatch.setenv("OPENROUTER_MODEL_HOROSCOPE", "openai/gpt-4.1")
-    monkeypatch.setenv("LLM_MODEL_GENERATE_PRIMARY", "openai/gpt-4.1")
+    monkeypatch.setenv("OPENROUTER_MODEL", "openai/gpt-5.4-mini")
+    monkeypatch.setenv("OPENROUTER_MODEL_RECTIFICATION", "openai/gpt-5.4-mini")
+    monkeypatch.setenv("OPENROUTER_MODEL_HOROSCOPE", "openai/gpt-5.4-mini")
+    monkeypatch.setenv("LLM_MODEL_GENERATE_PRIMARY", "openai/gpt-5.4-mini")
     monkeypatch.setenv("LLM_MODEL_GENERATE_FALLBACK", "openai/gpt-4.1-mini")
-    monkeypatch.setenv("LLM_MODEL_STAGE1_PRIMARY", "openai/gpt-4.1-mini")
+    monkeypatch.setenv("LLM_MODEL_STAGE1_PRIMARY", "openai/gpt-5.4-mini")
     monkeypatch.setenv("LLM_MODEL_STAGE1_FALLBACK", "openai/gpt-4.1-mini")
-    monkeypatch.setenv("LLM_MODEL_PRO_PRIMARY", "openai/gpt-4.1")
+    monkeypatch.setenv("LLM_MODEL_PRO_PRIMARY", "openai/gpt-5.4-mini")
     monkeypatch.setenv("LLM_MODEL_PRO_FALLBACK", "openai/gpt-4.1-mini")
     monkeypatch.setenv("MAX_LLM_ATTEMPTS", "4")
     monkeypatch.setenv("OPENROUTER_MAX_TOKENS_DEFAULT", "6000")
@@ -246,7 +246,7 @@ def test_generate_returns_fallback_text_when_llm_unavailable(monkeypatch: pytest
                 "message": "OpenRouter returned non-200 status",
                 "status_code": 402,
                 "reason": "insufficient_credits_or_max_tokens",
-                "model": "openai/gpt-4.1",
+                "model": "openai/gpt-5.4-mini",
                 "requested_max_tokens": 8000,
                 "applied_max_tokens": 400,
             },
@@ -284,16 +284,34 @@ def test_generate_returns_fallback_text_when_llm_unavailable(monkeypatch: pytest
     assert data["llm_debug"]["reason"] == "insufficient_credits_or_max_tokens"
 
 
-def test_openrouter_default_model_is_gpt41_when_env_not_set(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_openrouter_default_model_is_gpt54mini_when_env_not_set(monkeypatch: pytest.MonkeyPatch) -> None:
+    for key in (
+        "OPENROUTER_MODEL",
+        "OPENROUTER_MODEL_HOROSCOPE",
+        "OPENROUTER_MODEL_RECTIFICATION",
+        "LLM_MODEL_GENERATE_PRIMARY",
+        "LLM_MODEL_GENERATE_FALLBACK",
+        "LLM_MODEL_STAGE1_PRIMARY",
+        "LLM_MODEL_STAGE1_FALLBACK",
+        "LLM_MODEL_PRO_PRIMARY",
+        "LLM_MODEL_PRO_FALLBACK",
+    ):
+        monkeypatch.delitem(web_ui_main.ENV_FILE_VALUES, key, raising=False)
     monkeypatch.delenv("OPENROUTER_MODEL", raising=False)
+    monkeypatch.delenv("OPENROUTER_MODEL_HOROSCOPE", raising=False)
+    monkeypatch.delenv("OPENROUTER_MODEL_RECTIFICATION", raising=False)
     monkeypatch.delenv("LLM_MODEL_GENERATE_PRIMARY", raising=False)
+    monkeypatch.delenv("LLM_MODEL_GENERATE_FALLBACK", raising=False)
+    monkeypatch.delenv("LLM_MODEL_STAGE1_PRIMARY", raising=False)
+    monkeypatch.delenv("LLM_MODEL_STAGE1_FALLBACK", raising=False)
     monkeypatch.delenv("LLM_MODEL_PRO_PRIMARY", raising=False)
+    monkeypatch.delenv("LLM_MODEL_PRO_FALLBACK", raising=False)
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
 
     settings = web_ui_main._load_openrouter_settings()
-    assert settings["model"] == "openai/gpt-4.1"
-    assert settings["models_by_scenario"][web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE]["primary"] == "openai/gpt-4.1"
-    assert settings["models_by_scenario"][web_ui_main.OPENROUTER_REQUEST_KIND_PRO]["primary"] == "openai/gpt-4.1"
+    assert settings["model"] == "openai/gpt-5.4-mini"
+    assert settings["models_by_scenario"][web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE]["primary"] == "openai/gpt-5.4-mini"
+    assert settings["models_by_scenario"][web_ui_main.OPENROUTER_REQUEST_KIND_PRO]["primary"] == "openai/gpt-5.4-mini"
 
 
 def test_openrouter_cascade_uses_fallback_model_after_primary_402(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -317,7 +335,7 @@ def test_openrouter_cascade_uses_fallback_model_after_primary_402(monkeypatch: p
         user_prompt="user",
         request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
     )
-    assert seen_models == ["openai/gpt-4.1", "openai/gpt-4.1-mini"]
+    assert seen_models == ["openai/gpt-5.4-mini", "openai/gpt-4.1-mini"]
     assert result["fallback_used"] is True
     assert result["final_source"] == "llm_fallback"
     assert result["attempts"][0]["status_code"] == 402
