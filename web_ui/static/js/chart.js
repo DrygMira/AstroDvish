@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: chart.
-import { apiRawBoxEl, apiRawWrapEl, aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBackToMainBtnEl, horoscopeBoxEl, horoscopeContinuationBoxEl, horoscopeContinuationMetaEl, horoscopeContinuationTitleEl, horoscopeContinuationWrapEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, horoscopeFollowUpWrapEl, modalEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
+import { aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBackToMainBtnEl, horoscopeBoxEl, horoscopeContinuationBoxEl, horoscopeContinuationMetaEl, horoscopeContinuationTitleEl, horoscopeContinuationWrapEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, horoscopeFollowUpWrapEl, modalEl, rectIntervalsListEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
 import { appState, sharedBirthContext } from "./state.js";
 import { degreeToDms, extractErrorText, formatWarnings, renderTable, resolveAspectStrengthLabel, resolveMotionPhase } from "./format.js";
 import { setDateTimeWithSeconds } from "./coords.js";
@@ -388,9 +388,6 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       renderExpertTables(data.chart_response, data.timezone, data.warnings);
       expertWrapEl.classList.add("hidden");
       toggleExpertBtnEl.textContent = "Показать экспертную таблицу";
-      apiRawBoxEl.textContent = JSON.stringify(data.chart_response, null, 2);
-      apiRawWrapEl.classList.add("hidden");
-      toggleApiRawBtnEl.textContent = "Показать ответ API целиком";
       modalEl.classList.add("active");
       const tz = data.timezone || {};
       const tzInfo = tz.timezone_source === "manual_offset"
@@ -456,10 +453,9 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       if (!res.ok) {
         setRectStatus("Ошибка: " + extractErrorText(data));
         rectIntervalsListEl.innerHTML = "";
-        rectJsonBoxEl.textContent = "";
         return;
       }
       renderRectIntervals(data.asc_sign_intervals || []);
-      rectJsonBoxEl.textContent = JSON.stringify(data, null, 2);
       setRectStatus(`Готово. Найдено интервалов: ${(data.asc_sign_intervals || []).length}`);
+      return data;
     }

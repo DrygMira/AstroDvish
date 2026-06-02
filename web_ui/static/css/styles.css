@@ -1251,3 +1251,29 @@ button { font-family: var(--font-ui); }
     scroll-behavior: auto !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Hide raw JSON / full API disclosure panels from the user-facing UI
+   -------------------------------------------------------------------------- */
+#techPanelsWrap > .card:nth-child(1),
+#techPanelsWrap > .card:nth-child(2),
+#rectJsonBox,
+#rdRectJsonBox,
+#rdLastLlmJsonBox,
+#rdUsageSummaryBox,
+#reToggleJsonBtn,
+#reTechJsonWrap,
+#reTechJsonBox,
+#rpRawBox,
+#toggleApiRawBtn,
+#apiRawWrap,
+#apiRawBox,
+#generateDebugBox,
+#geocodeDebugBox {
+  display: none !important;
+}
+
+#rectIntervalsList + div,
+#rdFinalResult + #rdTesterThanks + .card {
+  display: none !important;
+}

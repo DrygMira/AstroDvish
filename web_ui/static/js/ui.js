@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: ui.
-import { apiRawWrapEl, chartPanelEl, expertWrapEl, generateDebugBoxEl, geocodeDebugBoxEl, llmOverlayEl, llmOverlayElapsedEl, llmOverlayMessageEl, modalEl, rdStatusEl, reStatusEl, rectDialogPanelEl, rectEventsPanelEl, rectPanelEl, rectStatusEl, rpStatusEl, statusEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeContentEl, techModeHintEl, techModeToggleBtnEl, techPanelsWrapEl, toggleApiRawBtnEl, toggleExpertBtnEl, wizardPanelEl, wzCurrentDataSummaryEl, wzProStatusEl, wzStatusEl } from "./dom.js";
+import { chartPanelEl, expertWrapEl, generateDebugBoxEl, geocodeDebugBoxEl, llmOverlayEl, llmOverlayElapsedEl, llmOverlayMessageEl, modalEl, rdStatusEl, reStatusEl, rectDialogPanelEl, rectEventsPanelEl, rectPanelEl, rectStatusEl, rpStatusEl, statusEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeContentEl, techModeHintEl, techModeToggleBtnEl, techPanelsWrapEl, toggleExpertBtnEl, wizardPanelEl, wzCurrentDataSummaryEl, wzProStatusEl, wzStatusEl } from "./dom.js";
 import { appState, sharedBirthContext } from "./state.js";
 import { normalizeCoordinateNumber, parseDmsCoordinate } from "./validation.js";
 import { formatElapsedDuration, normalizeLlmReason } from "./format.js";
@@ -27,7 +27,7 @@ import { generate } from "./chart.js";
         ? "▲ Технический режим / отдельные модули"
         : "▼ Технический режим / отдельные модули";
       techModeHintEl.textContent = appState.technicalModeOpen
-        ? "Открыт: отдельные модули, Raw JSON и debug"
+        ? "Открыт: отдельные модули и debug"
         : "По умолчанию скрыт";
       if (!appState.technicalModeOpen) {
         rectPanelEl.classList.remove("active");
@@ -90,13 +90,6 @@ import { generate } from "./chart.js";
       modalEl.classList.remove("active");
       expertWrapEl.classList.add("hidden");
       toggleExpertBtnEl.textContent = "Показать экспертную таблицу";
-    }
-
-    export function toggleRawApi() {
-      const hiddenNow = apiRawWrapEl.classList.toggle("hidden");
-      toggleApiRawBtnEl.textContent = hiddenNow
-        ? "Показать ответ API целиком"
-        : "Скрыть ответ API";
     }
 
     export function toggleExpertTable() {

@@ -141,7 +141,7 @@ import { applyWizardBirthDataFromUi, renderWizardProgress, resetWizardDerivedSta
     document.getElementById("reFinalizeBtn").addEventListener("click", finalizeRectEventsFlow);
     document.getElementById("reAddTestEventsBtn").addEventListener("click", applyProTestEventsPreset);
     document.getElementById("rpRunBtn").addEventListener("click", runProRectification);
-    reToggleJsonBtnEl.addEventListener("click", () => {
+    reToggleJsonBtnEl?.addEventListener("click", () => {
       const hiddenNow = reTechJsonWrapEl.classList.toggle("hidden");
       reToggleJsonBtnEl.textContent = hiddenNow
         ? "Показать технический JSON"
@@ -161,7 +161,7 @@ import { applyWizardBirthDataFromUi, renderWizardProgress, resetWizardDerivedSta
         );
       }
     });
-    toggleApiRawBtnEl.addEventListener("click", toggleRawApi);
+    toggleApiRawBtnEl?.addEventListener("click", toggleRawApi);
     timezoneOffsetEl.addEventListener("change", () => {
       syncSharedBirthContext(getChartContextPatch(), { silent: false });
       updateTimezoneUiState();
@@ -267,7 +267,7 @@ import { applyWizardBirthDataFromUi, renderWizardProgress, resetWizardDerivedSta
     rectSiderealModeEl.disabled = true;
     rdSiderealModeEl.disabled = true;
     wzSiderealModeEl.disabled = true;
-    rectJsonBoxEl.textContent = "";
+    if (rectJsonBoxEl) rectJsonBoxEl.textContent = "";
     resetRectDialogState();
     resetRectEventsState();
     resetWizardDerivedState();

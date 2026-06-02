@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: pro.
-import { apiRawBoxEl, apiRawWrapEl, expertWrapEl, horoscopeBoxEl, modalEl, rdSiderealModeEl, rdZodiacModeEl, reTechJsonBoxEl, rpBestCandidatesEl, rpCompareV1V2El, rpConfidenceEl, rpExplainBodyEl, rpFormulaCardIdEl, rpFormulaComparisonEl, rpMethodsSummaryEl, rpRawBoxEl, rpWarningsEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl } from "./dom.js";
+import { expertWrapEl, horoscopeBoxEl, modalEl, rdSiderealModeEl, rdZodiacModeEl, rpBestCandidatesEl, rpCompareV1V2El, rpConfidenceEl, rpExplainBodyEl, rpFormulaCardIdEl, rpFormulaComparisonEl, rpMethodsSummaryEl, rpWarningsEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleExpertBtnEl } from "./dom.js";
 import { appState, rectDialogState, rectEventsState, rectificationWizardState, sharedBirthContext } from "./state.js";
 import { normalizeProEventCard } from "./validation.js";
 import { extractProMatchDetails, formatEventTypeLabel, formatJsonCompact, formatMethodLabel, formatPriorityCounts, formatRejectedReasonsCompact, formatRuleListCompact, formatUnresolvedSummaryCompact, getHeavyProRunWarning, renderTable } from "./format.js";
@@ -124,7 +124,6 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         dialog_history: rectEventsState.dialogHistory || [],
       };
       renderRectEventsFinal(rectEventsState.finalized);
-      reTechJsonBoxEl.textContent = JSON.stringify(rectEventsState.finalized, null, 2);
       updateWizardContextFromCurrentStates();
       setReStatus("Тестовые события для Pro добавлены.");
       setWzStatus("Тестовые события для Pro добавлены в Stage 2.");
@@ -849,7 +848,6 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       if (rpExplainBodyEl) {
         rpExplainBodyEl.innerHTML = buildProExplainabilityHtml(data);
       }
-      rpRawBoxEl.textContent = JSON.stringify(data, null, 2);
     }
 
     export async function runUiProofPreviewFromQuery() {
@@ -884,9 +882,6 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         renderExpertTables(chartData.chart_response, chartData.timezone || {}, chartData.warnings || []);
         expertWrapEl.classList.add("hidden");
         toggleExpertBtnEl.textContent = "Показать экспертную таблицу";
-        apiRawBoxEl.textContent = JSON.stringify(chartData.chart_response || {}, null, 2);
-        apiRawWrapEl.classList.add("hidden");
-        toggleApiRawBtnEl.textContent = "Показать ответ API целиком";
         modalEl.classList.add("active");
         setStatus("Preview: модальное окно обычной карты загружено из fixture.");
       }

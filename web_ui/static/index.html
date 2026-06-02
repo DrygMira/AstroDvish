@@ -367,12 +367,10 @@
     <div class="card">
       <div><strong>Диагностика /api/generate (technical)</strong></div>
       <div class="hint">Только для диагностики LLM-ошибок. В основном интерфейсе детали провайдера скрыты.</div>
-      <div id="generateDebugBox" class="json-box"></div>
     </div>
     <div class="card">
       <div><strong>Диагностика /api/geocode (technical)</strong></div>
       <div class="hint">Показывает провайдера, fallback и cache при поиске города.</div>
-      <div id="geocodeDebugBox" class="json-box"></div>
     </div>
 
     <section id="rectPanel" class="tab-panel">
@@ -461,7 +459,6 @@
         <div><strong>Интервалы восходящих знаков</strong></div>
         <div id="rectIntervalsList" class="interval-list"></div>
         <div style="margin-top:14px;"><strong>Полный ответ JSON</strong></div>
-        <div id="rectJsonBox" class="json-box"></div>
       </div>
     </section>
 
@@ -578,15 +575,12 @@
         <div class="grid">
           <div>
             <strong>Raw rectification JSON</strong>
-            <div id="rdRectJsonBox" class="json-box"></div>
           </div>
           <div>
             <strong>Raw last LLM JSON</strong>
-            <div id="rdLastLlmJsonBox" class="json-box"></div>
           </div>
         </div>
         <div style="margin-top:14px;"><strong>Usage summary (суммарно за сессию)</strong></div>
-        <div id="rdUsageSummaryBox" class="json-box"></div>
       </div>
 
       <div class="card">
@@ -702,7 +696,6 @@
           <button id="reToggleJsonBtn" class="btn secondary" type="button">Показать технический JSON</button>
         </div>
         <div id="reTechJsonWrap" class="hidden" style="margin-top:10px;">
-          <div id="reTechJsonBox" class="json-box"></div>
         </div>
       </div>
 
@@ -746,7 +739,6 @@
           <summary><strong>Как система считает</strong></summary>
           <div id="rpExplainBody" class="bigbox" style="margin-top:8px;"></div>
         </details>
-        <div id="rpRawBox" class="json-box" style="margin-top:10px;"></div>
       </div>
     </section>
     </div>
@@ -816,7 +808,6 @@
         <button id="toggleApiRawBtn" class="btn secondary" type="button">Показать ответ API целиком</button>
         <div id="apiRawWrap" class="hidden">
           <div><strong>Ответ API целиком</strong></div>
-          <div id="apiRawBox" class="bigbox"></div>
         </div>
       </div>
     </div>

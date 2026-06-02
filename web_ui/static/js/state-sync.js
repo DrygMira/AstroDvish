@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: state-sync.
-import { aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, rdSiderealModeEl, rdZodiacModeEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, wzApiBaseUrlEl, wzBirthDateEl, wzCityQueryEl, wzHouseSystemEl, wzSiderealModeEl, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
+import { aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, rdSiderealModeEl, rdZodiacModeEl, rectIntervalsListEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, wzApiBaseUrlEl, wzBirthDateEl, wzCityQueryEl, wzHouseSystemEl, wzSiderealModeEl, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
 import { rectificationWizardState, sharedBirthContext } from "./state.js";
 import { applySharedContextToForms, buildCoordinateContextPatch, setDateTimeWithSeconds } from "./coords.js";
 import { resetRectDialogState } from "./stage1.js";
@@ -43,7 +43,6 @@ import { resetWizardDerivedState } from "./wizard.js";
         resetWizardDerivedState();
         resetRectDialogState();
         resetRectEventsState();
-        rectJsonBoxEl.textContent = "";
         rectIntervalsListEl.innerHTML = "";
         setWzStatus(warningText);
         setRectStatus(warningText);

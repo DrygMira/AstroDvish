@@ -177,12 +177,12 @@ def test_main_ui_has_generate_technical_debug_fields() -> None:
         response, html = get_main_ui_bundle(client)
 
     assert response.status_code == 200
-    assert 'id="generateDebugBox"' in html
     assert "normalizeLlmReason" in html
     assert "provider: detail?.provider || null" in html
     assert "requested_max_tokens" in html
     assert "applied_max_tokens" in html
     assert "retried_with_lower_max_tokens" in html
+    assert "#generateDebugBox," in html
 
 
 def test_main_ui_deduplicates_llm_unavailable_message_in_status() -> None:
@@ -209,7 +209,7 @@ def test_main_ui_supports_humanized_geocode_error_and_technical_debug() -> None:
 
     assert response.status_code == 200
     assert "detail?.user_message" in html
-    assert 'id="geocodeDebugBox"' in html
+    assert "#geocodeDebugBox {" in html
 
 
 def test_main_ui_humanizes_non_json_proxy_errors() -> None:

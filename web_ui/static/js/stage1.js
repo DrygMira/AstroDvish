@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: stage1.
-import { rdCurrentQuestionWrapEl, rdFinalResultEl, rdHistoryEl, rdLastLlmJsonBoxEl, rdNoQuestionTextEl, rdOptionsWrapEl, rdProbabilityTextEl, rdPromptTextEl, rdQuestionTextEl, rdRectJsonBoxEl, rdSiderealModeEl, rdTesterThanksEl, rdUsageSummaryBoxEl, rdZodiacModeEl, timezoneOffsetEl } from "./dom.js";
+import { rdCurrentQuestionWrapEl, rdFinalResultEl, rdHistoryEl, rdNoQuestionTextEl, rdOptionsWrapEl, rdProbabilityTextEl, rdPromptTextEl, rdQuestionTextEl, rdSiderealModeEl, rdTesterThanksEl, rdZodiacModeEl, timezoneOffsetEl } from "./dom.js";
 import { rectDialogState, sharedBirthContext } from "./state.js";
 import { extractErrorText, formatCandidateGroupText, formatIntervalLine, formatStage1SecondaryCandidatesHtml, formatUsage, formatWarnings } from "./format.js";
 import { getRectDialogContextPatch, syncSharedBirthContext } from "./state-sync.js";
@@ -18,16 +18,7 @@ import { updateWizardContextFromCurrentStates } from "./wizard.js";
       rectDialogState.usageSteps.push(formatUsage(usage));
     }
 
-    export function renderUsageSummary() {
-      rdUsageSummaryBoxEl.textContent = JSON.stringify(
-        {
-          total: rectDialogState.usageTotal,
-          steps: rectDialogState.usageSteps,
-        },
-        null,
-        2
-      );
-    }
+    export function renderUsageSummary() {}
 
     export function resetRectDialogState() {
       rectDialogState.rectificationDocument = null;
@@ -49,14 +40,11 @@ import { updateWizardContextFromCurrentStates } from "./wizard.js";
       rdHistoryEl.innerHTML = "";
       rdFinalResultEl.textContent = "Финальный результат пока не получен.";
       rdTesterThanksEl.classList.add("hidden");
-      rdRectJsonBoxEl.textContent = "";
-      rdLastLlmJsonBoxEl.textContent = "";
       rdProbabilityTextEl.textContent = "";
       rdQuestionTextEl.textContent = "";
       rdOptionsWrapEl.innerHTML = "";
       rdCurrentQuestionWrapEl.classList.add("hidden");
       rdNoQuestionTextEl.classList.remove("hidden");
-      renderUsageSummary();
     }
 
     export function appendAssistantMessage(llmJson, usage) {
@@ -229,16 +217,9 @@ import { updateWizardContextFromCurrentStates } from "./wizard.js";
     }
 
     export function renderRectDialogAll() {
-      rdRectJsonBoxEl.textContent = rectDialogState.rectificationDocument
-        ? JSON.stringify(rectDialogState.rectificationDocument, null, 2)
-        : "";
-      rdLastLlmJsonBoxEl.textContent = rectDialogState.lastLlmRaw
-        ? JSON.stringify(rectDialogState.lastLlmRaw, null, 2)
-        : "";
       renderDialogHistory();
       renderCurrentQuestion();
       renderFinalResult();
-      renderUsageSummary();
     }
 
     export async function startRectificationDialog() {

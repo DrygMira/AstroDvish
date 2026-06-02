@@ -108,12 +108,13 @@ def test_pro_ui_expected_labels_render_from_display_formula_not_stale_ids() -> N
     assert "missingFormulaLinks.map((item) => item.display_formula || item.rule_id || \"—\")" in html
 
 
-def test_pro_ui_keeps_technical_json_available() -> None:
+def test_pro_ui_hides_raw_json_disclosures_from_main_interface() -> None:
     with TestClient(web_ui_main.app) as client:
         response, html = get_main_ui_bundle(client)
     assert response.status_code == 200
-    assert 'id="rpRawBox"' in html
-    assert "rpRawBoxEl.textContent = JSON.stringify(data, null, 2);" in html
+    assert "#rpRawBox," in html
+    assert "#toggleApiRawBtn," in html
+    assert "rpRawBoxEl.textContent = JSON.stringify(data, null, 2);" not in html
 
 
 def test_pro_ui_contains_window_width_explanation_text() -> None:

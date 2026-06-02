@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: stage2.
-import { reEventsListEl, reNoQuestionTextEl, reQuestionMetaEl, reQuestionTextEl, reQuestionWrapEl, reRepeatCountEl, reSummaryEl, reTechJsonBoxEl, reTechJsonWrapEl, reToggleJsonBtnEl, reWarningsEl } from "./dom.js";
+import { reEventsListEl, reNoQuestionTextEl, reQuestionMetaEl, reQuestionTextEl, reQuestionWrapEl, reRepeatCountEl, reSummaryEl, reWarningsEl } from "./dom.js";
 import { rectEventsState } from "./state.js";
 import { parseResponseBody } from "./api.js";
 import { hideLlmOverlay, setReStatus, showLlmOverlay } from "./ui.js";
@@ -43,9 +43,6 @@ import { resetWizardDerivedState, updateWizardContextFromCurrentStates } from ".
       reSummaryEl.textContent = "Сбор событий ещё не завершён.";
       reEventsListEl.innerHTML = "";
       reWarningsEl.textContent = "";
-      reTechJsonBoxEl.textContent = "";
-      reTechJsonWrapEl.classList.add("hidden");
-      reToggleJsonBtnEl.textContent = "Показать технический JSON";
       reQuestionWrapEl.classList.add("hidden");
       reNoQuestionTextEl.classList.remove("hidden");
       reQuestionMetaEl.textContent = "";
@@ -225,7 +222,6 @@ import { resetWizardDerivedState, updateWizardContextFromCurrentStates } from ".
         throw new Error("Неверный формат ответа Stage 2");
       }
 
-      reTechJsonBoxEl.textContent = JSON.stringify(data, null, 2);
       renderRectEventsQuestion();
       renderRectEventsFinal(rectEventsState.finalized);
     }

@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: wizard.
-import { rectIntervalsListEl, rectJsonBoxEl, rpBestCandidatesEl, rpConfidenceEl, rpExplainBodyEl, rpFormulaComparisonEl, rpMethodsSummaryEl, rpRawBoxEl, rpWarningsEl, wzBirthDateEl, wzCityQueryEl, wzIntervalsListEl, wzProgressTextEl, wzStage1SummaryEl, wzStage2ContextEl, wzStepBadgeEls, wzStepHintEls, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl } from "./dom.js";
+import { rectIntervalsListEl, rpBestCandidatesEl, rpConfidenceEl, rpExplainBodyEl, rpFormulaComparisonEl, rpMethodsSummaryEl, rpWarningsEl, wzBirthDateEl, wzCityQueryEl, wzIntervalsListEl, wzProgressTextEl, wzStage1SummaryEl, wzStage2ContextEl, wzStepBadgeEls, wzStepHintEls, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl } from "./dom.js";
 import { appState, rectDialogState, rectEventsState, rectificationWizardState } from "./state.js";
 import { formatCandidateGroupText, formatIntervalLine, formatStage1SecondaryCandidatesHtml, formatWarnings } from "./format.js";
 import { runRectification } from "./chart.js";
@@ -58,7 +58,6 @@ import { setWzProStatus, setWzStatus } from "./ui.js";
       if (rpExplainBodyEl) {
         rpExplainBodyEl.textContent = "";
       }
-      rpRawBoxEl.textContent = "";
       appState.lastProRunPayload = null;
       setWzProStatus("");
     }
@@ -216,13 +215,10 @@ import { setWzProStatus, setWzStatus } from "./ui.js";
     export async function runWizardStep1() {
       syncSharedBirthContext(getWizardContextPatch(), { silent: false });
       applyWizardBirthDataFromUi();
-      await runRectification();
-      try {
-        const parsed = rectJsonBoxEl.textContent ? JSON.parse(rectJsonBoxEl.textContent) : null;
-        rectificationWizardState.ascIntervals = parsed?.asc_sign_intervals || [];
-      } catch {
-        rectificationWizardState.ascIntervals = [];
-      }
+      const rectificationData = await runRectification();
+      rectificationWizardState.ascIntervals = Array.isArray(rectificationData?.asc_sign_intervals)
+        ? rectificationData.asc_sign_intervals
+        : [];
       wzIntervalsListEl.innerHTML = rectIntervalsListEl.innerHTML || "<div class='interval-item'>Интервалы не найдены.</div>";
       renderWizardProgress();
       setWzStatus(`Asc-интервалы рассчитаны: ${(rectificationWizardState.ascIntervals || []).length}`);

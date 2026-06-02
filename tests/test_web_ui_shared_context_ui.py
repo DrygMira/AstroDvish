@@ -55,7 +55,7 @@ def test_shared_context_sync_and_reset_messages_exist() -> None:
     assert "resetWizardDerivedState();" in html
 
 
-def test_technical_mode_preserves_modules_and_debug_blocks() -> None:
+def test_technical_mode_preserves_modules_without_user_facing_raw_json_panels() -> None:
     with TestClient(web_ui_main.app) as client:
         response, html = get_main_ui_bundle(client)
 
@@ -63,9 +63,9 @@ def test_technical_mode_preserves_modules_and_debug_blocks() -> None:
     assert 'id="wzIntervalsList"' in html
     assert 'id="rdHistory"' in html
     assert 'id="reEventsList"' in html
-    assert "Raw rectification JSON" in html
-    assert 'id="reToggleJsonBtn"' in html
-    assert 'id="toggleApiRawBtn"' in html
+    assert "#reToggleJsonBtn," in html
+    assert "#toggleApiRawBtn," in html
+    assert "#rdFinalResult + #rdTesterThanks + .card" in html
 
 
 def test_rect_events_reset_clears_derived_pro_and_comparison_state() -> None:
