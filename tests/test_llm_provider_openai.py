@@ -26,6 +26,9 @@ def _set_openai_env(monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_MODEL_GENERATE", "gpt-5.4-mini")
     monkeypatch.setenv("OPENAI_MODEL_STAGE1", "gpt-5.4-mini")
     monkeypatch.setenv("OPENAI_MODEL_PRO", "gpt-5.4-mini")
+    monkeypatch.setenv("OPENAI_MODEL_GENERATE_FALLBACK", "gpt-4.1-mini")
+    monkeypatch.setenv("OPENAI_MODEL_STAGE1_FALLBACK", "gpt-4.1-mini")
+    monkeypatch.setenv("OPENAI_MODEL_PRO_FALLBACK", "gpt-4.1-mini")
     monkeypatch.setenv("OPENAI_MAX_TOKENS_GENERATE", "8000")
     monkeypatch.setenv("OPENAI_MAX_TOKENS_STAGE1", "3000")
     monkeypatch.setenv("OPENAI_MAX_TOKENS_PRO", "12000")
@@ -133,3 +136,40 @@ def test_generate_does_not_use_openrouter_when_provider_openai(monkeypatch) -> N
     assert data["llm_status"] == "ok"
     assert isinstance(data["horoscope_text"], str) and data["horoscope_text"]
     assert data["llm_debug"]["provider"] == "openai"
+
+
+def test_openai_generate_uses_fallback_model_after_primary_rate_limit(monkeypatch) -> None:
+    _set_openai_env(monkeypatch)
+    seen_models: list[str] = []
+
+    def fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: int) -> _FakeOpenAIResponse:
+        seen_models.append(json["model"])
+        if len(seen_models) == 1:
+            return _FakeOpenAIResponse(
+                status_code=429,
+                payload={"error": {"message": "rate limited"}},
+                text='{"error":{"message":"rate limited"}}',
+            )
+        return _FakeOpenAIResponse(
+            payload={
+                "choices": [{"message": {"content": "fallback-ok"}}],
+                "usage": {"prompt_tokens": 11, "completion_tokens": 21, "total_tokens": 32},
+            }
+        )
+
+    monkeypatch.setattr(web_ui_main.httpx, "post", fake_post)
+
+    result = web_ui_main._call_llm_chat(
+        system_prompt="sys",
+        user_prompt="usr",
+        request_kind=web_ui_main.OPENROUTER_REQUEST_KIND_GENERATE,
+        route_label="/api/generate",
+    )
+
+    assert seen_models == ["gpt-5.4-mini", "gpt-4.1-mini"]
+    assert result["text"] == "fallback-ok"
+    assert result["provider"] == "openai"
+    assert result["model"] == "gpt-4.1-mini"
+    assert result["fallback_used"] is True
+    assert result["final_source"] == "llm_fallback"
+    assert len(result["attempts"]) == 2

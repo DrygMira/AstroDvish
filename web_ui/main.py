@@ -1670,6 +1670,12 @@ def _load_openai_settings() -> dict[str, Any]:
         OPENROUTER_REQUEST_KIND_STAGE1: _env("OPENAI_MODEL_STAGE1", "gpt-5.4-mini").strip() or "gpt-5.4-mini",
         OPENROUTER_REQUEST_KIND_PRO: _env("OPENAI_MODEL_PRO", "gpt-5.4-mini").strip() or "gpt-5.4-mini",
     }
+    fallback_models_by_scenario = {
+        OPENROUTER_REQUEST_KIND_DEFAULT: _env("OPENAI_MODEL_DEFAULT_FALLBACK", "gpt-4.1-mini").strip() or "gpt-4.1-mini",
+        OPENROUTER_REQUEST_KIND_GENERATE: _env("OPENAI_MODEL_GENERATE_FALLBACK", "gpt-4.1-mini").strip() or "gpt-4.1-mini",
+        OPENROUTER_REQUEST_KIND_STAGE1: _env("OPENAI_MODEL_STAGE1_FALLBACK", "gpt-4.1-mini").strip() or "gpt-4.1-mini",
+        OPENROUTER_REQUEST_KIND_PRO: _env("OPENAI_MODEL_PRO_FALLBACK", "gpt-4.1-mini").strip() or "gpt-4.1-mini",
+    }
 
     return {
         "api_key": api_key,
@@ -1681,6 +1687,7 @@ def _load_openai_settings() -> dict[str, Any]:
         "max_tokens_pro": max_pro,
         "max_tokens_hard_limit": hard_limit,
         "models_by_scenario": models_by_scenario,
+        "fallback_models_by_scenario": fallback_models_by_scenario,
     }
 
 
@@ -1896,6 +1903,10 @@ def _classify_openai_error(status_code: int, raw_error: str) -> str:
     if status_code == 408:
         return "timeout"
     return "upstream_error"
+
+
+def _is_openai_retryable_reason(reason: str) -> bool:
+    return reason in {"rate_limited", "provider_unavailable", "timeout", "network_or_timeout"}
 
 
 def _to_utc_iso(local_dt_str: str, tz_offset: str, timezone_name: str | None = None) -> str:
@@ -2339,6 +2350,10 @@ def _call_openai_chat(
         request_kind,
         settings["models_by_scenario"][OPENROUTER_REQUEST_KIND_DEFAULT],
     )
+    fallback_model = settings["fallback_models_by_scenario"].get(
+        request_kind,
+        settings["fallback_models_by_scenario"][OPENROUTER_REQUEST_KIND_DEFAULT],
+    )
     if model_override_env:
         model_override = _env(model_override_env, "").strip()
         if model_override:
@@ -2348,136 +2363,219 @@ def _call_openai_chat(
         "Authorization": f"Bearer {settings['api_key']}",
         "Content-Type": "application/json",
     }
-    body = {
-        "model": scenario_model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        "temperature": 0,
-    }
-    if scenario_model.startswith("gpt-5"):
-        body["max_completion_tokens"] = applied_max_tokens
-    else:
-        body["max_tokens"] = applied_max_tokens
-    try:
-        response = httpx.post(
-            f"{settings['base_url']}/chat/completions",
-            headers=headers,
-            json=body,
-            timeout=settings["timeout_seconds"],
-        )
-    except httpx.TimeoutException as exc:
-        raise HTTPException(
-            status_code=502,
-            detail={
+    model_slots: list[tuple[str, str]] = [("primary", scenario_model)]
+    if fallback_model and fallback_model != scenario_model:
+        model_slots.append(("fallback", fallback_model))
+
+    attempts: list[dict[str, Any]] = []
+    last_error_detail: dict[str, Any] | None = None
+
+    for attempt_index, (key_name, model_name) in enumerate(model_slots, start=1):
+        body = {
+            "model": model_name,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "temperature": 0,
+        }
+        if model_name.startswith("gpt-5"):
+            body["max_completion_tokens"] = applied_max_tokens
+        else:
+            body["max_tokens"] = applied_max_tokens
+        try:
+            response = httpx.post(
+                f"{settings['base_url']}/chat/completions",
+                headers=headers,
+                json=body,
+                timeout=settings["timeout_seconds"],
+            )
+        except httpx.TimeoutException as exc:
+            reason = "timeout"
+            error_detail = {
                 "message": "LLM request timeout",
                 "provider": "openai",
                 "status_code": 502,
-                "reason": "timeout",
+                "reason": reason,
                 "route": route_label,
-                "model": scenario_model,
-                "key_name": "primary",
+                "model": model_name,
+                "key_name": key_name,
                 "requested_max_tokens": resolved_requested_max_tokens,
                 "applied_max_tokens": applied_max_tokens,
                 "raw_error": str(exc)[:4000],
-            },
-        ) from exc
-    except httpx.HTTPError as exc:
-        raise HTTPException(
-            status_code=502,
-            detail={
+            }
+            attempts.append(
+                {
+                    "attempt": attempt_index,
+                    "key_name": key_name,
+                    "model": model_name,
+                    "status_code": 502,
+                    "reason": reason,
+                    "requested_max_tokens": resolved_requested_max_tokens,
+                    "applied_max_tokens": applied_max_tokens,
+                    "raw_error": str(exc)[:4000],
+                }
+            )
+            last_error_detail = error_detail
+            if attempt_index < len(model_slots) and _is_openai_retryable_reason(reason):
+                continue
+            raise HTTPException(status_code=502, detail={**error_detail, "attempts": attempts, "fallback_used": attempt_index > 1, "final_source": "llm_unavailable"}) from exc
+        except httpx.HTTPError as exc:
+            reason = "network_or_timeout"
+            error_detail = {
                 "message": "LLM request failed",
                 "provider": "openai",
                 "status_code": 502,
-                "reason": "network_or_timeout",
+                "reason": reason,
                 "route": route_label,
-                "model": scenario_model,
-                "key_name": "primary",
+                "model": model_name,
+                "key_name": key_name,
                 "requested_max_tokens": resolved_requested_max_tokens,
                 "applied_max_tokens": applied_max_tokens,
                 "raw_error": str(exc)[:4000],
-            },
-        ) from exc
+            }
+            attempts.append(
+                {
+                    "attempt": attempt_index,
+                    "key_name": key_name,
+                    "model": model_name,
+                    "status_code": 502,
+                    "reason": reason,
+                    "requested_max_tokens": resolved_requested_max_tokens,
+                    "applied_max_tokens": applied_max_tokens,
+                    "raw_error": str(exc)[:4000],
+                }
+            )
+            last_error_detail = error_detail
+            if attempt_index < len(model_slots) and _is_openai_retryable_reason(reason):
+                continue
+            raise HTTPException(status_code=502, detail={**error_detail, "attempts": attempts, "fallback_used": attempt_index > 1, "final_source": "llm_unavailable"}) from exc
 
-    if response.status_code != 200:
-        raw_error = response.text[:4000]
-        reason = _classify_openai_error(response.status_code, raw_error)
-        raise HTTPException(
-            status_code=502,
-            detail={
+        if response.status_code != 200:
+            raw_error = response.text[:4000]
+            reason = _classify_openai_error(response.status_code, raw_error)
+            attempts.append(
+                {
+                    "attempt": attempt_index,
+                    "key_name": key_name,
+                    "model": model_name,
+                    "status_code": response.status_code,
+                    "reason": reason,
+                    "requested_max_tokens": resolved_requested_max_tokens,
+                    "applied_max_tokens": applied_max_tokens,
+                    "raw_error": raw_error,
+                }
+            )
+            last_error_detail = {
                 "message": "LLM provider returned non-200 status",
                 "provider": "openai",
                 "status_code": response.status_code,
                 "reason": reason,
                 "route": route_label,
-                "model": scenario_model,
-                "key_name": "primary",
+                "model": model_name,
+                "key_name": key_name,
                 "requested_max_tokens": resolved_requested_max_tokens,
                 "applied_max_tokens": applied_max_tokens,
-                "attempts": [
-                    {
-                        "attempt": 1,
-                        "key_name": "primary",
-                        "model": scenario_model,
-                        "status_code": response.status_code,
-                        "reason": reason,
-                        "requested_max_tokens": resolved_requested_max_tokens,
-                        "applied_max_tokens": applied_max_tokens,
-                        "raw_error": raw_error,
-                    }
-                ],
-                "fallback_used": False,
-                "final_source": "llm_unavailable",
                 "raw_error": raw_error,
-            },
-        )
+            }
+            if attempt_index < len(model_slots) and _is_openai_retryable_reason(reason):
+                continue
+            raise HTTPException(
+                status_code=502,
+                detail={
+                    **last_error_detail,
+                    "attempts": attempts,
+                    "fallback_used": attempt_index > 1,
+                    "final_source": "llm_unavailable",
+                },
+            )
 
-    payload = response.json()
-    text = _extract_chat_completion_text(payload)
-    if not text:
-        raise HTTPException(
-            status_code=502,
-            detail={
+        payload = response.json()
+        text = _extract_chat_completion_text(payload)
+        if not text:
+            reason = "empty_response"
+            attempts.append(
+                {
+                    "attempt": attempt_index,
+                    "key_name": key_name,
+                    "model": model_name,
+                    "status_code": 502,
+                    "reason": reason,
+                    "requested_max_tokens": resolved_requested_max_tokens,
+                    "applied_max_tokens": applied_max_tokens,
+                }
+            )
+            last_error_detail = {
                 "message": "LLM provider returned empty response",
                 "provider": "openai",
                 "status_code": 502,
-                "reason": "empty_response",
+                "reason": reason,
                 "route": route_label,
-                "model": scenario_model,
-                "key_name": "primary",
+                "model": model_name,
+                "key_name": key_name,
                 "requested_max_tokens": resolved_requested_max_tokens,
                 "applied_max_tokens": applied_max_tokens,
-            },
-        )
+            }
+            if attempt_index < len(model_slots):
+                continue
+            raise HTTPException(
+                status_code=502,
+                detail={
+                    **last_error_detail,
+                    "attempts": attempts,
+                    "fallback_used": attempt_index > 1,
+                    "final_source": "llm_unavailable",
+                },
+            )
 
-    return {
-        "text": text,
-        "raw": payload,
-        "provider": "openai",
-        "model": scenario_model,
-        "key_name": "primary",
-        "route": route_label,
-        "scenario": request_kind,
-        "request_kind": request_kind,
-        "requested_max_tokens": resolved_requested_max_tokens,
-        "applied_max_tokens": applied_max_tokens,
-        "first_applied_max_tokens": applied_max_tokens,
-        "retried_with_lower_max_tokens": False,
-        "attempts": [
+        attempts.append(
             {
-                "attempt": 1,
-                "key_name": "primary",
-                "model": scenario_model,
+                "attempt": attempt_index,
+                "key_name": key_name,
+                "model": model_name,
                 "status_code": 200,
                 "reason": "ok",
                 "requested_max_tokens": resolved_requested_max_tokens,
                 "applied_max_tokens": applied_max_tokens,
             }
-        ],
-        "fallback_used": False,
-        "final_source": "llm_primary",
-    }
+        )
+        return {
+            "text": text,
+            "raw": payload,
+            "provider": "openai",
+            "model": model_name,
+            "key_name": key_name,
+            "route": route_label,
+            "scenario": request_kind,
+            "request_kind": request_kind,
+            "requested_max_tokens": resolved_requested_max_tokens,
+            "applied_max_tokens": applied_max_tokens,
+            "first_applied_max_tokens": applied_max_tokens,
+            "retried_with_lower_max_tokens": False,
+            "attempts": attempts,
+            "fallback_used": key_name != "primary",
+            "final_source": "llm_fallback" if key_name != "primary" else "llm_primary",
+        }
+
+    raise HTTPException(
+        status_code=502,
+        detail={
+            **(last_error_detail or {
+                "message": "LLM provider unavailable",
+                "provider": "openai",
+                "status_code": 502,
+                "reason": "provider_unavailable",
+                "route": route_label,
+                "model": scenario_model,
+                "key_name": "primary",
+                "requested_max_tokens": resolved_requested_max_tokens,
+                "applied_max_tokens": applied_max_tokens,
+            }),
+            "attempts": attempts,
+            "fallback_used": any(item.get("key_name") == "fallback" for item in attempts),
+            "final_source": "llm_unavailable",
+        },
+    )
 
 
 def _call_llm_chat(
