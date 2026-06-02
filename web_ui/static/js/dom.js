@@ -46,7 +46,9 @@
     export const horoscopeFollowUpRecommendationsBtnEl = document.getElementById("horoscopeFollowUpRecommendationsBtn");
     export const horoscopeContinuationWrapEl = document.getElementById("horoscopeContinuationWrap");
     export const horoscopeContinuationTitleEl = document.getElementById("horoscopeContinuationTitle");
+    export const horoscopeContinuationMetaEl = document.getElementById("horoscopeContinuationMeta");
     export const horoscopeContinuationBoxEl = document.getElementById("horoscopeContinuationBox");
+    export const horoscopeBackToMainBtnEl = document.getElementById("horoscopeBackToMainBtn");
     export const toggleExpertBtnEl = document.getElementById("toggleExpertBtn");
     export const expertWrapEl = document.getElementById("expertWrap");
     export const expertObjectsEl = document.getElementById("expertObjects");

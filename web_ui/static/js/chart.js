@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: chart.
-import { apiRawBoxEl, apiRawWrapEl, aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBoxEl, horoscopeContinuationBoxEl, horoscopeContinuationTitleEl, horoscopeContinuationWrapEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, horoscopeFollowUpWrapEl, modalEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
+import { apiRawBoxEl, apiRawWrapEl, aspectOrbProfileEl, datetimeLocalEl, datetimeLocalSecondsEl, expertAnglesEl, expertAspectsEl, expertCuspsEl, expertObjectsEl, expertTimezoneEl, expertWrapEl, horoscopeBackToMainBtnEl, horoscopeBoxEl, horoscopeContinuationBoxEl, horoscopeContinuationMetaEl, horoscopeContinuationTitleEl, horoscopeContinuationWrapEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, horoscopeFollowUpWrapEl, modalEl, rectIntervalsListEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, zodiacModeEl } from "./dom.js";
 import { appState, sharedBirthContext } from "./state.js";
 import { degreeToDms, extractErrorText, formatWarnings, renderTable, resolveAspectStrengthLabel, resolveMotionPhase } from "./format.js";
 import { setDateTimeWithSeconds } from "./coords.js";
@@ -168,17 +168,42 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
       horoscopeContinuationTitleEl.textContent = "Продолжение трактовки";
       horoscopeContinuationBoxEl.textContent = "";
       horoscopeContinuationWrapEl.classList.add("hidden");
+      setActiveFollowUpButton(null);
     }
 
     function renderHoroscopeFollowUps() {
       horoscopeFollowUpWrapEl.classList.remove("hidden");
     }
 
+    function setActiveFollowUpButton(followUpMode) {
+      [
+        ["helpful", horoscopeFollowUpHelpfulBtnEl],
+        ["support", horoscopeFollowUpSupportBtnEl],
+        ["aspects", horoscopeFollowUpAspectsBtnEl],
+        ["recommendations", horoscopeFollowUpRecommendationsBtnEl],
+      ].forEach(([mode, buttonEl]) => {
+        const isActive = Boolean(followUpMode) && mode === followUpMode;
+        buttonEl.classList.toggle("followup-btn-active", isActive);
+        buttonEl.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    }
+
     function renderHoroscopeContinuation(followUpMode, text) {
       const meta = getFollowUpMeta(followUpMode);
       horoscopeContinuationTitleEl.textContent = meta.title;
       horoscopeContinuationBoxEl.textContent = text || "Продолжение трактовки недоступно.";
+      horoscopeContinuationMetaEl.classList.remove("hidden");
       horoscopeContinuationWrapEl.classList.remove("hidden");
+      setActiveFollowUpButton(followUpMode);
+    }
+
+    export function hideHoroscopeContinuation() {
+      horoscopeContinuationWrapEl.classList.add("hidden");
+      horoscopeContinuationMetaEl.classList.remove("hidden");
+      setActiveFollowUpButton(null);
+      if (horoscopeBackToMainBtnEl) {
+        horoscopeBackToMainBtnEl.blur();
+      }
     }
 
     export function renderExpertTables(chartResponse, timezonePayload, warnings) {

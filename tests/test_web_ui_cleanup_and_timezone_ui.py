@@ -244,10 +244,16 @@ def test_main_ui_has_horoscope_followup_actions_for_llm_cta() -> None:
     assert 'id="horoscopeFollowUpSupportBtn"' in html
     assert 'id="horoscopeFollowUpAspectsBtn"' in html
     assert 'id="horoscopeFollowUpRecommendationsBtn"' in html
+    assert 'id="horoscopeBackToMainBtn"' in html
     assert 'id="horoscopeContinuationWrap"' in html
+    assert 'id="horoscopeContinuationMeta"' in html
     assert 'id="horoscopeContinuationBox"' in html
+    assert 'class="btn secondary followup-btn"' in html
     assert 'generate({ followUpMode: "helpful" })' in html
     assert 'generate({ followUpMode: "support" })' in html
     assert 'generate({ followUpMode: "aspects" })' in html
     assert 'generate({ followUpMode: "recommendations" })' in html
+    assert 'horoscopeBackToMainBtnEl.addEventListener("click"' in html
+    assert 'setActiveFollowUpButton(followUpMode);' in html
+    assert 'followup-btn-active' in html
     assert "ключевые рекомендации" in html.lower()

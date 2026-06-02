@@ -1,9 +1,9 @@
 // Bootstrap: импорт модулей + навешивание обработчиков + init.
-import { cityBlockEl, cityResultsEl, coordModeEl, coordValueFormatEl, datetimeLocalEl, datetimeLocalSecondsEl, expertDegreesExpandedToggleEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, latitudeDmsEl, latitudeEl, longitudeDmsEl, longitudeEl, modalEl, rdCityBlockEl, rdCityResultsEl, rdCoordModeEl, rdPromptWrapEl, rdShowPromptToggleEl, rdSiderealModeEl, rdZodiacModeEl, reTechJsonWrapEl, reToggleJsonBtnEl, rectCityBlockEl, rectCityResultsEl, rectCoordModeEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeToggleBtnEl, timezoneModeEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, wzBirthDateEl, wzCityQueryEl, wzCityResultsEl, wzCoordValueFormatEl, wzLatitudeDmsEl, wzLatitudeEl, wzLongitudeDmsEl, wzLongitudeEl, wzSiderealModeEl, wzTimezoneOffsetEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
+import { cityBlockEl, cityResultsEl, coordModeEl, coordValueFormatEl, datetimeLocalEl, datetimeLocalSecondsEl, expertDegreesExpandedToggleEl, horoscopeBackToMainBtnEl, horoscopeFollowUpAspectsBtnEl, horoscopeFollowUpHelpfulBtnEl, horoscopeFollowUpRecommendationsBtnEl, horoscopeFollowUpSupportBtnEl, latitudeDmsEl, latitudeEl, longitudeDmsEl, longitudeEl, modalEl, rdCityBlockEl, rdCityResultsEl, rdCoordModeEl, rdPromptWrapEl, rdShowPromptToggleEl, rdSiderealModeEl, rdZodiacModeEl, reTechJsonWrapEl, reToggleJsonBtnEl, rectCityBlockEl, rectCityResultsEl, rectCoordModeEl, rectJsonBoxEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeToggleBtnEl, timezoneModeEl, timezoneOffsetEl, toggleApiRawBtnEl, toggleExpertBtnEl, wzBirthDateEl, wzCityQueryEl, wzCityResultsEl, wzCoordValueFormatEl, wzLatitudeDmsEl, wzLatitudeEl, wzLongitudeDmsEl, wzLongitudeEl, wzSiderealModeEl, wzTimezoneOffsetEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
 import { appState, rectificationWizardState, sharedBirthContext } from "./state.js";
 import { normalizeCoordinateNumber, normalizeSecondValue } from "./validation.js";
 import { loadPrompt, loadRectificationPrompt } from "./api.js";
-import { generate, renderExpertTables, runRectification } from "./chart.js";
+import { generate, hideHoroscopeContinuation, renderExpertTables, runRectification } from "./chart.js";
 import { applySharedContextToForms, calculateUtcPreview, fillOffsets, fillSecondOptions, nowLocalInputValue, setDateTimeWithSeconds, syncFromDecimalInputs, syncFromDmsInputs, todayLocalDateValue, updateCoordinateFormatUi, updateTimezoneUiState, withActiveCoordinateInput } from "./coords.js";
 import { applyPlaceSelectionToSharedContext, searchCity, searchCityRect, searchCityRectDialog, searchCityWizard } from "./geocode.js";
 import { applyProTestEventsPreset, runProRectification, runUiProofPreviewFromQuery } from "./pro.js";
@@ -81,6 +81,7 @@ import { applyWizardBirthDataFromUi, renderWizardProgress, resetWizardDerivedSta
     horoscopeFollowUpSupportBtnEl.addEventListener("click", () => generate({ followUpMode: "support" }));
     horoscopeFollowUpAspectsBtnEl.addEventListener("click", () => generate({ followUpMode: "aspects" }));
     horoscopeFollowUpRecommendationsBtnEl.addEventListener("click", () => generate({ followUpMode: "recommendations" }));
+    horoscopeBackToMainBtnEl.addEventListener("click", () => hideHoroscopeContinuation());
     document.getElementById("rectRunBtn").addEventListener("click", runRectification);
     document.getElementById("wzCalcAscBtn").addEventListener("click", runWizardStep1);
     document.getElementById("wzResetBtn").addEventListener("click", resetWizardScenario);
