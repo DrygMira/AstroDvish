@@ -438,6 +438,11 @@ import { extractGenerateTechnicalDetail, renderSharedCurrentData, setGenerateTec
         birth_date_local: document.getElementById("rectBirthDate").value,
         latitude: Number(document.getElementById("rectLatitude").value),
         longitude: Number(document.getElementById("rectLongitude").value),
+        timezone_mode: sharedBirthContext.timezoneMode || "auto",
+        timezone_name: sharedBirthContext.timezoneName || null,
+        timezone_offset: sharedBirthContext.timezoneMode === "manual"
+          ? (sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || "")
+          : "",
         house_system: document.getElementById("rectHouseSystem").value,
         zodiac_mode: zodiacMode,
         sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,

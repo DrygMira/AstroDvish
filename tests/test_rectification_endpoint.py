@@ -122,6 +122,31 @@ def test_asc_sign_intervals_timezone_lookup_error(monkeypatch, tmp_path) -> None
     assert response.json()["error"]["code"] == "timezone_lookup_error"
 
 
+def test_asc_sign_intervals_respects_manual_timezone_override(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = {
+        "birth_date_local": "2000-04-16",
+        "latitude": 53.9,
+        "longitude": 27.56667,
+        "timezone_mode": "manual",
+        "timezone_offset": "+05:00",
+        "timezone_name": None,
+        "house_system": "P",
+        "zodiac_mode": "tropical",
+        "sidereal_mode": None,
+    }
+
+    with client:
+        response = client.post("/api/v1/rectification/asc-sign-intervals", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["birth_context"]["timezone_source"] == "manual_offset"
+    assert body["birth_context"]["timezone"] == "GMT+05:00"
+    assert body["birth_context"]["timezone_offset"] == "+05:00"
+    assert body["day_window_utc"]["start_utc"] == "2000-04-15T19:00:00Z"
+
+
 @pytest.mark.parametrize(
     ("latitude", "longitude", "expected_timezone"),
     [

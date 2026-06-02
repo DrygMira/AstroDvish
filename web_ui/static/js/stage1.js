@@ -1,6 +1,6 @@
 // Авто-извлечено из main.js (build-split). Модуль: stage1.
-import { rdCurrentQuestionWrapEl, rdFinalResultEl, rdHistoryEl, rdLastLlmJsonBoxEl, rdNoQuestionTextEl, rdOptionsWrapEl, rdProbabilityTextEl, rdPromptTextEl, rdQuestionTextEl, rdRectJsonBoxEl, rdSiderealModeEl, rdTesterThanksEl, rdUsageSummaryBoxEl, rdZodiacModeEl } from "./dom.js";
-import { rectDialogState } from "./state.js";
+import { rdCurrentQuestionWrapEl, rdFinalResultEl, rdHistoryEl, rdLastLlmJsonBoxEl, rdNoQuestionTextEl, rdOptionsWrapEl, rdProbabilityTextEl, rdPromptTextEl, rdQuestionTextEl, rdRectJsonBoxEl, rdSiderealModeEl, rdTesterThanksEl, rdUsageSummaryBoxEl, rdZodiacModeEl, timezoneOffsetEl } from "./dom.js";
+import { rectDialogState, sharedBirthContext } from "./state.js";
 import { extractErrorText, formatCandidateGroupText, formatIntervalLine, formatStage1SecondaryCandidatesHtml, formatUsage, formatWarnings } from "./format.js";
 import { getRectDialogContextPatch, syncSharedBirthContext } from "./state-sync.js";
 import { hideLlmOverlay, setRdStatus, showLlmOverlay } from "./ui.js";
@@ -256,6 +256,11 @@ import { updateWizardContextFromCurrentStates } from "./wizard.js";
         birth_date_local: document.getElementById("rdBirthDate").value,
         latitude: Number(document.getElementById("rdLatitude").value),
         longitude: Number(document.getElementById("rdLongitude").value),
+        timezone_mode: sharedBirthContext.timezoneMode || "auto",
+        timezone_name: sharedBirthContext.timezoneName || null,
+        timezone_offset: sharedBirthContext.timezoneMode === "manual"
+          ? (sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || "")
+          : "",
         house_system: document.getElementById("rdHouseSystem").value,
         zodiac_mode: zodiacMode,
         sidereal_mode: zodiacMode === "sidereal" ? sidMode : null,

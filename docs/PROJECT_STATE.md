@@ -807,3 +807,30 @@ Every future report must include:
 - readiness:
   - Pro stability path is ready for Ekaterina retest
   - repository-wide test suite is not fully green because of the unrelated premium-style UI marker test
+
+## 37. Timezone Consistency Bug Under Investigation (2026-06-02)
+- expert report:
+  - if the user first runs ordinary chart with auto coordinate/timezone detection and then goes to rectification, timezone stays correct
+  - if the user skips the first chart tab and goes directly to rectification, rectification can drift by `-1 hour`
+  - reproduced by Ekaterina on three different locations
+- root cause found locally:
+  - direct rectification UI paths did not pass canonical timezone fields into `asc-sign-intervals` / `dialog/start`
+  - direct rectification and Stage 1 dialog lost `timezone_mode`, `timezone_name`, `timezone_offset`
+  - Pro payload had a hardcoded client fallback to `Europe/Moscow` when timezone name was missing
+  - backend `AscSignIntervalsRequest` did not support manual timezone override
+  - Pro timezone resolver required `timezone_name` instead of resolving from coordinates when auto mode had no explicit timezone name
+- local fix applied:
+  - one canonical timezone path for chart, direct rectification, chart->rectification, and Pro
+  - manual timezone override now propagates through rectification intervals and Stage 1 dialog
+  - direct rectification UI now carries timezone fields from shared canonical context
+  - Pro auto mode can resolve timezone from coordinates if `timezone_name` is absent
+  - no silent browser/local timezone fallback
+- local verification:
+  - focused timezone/proxy/UI tests: passed
+  - full pytest: `301 passed, 1 xfailed`
+- next step:
+  - deploy the timezone consistency fix to live docker server
+  - verify three locations on both paths:
+    - `ordinary chart -> rectification`
+    - `direct rectification`
+  - verify manual timezone override stays exact

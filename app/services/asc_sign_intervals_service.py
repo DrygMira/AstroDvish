@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, time, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone, tzinfo
 from zoneinfo import ZoneInfo
 
 import swisseph as swe
@@ -38,11 +38,7 @@ class AscSignIntervalsService:
         self.ephe_path = ephe_path
 
     def calculate_intervals(self, payload: AscSignIntervalsRequest) -> AscSignIntervalsResponse:
-        timezone_name = timezone_lookup.resolve_timezone_name(
-            latitude=payload.latitude,
-            longitude=payload.longitude,
-        )
-        timezone_info = ZoneInfo(timezone_name)
+        timezone_info, timezone_name, timezone_offset, timezone_source = self._resolve_timezone_context(payload)
         start_local = datetime.combine(payload.birth_date_local, time.min, timezone_info)
         end_local = start_local + timedelta(days=1)
         start_utc = start_local.astimezone(timezone.utc)
@@ -74,7 +70,9 @@ class AscSignIntervalsService:
                 latitude=payload.latitude,
                 longitude=payload.longitude,
                 timezone=timezone_name,
-                timezone_source="coordinates",
+                timezone_source=timezone_source,
+                timezone_mode=payload.timezone_mode,
+                timezone_offset=timezone_offset,
                 house_system=payload.house_system,
                 zodiac_mode=payload.zodiac_mode,
                 sidereal_mode=payload.sidereal_mode,
@@ -90,6 +88,30 @@ class AscSignIntervalsService:
             shared_day_summary=shared_summary,
             asc_sign_intervals=asc_intervals,
         )
+
+    def _resolve_timezone_context(
+        self,
+        payload: AscSignIntervalsRequest,
+    ) -> tuple[tzinfo, str, str | None, str]:
+        if payload.timezone_mode == "manual" and payload.timezone_offset:
+            sign = 1 if payload.timezone_offset.startswith("+") else -1
+            hours = int(payload.timezone_offset[1:3])
+            minutes = int(payload.timezone_offset[4:6])
+            offset = timedelta(hours=hours, minutes=minutes) * sign
+            return timezone(offset), f"GMT{payload.timezone_offset}", payload.timezone_offset, "manual_offset"
+
+        if payload.timezone_name:
+            timezone_info = ZoneInfo(payload.timezone_name)
+            offset = datetime.combine(payload.birth_date_local, time.min, timezone_info).utcoffset()
+            return timezone_info, payload.timezone_name, self._format_offset(offset), "provided_timezone_name"
+
+        timezone_name = timezone_lookup.resolve_timezone_name(
+            latitude=payload.latitude,
+            longitude=payload.longitude,
+        )
+        timezone_info = ZoneInfo(timezone_name)
+        offset = datetime.combine(payload.birth_date_local, time.min, timezone_info).utcoffset()
+        return timezone_info, timezone_name, self._format_offset(offset), "coordinates"
 
     def _expand_day_bounds_to_full_sign_intervals(
         self,
@@ -220,7 +242,7 @@ class AscSignIntervalsService:
         *,
         start_utc: datetime,
         end_utc: datetime,
-        timezone_info: ZoneInfo,
+        timezone_info: tzinfo,
         payload: AscSignIntervalsRequest,
     ) -> list[AscSignIntervalResponse]:
         if start_utc >= end_utc:
@@ -470,3 +492,13 @@ class AscSignIntervalsService:
     @staticmethod
     def _to_utc_z(dt_utc: datetime) -> str:
         return dt_utc.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+    @staticmethod
+    def _format_offset(offset: timedelta | None) -> str | None:
+        if offset is None:
+            return None
+        total_minutes = int(offset.total_seconds() // 60)
+        sign = "+" if total_minutes >= 0 else "-"
+        abs_minutes = abs(total_minutes)
+        hours, minutes = divmod(abs_minutes, 60)
+        return f"{sign}{hours:02d}:{minutes:02d}"

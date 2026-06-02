@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 
 from app.models.event_models import DatePrecision, EventCard, EventType, LifeArea, Reversibility
-from app.models.rectification_pro_models import CandidateTime, ProAscWindow
+from app.models.rectification_pro_models import CandidateTime, ProAscWindow, RectificationProRunRequest
 from app.models.response_models import ChartResponse
 from app.services.rectification_pro.candidate_generator import CandidateGenerator
 from app.services.rectification_pro.confidence_service import ConfidenceService
@@ -12,6 +12,7 @@ from app.services.rectification_pro.scoring_service import ScoringService
 from app.services.rectification_pro.solar_service import SolarService
 from app.services.rectification_pro.totem_service import TotemService
 from app.services.rectification_pro.transit_service import TransitService
+from app.services.rectification_pro.timezone_context import resolve_pro_timezone
 
 
 def _sample_chart() -> ChartResponse:
@@ -126,6 +127,24 @@ def test_transits_exact_vs_non_exact() -> None:
     non_exact.date_text = "2018"
     non_exact_result = service.evaluate_candidate(candidate_chart=_sample_chart(), events=[non_exact])
     assert "non_exact_date_low_weight_transit_check_skipped" in non_exact_result[0].warnings
+
+
+def test_resolve_pro_timezone_uses_coordinates_when_auto_timezone_name_missing() -> None:
+    payload = RectificationProRunRequest(
+        birth_date_local=date(1990, 5, 12),
+        latitude=55.7558,
+        longitude=37.6173,
+        timezone_name=None,
+        timezone_mode="auto",
+        timezone_offset=None,
+        asc_windows=[],
+        events=[],
+    )
+
+    _tzinfo, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
+
+    assert timezone_used == "Europe/Moscow"
+    assert timezone_offset_used is None
 
 
 def test_totem_returns_degree_index_and_warning() -> None:

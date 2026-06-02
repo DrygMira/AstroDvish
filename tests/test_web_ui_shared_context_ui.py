@@ -85,3 +85,18 @@ def test_pro_run_payload_preserves_manual_timezone_selection() -> None:
     assert response.status_code == 200
     assert "timezone_mode: sharedBirthContext.timezoneMode || timezoneModeEl.value || \"auto\"" in html
     assert "timezone_offset: sharedBirthContext.timezoneMode === \"manual\"" in html
+
+
+def test_rectification_direct_paths_include_canonical_timezone_fields() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert "timezoneMode: sharedBirthContext.timezoneMode || timezoneModeEl.value || \"auto\"" in html
+    assert "timezoneName: sharedBirthContext.timezoneName || timezoneNameEl.value || null" in html
+    assert "timezoneOffset: sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || \"+05:00\"" in html
+    assert "timezone_mode: sharedBirthContext.timezoneMode || \"auto\"" in html
+    assert "timezone_name: sharedBirthContext.timezoneName || null" in html
+    assert "timezone_offset: sharedBirthContext.timezoneMode === \"manual\"" in html
+    assert "timezone_name: sharedBirthContext.timezoneName || timezoneNameEl.value || null" in html
+    assert "timezone_name || timezoneNameEl.value || \"Europe/Moscow\"" not in html

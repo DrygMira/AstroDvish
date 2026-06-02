@@ -62,7 +62,7 @@ class RectificationProRunRequest(BaseModel):
     birth_date_local: date
     latitude: float = Field(ge=-90, le=90)
     longitude: float = Field(ge=-180, le=180)
-    timezone_name: str
+    timezone_name: str | None = None
     timezone_mode: Literal["auto", "manual"] = "auto"
     timezone_offset: str | None = None
     house_system: str = Field(default="P", min_length=1, max_length=1)

@@ -16,6 +16,140 @@ class _DummyResponse:
         return self._payload
 
 
+def test_web_ui_rectification_intervals_proxy_forwards_timezone_fields(monkeypatch) -> None:
+    captured: dict = {}
+
+    def fake_post(*, base_url: str, path: str, payload: dict, timeout: int):
+        captured["base_url"] = base_url
+        captured["path"] = path
+        captured["payload"] = payload
+        captured["timeout"] = timeout
+        return _DummyResponse(
+            200,
+            {
+                "mode": "asc_sign_intervals",
+                "version": "1.0",
+                "generated_at_utc": "2026-06-02T00:00:00Z",
+                "birth_context": {
+                    "birth_date_local": "2000-04-16",
+                    "latitude": 53.9,
+                    "longitude": 27.56667,
+                    "timezone": "GMT+05:00",
+                    "timezone_source": "manual_offset",
+                    "timezone_mode": "manual",
+                    "timezone_offset": "+05:00",
+                    "house_system": "P",
+                    "zodiac_mode": "tropical",
+                    "sidereal_mode": None,
+                },
+                "day_window": {"start_local": "2000-04-16T00:00:00", "end_local": "2000-04-17T00:00:00"},
+                "day_window_utc": {"start_utc": "2000-04-15T19:00:00Z", "end_utc": "2000-04-16T19:00:00Z"},
+                "shared_day_summary": {
+                    "sun_sign": "Aries",
+                    "moon_sign_start": "Leo",
+                    "moon_sign_end": "Leo",
+                    "moon_changes_sign_today": False,
+                    "mercury_sign": "Aries",
+                    "venus_sign": "Taurus",
+                    "mars_sign": "Gemini",
+                    "jupiter_sign": "Cancer",
+                    "saturn_sign": "Leo",
+                },
+                "asc_sign_intervals": [],
+            },
+        )
+
+    monkeypatch.setattr(web_ui_main, "_post_to_api_with_fallback", fake_post)
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/asc-sign-intervals",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "birth_date_local": "2000-04-16",
+            "latitude": 53.9,
+            "longitude": 27.56667,
+            "timezone_mode": "manual",
+            "timezone_offset": "+05:00",
+            "timezone_name": None,
+            "house_system": "P",
+            "zodiac_mode": "tropical",
+            "sidereal_mode": None,
+        },
+    )
+
+    assert response.status_code == 200
+    assert captured["path"] == "/api/v1/rectification/asc-sign-intervals"
+    assert captured["payload"]["timezone_mode"] == "manual"
+    assert captured["payload"]["timezone_offset"] == "+05:00"
+    assert captured["payload"]["timezone_name"] is None
+
+
+def test_web_ui_rectification_dialog_start_forwards_timezone_fields(monkeypatch) -> None:
+    captured: dict = {}
+
+    def fake_fetch_document(payload):
+        captured["payload"] = payload
+        return {
+            "birth_context": {
+                "birth_date_local": "2000-04-16",
+                "latitude": 53.9,
+                "longitude": 27.56667,
+                "timezone": "Europe/Moscow",
+                "timezone_source": "provided_timezone_name",
+                "timezone_mode": "auto",
+                "timezone_offset": "+03:00",
+                "house_system": "P",
+                "zodiac_mode": "tropical",
+                "sidereal_mode": None,
+            },
+            "asc_sign_intervals": [],
+        }
+
+    monkeypatch.setattr(web_ui_main, "_fetch_rectification_document", fake_fetch_document)
+    monkeypatch.setattr(
+        web_ui_main,
+        "_run_stage1_guarded",
+        lambda **kwargs: {
+            "llm_json": {
+                "type": "final_result",
+                "step_index": 1,
+                "primary_candidate": {"sign_name_en": "Scorpio", "sign_name_ru": "Скорпион", "probability": 0.8},
+                "secondary_candidates": [],
+                "summary_text": "ok",
+                "explanation_text": "ok",
+            },
+            "llm_text": "ok",
+            "usage": {},
+            "openai_raw_response": {},
+            "warnings": [],
+        },
+    )
+
+    client = TestClient(web_ui_main.app)
+    response = client.post(
+        "/api/rectification/dialog/start",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "birth_date_local": "2000-04-16",
+            "latitude": 53.9,
+            "longitude": 27.56667,
+            "timezone_mode": "auto",
+            "timezone_offset": "",
+            "timezone_name": "Europe/Moscow",
+            "house_system": "P",
+            "zodiac_mode": "tropical",
+            "sidereal_mode": None,
+            "prompt_text": "test",
+            "user_profile_note": None,
+        },
+    )
+
+    assert response.status_code == 200
+    assert captured["payload"].timezone_mode == "auto"
+    assert captured["payload"].timezone_name == "Europe/Moscow"
+    assert captured["payload"].timezone_offset == ""
+
+
 def test_web_ui_events_start_proxy_success(monkeypatch) -> None:
     captured: dict = {}
 

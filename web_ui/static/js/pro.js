@@ -921,11 +921,11 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         birth_date_local: (sharedBirthContext.birthDateLocal || document.getElementById("rdBirthDate").value || "").split("T")[0],
         latitude: Number(sharedBirthContext.latitude ?? document.getElementById("rdLatitude").value),
         longitude: Number(sharedBirthContext.longitude ?? document.getElementById("rdLongitude").value),
-        timezone_name: sharedBirthContext.timezoneName || timezoneNameEl.value || "Europe/Moscow",
+        timezone_name: sharedBirthContext.timezoneName || timezoneNameEl.value || null,
         timezone_mode: sharedBirthContext.timezoneMode || timezoneModeEl.value || "auto",
-        timezone_offset: sharedBirthContext.timezoneMode === "manual"
+        timezone_offset: (sharedBirthContext.timezoneMode || timezoneModeEl.value || "auto") === "manual"
           ? (sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || "")
-          : (timezoneModeEl.value === "manual" ? (timezoneOffsetEl.value || "") : ""),
+          : "",
         house_system: sharedBirthContext.houseSystem || document.getElementById("rdHouseSystem").value,
         zodiac_mode: sharedBirthContext.zodiacMode || rdZodiacModeEl.value,
         sidereal_mode: (sharedBirthContext.zodiacMode || rdZodiacModeEl.value) === "sidereal"
@@ -955,7 +955,10 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       if (!Number.isFinite(payload.latitude) || !Number.isFinite(payload.longitude)) {
         invalidReasons.push("координаты");
       }
-      if (!payload.timezone_name) {
+      if (payload.timezone_mode === "manual" && !payload.timezone_offset) {
+        invalidReasons.push("timezone_offset");
+      }
+      if (payload.timezone_mode !== "manual" && !payload.timezone_name && (!Number.isFinite(payload.latitude) || !Number.isFinite(payload.longitude))) {
         invalidReasons.push("timezone_name");
       }
       if (!Array.isArray(payload.events) || !payload.events.length) {

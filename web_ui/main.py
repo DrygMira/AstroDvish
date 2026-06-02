@@ -512,6 +512,9 @@ class RectificationIntervalsRequest(BaseModel):
     birth_date_local: str
     latitude: float
     longitude: float
+    timezone_mode: Literal["auto", "manual"] = "auto"
+    timezone_offset: str = ""
+    timezone_name: str | None = None
     house_system: str = "P"
     zodiac_mode: str = "tropical"
     sidereal_mode: str | None = None
@@ -528,6 +531,9 @@ class RectificationDialogStartRequest(BaseModel):
     birth_date_local: str
     latitude: float
     longitude: float
+    timezone_mode: Literal["auto", "manual"] = "auto"
+    timezone_offset: str = ""
+    timezone_name: str | None = None
     house_system: str = "P"
     zodiac_mode: str = "tropical"
     sidereal_mode: str | None = None
@@ -3014,6 +3020,9 @@ def _fetch_rectification_document(payload: RectificationIntervalsRequest) -> dic
         "birth_date_local": payload.birth_date_local,
         "latitude": payload.latitude,
         "longitude": payload.longitude,
+        "timezone_mode": payload.timezone_mode,
+        "timezone_offset": payload.timezone_offset or None,
+        "timezone_name": payload.timezone_name,
         "house_system": payload.house_system,
         "zodiac_mode": payload.zodiac_mode,
         "sidereal_mode": payload.sidereal_mode,
@@ -3474,6 +3483,9 @@ def rectification_dialog_start(payload: RectificationDialogStartRequest) -> JSON
             birth_date_local=payload.birth_date_local,
             latitude=payload.latitude,
             longitude=payload.longitude,
+            timezone_mode=payload.timezone_mode,
+            timezone_offset=payload.timezone_offset,
+            timezone_name=payload.timezone_name,
             house_system=payload.house_system,
             zodiac_mode=payload.zodiac_mode,
             sidereal_mode=payload.sidereal_mode,

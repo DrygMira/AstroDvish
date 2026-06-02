@@ -1,17 +1,23 @@
 from __future__ import annotations
 
 from datetime import date
+import re
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from app.core.constants import SUPPORTED_HOUSE_SYSTEMS
 from app.models.request_models import SiderealMode, ZodiacMode
 
+TZ_OFFSET_PATTERN = re.compile(r"^[+-](?:0\d|1[0-4]):[0-5]\d$")
+
 
 class AscSignIntervalsRequest(BaseModel):
     birth_date_local: date
     latitude: float = Field(ge=-90, le=90)
     longitude: float = Field(ge=-180, le=180)
+    timezone_mode: str = "auto"
+    timezone_name: str | None = None
+    timezone_offset: str | None = None
     house_system: str = Field(default="P", min_length=1, max_length=1)
     zodiac_mode: ZodiacMode = ZodiacMode.tropical
     sidereal_mode: SiderealMode | None = None
@@ -25,6 +31,23 @@ class AscSignIntervalsRequest(BaseModel):
             raise ValueError(f"Unsupported house_system. Supported values: {allowed}")
         return upper_value
 
+    @field_validator("timezone_mode")
+    @classmethod
+    def _validate_timezone_mode(cls, value: str) -> str:
+        normalized = (value or "auto").strip().lower()
+        if normalized not in {"auto", "manual"}:
+            raise ValueError("timezone_mode must be auto or manual")
+        return normalized
+
+    @field_validator("timezone_offset")
+    @classmethod
+    def _validate_timezone_offset(cls, value: str | None) -> str | None:
+        if value in {None, ""}:
+            return None
+        if not TZ_OFFSET_PATTERN.match(value):
+            raise ValueError("Invalid timezone_offset format. Use +03:00")
+        return value
+
     @model_validator(mode="after")
     def _validate_zodiac_combination(self) -> "AscSignIntervalsRequest":
         if self.zodiac_mode == ZodiacMode.tropical and self.sidereal_mode is not None:
@@ -32,6 +55,9 @@ class AscSignIntervalsRequest(BaseModel):
 
         if self.zodiac_mode == ZodiacMode.sidereal and self.sidereal_mode is None:
             raise ValueError("sidereal_mode is required when zodiac_mode is sidereal")
+
+        if self.timezone_mode == "manual" and not self.timezone_offset:
+            raise ValueError("timezone_offset is required when timezone_mode is manual")
 
         return self
 
@@ -42,6 +68,8 @@ class BirthContextResponse(BaseModel):
     longitude: float
     timezone: str
     timezone_source: str
+    timezone_mode: str = "auto"
+    timezone_offset: str | None = None
     house_system: str
     zodiac_mode: ZodiacMode
     sidereal_mode: SiderealMode | None
