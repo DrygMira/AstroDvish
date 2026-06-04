@@ -860,3 +860,79 @@ Every future report must include:
     - `ordinary chart -> rectification`
     - `direct rectification`
   - verify manual timezone override stays exact
+
+## 38. New V2 Draft Cards Deployed (2026-06-04)
+- live deploy target: `185.250.150.192`
+- deployed runtime commit for new cards:
+  - `47f6dc9`
+  - message: `Add V2 draft cards and fix ordinary chart defaults`
+- rollback backup on server:
+  - `/opt/astrodvish_backups/predeploy_20260604_133204_47f6dc9.tgz`
+- two new explicit expert/test-only cards are now on live:
+  - `RECT_PROFESSION_CHANGE_002_DRAFT` -> `event_type=profession_change`
+  - `RECT_MARRIAGE_UNION_002_DRAFT` -> `event_type=marriage_union`
+- live API/public proof:
+  - `/health = 200`
+  - ordinary chart `/api/generate = 200`
+  - Pro default `child_birth` still uses `RECT_CHILD_BIRTH_001`
+  - Pro default `marriage_start` still uses `RECT_MARRIAGE_UNION_001`
+  - explicit `RECT_PROFESSION_CHANGE_002_DRAFT` works on public path
+  - explicit `RECT_MARRIAGE_UNION_002_DRAFT` works on public path
+  - marriage v1/v2 comparison works on public path with:
+    - baseline `RECT_MARRIAGE_UNION_001`
+    - selected `RECT_MARRIAGE_UNION_002_DRAFT`
+- selector/UI proof:
+  - live Pro selector contains:
+    - `RECT_MARRIAGE_UNION_001`
+    - `RECT_MARRIAGE_UNION_002_DRAFT`
+    - `RECT_PROFESSION_CHANGE_002_DRAFT`
+- safety confirmation:
+  - draft cards are not auto-selected by `event_type`
+  - production defaults remain unchanged
+  - no core math or scoring changes were introduced
+
+## 39. Ordinary Chart UI Bootstrap Bug Fixed (2026-06-04)
+- root cause:
+  - ordinary chart main page JS bootstrap was broken after raw JSON cleanup
+  - `web_ui/static/js/main.js` still imported `toggleRawApi`
+  - `web_ui/static/js/ui.js` no longer exported it
+  - ES module import failure stopped `main.js` before:
+    - city search listeners
+    - timezone offsets init
+    - seconds selector init
+    - generate button flow
+- live hotfix commit:
+  - `ea530ed`
+  - message: `Fix ordinary chart UI bootstrap after raw JSON cleanup`
+- rollback backup on server:
+  - `/opt/astrodvish_backups/predeploy_20260604_135345_ea530ed.tgz`
+- hotfix behavior:
+  - `toggleRawApi` restored as a safe hidden no-op
+  - legacy raw API hook stays hidden
+  - ordinary chart bootstrap completes normally again
+- live browser proof on `http://185.250.150.192/`:
+  - no page bootstrap errors
+  - timezone offset selector initialized: `28` options
+  - seconds selector initialized: `60` options
+  - default city / coordinates are empty, not stuck on Ufa
+  - city search `Warsaw` works
+  - auto geocode fills:
+    - `latitude = 52.22977`
+    - `longitude = 21.01178`
+    - `timezone_name = Europe/Warsaw`
+    - `timezone_offset = +02:00`
+  - DMS/decimal toggle works
+  - seconds override works:
+    - `datetime_local = 1990-01-15T12:00:30`
+  - manual timezone override works:
+    - `timezone_mode = manual`
+    - `timezone_offset = +03:00`
+  - ordinary chart calculation works:
+    - result modal opens
+    - horoscope text rendered
+    - expert timezone table shows manual path and UTC `1990-01-15T09:00:30Z`
+- test status after hotfix:
+  - focused UI tests: `65 passed`
+  - full pytest: `316 passed, 1 xfailed`
+- current next step:
+  - expert live review by Ekaterina for the two new V2 cards and the restored ordinary chart UI path
