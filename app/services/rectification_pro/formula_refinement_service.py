@@ -471,6 +471,11 @@ class FormulaRefinementService:
         mapping = {
             "child_birth": "child_birth",
             "children_birth": "child_birth",
+            "profession_change": "profession_change",
+            "marriage_union": "marriage_union",
+            "relationship_start": "relationship_start",
+            "divorce_breakup": "divorce_breakup",
+            "death_close_person": "death_close_person",
             "marriage_start": "marriage_union",
             "marriage_relationship": "relationship_start",
             "divorce_separation": "divorce_breakup",

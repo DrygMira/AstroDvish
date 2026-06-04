@@ -258,6 +258,32 @@ Every future report must include:
   - `formula_card_comparison`
   - `working_time_ranges_difference`
   - `best_candidate_difference`
+
+## 21. Additional V2 Draft Cards (2026-06-04, local)
+- added new explicit expert/test-only draft cards:
+  - `RECT_PROFESSION_CHANGE_002_DRAFT` -> `event_type=profession_change`
+  - `RECT_MARRIAGE_UNION_002_DRAFT` -> `event_type=marriage_union`
+- production defaults unchanged:
+  - `RECT_MARRIAGE_UNION_001` remains default for marriage
+  - no production default added for `profession_change`
+- imported tier counts:
+  - profession_change draft: `106` rules = `34 golden`, `46 supporting`, `26 context`
+  - marriage_union draft: `100` rules = `30 golden`, `42 supporting`, `28 context`
+- reconciliation:
+  - profession pack source header says `106`; imported `106` effective rules after collapsing `1` duplicate rule group (`cusp_1_to_jupiter`)
+  - marriage pack source header says `100`; imported `100` effective rules with no duplicate groups
+- runtime guard added:
+  - draft cards are no longer auto-selected by `event_type` when no explicit `formula_card_id` is provided
+  - this prevents `profession_change` draft from silently entering production-like flow
+- Pro runtime updates:
+  - direct normalization now supports explicit `profession_change`, `marriage_union`, `relationship_start`, `divorce_breakup`, `death_close_person`
+  - comparison explanation text is now generic, not child_birth-only
+- UI updates:
+  - Pro formula-card selector now shows both new V2 draft cards
+  - comparison mapping supports marriage v1/v2 when `RECT_MARRIAGE_UNION_002_DRAFT` is selected explicitly
+- next step:
+  - expert validation of imported profession/marriage V2 packs on real cases
+  - if needed later, add a dedicated human-readable reconciliation doc for these two packs similar to child_birth
   - `event_contribution_audit_difference`
 - Pro/local UI now shows:
   - selected `card_id`

@@ -74,7 +74,7 @@
           <div>
             <label>Город / место</label>
             <div class="row">
-              <input id="wzCityQuery" value="Уфа" />
+              <input id="wzCityQuery" value="" placeholder="Москва, Berlin..." />
               <button id="wzSearchCityBtn" class="btn secondary" type="button">Поиск</button>
             </div>
           </div>
@@ -94,8 +94,8 @@
           <div class="hint" style="align-self:end;">Поддерживается ввод вида 54°44'00" N и 55°56'00" E.</div>
         </div>
         <div class="grid" style="margin-top:10px;">
-          <div><label>Latitude</label><input id="wzLatitude" type="text" inputmode="decimal" value="54.7388" /></div>
-          <div><label>Longitude</label><input id="wzLongitude" type="text" inputmode="decimal" value="55.9721" /></div>
+          <div><label>Latitude</label><input id="wzLatitude" type="text" inputmode="decimal" value="" /></div>
+          <div><label>Longitude</label><input id="wzLongitude" type="text" inputmode="decimal" value="" /></div>
         </div>
         <div id="wzCoordDmsWrap" class="grid hidden" style="margin-top:10px;">
           <div><label>Latitude (DMS)</label><input id="wzLatitudeDms" placeholder="54°44'00&quot; N" /></div>
@@ -208,7 +208,7 @@
           <div>
             <label>Город</label>
             <div class="row">
-              <input id="cityQuery" value="Уфа" placeholder="Уфа, Москва, Berlin..." />
+              <input id="cityQuery" value="" placeholder="Москва, Berlin..." />
               <button id="searchCityBtn" class="btn secondary" type="button">Поиск</button>
             </div>
           </div>
@@ -222,11 +222,11 @@
         <div class="grid" style="margin-top:10px;">
           <div>
             <label>Latitude</label>
-            <input id="latitude" type="text" inputmode="decimal" value="54.7388" />
+            <input id="latitude" type="text" inputmode="decimal" value="" />
           </div>
           <div>
             <label>Longitude</label>
-            <input id="longitude" type="text" inputmode="decimal" value="55.9721" />
+            <input id="longitude" type="text" inputmode="decimal" value="" />
           </div>
         </div>
         <div class="grid" style="margin-top:10px;">
@@ -394,7 +394,7 @@
           <div>
             <label>Город</label>
             <div class="row">
-              <input id="rectCityQuery" value="Уфа" placeholder="Уфа, Москва, Berlin..." />
+              <input id="rectCityQuery" value="" placeholder="Москва, Berlin..." />
               <button id="rectSearchCityBtn" class="btn secondary" type="button">Поиск</button>
             </div>
           </div>
@@ -407,11 +407,11 @@
         <div class="grid" style="margin-top:10px;">
           <div>
             <label>Latitude</label>
-            <input id="rectLatitude" type="number" step="0.000001" value="54.7388" />
+            <input id="rectLatitude" type="number" step="0.000001" value="" />
           </div>
           <div>
             <label>Longitude</label>
-            <input id="rectLongitude" type="number" step="0.000001" value="55.9721" />
+            <input id="rectLongitude" type="number" step="0.000001" value="" />
           </div>
         </div>
 
@@ -483,7 +483,7 @@
           <div>
             <label>Город</label>
             <div class="row">
-              <input id="rdCityQuery" value="Уфа" placeholder="Уфа, Москва, Berlin..." />
+              <input id="rdCityQuery" value="" placeholder="Москва, Berlin..." />
               <button id="rdSearchCityBtn" class="btn secondary" type="button">Поиск</button>
             </div>
           </div>
@@ -496,11 +496,11 @@
         <div class="grid" style="margin-top:10px;">
           <div>
             <label>Latitude</label>
-            <input id="rdLatitude" type="number" step="0.000001" value="54.7388" />
+            <input id="rdLatitude" type="number" step="0.000001" value="" />
           </div>
           <div>
             <label>Longitude</label>
-            <input id="rdLongitude" type="number" step="0.000001" value="55.9721" />
+            <input id="rdLongitude" type="number" step="0.000001" value="" />
           </div>
         </div>
 
@@ -709,6 +709,9 @@
               <option value="">auto / production default</option>
               <option value="RECT_CHILD_BIRTH_001">RECT_CHILD_BIRTH_001</option>
               <option value="RECT_CHILD_BIRTH_002_DRAFT">RECT_CHILD_BIRTH_002_DRAFT</option>
+              <option value="RECT_MARRIAGE_UNION_001">RECT_MARRIAGE_UNION_001</option>
+              <option value="RECT_MARRIAGE_UNION_002_DRAFT">RECT_MARRIAGE_UNION_002_DRAFT</option>
+              <option value="RECT_PROFESSION_CHANGE_002_DRAFT">RECT_PROFESSION_CHANGE_002_DRAFT</option>
             </select>
             <div class="hint">Для экспертного теста можно явно выбрать draft-карточку без замены production default.</div>
           </div>
@@ -718,7 +721,7 @@
               <input id="rpCompareV1V2" type="checkbox" style="width:auto;" />
               <span>V1 vs V2 comparison</span>
             </label>
-            <div class="hint">Сравнивает production `RECT_CHILD_BIRTH_001` с draft `RECT_CHILD_BIRTH_002_DRAFT`.</div>
+            <div class="hint">Сравнивает production baseline с выбранной draft V2-карточкой, если для неё есть production-пара.</div>
           </div>
         </div>
         <div class="actions" style="margin-top:10px;">

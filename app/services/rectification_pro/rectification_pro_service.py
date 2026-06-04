@@ -417,7 +417,7 @@ class RectificationProService:
         v1_only_rules = [baseline_rules[rule_id] for rule_id in v1_only_rule_ids]
         v2_added_rules = [selected_rules[rule_id] for rule_id in v2_added_rule_ids]
         why_result_changed = (
-            "v2 adds a larger child_birth rule pack, so candidate ranking is driven by more golden/supporting confirmations than v1."
+            "selected draft card adds a larger rule pack, so candidate ranking is driven by more golden/supporting confirmations than the baseline card."
             if v2_added_rules
             else "v1 and v2 use the same visible rule set; result changes come only from scoring differences."
         )
@@ -536,6 +536,11 @@ class RectificationProService:
         mapping = {
             "child_birth": "child_birth",
             "children_birth": "child_birth",
+            "profession_change": "profession_change",
+            "marriage_union": "marriage_union",
+            "relationship_start": "relationship_start",
+            "divorce_breakup": "divorce_breakup",
+            "death_close_person": "death_close_person",
             "marriage_start": "marriage_union",
             "marriage_relationship": "relationship_start",
             "divorce_separation": "divorce_breakup",

@@ -255,7 +255,7 @@ import { applyWizardBirthDataFromUi, renderWizardProgress, resetWizardDerivedSta
     for (let i = 0; i < timezoneOffsetEl.options.length; i++) {
       wzTimezoneOffsetEl.appendChild(timezoneOffsetEl.options[i].cloneNode(true));
     }
-    wzTimezoneOffsetEl.value = "+05:00";
+    wzTimezoneOffsetEl.value = "+00:00";
     setDateTimeWithSeconds(nowLocalInputValue(), { syncShared: false });
     timezoneModeEl.value = "auto";
     updateTimezoneUiState();

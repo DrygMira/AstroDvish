@@ -31,6 +31,8 @@ OLD_CHILD_BIRTH_RULE_IDS = {
 }
 
 DRAFT_CHILD_BIRTH_CARD_ID = "RECT_CHILD_BIRTH_002_DRAFT"
+DRAFT_PROFESSION_CHANGE_CARD_ID = "RECT_PROFESSION_CHANGE_002_DRAFT"
+DRAFT_MARRIAGE_UNION_CARD_ID = "RECT_MARRIAGE_UNION_002_DRAFT"
 
 
 def test_all_requested_formula_cards_load_successfully() -> None:
@@ -40,6 +42,8 @@ def test_all_requested_formula_cards_load_successfully() -> None:
     assert {
         "RECT_CHILD_BIRTH_001",
         DRAFT_CHILD_BIRTH_CARD_ID,
+        DRAFT_PROFESSION_CHANGE_CARD_ID,
+        DRAFT_MARRIAGE_UNION_CARD_ID,
         "RECT_DEATH_CLOSE_PERSON_001",
         "RECT_MARRIAGE_UNION_001",
         "RECT_RELATIONSHIP_START_001",
@@ -578,6 +582,150 @@ def test_child_birth_draft_rules_have_literal_dsl_fields_and_list_allowed_aspect
         else:
             assert rule.aspect_types == rule.allowed_aspects
         assert rule.priority in {"golden", "supporting", "context", "ambiguity_risk"}
+
+
+def test_profession_change_draft_card_exists_and_is_draft_only() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_PROFESSION_CHANGE_CARD_ID)
+
+    assert card.card_id == DRAFT_PROFESSION_CHANGE_CARD_ID
+    assert card.event_type == "profession_change"
+    assert card.status == "draft"
+    assert len(card.direction_rules) == 106
+
+
+def test_marriage_union_v2_draft_card_exists_without_changing_production_default() -> None:
+    loader = FormulaCardLoader()
+    production = loader.load_card("RECT_MARRIAGE_UNION_001")
+    draft = loader.load_card(DRAFT_MARRIAGE_UNION_CARD_ID)
+
+    assert production.card_id == "RECT_MARRIAGE_UNION_001"
+    assert draft.card_id == DRAFT_MARRIAGE_UNION_CARD_ID
+    assert draft.event_type == "marriage_union"
+    assert draft.status == "draft"
+    assert len(draft.direction_rules) == 100
+
+
+def test_profession_change_draft_card_import_counts_and_priority_tiers() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_PROFESSION_CHANGE_CARD_ID)
+
+    assert len(card.direction_rules) == 106
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 34
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 46
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 26
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_marriage_union_v2_draft_card_import_counts_and_priority_tiers() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_MARRIAGE_UNION_CARD_ID)
+
+    assert len(card.direction_rules) == 100
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 30
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 42
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 28
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_profession_change_draft_raw_import_report_tracks_reconciliation() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_PROFESSION_CHANGE_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 1
+    assert report["source_files"][0].endswith("0ad5b16d-26b5-433c-a570-f0eb27edbc69\\pasted-text.txt")
+    assert report["source_formula_counts_header"] == {
+        "golden": 34,
+        "supporting": 46,
+        "context": 26,
+        "total": 106,
+    }
+    assert report["parsed_entries_count"] == 107
+    assert report["imported_formula_count"] == 106
+    assert report["imported_tier_counts"] == {
+        "golden": 34,
+        "supporting": 46,
+        "context": 26,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 1
+    assert report["collapsed_duplicate_entries"] == 1
+    assert report["malformed_entries_count"] == 0
+    assert report["conflicts_left_for_review"] is False
+    assert any(item["rule_id"] == "cusp_1_to_jupiter" for item in report["duplicates_report"])
+
+
+def test_marriage_union_v2_draft_raw_import_report_tracks_reconciliation() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_MARRIAGE_UNION_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 1
+    assert report["source_files"][0].endswith("f25ca019-3abe-4819-9774-b9460d4e4b05\\pasted-text.txt")
+    assert report["source_formula_counts_header"] == {
+        "golden": 30,
+        "supporting": 42,
+        "context": 28,
+        "total": 100,
+    }
+    assert report["parsed_entries_count"] == 100
+    assert report["imported_formula_count"] == 100
+    assert report["imported_tier_counts"] == {
+        "golden": 30,
+        "supporting": 42,
+        "context": 28,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 0
+    assert report["collapsed_duplicate_entries"] == 0
+    assert report["malformed_entries_count"] == 0
+    assert report["conflicts_left_for_review"] is False
+
+
+def test_new_v2_draft_cards_have_literal_dsl_fields_and_list_allowed_aspects() -> None:
+    loader = FormulaCardLoader()
+    for card_id in (DRAFT_PROFESSION_CHANGE_CARD_ID, DRAFT_MARRIAGE_UNION_CARD_ID):
+        card = loader.load_card(card_id)
+        for rule in card.direction_rules:
+            assert rule.formula
+            assert rule.rule
+            assert rule.source
+            assert rule.target
+            assert rule.source_layer == "directed"
+            assert rule.target_layer == "natal"
+            assert isinstance(rule.allowed_aspects, list)
+            assert rule.allowed_aspects == ["conjunction", "square", "opposition", "trine", "sextile"]
+            assert rule.aspect_types == rule.allowed_aspects
+            assert rule.priority in {"golden", "supporting", "context", "ambiguity_risk"}
+
+
+def test_profession_change_draft_is_not_selected_without_explicit_card_id() -> None:
+    service = FormulaTestModeService()
+
+    with pytest.raises(ValueError) as exc:
+        service.evaluate(
+            event_type="profession_change",
+            context={"indicators": ["house_10", "jupiter"], "pro_result": {"method_results": {"directions": []}}},
+        )
+
+    assert "no formula cards configured for event_type=profession_change" in str(exc.value)
+
+
+def test_marriage_union_defaults_to_production_card_when_draft_v2_exists() -> None:
+    service = FormulaTestModeService()
+    result = service.evaluate(
+        event_type="marriage_union",
+        context={"indicators": ["house_7", "house_4", "venus"], "pro_result": {"method_results": {"directions": []}}},
+    )
+
+    assert result["card_id"] == "RECT_MARRIAGE_UNION_001"
 
 
 def test_death_close_person_card_contains_expected_core_and_planets() -> None:

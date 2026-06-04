@@ -176,6 +176,8 @@ def test_pro_ui_contains_explicit_formula_card_selector_and_v1_v2_comparison_mar
     assert "formula_card_id" in html
     assert "compare_formula_card_ids" in html
     assert "RECT_CHILD_BIRTH_002_DRAFT" in html
+    assert "RECT_PROFESSION_CHANGE_002_DRAFT" in html
+    assert "RECT_MARRIAGE_UNION_002_DRAFT" in html
     assert "V1 vs V2" in html
     assert "formula_card_comparison" in html
     assert "working_time_ranges_difference" in html

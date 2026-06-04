@@ -94,7 +94,7 @@ def test_rectification_direct_paths_include_canonical_timezone_fields() -> None:
     assert response.status_code == 200
     assert "timezoneMode: sharedBirthContext.timezoneMode || timezoneModeEl.value || \"auto\"" in html
     assert "timezoneName: sharedBirthContext.timezoneName || timezoneNameEl.value || null" in html
-    assert "timezoneOffset: sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || \"+05:00\"" in html
+    assert "timezoneOffset: sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || \"+00:00\"" in html
     assert "timezone_mode: sharedBirthContext.timezoneMode || \"auto\"" in html
     assert "timezone_name: sharedBirthContext.timezoneName || null" in html
     assert "timezone_offset: sharedBirthContext.timezoneMode === \"manual\"" in html

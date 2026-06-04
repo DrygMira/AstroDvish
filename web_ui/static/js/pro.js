@@ -9,6 +9,15 @@ import { renderRectEventsFinal } from "./stage2.js";
 import { hideLlmOverlay, setReStatus, setRpStatus, setStatus, setTab, setTechnicalMode, setWzProStatus, setWzStatus, showLlmOverlay } from "./ui.js";
 import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wizard.js";
 
+    function resolveComparisonCardIds(selectedCardId) {
+      const normalized = String(selectedCardId || "").trim();
+      const pairs = {
+        RECT_CHILD_BIRTH_002_DRAFT: ["RECT_CHILD_BIRTH_001", "RECT_CHILD_BIRTH_002_DRAFT"],
+        RECT_MARRIAGE_UNION_002_DRAFT: ["RECT_MARRIAGE_UNION_001", "RECT_MARRIAGE_UNION_002_DRAFT"],
+      };
+      return pairs[normalized] || [];
+    }
+
     export function buildProAscWindowsFromStage1() {
       const lastFinal = [...rectDialogState.dialogHistory]
         .reverse()
@@ -912,6 +921,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         return;
       }
 
+      const selectedFormulaCardId = rpFormulaCardIdEl.value || null;
       const payload = {
         birth_date_local: (sharedBirthContext.birthDateLocal || document.getElementById("rdBirthDate").value || "").split("T")[0],
         latitude: Number(sharedBirthContext.latitude ?? document.getElementById("rdLatitude").value),
@@ -930,9 +940,9 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         events,
         settings: {
           candidate_step_minutes: 5,
-          formula_card_id: rpFormulaCardIdEl.value || null,
+          formula_card_id: selectedFormulaCardId,
           compare_formula_card_ids: rpCompareV1V2El.checked
-            ? ["RECT_CHILD_BIRTH_001", "RECT_CHILD_BIRTH_002_DRAFT"]
+            ? resolveComparisonCardIds(selectedFormulaCardId)
             : [],
           include_directions: true,
           include_solars: true,

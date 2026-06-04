@@ -340,6 +340,54 @@ def test_rectification_pro_can_select_draft_card_explicitly(monkeypatch, tmp_pat
     assert "chart_response" not in refinement["top_candidates"][0]
 
 
+def test_rectification_pro_can_select_profession_change_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "profession_change"
+    payload["settings"]["formula_card_id"] = "RECT_PROFESSION_CHANGE_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_PROFESSION_CHANGE_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 106
+    assert result["priority_counts"] == {
+        "golden": 34,
+        "supporting": 46,
+        "context": 26,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_PROFESSION_CHANGE_002_DRAFT"
+
+
+def test_rectification_pro_can_select_marriage_union_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "marriage_start"
+    payload["settings"]["formula_card_id"] = "RECT_MARRIAGE_UNION_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_MARRIAGE_UNION_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 100
+    assert result["priority_counts"] == {
+        "golden": 30,
+        "supporting": 42,
+        "context": 28,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_MARRIAGE_UNION_002_DRAFT"
+
+
 def test_rectification_pro_can_compare_v1_and_v2_cards(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     payload = _payload(1)
@@ -379,6 +427,33 @@ def test_rectification_pro_can_compare_v1_and_v2_cards(monkeypatch, tmp_path) ->
     assert "formula_test_mode_results" not in items[0]
     assert "formula_refinement_results" not in items[1]
     assert "formula_test_mode_results" not in items[1]
+
+
+def test_rectification_pro_can_compare_marriage_v1_and_v2_cards(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "marriage_start"
+    payload["settings"]["formula_card_id"] = "RECT_MARRIAGE_UNION_002_DRAFT"
+    payload["settings"]["compare_formula_card_ids"] = [
+        "RECT_MARRIAGE_UNION_001",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+    ]
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    comparison = response.json()["formula_card_comparison"]
+    assert comparison["enabled"] is True
+    assert comparison["baseline_card_id"] == "RECT_MARRIAGE_UNION_001"
+    assert comparison["selected_card_id"] == "RECT_MARRIAGE_UNION_002_DRAFT"
+    assert [item["card_id"] for item in comparison["items"]] == [
+        "RECT_MARRIAGE_UNION_001",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+    ]
+    assert comparison["summary"]["items"][0]["formulas_count"] > 0
+    assert comparison["summary"]["items"][1]["formulas_count"] == 100
+    assert "larger rule pack" in comparison["differences"]["why_result_changed"]
 
 
 def test_rectification_pro_comparison_includes_compact_summary(monkeypatch, tmp_path) -> None:

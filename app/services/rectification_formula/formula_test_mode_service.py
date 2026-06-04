@@ -47,9 +47,7 @@ class FormulaTestModeService:
             cards = [card]
         else:
             cards = self.loader.load_by_event_type(event_type)
-            non_draft_cards = [card for card in cards if str(card.status).lower() != "draft"]
-            if non_draft_cards:
-                cards = non_draft_cards
+            cards = [card for card in cards if str(card.status).lower() != "draft"]
         if not cards:
             raise ValueError(f"no formula cards configured for event_type={event_type}")
 

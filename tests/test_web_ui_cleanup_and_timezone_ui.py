@@ -225,6 +225,30 @@ def test_main_ui_humanizes_non_json_proxy_errors() -> None:
     assert '}, 620000);' in html
 
 
+def test_main_ui_does_not_ship_ufa_city_or_coordinates_as_live_defaults() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert 'id="cityQuery" value="Уфа"' not in html
+    assert 'id="wzCityQuery" value="Уфа"' not in html
+    assert 'id="rectCityQuery" value="Уфа"' not in html
+    assert 'id="rdCityQuery" value="Уфа"' not in html
+    assert 'id="latitude" type="text" inputmode="decimal" value="54.7388"' not in html
+    assert 'id="longitude" type="text" inputmode="decimal" value="55.9721"' not in html
+    assert "sharedBirthContext.cityQuery = document.getElementById(\"cityQuery\").value.trim() || null;" in html
+
+
+def test_main_ui_does_not_force_manual_plus_five_offset_as_initial_state() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert 'timezoneOffsetEl.value = "+05:00";' not in html
+    assert 'wzTimezoneOffsetEl.value = "+05:00";' not in html
+    assert 'sharedBirthContext.timezoneOffset = "+05:00"' not in html
+
+
 def test_main_ui_does_not_hardcode_browser_localhost_api_base() -> None:
     with TestClient(web_ui_main.app) as client:
         response, html = get_main_ui_bundle(client)

@@ -92,7 +92,7 @@ export const appState = {
       longitude: null,
       timezoneMode: "auto",
       timezoneName: null,
-      timezoneOffset: "+05:00",
+      timezoneOffset: "+00:00",
       timezoneResolvedOffset: null,
       timezoneSource: null,
       coordValueFormat: "decimal",

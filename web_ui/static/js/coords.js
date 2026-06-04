@@ -69,10 +69,10 @@ import { renderSharedCurrentData, setGenerateTechnicalDebug } from "./ui.js";
       timezoneNameEl.value = sharedBirthContext.timezoneName || "";
       wzTimezoneNameEl.value = sharedBirthContext.timezoneName || "";
       timezoneOffsetEl.value = sharedBirthContext.timezoneMode === "manual"
-        ? (sharedBirthContext.timezoneOffset || "+05:00")
+        ? (sharedBirthContext.timezoneOffset || "+00:00")
         : (sharedBirthContext.timezoneResolvedOffset || "auto");
       wzTimezoneOffsetEl.value = sharedBirthContext.timezoneMode === "manual"
-        ? (sharedBirthContext.timezoneOffset || "+05:00")
+        ? (sharedBirthContext.timezoneOffset || "+00:00")
         : (sharedBirthContext.timezoneResolvedOffset || "auto");
 
       document.getElementById("houseSystem").value = sharedBirthContext.houseSystem || "P";
@@ -236,7 +236,7 @@ import { renderSharedCurrentData, setGenerateTechnicalDebug } from "./ui.js";
         opt.textContent = val;
         timezoneOffsetEl.appendChild(opt);
       }
-      timezoneOffsetEl.value = "+05:00";
+      timezoneOffsetEl.value = "+00:00";
     }
 
     export function fillSecondOptions() {
@@ -324,8 +324,8 @@ import { renderSharedCurrentData, setGenerateTechnicalDebug } from "./ui.js";
           timezoneStatusEl.textContent = "Часовой пояс будет определён автоматически по координатам.";
         }
       } else {
-        ensureSelectDisplayValue(timezoneOffsetEl, sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || "+05:00");
-        ensureSelectDisplayValue(wzTimezoneOffsetEl, sharedBirthContext.timezoneOffset || wzTimezoneOffsetEl.value || "+05:00");
+        ensureSelectDisplayValue(timezoneOffsetEl, sharedBirthContext.timezoneOffset || timezoneOffsetEl.value || "+00:00");
+        ensureSelectDisplayValue(wzTimezoneOffsetEl, sharedBirthContext.timezoneOffset || wzTimezoneOffsetEl.value || "+00:00");
         timezoneOffsetHintEl.textContent = "Используется ручной offset.";
         wzTimezoneOffsetHintEl.textContent = "Используется ручной offset.";
         timezoneStatusEl.textContent = `Часовой пояс указан вручную: ${timezoneOffsetEl.value}`;

@@ -151,7 +151,8 @@ import { PRO_METHOD_LABELS, PRO_EVENT_TYPE_LABELS } from "./constants.js";
 
     export function getHeavyProRunWarning(payload) {
       const eventsCount = Array.isArray(payload?.events) ? payload.events.length : 0;
-      const isV2Card = payload?.settings?.formula_card_id === "RECT_CHILD_BIRTH_002_DRAFT";
+      const formulaCardId = String(payload?.settings?.formula_card_id || "");
+      const isV2Card = formulaCardId.endsWith("_002_DRAFT");
       const isComparison = Array.isArray(payload?.settings?.compare_formula_card_ids)
         && payload.settings.compare_formula_card_ids.length > 1;
       if ((isV2Card || isComparison) && eventsCount >= 4) {

@@ -1,0 +1,4679 @@
+{
+  "card_id": "RECT_PROFESSION_CHANGE_002_DRAFT",
+  "event_type": "profession_change",
+  "status": "draft",
+  "card_version": "profession_change_literal_draft_v2_imported_2026_06_04",
+  "school": "expert_rectification_v2_draft",
+  "title": "Profession change (draft v2 imported sandbox)",
+  "core_logic": [
+    "house_10",
+    "house_6",
+    "house_2",
+    "house_1",
+    "jupiter",
+    "uranus"
+  ],
+  "houses": [
+    "house_1",
+    "house_2",
+    "house_6",
+    "house_10"
+  ],
+  "planets": [
+    "jupiter",
+    "saturn",
+    "sun",
+    "uranus"
+  ],
+  "significators": [
+    "jupiter",
+    "saturn",
+    "sun",
+    "uranus"
+  ],
+  "aspects": [
+    "career_axis_activation",
+    "work_status_change",
+    "income_axis_shift"
+  ],
+  "method_priority": [
+    "directions",
+    "solars",
+    "transits"
+  ],
+  "strong_confirmation": [
+    "multiple_methods",
+    "career_axis_activation",
+    "public_role_shift"
+  ],
+  "weak_confirmation": [
+    "single_transit_only",
+    "context_only_confirmation"
+  ],
+  "exclusions": [
+    "loss_signature_without_career_shift"
+  ],
+  "direction_rules": [
+    {
+      "id": "cusp_10_to_ruler_10",
+      "title": "Directed cusp_10 -> Natal ruler_10",
+      "formula": "Directed cusp_10 -> Natal ruler_10",
+      "rule": "cusp_10_to_ruler_10",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_ruler_1",
+      "title": "Directed cusp_10 -> Natal ruler_1",
+      "formula": "Directed cusp_10 -> Natal ruler_1",
+      "rule": "cusp_10_to_ruler_1",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "ruler_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_ruler_6",
+      "title": "Directed cusp_10 -> Natal ruler_6",
+      "formula": "Directed cusp_10 -> Natal ruler_6",
+      "rule": "cusp_10_to_ruler_6",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_ruler_10",
+      "title": "Directed cusp_1 -> Natal ruler_10",
+      "formula": "Directed cusp_1 -> Natal ruler_10",
+      "rule": "cusp_1_to_ruler_10",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_ruler_1",
+      "title": "Directed cusp_1 -> Natal ruler_1",
+      "formula": "Directed cusp_1 -> Natal ruler_1",
+      "rule": "cusp_1_to_ruler_1",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_ruler_6",
+      "title": "Directed cusp_1 -> Natal ruler_6",
+      "formula": "Directed cusp_1 -> Natal ruler_6",
+      "rule": "cusp_1_to_ruler_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_ruler_10",
+      "title": "Directed cusp_6 -> Natal ruler_10",
+      "formula": "Directed cusp_6 -> Natal ruler_10",
+      "rule": "cusp_6_to_ruler_10",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_ruler_1",
+      "title": "Directed cusp_6 -> Natal ruler_1",
+      "formula": "Directed cusp_6 -> Natal ruler_1",
+      "rule": "cusp_6_to_ruler_1",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "ruler_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_ruler_6",
+      "title": "Directed cusp_6 -> Natal ruler_6",
+      "formula": "Directed cusp_6 -> Natal ruler_6",
+      "rule": "cusp_6_to_ruler_6",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_10_to_cusp_10",
+      "title": "Directed ruler_10 -> Natal cusp_10",
+      "formula": "Directed ruler_10 -> Natal cusp_10",
+      "rule": "ruler_10_to_cusp_10",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_10_to_cusp_1",
+      "title": "Directed ruler_10 -> Natal cusp_1",
+      "formula": "Directed ruler_10 -> Natal cusp_1",
+      "rule": "ruler_10_to_cusp_1",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_10_to_cusp_6",
+      "title": "Directed ruler_10 -> Natal cusp_6",
+      "formula": "Directed ruler_10 -> Natal cusp_6",
+      "rule": "ruler_10_to_cusp_6",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_cusp_10",
+      "title": "Directed ruler_1 -> Natal cusp_10",
+      "formula": "Directed ruler_1 -> Natal cusp_10",
+      "rule": "ruler_1_to_cusp_10",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_cusp_1",
+      "title": "Directed ruler_1 -> Natal cusp_1",
+      "formula": "Directed ruler_1 -> Natal cusp_1",
+      "rule": "ruler_1_to_cusp_1",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_cusp_6",
+      "title": "Directed ruler_1 -> Natal cusp_6",
+      "formula": "Directed ruler_1 -> Natal cusp_6",
+      "rule": "ruler_1_to_cusp_6",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_6_to_cusp_10",
+      "title": "Directed ruler_6 -> Natal cusp_10",
+      "formula": "Directed ruler_6 -> Natal cusp_10",
+      "rule": "ruler_6_to_cusp_10",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_6_to_cusp_1",
+      "title": "Directed ruler_6 -> Natal cusp_1",
+      "formula": "Directed ruler_6 -> Natal cusp_1",
+      "rule": "ruler_6_to_cusp_1",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_6_to_cusp_6",
+      "title": "Directed ruler_6 -> Natal cusp_6",
+      "formula": "Directed ruler_6 -> Natal cusp_6",
+      "rule": "ruler_6_to_cusp_6",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_cusp_1",
+      "title": "Directed cusp_10 -> Natal cusp_1",
+      "formula": "Directed cusp_10 -> Natal cusp_1",
+      "rule": "cusp_10_to_cusp_1",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_cusp_10",
+      "title": "Directed cusp_1 -> Natal cusp_10",
+      "formula": "Directed cusp_1 -> Natal cusp_10",
+      "rule": "cusp_1_to_cusp_10",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_cusp_6",
+      "title": "Directed cusp_10 -> Natal cusp_6",
+      "formula": "Directed cusp_10 -> Natal cusp_6",
+      "rule": "cusp_10_to_cusp_6",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_cusp_10",
+      "title": "Directed cusp_6 -> Natal cusp_10",
+      "formula": "Directed cusp_6 -> Natal cusp_10",
+      "rule": "cusp_6_to_cusp_10",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_cusp_1",
+      "title": "Directed cusp_6 -> Natal cusp_1",
+      "formula": "Directed cusp_6 -> Natal cusp_1",
+      "rule": "cusp_6_to_cusp_1",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_cusp_6",
+      "title": "Directed cusp_1 -> Natal cusp_6",
+      "formula": "Directed cusp_1 -> Natal cusp_6",
+      "rule": "cusp_1_to_cusp_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "jupiter_to_cusp_1",
+      "title": "Directed jupiter -> Natal cusp_1",
+      "formula": "Directed jupiter -> Natal cusp_1",
+      "rule": "jupiter_to_cusp_1",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "Jupiter",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "jupiter_to_cusp_10",
+      "title": "Directed jupiter -> Natal cusp_10",
+      "formula": "Directed jupiter -> Natal cusp_10",
+      "rule": "jupiter_to_cusp_10",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "Jupiter",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_jupiter",
+      "title": "Directed cusp_1 -> Natal jupiter",
+      "formula": "Directed cusp_1 -> Natal jupiter",
+      "rule": "cusp_1_to_jupiter",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Jupiter",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_jupiter",
+      "title": "Directed cusp_10 -> Natal jupiter",
+      "formula": "Directed cusp_10 -> Natal jupiter",
+      "rule": "cusp_10_to_jupiter",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "Jupiter",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_2_to_cusp_2",
+      "title": "Directed ruler_2 -> Natal cusp_2",
+      "formula": "Directed ruler_2 -> Natal cusp_2",
+      "rule": "ruler_2_to_cusp_2",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "cusp_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_ruler_2",
+      "title": "Directed cusp_2 -> Natal ruler_2",
+      "formula": "Directed cusp_2 -> Natal ruler_2",
+      "rule": "cusp_2_to_ruler_2",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "ruler_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_cusp_10",
+      "title": "Directed cusp_2 -> Natal cusp_10",
+      "formula": "Directed cusp_2 -> Natal cusp_10",
+      "rule": "cusp_2_to_cusp_10",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_cusp_2",
+      "title": "Directed cusp_10 -> Natal cusp_2",
+      "formula": "Directed cusp_10 -> Natal cusp_2",
+      "rule": "cusp_10_to_cusp_2",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "cusp_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "jupiter_to_cusp_2",
+      "title": "Directed jupiter -> Natal cusp_2",
+      "formula": "Directed jupiter -> Natal cusp_2",
+      "rule": "jupiter_to_cusp_2",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "Jupiter",
+      "display_target": "cusp_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_jupiter",
+      "title": "Directed cusp_2 -> Natal jupiter",
+      "formula": "Directed cusp_2 -> Natal jupiter",
+      "rule": "cusp_2_to_jupiter",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "Jupiter",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_ruler_6",
+      "title": "Directed ruler_1 -> Natal ruler_6",
+      "formula": "Directed ruler_1 -> Natal ruler_6",
+      "rule": "ruler_1_to_ruler_6",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_ruler_1",
+      "title": "Directed ruler_6 -> Natal ruler_1",
+      "formula": "Directed ruler_6 -> Natal ruler_1",
+      "rule": "ruler_6_to_ruler_1",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_ruler_10",
+      "title": "Directed ruler_1 -> Natal ruler_10",
+      "formula": "Directed ruler_1 -> Natal ruler_10",
+      "rule": "ruler_1_to_ruler_10",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_ruler_1",
+      "title": "Directed ruler_10 -> Natal ruler_1",
+      "formula": "Directed ruler_10 -> Natal ruler_1",
+      "rule": "ruler_10_to_ruler_1",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_2_to_ruler_6",
+      "title": "Directed ruler_2 -> Natal ruler_6",
+      "formula": "Directed ruler_2 -> Natal ruler_6",
+      "rule": "ruler_2_to_ruler_6",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_ruler_2",
+      "title": "Directed ruler_6 -> Natal ruler_2",
+      "formula": "Directed ruler_6 -> Natal ruler_2",
+      "rule": "ruler_6_to_ruler_2",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_2_to_ruler_10",
+      "title": "Directed ruler_2 -> Natal ruler_10",
+      "formula": "Directed ruler_2 -> Natal ruler_10",
+      "rule": "ruler_2_to_ruler_10",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_ruler_2",
+      "title": "Directed ruler_10 -> Natal ruler_2",
+      "formula": "Directed ruler_10 -> Natal ruler_2",
+      "rule": "ruler_10_to_ruler_2",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_ruler_10",
+      "title": "Directed ruler_6 -> Natal ruler_10",
+      "formula": "Directed ruler_6 -> Natal ruler_10",
+      "rule": "ruler_6_to_ruler_10",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_ruler_6",
+      "title": "Directed ruler_10 -> Natal ruler_6",
+      "formula": "Directed ruler_10 -> Natal ruler_6",
+      "rule": "ruler_10_to_ruler_6",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_house_element_6",
+      "title": "Directed ruler_1 -> Natal house_element_6",
+      "formula": "Directed ruler_1 -> Natal house_element_6",
+      "rule": "ruler_1_to_house_element_6",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_ruler_1",
+      "title": "Directed house_element_6 -> Natal ruler_1",
+      "formula": "Directed house_element_6 -> Natal ruler_1",
+      "rule": "house_element_6_to_ruler_1",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "ruler_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_house_element_10",
+      "title": "Directed ruler_1 -> Natal house_element_10",
+      "formula": "Directed ruler_1 -> Natal house_element_10",
+      "rule": "ruler_1_to_house_element_10",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_ruler_1",
+      "title": "Directed house_element_10 -> Natal ruler_1",
+      "formula": "Directed house_element_10 -> Natal ruler_1",
+      "rule": "house_element_10_to_ruler_1",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "ruler_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_2_to_house_element_6",
+      "title": "Directed ruler_2 -> Natal house_element_6",
+      "formula": "Directed ruler_2 -> Natal house_element_6",
+      "rule": "ruler_2_to_house_element_6",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_ruler_2",
+      "title": "Directed house_element_6 -> Natal ruler_2",
+      "formula": "Directed house_element_6 -> Natal ruler_2",
+      "rule": "house_element_6_to_ruler_2",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "ruler_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_2_to_house_element_10",
+      "title": "Directed ruler_2 -> Natal house_element_10",
+      "formula": "Directed ruler_2 -> Natal house_element_10",
+      "rule": "ruler_2_to_house_element_10",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_ruler_2",
+      "title": "Directed house_element_10 -> Natal ruler_2",
+      "formula": "Directed house_element_10 -> Natal ruler_2",
+      "rule": "house_element_10_to_ruler_2",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "ruler_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_house_element_10",
+      "title": "Directed ruler_6 -> Natal house_element_10",
+      "formula": "Directed ruler_6 -> Natal house_element_10",
+      "rule": "ruler_6_to_house_element_10",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_ruler_6",
+      "title": "Directed house_element_10 -> Natal ruler_6",
+      "formula": "Directed house_element_10 -> Natal ruler_6",
+      "rule": "house_element_10_to_ruler_6",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_house_element_6",
+      "title": "Directed ruler_10 -> Natal house_element_6",
+      "formula": "Directed ruler_10 -> Natal house_element_6",
+      "rule": "ruler_10_to_house_element_6",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_ruler_10",
+      "title": "Directed house_element_6 -> Natal ruler_10",
+      "formula": "Directed house_element_6 -> Natal ruler_10",
+      "rule": "house_element_6_to_ruler_10",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_house_element_6",
+      "title": "Directed cusp_1 -> Natal house_element_6",
+      "formula": "Directed cusp_1 -> Natal house_element_6",
+      "rule": "cusp_1_to_house_element_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_cusp_1",
+      "title": "Directed house_element_6 -> Natal cusp_1",
+      "formula": "Directed house_element_6 -> Natal cusp_1",
+      "rule": "house_element_6_to_cusp_1",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_house_element_10",
+      "title": "Directed cusp_1 -> Natal house_element_10",
+      "formula": "Directed cusp_1 -> Natal house_element_10",
+      "rule": "cusp_1_to_house_element_10",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_cusp_1",
+      "title": "Directed house_element_10 -> Natal cusp_1",
+      "formula": "Directed house_element_10 -> Natal cusp_1",
+      "rule": "house_element_10_to_cusp_1",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_2_to_house_element_6",
+      "title": "Directed cusp_2 -> Natal house_element_6",
+      "formula": "Directed cusp_2 -> Natal house_element_6",
+      "rule": "cusp_2_to_house_element_6",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_cusp_2",
+      "title": "Directed house_element_6 -> Natal cusp_2",
+      "formula": "Directed house_element_6 -> Natal cusp_2",
+      "rule": "house_element_6_to_cusp_2",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "cusp_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_2_to_house_element_10",
+      "title": "Directed cusp_2 -> Natal house_element_10",
+      "formula": "Directed cusp_2 -> Natal house_element_10",
+      "rule": "cusp_2_to_house_element_10",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_cusp_2",
+      "title": "Directed house_element_10 -> Natal cusp_2",
+      "formula": "Directed house_element_10 -> Natal cusp_2",
+      "rule": "house_element_10_to_cusp_2",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "cusp_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_6_to_house_element_6",
+      "title": "Directed cusp_6 -> Natal house_element_6",
+      "formula": "Directed cusp_6 -> Natal house_element_6",
+      "rule": "cusp_6_to_house_element_6",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_cusp_6",
+      "title": "Directed house_element_6 -> Natal cusp_6",
+      "formula": "Directed house_element_6 -> Natal cusp_6",
+      "rule": "house_element_6_to_cusp_6",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_6_to_house_element_10",
+      "title": "Directed cusp_6 -> Natal house_element_10",
+      "formula": "Directed cusp_6 -> Natal house_element_10",
+      "rule": "cusp_6_to_house_element_10",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_cusp_6",
+      "title": "Directed house_element_10 -> Natal cusp_6",
+      "formula": "Directed house_element_10 -> Natal cusp_6",
+      "rule": "house_element_10_to_cusp_6",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_10_to_house_element_6",
+      "title": "Directed cusp_10 -> Natal house_element_6",
+      "formula": "Directed cusp_10 -> Natal house_element_6",
+      "rule": "cusp_10_to_house_element_6",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_cusp_10",
+      "title": "Directed house_element_6 -> Natal cusp_10",
+      "formula": "Directed house_element_6 -> Natal cusp_10",
+      "rule": "house_element_6_to_cusp_10",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_10_to_house_element_10",
+      "title": "Directed cusp_10 -> Natal house_element_10",
+      "formula": "Directed cusp_10 -> Natal house_element_10",
+      "rule": "cusp_10_to_house_element_10",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_cusp_10",
+      "title": "Directed house_element_10 -> Natal cusp_10",
+      "formula": "Directed house_element_10 -> Natal cusp_10",
+      "rule": "house_element_10_to_cusp_10",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "jupiter_to_cusp_6",
+      "title": "Directed jupiter -> Natal cusp_6",
+      "formula": "Directed jupiter -> Natal cusp_6",
+      "rule": "jupiter_to_cusp_6",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "Jupiter",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_6_to_jupiter",
+      "title": "Directed cusp_6 -> Natal jupiter",
+      "formula": "Directed cusp_6 -> Natal jupiter",
+      "rule": "cusp_6_to_jupiter",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "Jupiter",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "jupiter_to_ruler_6",
+      "title": "Directed jupiter -> Natal ruler_6",
+      "formula": "Directed jupiter -> Natal ruler_6",
+      "rule": "jupiter_to_ruler_6",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "Jupiter",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_jupiter",
+      "title": "Directed ruler_6 -> Natal jupiter",
+      "formula": "Directed ruler_6 -> Natal jupiter",
+      "rule": "ruler_6_to_jupiter",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "Jupiter",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "uranus_to_cusp_6",
+      "title": "Directed uranus -> Natal cusp_6",
+      "formula": "Directed uranus -> Natal cusp_6",
+      "rule": "uranus_to_cusp_6",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "Uranus",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_6_to_uranus",
+      "title": "Directed cusp_6 -> Natal uranus",
+      "formula": "Directed cusp_6 -> Natal uranus",
+      "rule": "cusp_6_to_uranus",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "Uranus",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "uranus_to_cusp_10",
+      "title": "Directed uranus -> Natal cusp_10",
+      "formula": "Directed uranus -> Natal cusp_10",
+      "rule": "uranus_to_cusp_10",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "Uranus",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_10_to_uranus",
+      "title": "Directed cusp_10 -> Natal uranus",
+      "formula": "Directed cusp_10 -> Natal uranus",
+      "rule": "cusp_10_to_uranus",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "Uranus",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "sun_to_cusp_1",
+      "title": "Directed sun -> Natal cusp_1",
+      "formula": "Directed sun -> Natal cusp_1",
+      "rule": "sun_to_cusp_1",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "Sun",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_1_to_sun",
+      "title": "Directed cusp_1 -> Natal sun",
+      "formula": "Directed cusp_1 -> Natal sun",
+      "rule": "cusp_1_to_sun",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Sun",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_cusp_6",
+      "title": "Directed sun -> Natal cusp_6",
+      "formula": "Directed sun -> Natal cusp_6",
+      "rule": "sun_to_cusp_6",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "Sun",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_6_to_sun",
+      "title": "Directed cusp_6 -> Natal sun",
+      "formula": "Directed cusp_6 -> Natal sun",
+      "rule": "cusp_6_to_sun",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "Sun",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_cusp_10",
+      "title": "Directed sun -> Natal cusp_10",
+      "formula": "Directed sun -> Natal cusp_10",
+      "rule": "sun_to_cusp_10",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "Sun",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_10_to_sun",
+      "title": "Directed cusp_10 -> Natal sun",
+      "formula": "Directed cusp_10 -> Natal sun",
+      "rule": "cusp_10_to_sun",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "Sun",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_house_element_6",
+      "title": "Directed sun -> Natal house_element_6",
+      "formula": "Directed sun -> Natal house_element_6",
+      "rule": "sun_to_house_element_6",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "Sun",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_6_to_sun",
+      "title": "Directed house_element_6 -> Natal sun",
+      "formula": "Directed house_element_6 -> Natal sun",
+      "rule": "house_element_6_to_sun",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "Sun",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_house_element_10",
+      "title": "Directed sun -> Natal house_element_10",
+      "formula": "Directed sun -> Natal house_element_10",
+      "rule": "sun_to_house_element_10",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "Sun",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_10_to_sun",
+      "title": "Directed house_element_10 -> Natal sun",
+      "formula": "Directed house_element_10 -> Natal sun",
+      "rule": "house_element_10_to_sun",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "Sun",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_cusp_1",
+      "title": "Directed saturn -> Natal cusp_1",
+      "formula": "Directed saturn -> Natal cusp_1",
+      "rule": "saturn_to_cusp_1",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "Saturn",
+      "display_target": "cusp_1",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_1_to_saturn",
+      "title": "Directed cusp_1 -> Natal saturn",
+      "formula": "Directed cusp_1 -> Natal saturn",
+      "rule": "cusp_1_to_saturn",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Saturn",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_cusp_6",
+      "title": "Directed saturn -> Natal cusp_6",
+      "formula": "Directed saturn -> Natal cusp_6",
+      "rule": "saturn_to_cusp_6",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "Saturn",
+      "display_target": "cusp_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_6_to_saturn",
+      "title": "Directed cusp_6 -> Natal saturn",
+      "formula": "Directed cusp_6 -> Natal saturn",
+      "rule": "cusp_6_to_saturn",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "Saturn",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_cusp_10",
+      "title": "Directed saturn -> Natal cusp_10",
+      "formula": "Directed saturn -> Natal cusp_10",
+      "rule": "saturn_to_cusp_10",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "Saturn",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_10_to_saturn",
+      "title": "Directed cusp_10 -> Natal saturn",
+      "formula": "Directed cusp_10 -> Natal saturn",
+      "rule": "cusp_10_to_saturn",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "Saturn",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_house_element_6",
+      "title": "Directed saturn -> Natal house_element_6",
+      "formula": "Directed saturn -> Natal house_element_6",
+      "rule": "saturn_to_house_element_6",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "Saturn",
+      "display_target": "house_element_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_6_to_saturn",
+      "title": "Directed house_element_6 -> Natal saturn",
+      "formula": "Directed house_element_6 -> Natal saturn",
+      "rule": "house_element_6_to_saturn",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "Saturn",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_house_element_10",
+      "title": "Directed saturn -> Natal house_element_10",
+      "formula": "Directed saturn -> Natal house_element_10",
+      "rule": "saturn_to_house_element_10",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "Saturn",
+      "display_target": "house_element_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_10_to_saturn",
+      "title": "Directed house_element_10 -> Natal saturn",
+      "formula": "Directed house_element_10 -> Natal saturn",
+      "rule": "house_element_10_to_saturn",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "Saturn",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_house_element_2",
+      "title": "Directed ruler_6 -> Natal house_element_2",
+      "formula": "Directed ruler_6 -> Natal house_element_2",
+      "rule": "ruler_6_to_house_element_2",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "house_element_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_2_to_ruler_6",
+      "title": "Directed house_element_2 -> Natal ruler_6",
+      "formula": "Directed house_element_2 -> Natal ruler_6",
+      "rule": "house_element_2_to_ruler_6",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "ruler_6",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_10_to_house_element_2",
+      "title": "Directed ruler_10 -> Natal house_element_2",
+      "formula": "Directed ruler_10 -> Natal house_element_2",
+      "rule": "ruler_10_to_house_element_2",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "house_element_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_2_to_ruler_10",
+      "title": "Directed house_element_2 -> Natal ruler_10",
+      "formula": "Directed house_element_2 -> Natal ruler_10",
+      "rule": "house_element_2_to_ruler_10",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "ruler_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_10_to_house_element_2",
+      "title": "Directed cusp_10 -> Natal house_element_2",
+      "formula": "Directed cusp_10 -> Natal house_element_2",
+      "rule": "cusp_10_to_house_element_2",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "house_element_2",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_2_to_cusp_10",
+      "title": "Directed house_element_2 -> Natal cusp_10",
+      "formula": "Directed house_element_2 -> Natal cusp_10",
+      "rule": "house_element_2_to_cusp_10",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal profession/work/career change v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-06-04. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "cusp_10",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    }
+  ],
+  "notes": "Draft V2 card imported from Ekaterina pack on 2026-06-04. Explicit expert/test mode only. Production defaults remain unchanged.",
+  "draft_import_report": {
+    "source_files": [
+      "C:\\Users\\user\\.codex\\attachments\\0ad5b16d-26b5-433c-a570-f0eb27edbc69\\pasted-text.txt"
+    ],
+    "source_formula_counts_header": {
+      "golden": 34,
+      "supporting": 46,
+      "context": 26,
+      "total": 106
+    },
+    "parsed_entries_count": 107,
+    "imported_formula_count": 106,
+    "imported_tier_counts": {
+      "golden": 34,
+      "supporting": 46,
+      "context": 26,
+      "ambiguity_risk": 0
+    },
+    "effective_direction_rules_count": 106,
+    "effective_tier_counts": {
+      "golden": 34,
+      "supporting": 46,
+      "context": 26,
+      "ambiguity_risk": 0
+    },
+    "duplicate_groups_count": 1,
+    "collapsed_duplicate_entries": 1,
+    "malformed_entries_count": 0,
+    "skipped_malformed_blocks": [],
+    "duplicates_report": [
+      {
+        "rule_id": "cusp_1_to_jupiter",
+        "kept_formula": "Directed cusp_1 -> Natal jupiter",
+        "kept_priority": "golden",
+        "skipped_formula": "Directed cusp_1 -> Natal jupiter",
+        "skipped_priority": "golden",
+        "resolution": "kept_first_exact_duplicate"
+      }
+    ],
+    "recoverable_candidates": [],
+    "conflicts_left_for_review": false,
+    "selector_tokens_detected": [
+      "cusp_1",
+      "cusp_10",
+      "cusp_2",
+      "cusp_6",
+      "house_element_10",
+      "house_element_2",
+      "house_element_6",
+      "jupiter",
+      "ruler_1",
+      "ruler_10",
+      "ruler_2",
+      "ruler_6",
+      "saturn",
+      "sun",
+      "uranus"
+    ],
+    "production_default_changed": false,
+    "explicit_selection_only": true,
+    "event_type_binding": "profession_change"
+  }
+}
