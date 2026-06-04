@@ -281,3 +281,11 @@ def test_main_ui_has_horoscope_followup_actions_for_llm_cta() -> None:
     assert 'setActiveFollowUpButton(followUpMode);' in html
     assert 'followup-btn-active' in html
     assert "ключевые рекомендации" in html.lower()
+def test_main_ui_keeps_legacy_raw_api_hook_hidden_without_breaking_module_bootstrap() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert "export function toggleRawApi()" in html
+    assert 'toggleApiRawBtnEl?.classList.add("hidden");' in html
+    assert 'apiRawWrapEl?.classList.add("hidden");' in html

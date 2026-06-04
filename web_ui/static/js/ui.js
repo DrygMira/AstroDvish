@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: ui.
-import { chartPanelEl, expertWrapEl, generateDebugBoxEl, geocodeDebugBoxEl, llmOverlayEl, llmOverlayElapsedEl, llmOverlayMessageEl, modalEl, rdStatusEl, reStatusEl, rectDialogPanelEl, rectEventsPanelEl, rectPanelEl, rectStatusEl, rpStatusEl, statusEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeContentEl, techModeHintEl, techModeToggleBtnEl, techPanelsWrapEl, toggleExpertBtnEl, wizardPanelEl, wzCurrentDataSummaryEl, wzProStatusEl, wzStatusEl } from "./dom.js";
+import { apiRawWrapEl, chartPanelEl, expertWrapEl, generateDebugBoxEl, geocodeDebugBoxEl, llmOverlayEl, llmOverlayElapsedEl, llmOverlayMessageEl, modalEl, rdStatusEl, reStatusEl, rectDialogPanelEl, rectEventsPanelEl, rectPanelEl, rectStatusEl, rpStatusEl, statusEl, tabChartBtnEl, tabRectBtnEl, tabRectDialogBtnEl, tabRectEventsBtnEl, tabWizardBtnEl, techModeContentEl, techModeHintEl, techModeToggleBtnEl, techPanelsWrapEl, toggleApiRawBtnEl, toggleExpertBtnEl, wizardPanelEl, wzCurrentDataSummaryEl, wzProStatusEl, wzStatusEl } from "./dom.js";
 import { appState, sharedBirthContext } from "./state.js";
 import { normalizeCoordinateNumber, parseDmsCoordinate } from "./validation.js";
 import { formatElapsedDuration, normalizeLlmReason } from "./format.js";
@@ -97,6 +97,11 @@ import { generate } from "./chart.js";
       toggleExpertBtnEl.textContent = hiddenNow
         ? "Показать экспертную таблицу"
         : "Скрыть экспертную таблицу";
+    }
+
+    export function toggleRawApi() {
+      apiRawWrapEl?.classList.add("hidden");
+      toggleApiRawBtnEl?.classList.add("hidden");
     }
 
     export function setGenerateTechnicalDebug(payload) {
@@ -220,3 +225,5 @@ import { generate } from "./chart.js";
         el.addEventListener("blur", run);
       });
     }
+
+    toggleRawApi();
