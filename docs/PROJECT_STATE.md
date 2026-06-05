@@ -975,3 +975,57 @@ Every future report must include:
     - profession explicit V2
     - marriage explicit V2
     - marriage v1/v2 comparison
+
+## 41. Live Multi-Card V2 Deploy Verified (2026-06-05)
+- deployed runtime commit:
+  - `40b0188`
+  - message: `Add expert multi-card V2 rectification flow`
+- live target:
+  - `http://185.250.150.192/`
+- rollback backup on server:
+  - `/opt/astrodvish_backups/predeploy_20260604_135345_ea530ed.tgz`
+  - newer rolling backup also present:
+    - `/opt/astrodvish_backups/predeploy_20260605_165545_40b0188.tgz`
+- live public smoke:
+  - `/health = 200`
+  - ordinary chart `/api/generate`:
+    - `chart_status = ok`
+    - `llm_status = ok`
+    - manual timezone preserved in response
+  - Pro default child_birth:
+    - `formula_refinement_results.card_id = RECT_CHILD_BIRTH_001`
+  - Pro default marriage_start:
+    - `formula_refinement_results.card_id = RECT_MARRIAGE_UNION_001`
+  - Pro explicit profession draft:
+    - `formula_refinement_results.card_id = RECT_PROFESSION_CHANGE_002_DRAFT`
+  - Pro explicit marriage draft:
+    - `formula_refinement_results.card_id = RECT_MARRIAGE_UNION_002_DRAFT`
+  - marriage v1/v2 comparison:
+    - `enabled = true`
+    - baseline = `RECT_MARRIAGE_UNION_001`
+    - selected = `RECT_MARRIAGE_UNION_002_DRAFT`
+  - multi-card expert mode:
+    - `formula_multi_card_report.enabled = true`
+    - selected cards:
+      - `RECT_CHILD_BIRTH_002_DRAFT`
+      - `RECT_MARRIAGE_UNION_002_DRAFT`
+      - `RECT_PROFESSION_CHANGE_002_DRAFT`
+    - `card_contribution_audit = 3`
+    - `event_type_contribution = 3`
+- UI/served asset proof:
+  - root HTML contains:
+    - `rpFormulaCardId`
+    - `All relevant V2 draft cards`
+    - `V2 multi-card report`
+  - served `static/js/pro.js` contains:
+    - `RECT_PROFESSION_CHANGE_002_DRAFT`
+    - `RECT_MARRIAGE_UNION_002_DRAFT`
+- safety confirmation:
+  - draft cards still require explicit selection
+  - production defaults unchanged
+  - no raw `502/504/DNS` errors observed in deploy smoke
+- next step:
+  - expert live review by Ekaterina on:
+    - profession standalone V2 draft
+    - marriage v1/v2 comparison
+    - combined multi-card V2 report
