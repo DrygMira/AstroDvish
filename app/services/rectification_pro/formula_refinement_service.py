@@ -9,7 +9,7 @@ from app.models.rectification_pro_models import ProAscWindow, RectificationProRu
 from app.models.request_models import ChartRequest
 from app.services.ephemeris_service import EphemerisService
 from app.services.rectification_formula.formula_test_mode_service import FormulaTestModeService
-from app.services.rectification_pro.timezone_context import resolve_pro_timezone
+from app.services.rectification_pro.timezone_context import resolve_pro_timezone_context
 
 
 class FormulaRefinementService:
@@ -24,7 +24,14 @@ class FormulaRefinementService:
         self.ephemeris_service = ephemeris_service
         self.formula_test_mode_service = formula_test_mode_service
 
-    def refine(self, payload: RectificationProRunRequest, *, card_id: str | None = None) -> dict[str, Any]:
+    def refine(
+        self,
+        payload: RectificationProRunRequest,
+        *,
+        card_id: str | None = None,
+        card_ids: list[str] | None = None,
+    ) -> dict[str, Any]:
+        selected_card_ids = self._normalize_selected_card_ids(card_id=card_id, card_ids=card_ids)
         if not payload.settings.formula_refinement_enabled:
             return {
                 "enabled": False,
@@ -41,10 +48,16 @@ class FormulaRefinementService:
                     "inside_working_time_range": False,
                     "evaluation": None,
                 },
+                "selected_card_ids": selected_card_ids,
+                "cards": [],
+                "multi_card_enabled": len(selected_card_ids) > 1,
                 "legacy_mode": True,
             }
 
-        timezone_info, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
+        timezone_context = resolve_pro_timezone_context(payload)
+        timezone_info = timezone_context.timezone_info
+        timezone_used = timezone_context.timezone_name
+        timezone_offset_used = timezone_context.timezone_offset
         candidates: list[dict[str, Any]] = []
         step_seconds = payload.settings.formula_refinement_step_seconds
         for window in payload.asc_windows:
@@ -68,10 +81,14 @@ class FormulaRefinementService:
                     payload=payload,
                     chart=chart,
                     card_id=card_id,
+                    card_ids=selected_card_ids,
                     candidate_time_local=candidate_time_local,
                     candidate_time_utc=candidate_time_utc,
                     timezone_used=timezone_used,
                     timezone_offset_used=timezone_offset_used,
+                    timezone_source=timezone_context.timezone_source,
+                    coordinates_used=timezone_context.coordinates_used,
+                    payload_path=timezone_context.payload_path,
                 )
                 candidate_result = self._score_candidate(
                     candidate_time_local=candidate_time_local,
@@ -81,6 +98,9 @@ class FormulaRefinementService:
                     chart_response=chart.model_dump(mode="json"),
                     timezone_used=timezone_used,
                     timezone_offset_used=timezone_offset_used,
+                    timezone_source=timezone_context.timezone_source,
+                    coordinates_used=timezone_context.coordinates_used,
+                    payload_path=timezone_context.payload_path,
                 )
                 candidates.append(candidate_result)
 
@@ -102,7 +122,7 @@ class FormulaRefinementService:
             working_time_ranges=working_time_ranges,
             best_candidate=best_candidate,
         )
-        reference_time = self._build_reference_time(payload=payload, card_id=card_id)
+        reference_time = self._build_reference_time(payload=payload, card_id=card_id, card_ids=selected_card_ids)
         if working_time_ranges and reference_time.get("provided"):
             provided = str(reference_time["provided"])
             reference_time["inside_working_time_range"] = any(
@@ -116,10 +136,18 @@ class FormulaRefinementService:
             "direction_method": self.formula_test_mode_service.default_direction_method,
             "timezone_used": timezone_used,
             "timezone_offset_used": timezone_offset_used,
+            "timezone_source": timezone_context.timezone_source,
+            "timezone_name": timezone_context.timezone_name,
+            "utc_offset": timezone_context.timezone_offset,
+            "coordinates_used": timezone_context.coordinates_used,
+            "payload_path": timezone_context.payload_path,
             "card_id": card_meta.get("card_id"),
             "card_version": card_meta.get("card_version"),
             "formulas_count": card_meta.get("formulas_count"),
             "priority_counts": card_meta.get("priority_counts", {}),
+            "selected_card_ids": card_meta.get("selected_card_ids", selected_card_ids),
+            "cards": card_meta.get("cards", []),
+            "multi_card_enabled": card_meta.get("multi_card_enabled", len(selected_card_ids) > 1),
             "scanned_candidates_count": len(candidates),
             "top_candidates": [self._build_public_candidate_summary(item) for item in top_candidates],
             "best_candidate": best_candidate,
@@ -136,40 +164,58 @@ class FormulaRefinementService:
         payload: RectificationProRunRequest,
         chart,
         card_id: str | None = None,
+        card_ids: list[str] | None = None,
         candidate_time_local: str,
         candidate_time_utc: str,
         timezone_used: str,
         timezone_offset_used: str | None,
+        timezone_source: str,
+        coordinates_used: dict[str, float],
+        payload_path: str,
     ) -> list[dict[str, Any]]:
         results: list[dict[str, Any]] = []
         for event in payload.events:
             normalized_event_type = self._normalize_formula_event_type(str(event.event_type.value))
             if normalized_event_type is None:
                 continue
-            try:
-                result = self.formula_test_mode_service.evaluate(
-                    event_type=normalized_event_type,
-                    context={
-                        "chart_response": chart.model_dump(mode="json"),
-                        "candidate_birth_date": payload.birth_date_local.isoformat(),
-                        "candidate_birth_datetime_local": candidate_time_local,
-                        "candidate_birth_datetime_utc": candidate_time_utc,
-                        "selected_candidate_time": candidate_time_local,
-                        "chart_build_time": candidate_time_local,
-                        "natal_houses_time": candidate_time_local,
-                        "rulers_resolved_time": candidate_time_local,
-                        "house_elements_resolved_time": candidate_time_local,
-                        "directed_points_time": candidate_time_local,
-                        "timezone_used": timezone_used,
-                        "timezone_offset_used": timezone_offset_used,
-                        "event": event.model_dump(mode="json"),
-                        "direction_method": "symbolic_1deg_per_year",
-                    },
-                    card_id=card_id,
-                )
-            except ValueError:
-                continue
-            results.append(result)
+            event_card_ids = self._resolve_selected_card_ids_for_event(
+                event_type=normalized_event_type,
+                selected_card_ids=card_ids,
+            )
+            explicit_card_ids = event_card_ids or ([card_id] if card_id else [None])
+            for explicit_card_id in explicit_card_ids:
+                try:
+                    result = self.formula_test_mode_service.evaluate(
+                        event_type=normalized_event_type,
+                        context={
+                            "chart_response": chart.model_dump(mode="json"),
+                            "candidate_birth_date": payload.birth_date_local.isoformat(),
+                            "candidate_birth_datetime_local": candidate_time_local,
+                            "candidate_birth_datetime_utc": candidate_time_utc,
+                            "selected_candidate_time": candidate_time_local,
+                            "chart_build_time": candidate_time_local,
+                            "natal_houses_time": candidate_time_local,
+                            "rulers_resolved_time": candidate_time_local,
+                            "house_elements_resolved_time": candidate_time_local,
+                            "directed_points_time": candidate_time_local,
+                            "timezone_used": timezone_used,
+                            "timezone_offset_used": timezone_offset_used,
+                            "timezone_source": timezone_source,
+                            "timezone_name": timezone_used,
+                            "utc_offset": timezone_offset_used,
+                            "coordinates_used": coordinates_used,
+                            "birth_date_local": payload.birth_date_local.isoformat(),
+                            "birth_time_local": candidate_time_local,
+                            "rectification_stage": "pro_formula_refinement",
+                            "payload_path": payload_path,
+                            "event": event.model_dump(mode="json"),
+                            "direction_method": "symbolic_1deg_per_year",
+                        },
+                        card_id=explicit_card_id,
+                    )
+                except ValueError:
+                    continue
+                results.append(result)
         return results
 
     @staticmethod
@@ -193,6 +239,8 @@ class FormulaRefinementService:
             "top_rejected_reasons": candidate.get("top_rejected_reasons") or [],
             "unresolved_source_summary": candidate.get("unresolved_source_summary") or [],
             "event_contribution_audit": candidate.get("event_contribution_audit") or [],
+            "card_contribution_audit": candidate.get("card_contribution_audit") or [],
+            "event_type_contribution": candidate.get("event_type_contribution") or [],
             "selection_reason": candidate.get("selection_reason") or "",
             "source_asc_interval": candidate.get("source_asc_interval") or {},
             "score_breakdown": candidate.get("score_breakdown") or {},
@@ -204,6 +252,8 @@ class FormulaRefinementService:
             "directed_points_time": candidate.get("directed_points_time"),
             "timezone_used": candidate.get("timezone_used"),
             "timezone_offset_used": candidate.get("timezone_offset_used"),
+            "selected_card_ids": candidate.get("selected_card_ids") or [],
+            "multi_card_enabled": bool(candidate.get("multi_card_enabled")),
         }
 
     @staticmethod
@@ -216,6 +266,9 @@ class FormulaRefinementService:
         chart_response: dict[str, Any],
         timezone_used: str,
         timezone_offset_used: str | None,
+        timezone_source: str,
+        coordinates_used: dict[str, float],
+        payload_path: str,
     ) -> dict[str, Any]:
         matched_count = 0
         rejected_count = 0
@@ -229,6 +282,8 @@ class FormulaRefinementService:
         context_matches_by_rule: dict[str, dict[str, Any]] = {}
         ambiguity_matches_by_rule: dict[str, dict[str, Any]] = {}
         event_contribution_audit: list[dict[str, Any]] = []
+        card_contribution: dict[str, dict[str, Any]] = {}
+        event_type_contribution: dict[str, dict[str, Any]] = {}
         rejected_reason_counts: dict[str, int] = {}
         unresolved_source_counts: dict[str, int] = {}
 
@@ -331,9 +386,84 @@ class FormulaRefinementService:
                     "ambiguity_risk_count": len(event_ambiguity_rules),
                 }
             )
+            card_id = str(result.get("card_id") or "unknown")
+            card_item = card_contribution.setdefault(
+                card_id,
+                {
+                    "card_id": card_id,
+                    "card_version": result.get("card_version"),
+                    "formulas_count": result.get("formulas_count"),
+                    "priority_counts": result.get("priority_counts") or {},
+                    "score": 0.0,
+                    "matched_count": 0,
+                    "rejected_count": 0,
+                    "missed_count": 0,
+                    "golden_matched_count": 0,
+                    "supporting_matched_count": 0,
+                    "context_matched_count": 0,
+                    "context_score": 0.0,
+                    "top_matched_rules": [],
+                    "top_rejected_reasons": {},
+                },
+            )
+            card_item["score"] = round(float(card_item["score"]) + float(result.get("score") or 0.0), 4)
+            card_item["matched_count"] += len(matched)
+            card_item["rejected_count"] += len(rejected)
+            card_item["missed_count"] += len(missing)
+            card_item["golden_matched_count"] += len(event_golden_rules)
+            card_item["supporting_matched_count"] += len(event_supporting_rules)
+            card_item["context_matched_count"] += len(event_context_rules)
+            card_item["context_score"] = round(float(card_item["context_score"]) + event_context_score, 4)
+            for matched_item in matched:
+                rule_label = (
+                    str(matched_item.get("formula_rule_matched") or "")
+                    or f"{matched_item.get('directed_point')}->{matched_item.get('natal_target')}"
+                )
+                if rule_label and rule_label not in card_item["top_matched_rules"] and len(card_item["top_matched_rules"]) < 5:
+                    card_item["top_matched_rules"].append(rule_label)
+            for rejected_item in rejected:
+                reason = str(rejected_item.get("rejection_reason") or rejected_item.get("reason") or "unknown")
+                card_item["top_rejected_reasons"][reason] = card_item["top_rejected_reasons"].get(reason, 0) + 1
+
+            event_type_key = str(result.get("event_type") or result.get("source_event_type") or "unknown")
+            event_type_item = event_type_contribution.setdefault(
+                event_type_key,
+                {
+                    "event_type": event_type_key,
+                    "score": 0.0,
+                    "matched_count": 0,
+                    "rejected_count": 0,
+                    "missed_count": 0,
+                    "golden_matched_count": 0,
+                    "supporting_matched_count": 0,
+                    "context_matched_count": 0,
+                    "context_score": 0.0,
+                    "card_ids": [],
+                },
+            )
+            event_type_item["score"] = round(float(event_type_item["score"]) + float(result.get("score") or 0.0), 4)
+            event_type_item["matched_count"] += len(matched)
+            event_type_item["rejected_count"] += len(rejected)
+            event_type_item["missed_count"] += len(missing)
+            event_type_item["golden_matched_count"] += len(event_golden_rules)
+            event_type_item["supporting_matched_count"] += len(event_supporting_rules)
+            event_type_item["context_matched_count"] += len(event_context_rules)
+            event_type_item["context_score"] = round(float(event_type_item["context_score"]) + event_context_score, 4)
+            if card_id not in event_type_item["card_ids"]:
+                event_type_item["card_ids"].append(card_id)
 
         total_event_score = sum(float(item["score"]) for item in event_contribution_audit) or 0.0
         for item in event_contribution_audit:
+            contribution = 0.0 if total_event_score <= 0 else round((float(item["score"]) / total_event_score) * 100.0, 2)
+            item["contribution_to_final_candidate"] = contribution
+        for item in card_contribution.values():
+            contribution = 0.0 if total_event_score <= 0 else round((float(item["score"]) / total_event_score) * 100.0, 2)
+            item["contribution_to_final_candidate"] = contribution
+            item["top_rejected_reasons"] = [
+                {"reason": reason, "count": count}
+                for reason, count in sorted(item["top_rejected_reasons"].items(), key=lambda pair: (-pair[1], pair[0]))[:5]
+            ]
+        for item in event_type_contribution.values():
             contribution = 0.0 if total_event_score <= 0 else round((float(item["score"]) / total_event_score) * 100.0, 2)
             item["contribution_to_final_candidate"] = contribution
 
@@ -425,7 +555,11 @@ class FormulaRefinementService:
                 for reason, count in sorted(unresolved_source_counts.items(), key=lambda item: (-item[1], item[0]))[:5]
             ],
             "event_contribution_audit": event_contribution_audit,
+            "card_contribution_audit": list(card_contribution.values()),
+            "event_type_contribution": list(event_type_contribution.values()),
             "selection_reason": "",
+            "selected_card_ids": sorted(card_contribution),
+            "multi_card_enabled": len(card_contribution) > 1,
             "selected_candidate_time": candidate_time_local,
             "chart_build_time": candidate_time_local,
             "natal_houses_time": candidate_time_local,
@@ -434,6 +568,11 @@ class FormulaRefinementService:
             "directed_points_time": candidate_time_local,
             "timezone_used": timezone_used,
             "timezone_offset_used": timezone_offset_used,
+            "timezone_source": timezone_source,
+            "timezone_name": timezone_used,
+            "utc_offset": timezone_offset_used,
+            "coordinates_used": coordinates_used,
+            "payload_path": payload_path,
             "chart_response": chart_response,
         }
 
@@ -547,12 +686,16 @@ class FormulaRefinementService:
         *,
         payload: RectificationProRunRequest,
         card_id: str | None = None,
+        card_ids: list[str] | None = None,
     ) -> dict[str, Any]:
         provided = payload.settings.formula_reference_time_local
         if not provided:
             return {"provided": None, "inside_working_time_range": False, "evaluation": None}
 
-        timezone_info, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
+        timezone_context = resolve_pro_timezone_context(payload)
+        timezone_info = timezone_context.timezone_info
+        timezone_used = timezone_context.timezone_name
+        timezone_offset_used = timezone_context.timezone_offset
         local_dt = datetime.fromisoformat(provided)
         utc_dt = local_dt.replace(tzinfo=timezone_info).astimezone(timezone.utc)
         chart = self.ephemeris_service.calculate_chart(
@@ -569,10 +712,14 @@ class FormulaRefinementService:
             payload=payload,
             chart=chart,
             card_id=card_id,
+            card_ids=card_ids,
             candidate_time_local=provided,
             candidate_time_utc=utc_dt.isoformat(timespec="seconds").replace("+00:00", "Z"),
             timezone_used=timezone_used,
             timezone_offset_used=timezone_offset_used,
+            timezone_source=timezone_context.timezone_source,
+            coordinates_used=timezone_context.coordinates_used,
+            payload_path=timezone_context.payload_path,
         )
         source_window = payload.asc_windows[0] if payload.asc_windows else ProAscWindow(
             start_local=provided,
@@ -588,6 +735,9 @@ class FormulaRefinementService:
             chart_response=chart.model_dump(mode="json"),
             timezone_used=timezone_used,
             timezone_offset_used=timezone_offset_used,
+            timezone_source=timezone_context.timezone_source,
+            coordinates_used=timezone_context.coordinates_used,
+            payload_path=timezone_context.payload_path,
         )
         evaluation.pop("chart_response", None)
         return {"provided": provided, "inside_working_time_range": False, "evaluation": evaluation}
@@ -599,13 +749,76 @@ class FormulaRefinementService:
         formula_results = candidate.get("formula_test_mode_results")
         if not isinstance(formula_results, list) or not formula_results:
             return {}
+        cards_by_id: dict[str, dict[str, Any]] = {}
+        priority_counts = {"golden": 0, "supporting": 0, "context": 0, "ambiguity_risk": 0}
+        formulas_count = 0
+        for item in formula_results:
+            if not isinstance(item, dict):
+                continue
+            card_id = str(item.get("card_id") or "")
+            if not card_id:
+                continue
+            if card_id not in cards_by_id:
+                cards_by_id[card_id] = {
+                    "card_id": card_id,
+                    "card_version": item.get("card_version"),
+                    "formulas_count": item.get("formulas_count"),
+                    "priority_counts": item.get("priority_counts") or {},
+                }
+                formulas_count += int(item.get("formulas_count") or 0)
+                for tier, count in (item.get("priority_counts") or {}).items():
+                    priority_counts[str(tier)] = priority_counts.get(str(tier), 0) + int(count or 0)
+        cards = list(cards_by_id.values())
+        if len(cards) > 1:
+            return {
+                "card_id": "MULTI_CARD_V2_EXPERT",
+                "card_version": "multi_card_v2_expert",
+                "formulas_count": formulas_count,
+                "priority_counts": priority_counts,
+                "selected_card_ids": [item.get("card_id") for item in cards if item.get("card_id")],
+                "cards": cards,
+                "multi_card_enabled": True,
+            }
         first = formula_results[0] if isinstance(formula_results[0], dict) else {}
         return {
             "card_id": first.get("card_id"),
             "card_version": first.get("card_version"),
             "formulas_count": first.get("formulas_count"),
             "priority_counts": first.get("priority_counts") or {},
+            "selected_card_ids": [first.get("card_id")] if first.get("card_id") else [],
+            "cards": cards,
+            "multi_card_enabled": False,
         }
+
+    @staticmethod
+    def _normalize_selected_card_ids(*, card_id: str | None, card_ids: list[str] | None) -> list[str]:
+        normalized: list[str] = []
+        seen: set[str] = set()
+        for raw in [*(card_ids or []), card_id]:
+            value = str(raw or "").strip()
+            if not value or value in seen:
+                continue
+            seen.add(value)
+            normalized.append(value)
+        return normalized
+
+    def _resolve_selected_card_ids_for_event(
+        self,
+        *,
+        event_type: str,
+        selected_card_ids: list[str] | None,
+    ) -> list[str]:
+        if not selected_card_ids:
+            return []
+        matched: list[str] = []
+        for selected_card_id in selected_card_ids:
+            try:
+                card = self.formula_test_mode_service.loader.load_card(selected_card_id)
+            except Exception:
+                continue
+            if str(card.event_type) == str(event_type):
+                matched.append(selected_card_id)
+        return matched
 
     @staticmethod
     def _build_working_time_ranges(candidates: list[dict[str, Any]], step_seconds: int) -> list[dict[str, Any]]:

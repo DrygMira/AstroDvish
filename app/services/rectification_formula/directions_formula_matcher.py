@@ -32,27 +32,33 @@ ASPECT_ANGLES: dict[str, float] = {
 }
 MAJOR_ASPECTS: tuple[str, ...] = ("conjunction", "sextile", "square", "trine", "opposition")
 
-SIGN_RULERS: dict[str, list[dict[str, str]]] = {
-    "Aries": [{"name": "mars", "ruler_type": "primary_ruler"}],
-    "Taurus": [{"name": "venus", "ruler_type": "primary_ruler"}],
-    "Gemini": [{"name": "mercury", "ruler_type": "primary_ruler"}],
-    "Cancer": [{"name": "moon", "ruler_type": "primary_ruler"}],
-    "Leo": [{"name": "sun", "ruler_type": "primary_ruler"}],
-    "Virgo": [{"name": "mercury", "ruler_type": "primary_ruler"}],
-    "Libra": [{"name": "venus", "ruler_type": "primary_ruler"}],
-    "Scorpio": [
-        {"name": "mars", "ruler_type": "primary_ruler"},
-        {"name": "pluto", "ruler_type": "modern_ruler"},
+SIGN_RULERS: dict[str, list[dict[str, Any]]] = {
+    "Aries": [{"name": "mars", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True}],
+    "Taurus": [{"name": "venus", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True}],
+    "Gemini": [{"name": "mercury", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True}],
+    "Cancer": [{"name": "moon", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True}],
+    "Leo": [{"name": "sun", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True}],
+    "Virgo": [
+        {"name": "proserpina", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True},
+        {"name": "mercury", "ruler_type": "traditional_ruler", "ruler_system": "western_secondary", "default_project": False},
     ],
-    "Sagittarius": [{"name": "jupiter", "ruler_type": "primary_ruler"}],
-    "Capricorn": [{"name": "saturn", "ruler_type": "primary_ruler"}],
+    "Libra": [
+        {"name": "chiron", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True},
+        {"name": "venus", "ruler_type": "traditional_ruler", "ruler_system": "western_secondary", "default_project": False},
+    ],
+    "Scorpio": [
+        {"name": "pluto", "ruler_type": "modern_ruler", "ruler_system": "project_primary", "default_project": True},
+        {"name": "mars", "ruler_type": "traditional_ruler", "ruler_system": "western_secondary", "default_project": False},
+    ],
+    "Sagittarius": [{"name": "jupiter", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True}],
+    "Capricorn": [{"name": "saturn", "ruler_type": "primary_ruler", "ruler_system": "project_primary", "default_project": True}],
     "Aquarius": [
-        {"name": "saturn", "ruler_type": "primary_ruler"},
-        {"name": "uranus", "ruler_type": "modern_ruler"},
+        {"name": "uranus", "ruler_type": "modern_ruler", "ruler_system": "project_primary", "default_project": True},
+        {"name": "saturn", "ruler_type": "traditional_ruler", "ruler_system": "western_secondary", "default_project": False},
     ],
     "Pisces": [
-        {"name": "jupiter", "ruler_type": "primary_ruler"},
-        {"name": "neptune", "ruler_type": "modern_ruler"},
+        {"name": "neptune", "ruler_type": "modern_ruler", "ruler_system": "project_primary", "default_project": True},
+        {"name": "jupiter", "ruler_type": "traditional_ruler", "ruler_system": "western_secondary", "default_project": False},
     ],
 }
 
@@ -65,6 +71,7 @@ class ResolvedPoint:
     degree: float
     role: str | None = None
     ruler_type: str | None = None
+    ruler_system: str | None = None
 
 
 class DirectionsFormulaMatcher:
@@ -186,6 +193,7 @@ class DirectionsFormulaMatcher:
                     "point_name": point.key,
                     "role": point.role,
                     "ruler_type": point.ruler_type,
+                    "ruler_system": point.ruler_system,
                     "weight": rule.weight,
                 }
                 for point in directed_points
@@ -195,6 +203,7 @@ class DirectionsFormulaMatcher:
                     "point_name": point.key,
                     "role": point.role,
                     "ruler_type": point.ruler_type,
+                    "ruler_system": point.ruler_system,
                     "weight": rule.weight,
                 }
                 for point in natal_points
@@ -268,7 +277,9 @@ class DirectionsFormulaMatcher:
                     "source_role": source.role,
                     "target_role": target.role,
                     "source_ruler_type": source.ruler_type,
+                    "source_ruler_system": source.ruler_system,
                     "target_ruler_type": target.ruler_type,
+                    "target_ruler_system": target.ruler_system,
                     "source_type": self._point_type(source.key),
                     "target_type": self._point_type(target.key),
                     "source_coordinate_type": "directed",
@@ -293,10 +304,12 @@ class DirectionsFormulaMatcher:
                     directed_point=source.key,
                     directed_point_role=source.role,
                     directed_point_ruler_type=source.ruler_type,
+                    directed_point_ruler_system=source.ruler_system,
                     directed_source_longitude=round(source.degree, 4),
                     natal_target=target.key,
                     natal_target_role=target.role,
                     natal_target_ruler_type=target.ruler_type,
+                    natal_target_ruler_system=target.ruler_system,
                     natal_target_longitude=round(target.degree, 4),
                     aspect_type=aspect_name,
                     actual_angle=round(actual_angle, 4),
@@ -451,6 +464,7 @@ class DirectionsFormulaMatcher:
         coordinate_kind: Literal["directed", "natal"],
         role: str | None = None,
         ruler_type: str | None = None,
+        ruler_system: str | None = None,
     ) -> list[ResolvedPoint]:
         natal_degree = direction_result.natal_coordinate(base_key)
         degree = self._coordinate(direction_result=direction_result, base_key=base_key, coordinate_kind=coordinate_kind)
@@ -464,6 +478,7 @@ class DirectionsFormulaMatcher:
                 degree=float(degree),
                 role=role,
                 ruler_type=ruler_type,
+                ruler_system=ruler_system,
             )
         ]
 
@@ -484,7 +499,11 @@ class DirectionsFormulaMatcher:
         for ruler_info in rulers:
             ruler_name = ruler_info["name"]
             ruler_type = ruler_info["ruler_type"]
+            ruler_system = str(ruler_info.get("ruler_system") or "project_primary")
+            default_project = bool(ruler_info.get("default_project"))
             if allowed_ruler_types and ruler_type not in allowed_ruler_types:
+                continue
+            if not allowed_ruler_types and not default_project:
                 continue
             points.extend(
                 self._point_from_base_key(
@@ -494,6 +513,7 @@ class DirectionsFormulaMatcher:
                     coordinate_kind=coordinate_kind,
                     role=f"ruler_{house_num}",
                     ruler_type=ruler_type,
+                    ruler_system=ruler_system,
                 )
             )
         return points
@@ -614,12 +634,15 @@ class DirectionsFormulaMatcher:
             for candidate in SIGN_RULERS.get(cusp.sign_name_en, []):
                 point_key = f"ruler_{house_num}:{candidate['name']}"
                 ruler_type = candidate["ruler_type"]
+                ruler_system = str(candidate.get("ruler_system") or "project_primary")
+                default_project = bool(candidate.get("default_project"))
                 if allowed_ruler_types and ruler_type not in allowed_ruler_types:
                     debug_items.append(
                         {
                             "selector": selector,
                             "point_name": point_key,
                             "ruler_type": ruler_type,
+                            "ruler_system": ruler_system,
                             "weight": rule_weight,
                             "status": "excluded",
                             "include_reason": None,
@@ -628,11 +651,27 @@ class DirectionsFormulaMatcher:
                         }
                     )
                     continue
+                if not allowed_ruler_types and not default_project:
+                    debug_items.append(
+                        {
+                            "selector": selector,
+                            "point_name": point_key,
+                            "ruler_type": ruler_type,
+                            "ruler_system": ruler_system,
+                            "weight": rule_weight,
+                            "status": "excluded",
+                            "include_reason": None,
+                            "exclude_reason": "secondary_ruler_not_used_by_default",
+                            "allowed_ruler_types": [],
+                        }
+                    )
+                    continue
                 debug_items.append(
                     {
                         "selector": selector,
                         "point_name": point_key,
                         "ruler_type": ruler_type,
+                        "ruler_system": ruler_system,
                         "weight": rule_weight,
                         "status": "included" if point_key in resolved_keys else "excluded",
                         "include_reason": "cusp_sign_ruler_match" if point_key in resolved_keys else None,

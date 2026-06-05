@@ -152,10 +152,14 @@ import { PRO_METHOD_LABELS, PRO_EVENT_TYPE_LABELS } from "./constants.js";
     export function getHeavyProRunWarning(payload) {
       const eventsCount = Array.isArray(payload?.events) ? payload.events.length : 0;
       const formulaCardId = String(payload?.settings?.formula_card_id || "");
+      const multiCardIds = Array.isArray(payload?.settings?.formula_card_ids)
+        ? payload.settings.formula_card_ids.filter(Boolean)
+        : [];
       const isV2Card = formulaCardId.endsWith("_002_DRAFT");
       const isComparison = Array.isArray(payload?.settings?.compare_formula_card_ids)
         && payload.settings.compare_formula_card_ids.length > 1;
-      if ((isV2Card || isComparison) && eventsCount >= 4) {
+      const isMultiCard = multiCardIds.length > 1;
+      if ((isV2Card || isComparison || isMultiCard) && eventsCount >= 3) {
         return "V2 comparison may take up to 2 minutes.";
       }
       return "";

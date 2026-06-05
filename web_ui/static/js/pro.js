@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: pro.
-import { expertWrapEl, horoscopeBoxEl, modalEl, rdSiderealModeEl, rdZodiacModeEl, rpBestCandidatesEl, rpCompareV1V2El, rpConfidenceEl, rpExplainBodyEl, rpFormulaCardIdEl, rpFormulaComparisonEl, rpMethodsSummaryEl, rpWarningsEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleExpertBtnEl } from "./dom.js";
+import { expertWrapEl, horoscopeBoxEl, modalEl, rdSiderealModeEl, rdZodiacModeEl, rpBestCandidatesEl, rpCompareV1V2El, rpConfidenceEl, rpExplainBodyEl, rpFormulaCardIdEl, rpFormulaComparisonEl, rpFormulaMultiCardEl, rpMethodsSummaryEl, rpUseAllRelevantV2CardsEl, rpWarningsEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleExpertBtnEl } from "./dom.js";
 import { appState, rectDialogState, rectEventsState, rectificationWizardState, sharedBirthContext } from "./state.js";
 import { normalizeProEventCard } from "./validation.js";
 import { extractProMatchDetails, formatEventTypeLabel, formatJsonCompact, formatMethodLabel, formatPriorityCounts, formatRejectedReasonsCompact, formatRuleListCompact, formatUnresolvedSummaryCompact, getHeavyProRunWarning, renderTable } from "./format.js";
@@ -16,6 +16,27 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         RECT_MARRIAGE_UNION_002_DRAFT: ["RECT_MARRIAGE_UNION_001", "RECT_MARRIAGE_UNION_002_DRAFT"],
       };
       return pairs[normalized] || [];
+    }
+
+    function resolveRelevantV2DraftCardIds(events) {
+      const list = Array.isArray(events) ? events : [];
+      const selected = [];
+      const push = (cardId) => {
+        if (cardId && !selected.includes(cardId)) selected.push(cardId);
+      };
+      list.forEach((event) => {
+        const eventType = String(event?.event_type || "").trim();
+        if (eventType === "child_birth" || eventType === "children_birth") {
+          push("RECT_CHILD_BIRTH_002_DRAFT");
+        }
+        if (eventType === "marriage_start" || eventType === "marriage_union") {
+          push("RECT_MARRIAGE_UNION_002_DRAFT");
+        }
+        if (eventType === "profession_change") {
+          push("RECT_PROFESSION_CHANGE_002_DRAFT");
+        }
+      });
+      return selected;
     }
 
     export function buildProAscWindowsFromStage1() {
@@ -562,6 +583,46 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       rpFormulaComparisonEl.textContent = lines.join("\n");
     }
 
+    export function renderFormulaMultiCardReport(data) {
+      const report = data?.formula_multi_card_report || null;
+      rpFormulaMultiCardEl.textContent = "";
+      if (!report || !report.enabled) {
+        rpFormulaMultiCardEl.textContent = "formula_multi_card_report не запрошен.";
+        return;
+      }
+
+      const cardAudit = Array.isArray(report.card_contribution_audit) ? report.card_contribution_audit : [];
+      const eventTypeContribution = Array.isArray(report.event_type_contribution) ? report.event_type_contribution : [];
+      const workingRanges = Array.isArray(report.overall_working_ranges) ? report.overall_working_ranges : [];
+      const best = report.overall_best_candidate || {};
+      const lines = [
+        `formula_multi_card_report | selected_card_ids=${(report.selected_card_ids || []).join(", ") || "none"}`,
+        `Overall best candidate | time=${best.candidate_time_local || "n/a"} | score=${best.score ?? "n/a"} | matched/rejected/missed=${best.matched_count ?? "n/a"}/${best.rejected_count ?? "n/a"}/${best.missed_count ?? "n/a"}`,
+        `Overall working ranges: ${workingRanges.length}`,
+      ];
+      workingRanges.forEach((item, idx) => {
+        lines.push(
+          `#${idx + 1}: ${item.start_local || "n/a"} -> ${item.end_local || "n/a"} | best=${item.best_candidate || "n/a"} | golden=${item.golden_matched_count ?? "n/a"} | score=${item.score ?? "n/a"}`
+        );
+      });
+      lines.push("Per-card contribution");
+      cardAudit.forEach((item) => {
+        lines.push(
+          `${item.card_id || "n/a"} | matched/rejected/missed=${item.matched_count ?? "n/a"}/${item.rejected_count ?? "n/a"}/${item.missed_count ?? "n/a"} | golden/supporting/context=${item.golden_matched_count ?? "n/a"}/${item.supporting_matched_count ?? "n/a"}/${item.context_matched_count ?? "n/a"} | context_score=${item.context_score ?? "n/a"} | score=${item.score ?? "n/a"} | contribution=${item.contribution_to_final_candidate ?? "n/a"}`
+        );
+      });
+      lines.push("event_type_contribution");
+      eventTypeContribution.forEach((item) => {
+        lines.push(
+          `${formatEventTypeLabel(item.event_type)} | cards=${Array.isArray(item.card_ids) ? item.card_ids.join(", ") : "n/a"} | matched/rejected/missed=${item.matched_count ?? "n/a"}/${item.rejected_count ?? "n/a"}/${item.missed_count ?? "n/a"} | score=${item.score ?? "n/a"} | contribution=${item.contribution_to_final_candidate ?? "n/a"}`
+        );
+      });
+      lines.push(`top_matched_rules: ${(report.top_matched_rules || []).join("; ") || "none"}`);
+      lines.push(`top_rejected_reasons: ${formatRejectedReasonsCompact(report.top_rejected_reasons)}`);
+      lines.push(`unresolved_source_summary: ${formatUnresolvedSummaryCompact(report.unresolved_source_summary)}`);
+      rpFormulaMultiCardEl.textContent = lines.join("\n");
+    }
+
     export function renderLegacyProConfirmations(data) {
       const methods = data.method_results || {};
       const methodStats = summarizeMethodStats(methods);
@@ -665,6 +726,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
     export function renderProResult(data) {
       const best = Array.isArray(data.best_candidates) ? data.best_candidates : [];
       rpBestCandidatesEl.innerHTML = "";
+      rpFormulaMultiCardEl.textContent = "";
       rpFormulaComparisonEl.textContent = "";
       const refinement = data.formula_refinement_results || null;
       const refinementBest = refinement && refinement.best_candidate ? refinement.best_candidate : null;
@@ -848,6 +910,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         (confidence.explanation ? `<div class="hint">${confidence.explanation}</div>` : "");
 
       renderProConfirmations(data);
+      renderFormulaMultiCardReport(data);
       renderFormulaCardComparison(data);
 
       const warnings = Array.isArray(data.warnings) ? data.warnings : [];
@@ -922,6 +985,9 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       }
 
       const selectedFormulaCardId = rpFormulaCardIdEl.value || null;
+      const selectedMultiCardIds = rpUseAllRelevantV2CardsEl.checked
+        ? resolveRelevantV2DraftCardIds(events)
+        : [];
       const payload = {
         birth_date_local: (sharedBirthContext.birthDateLocal || document.getElementById("rdBirthDate").value || "").split("T")[0],
         latitude: Number(sharedBirthContext.latitude ?? document.getElementById("rdLatitude").value),
@@ -941,7 +1007,8 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         settings: {
           candidate_step_minutes: 5,
           formula_card_id: selectedFormulaCardId,
-          compare_formula_card_ids: rpCompareV1V2El.checked
+          formula_card_ids: selectedMultiCardIds,
+          compare_formula_card_ids: (!selectedMultiCardIds.length && rpCompareV1V2El.checked)
             ? resolveComparisonCardIds(selectedFormulaCardId)
             : [],
           include_directions: true,
@@ -969,6 +1036,9 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       if (!Array.isArray(payload.events) || !payload.events.length) {
         invalidReasons.push("валидные события Stage 2");
       }
+      if (rpUseAllRelevantV2CardsEl.checked && !selectedMultiCardIds.length) {
+        invalidReasons.push("formula_card_ids");
+      }
       if (invalidReasons.length) {
         const humanMsg = `Недостаточно данных для Pro-ректификации: ${invalidReasons.join(", ")}.`;
         setRpStatus(humanMsg);
@@ -977,6 +1047,9 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       }
 
       const heavyProWarning = getHeavyProRunWarning(payload);
+      if (selectedMultiCardIds.length) {
+        rpCompareV1V2El.checked = false;
+      }
       setRpStatus(heavyProWarning || "Запускаем Pro-ректификацию...");
       setWzProStatus(heavyProWarning || "Запускаем Pro-ректификацию...");
       showLlmOverlay(heavyProWarning ? `${heavyProWarning} Запускаем Pro-ректификацию...` : "Запуск Pro-ректификации...");

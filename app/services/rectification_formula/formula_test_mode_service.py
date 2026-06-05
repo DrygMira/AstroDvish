@@ -298,6 +298,14 @@ class FormulaTestModeService:
             "candidate_birth_datetime_utc": context.get("candidate_birth_datetime_utc"),
             "timezone_used": context.get("timezone_used"),
             "timezone_offset_used": context.get("timezone_offset_used"),
+            "timezone_source": context.get("timezone_source"),
+            "timezone_name": context.get("timezone_name"),
+            "utc_offset": context.get("utc_offset"),
+            "coordinates_used": context.get("coordinates_used"),
+            "birth_date_local": context.get("birth_date_local") or context.get("candidate_birth_date"),
+            "birth_time_local": context.get("selected_candidate_time") or context.get("candidate_birth_datetime_local"),
+            "rectification_stage": context.get("rectification_stage"),
+            "payload_path": context.get("payload_path"),
         }
 
     @staticmethod

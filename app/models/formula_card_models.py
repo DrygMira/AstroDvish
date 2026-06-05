@@ -123,10 +123,12 @@ class FormulaAspectMatch(BaseModel):
     directed_point: str
     directed_point_role: str | None = None
     directed_point_ruler_type: str | None = None
+    directed_point_ruler_system: str | None = None
     directed_source_longitude: float | None = None
     natal_target: str
     natal_target_role: str | None = None
     natal_target_ruler_type: str | None = None
+    natal_target_ruler_system: str | None = None
     natal_target_longitude: float | None = None
     aspect_type: str
     actual_angle: float

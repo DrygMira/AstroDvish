@@ -936,3 +936,42 @@ Every future report must include:
   - full pytest: `316 passed, 1 xfailed`
 - current next step:
   - expert live review by Ekaterina for the two new V2 cards and the restored ordinary chart UI path
+
+## 40. Local Multi-Card V2 Layer Ready (2026-06-05, pending deploy)
+- local branch now includes the remaining expert-layer changes for V2:
+  - canonical timezone propagation fixes for direct rectification / chart-to-rectification path
+  - project-primary ruler mapping in formula resolver
+  - profession validation report normalized to the same expert table shape as child_birth / marriage
+  - explicit multi-card V2 aggregation for:
+    - `RECT_CHILD_BIRTH_002_DRAFT`
+    - `RECT_MARRIAGE_UNION_002_DRAFT`
+    - `RECT_PROFESSION_CHANGE_002_DRAFT`
+- new explicit expert-mode UI layer:
+  - checkbox: `All relevant V2 draft cards`
+  - output block: `V2 multi-card report`
+  - per-card contribution audit
+  - per-event-type contribution audit
+- safety rules preserved:
+  - `RECT_CHILD_BIRTH_001` remains production default
+  - `RECT_MARRIAGE_UNION_001` remains production default
+  - V2 draft cards remain explicit-only and are never auto-selected by `event_type`
+  - no astrology core math changes
+  - no scoring-policy rewrite
+- local verification snapshot:
+  - focused touched-area suite: `141 passed`
+  - full pytest: `324 passed, 1 xfailed`
+  - local preview proof:
+    - `/?proof_preview=pro` serves the updated Pro page with multi-card controls
+    - `/api/preview/pro-result` returns `formula_multi_card_report.enabled = true`
+    - selected draft cards in preview:
+      - `RECT_CHILD_BIRTH_002_DRAFT`
+      - `RECT_MARRIAGE_UNION_002_DRAFT`
+      - `RECT_PROFESSION_CHANGE_002_DRAFT`
+- next step:
+  - deploy current branch to live `185.250.150.192`
+  - run explicit-card smoke on:
+    - child_birth default
+    - marriage default
+    - profession explicit V2
+    - marriage explicit V2
+    - marriage v1/v2 comparison

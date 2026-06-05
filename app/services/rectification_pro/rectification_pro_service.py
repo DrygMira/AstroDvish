@@ -20,7 +20,7 @@ from app.services.rectification_pro.formula_refinement_service import FormulaRef
 from app.services.rectification_pro.lunar_service import LunarService
 from app.services.rectification_pro.scoring_service import ScoringService
 from app.services.rectification_pro.solar_service import SolarService
-from app.services.rectification_pro.timezone_context import resolve_pro_timezone
+from app.services.rectification_pro.timezone_context import resolve_pro_timezone_context
 from app.services.rectification_pro.totem_service import TotemService
 from app.services.rectification_pro.transit_service import TransitService
 
@@ -46,8 +46,15 @@ class RectificationProService:
         started_at = perf_counter()
         stage_timings: dict[str, float] = {}
         settings = payload.settings
+        selected_formula_card_ids = self._normalize_formula_card_ids(settings.formula_card_ids)
         selected_formula_card_id = settings.formula_card_id or None
-        timezone_info, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
+        if not selected_formula_card_id and len(selected_formula_card_ids) == 1:
+            selected_formula_card_id = selected_formula_card_ids[0]
+        multi_card_enabled = len(selected_formula_card_ids) > 1
+        timezone_context = resolve_pro_timezone_context(payload)
+        timezone_info = timezone_context.timezone_info
+        timezone_used = timezone_context.timezone_name
+        timezone_offset_used = timezone_context.timezone_offset
         generation_started_at = perf_counter()
         generation = self.candidate_generator.generate(
             birth_date_local=payload.birth_date_local,
@@ -157,36 +164,56 @@ class RectificationProService:
         refinement_started_at = perf_counter()
         formula_refinement_results = self.formula_refinement_service.refine(
             payload,
-            card_id=selected_formula_card_id,
+            card_id=selected_formula_card_id if not multi_card_enabled else None,
+            card_ids=selected_formula_card_ids if multi_card_enabled else None,
         )
         stage_timings["formula_refinement_ms"] = round((perf_counter() - refinement_started_at) * 1000, 2)
         formula_refinement_results["coarse_candidate"] = self._build_coarse_candidate_summary(best_candidate)
         refined_chart = self._chart_from_refinement_candidate(formula_refinement_results)
+        formula_test_mode_results_from_refinement = []
+        if multi_card_enabled:
+            formula_test_mode_results_from_refinement = list(
+                ((formula_refinement_results.get("best_candidate") or {}).get("formula_test_mode_results") or [])
+            )
         self._strip_refinement_internal_chart(formula_refinement_results)
         formula_test_mode_started_at = perf_counter()
-        formula_test_mode_results = self._build_formula_test_mode_results(
-            payload=payload,
-            best_chart=refined_chart or best_chart,
-            method_results=best_method_results,
-            card_id=selected_formula_card_id,
-            candidate_time_local=(
-                (formula_refinement_results.get("best_candidate") or {}).get("candidate_time_local")
-                or (best_generation_candidate.datetime_local if best_generation_candidate else None)
-            ),
-            candidate_time_utc=(
-                (formula_refinement_results.get("best_candidate") or {}).get("candidate_time_utc")
-                or (best_generation_candidate.datetime_utc if best_generation_candidate else None)
-            ),
-            timezone_used=timezone_used,
-            timezone_offset_used=timezone_offset_used,
-        )
+        if formula_test_mode_results_from_refinement:
+            formula_test_mode_results = formula_test_mode_results_from_refinement
+        else:
+            formula_test_mode_results = self._build_formula_test_mode_results(
+                payload=payload,
+                best_chart=refined_chart or best_chart,
+                method_results=best_method_results,
+                card_id=selected_formula_card_id,
+                candidate_time_local=(
+                    (formula_refinement_results.get("best_candidate") or {}).get("candidate_time_local")
+                    or (best_generation_candidate.datetime_local if best_generation_candidate else None)
+                ),
+                candidate_time_utc=(
+                    (formula_refinement_results.get("best_candidate") or {}).get("candidate_time_utc")
+                    or (best_generation_candidate.datetime_utc if best_generation_candidate else None)
+                ),
+                timezone_used=timezone_used,
+                timezone_offset_used=timezone_offset_used,
+                timezone_source=timezone_context.timezone_source,
+                coordinates_used=timezone_context.coordinates_used,
+                payload_path=timezone_context.payload_path,
+            )
         stage_timings["formula_test_mode_ms"] = round((perf_counter() - formula_test_mode_started_at) * 1000, 2)
         comparison_started_at = perf_counter()
-        formula_card_comparison = self._build_formula_card_comparison(
-            payload=payload,
-            method_results=best_method_results,
+        formula_card_comparison = (
+            {}
+            if multi_card_enabled
+            else self._build_formula_card_comparison(
+                payload=payload,
+                method_results=best_method_results,
+            )
         )
         stage_timings["formula_card_comparison_ms"] = round((perf_counter() - comparison_started_at) * 1000, 2)
+        formula_multi_card_report = self._build_formula_multi_card_report(
+            payload=payload,
+            formula_refinement_results=formula_refinement_results,
+        )
 
         if confidence.level in {"low", "medium"}:
             warnings.append("do_not_present_as_exact_birth_time")
@@ -210,6 +237,10 @@ class RectificationProService:
             "total_runtime_ms": total_runtime_ms,
             "slowest_stage": slowest_stage,
             "stage_timings_ms": stage_timings,
+            "timezone_source": timezone_context.timezone_source,
+            "timezone_name": timezone_context.timezone_name,
+            "utc_offset": timezone_context.timezone_offset,
+            "payload_path": timezone_context.payload_path,
         }
 
         return RectificationProRunResponse(
@@ -219,6 +250,7 @@ class RectificationProService:
             formula_test_mode_results=formula_test_mode_results,
             formula_refinement_results=formula_refinement_results,
             formula_card_comparison=formula_card_comparison,
+            formula_multi_card_report=formula_multi_card_report,
             performance_debug=performance_debug,
             confidence=confidence,
             warnings=sorted(set(warnings)),
@@ -247,6 +279,9 @@ class RectificationProService:
         candidate_time_utc: str | None = None,
         timezone_used: str | None = None,
         timezone_offset_used: str | None = None,
+        timezone_source: str | None = None,
+        coordinates_used: dict[str, float] | None = None,
+        payload_path: str | None = None,
     ) -> list:
         if best_chart is None:
             return []
@@ -271,6 +306,14 @@ class RectificationProService:
                         "directed_points_time": candidate_time_local,
                         "timezone_used": timezone_used or payload.timezone_name,
                         "timezone_offset_used": timezone_offset_used,
+                        "timezone_source": timezone_source,
+                        "timezone_name": timezone_used or payload.timezone_name,
+                        "utc_offset": timezone_offset_used,
+                        "coordinates_used": coordinates_used,
+                        "birth_date_local": payload.birth_date_local.isoformat(),
+                        "birth_time_local": candidate_time_local,
+                        "rectification_stage": "pro_result",
+                        "payload_path": payload_path,
                         "event": event.model_dump(mode="json"),
                         "pro_result": {"method_results": method_results},
                     },
@@ -306,6 +349,9 @@ class RectificationProService:
                 candidate_time_utc=(refinement.get("best_candidate") or {}).get("candidate_time_utc"),
                 timezone_used=refinement.get("timezone_used") or payload.timezone_name,
                 timezone_offset_used=refinement.get("timezone_offset_used"),
+                timezone_source=refinement.get("timezone_source"),
+                coordinates_used=refinement.get("coordinates_used"),
+                payload_path=refinement.get("payload_path"),
             )
             card_meta = self._extract_formula_card_meta(formula_results, refinement, card_id)
             items.append(
@@ -338,6 +384,18 @@ class RectificationProService:
 
     @staticmethod
     def _normalize_compare_card_ids(card_ids: list[str]) -> list[str]:
+        normalized: list[str] = []
+        seen: set[str] = set()
+        for raw in card_ids:
+            value = str(raw or "").strip()
+            if not value or value in seen:
+                continue
+            seen.add(value)
+            normalized.append(value)
+        return normalized
+
+    @staticmethod
+    def _normalize_formula_card_ids(card_ids: list[str]) -> list[str]:
         normalized: list[str] = []
         seen: set[str] = set()
         for raw in card_ids:
@@ -491,6 +549,54 @@ class RectificationProService:
                 }
             )
         return public_items
+
+    @staticmethod
+    def _build_formula_multi_card_report(
+        *,
+        payload: RectificationProRunRequest,
+        formula_refinement_results: dict[str, Any],
+    ) -> dict[str, Any]:
+        selected_card_ids = list(formula_refinement_results.get("selected_card_ids") or payload.settings.formula_card_ids or [])
+        if len(selected_card_ids) <= 1:
+            return {}
+        best_candidate = formula_refinement_results.get("best_candidate") or {}
+        return {
+            "enabled": True,
+            "multi_card_enabled": True,
+            "selected_card_ids": selected_card_ids,
+            "cards": formula_refinement_results.get("cards") or [],
+            "overall_best_candidate": {
+                "candidate_time_local": best_candidate.get("candidate_time_local"),
+                "score": best_candidate.get("score"),
+                "matched_count": best_candidate.get("matched_count"),
+                "rejected_count": best_candidate.get("rejected_count"),
+                "missed_count": best_candidate.get("missing_count"),
+                "golden_matched_count": best_candidate.get("golden_matched_count"),
+                "supporting_matched_count": best_candidate.get("supporting_matched_count"),
+                "context_matched_count": best_candidate.get("context_matched_count"),
+                "context_score": best_candidate.get("context_score"),
+                "selection_reason": best_candidate.get("selection_reason"),
+            },
+            "overall_working_ranges": formula_refinement_results.get("working_time_ranges") or [],
+            "overall_working_time_range": formula_refinement_results.get("working_time_range"),
+            "score_summary": {
+                "event_confirmation_score": best_candidate.get("event_confirmation_score"),
+                "time_refinement_score": best_candidate.get("time_refinement_score"),
+                "score_breakdown": best_candidate.get("score_breakdown") or {},
+            },
+            "event_contribution_audit": best_candidate.get("event_contribution_audit") or [],
+            "event_type_contribution": best_candidate.get("event_type_contribution") or [],
+            "card_contribution_audit": best_candidate.get("card_contribution_audit") or [],
+            "top_matched_rules": best_candidate.get("best_formulas") or [],
+            "top_rejected_reasons": best_candidate.get("top_rejected_reasons") or [],
+            "unresolved_source_summary": best_candidate.get("unresolved_source_summary") or [],
+            "debug": {
+                "direction_method": formula_refinement_results.get("direction_method"),
+                "timezone_used": formula_refinement_results.get("timezone_used"),
+                "timezone_offset_used": formula_refinement_results.get("timezone_offset_used"),
+                "payload_path": formula_refinement_results.get("payload_path"),
+            },
+        }
 
     @staticmethod
     def _chart_from_refinement_candidate(formula_refinement_results: dict[str, object]):

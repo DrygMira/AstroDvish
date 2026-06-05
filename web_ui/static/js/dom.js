@@ -105,6 +105,8 @@
     export const rpBestCandidatesEl = document.getElementById("rpBestCandidates");
     export const rpFormulaCardIdEl = document.getElementById("rpFormulaCardId");
     export const rpCompareV1V2El = document.getElementById("rpCompareV1V2");
+    export const rpUseAllRelevantV2CardsEl = document.getElementById("rpUseAllRelevantV2Cards");
+    export const rpFormulaMultiCardEl = document.getElementById("rpFormulaMultiCard");
     export const rpFormulaComparisonEl = document.getElementById("rpFormulaComparison");
     export const rpConfidenceEl = document.getElementById("rpConfidence");
     export const rpMethodsSummaryEl = document.getElementById("rpMethodsSummary");

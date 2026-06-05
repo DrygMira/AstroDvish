@@ -212,6 +212,17 @@ def test_pro_ui_shows_formula_card_counts_and_priority_tiers() -> None:
     assert "ambiguity_risk" in html
 
 
+def test_pro_ui_contains_explicit_multi_card_v2_controls_and_report_markers() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert "formula_card_ids" in html
+    assert "All relevant V2 draft cards" in html
+    assert "formula_multi_card_report" in html
+    assert "Per-card contribution" in html
+    assert "event_type_contribution" in html
+
+
 def test_pro_ui_contains_preview_mode_loader_markers() -> None:
     with TestClient(web_ui_main.app) as client:
         response, html = get_main_ui_bundle(client)
@@ -302,6 +313,22 @@ def test_preview_pro_result_endpoint_contains_context_score_in_event_audit() -> 
     audit = payload["formula_refinement_results"]["best_candidate"]["event_contribution_audit"]
     assert audit
     assert "context_score" in audit[0]
+
+
+def test_preview_pro_result_endpoint_contains_formula_multi_card_report() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response = client.get("/api/preview/pro-result")
+    assert response.status_code == 200
+    payload = response.json()
+    multi = payload["formula_multi_card_report"]
+    assert multi["enabled"] is True
+    assert multi["selected_card_ids"] == [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+    ]
+    assert len(multi["card_contribution_audit"]) == 3
+    assert len(multi["event_type_contribution"]) == 3
 
 
 def test_preview_chart_result_endpoint_returns_chart_payload_for_modal() -> None:

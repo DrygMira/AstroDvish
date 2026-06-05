@@ -12,6 +12,7 @@ from app.services.rectification_formula.formula_card_loader import (
     FormulaCardLoader,
     FormulaCardValidationError,
 )
+from app.services.rectification_formula.directions_formula_matcher import SIGN_RULERS
 from app.services.rectification_formula.formula_test_mode_service import FormulaTestModeService
 
 CONFIRMED_CHILD_BIRTH_DISPLAY_FORMULAS = [
@@ -429,6 +430,82 @@ def test_ruler_resolution_respects_allowed_ruler_types(tmp_path: Path) -> None:
     debug = next(item for item in result["validation_report"]["rule_debug"] if item["rule_id"] == "ruler_4_to_house_element_5")
     assert "ruler_4:neptune" in debug["resolved_sources"]
     assert "ruler_4:jupiter" not in debug["resolved_sources"]
+
+
+def test_project_primary_ruler_mapping_is_configured_for_all_signs() -> None:
+    expected = {
+        "Aries": "mars",
+        "Taurus": "venus",
+        "Gemini": "mercury",
+        "Cancer": "moon",
+        "Leo": "sun",
+        "Virgo": "proserpina",
+        "Libra": "chiron",
+        "Scorpio": "pluto",
+        "Sagittarius": "jupiter",
+        "Capricorn": "saturn",
+        "Aquarius": "uranus",
+        "Pisces": "neptune",
+    }
+
+    for sign_name, ruler_name in expected.items():
+        project_primary = [item for item in SIGN_RULERS[sign_name] if item.get("default_project")]
+        assert len(project_primary) == 1
+        assert project_primary[0]["name"] == ruler_name
+        assert project_primary[0]["ruler_system"] == "project_primary"
+
+
+def test_default_ruler_resolution_uses_project_primary_and_excludes_western_secondary(tmp_path: Path) -> None:
+    loader = _write_formula_cards(
+        tmp_path,
+        [
+            {
+                "card_id": "RECT_PROJECT_PRIMARY_RULER_001",
+                "event_type": "child_birth",
+                "status": "test",
+                "core_logic": ["house_4"],
+                "houses": ["house_4", "house_5"],
+                "planets": ["neptune", "jupiter", "mercury"],
+                "significators": ["sun"],
+                "aspects": ["child_axis"],
+                "method_priority": ["directions"],
+                "direction_rules": [
+                    {
+                        "id": "ruler_4_to_house_element_5",
+                        "title": "r4->h5 primary",
+                        "source": "ruler_4",
+                        "target": "house_element_5",
+                        "source_selectors": ["ruler_4"],
+                        "target_selectors": ["house_elements_5"],
+                        "aspect_types": ["square"],
+                        "orb_limit": 1.0,
+                        "required": True,
+                        "weight": 1.0,
+                    }
+                ],
+            }
+        ],
+    )
+    service = FormulaTestModeService(loader=loader)
+    chart = _build_chart_with_rules(
+        objects={
+            "neptune": {"degree": 10.0, "sign": "Aries", "house": 2},
+            "jupiter": {"degree": 40.0, "sign": "Taurus", "house": 3},
+            "mercury": {"degree": 100.0, "sign": "Cancer", "house": 5},
+        },
+        cusps={"1": 0.0, "2": 30.0, "3": 60.0, "4": 330.0, "5": 120.0, "6": 150.0, "7": 180.0, "8": 210.0, "9": 240.0, "10": 270.0, "11": 300.0, "12": 330.0},
+        cusp_signs={"1": "Aries", "2": "Taurus", "3": "Gemini", "4": "Pisces", "5": "Leo", "6": "Virgo", "7": "Libra", "8": "Scorpio", "9": "Sagittarius", "10": "Capricorn", "11": "Aquarius", "12": "Pisces"},
+    )
+    result = service.evaluate(
+        event_type="child_birth",
+        context={"chart_response": chart.model_dump(mode="json"), "candidate_birth_date": date(2001, 1, 1), "event": _sample_child_birth_event().model_dump(mode="json")},
+    )
+    debug = next(item for item in result["validation_report"]["rule_debug"] if item["rule_id"] == "ruler_4_to_house_element_5")
+    assert "ruler_4:neptune" in debug["resolved_sources"]
+    assert "ruler_4:jupiter" not in debug["resolved_sources"]
+    resolution = debug["source_ruler_resolution"]
+    assert any(item["point_name"] == "ruler_4:neptune" and item["status"] == "included" and item["ruler_system"] == "project_primary" for item in resolution)
+    assert any(item["point_name"] == "ruler_4:jupiter" and item["status"] == "excluded" and item["exclude_reason"] == "secondary_ruler_not_used_by_default" for item in resolution)
 
 
 def test_cusp_10_to_cusp_5_matches_opposition_after_expert_confirmation(tmp_path: Path) -> None:
@@ -1887,7 +1964,7 @@ def test_ekaterina_death_and_child_cases_are_found(tmp_path: Path) -> None:
     assert ("axis_10_4_to_cusp_5", "cusp_4", "cusp_5", "sextile") in found
 
 
-def test_ekaterina_divorce_proserpina_case_is_missed_when_ruler_catalog_cannot_resolve_it(tmp_path: Path) -> None:
+def test_ekaterina_divorce_proserpina_case_uses_project_primary_ruler_catalog(tmp_path: Path) -> None:
     loader = _write_formula_cards(
         tmp_path,
         [
@@ -1925,5 +2002,5 @@ def test_ekaterina_divorce_proserpina_case_is_missed_when_ruler_catalog_cannot_r
 
     found = {(item["formula_rule_matched"], item["directed_point"], item["natal_target"], item["aspect_type"]) for item in result["matched_formula_aspects"]}
     assert ("cusp_7_to_cusp_8", "cusp_7", "cusp_8", "conjunction") in found
-    assert any(item["rule_id"] == "ruler_10_to_ruler_7" for item in result["missing_formula_links"])
-    assert all(item["formula_rule_matched"] != "ruler_10_to_ruler_7" for item in result["matched_formula_aspects"])
+    assert ("ruler_10_to_ruler_7", "ruler_10:proserpina", "ruler_7:venus", "trine") in found
+    assert all(item["rule_id"] != "ruler_10_to_ruler_7" for item in result["missing_formula_links"])

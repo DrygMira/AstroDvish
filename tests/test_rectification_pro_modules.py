@@ -12,7 +12,7 @@ from app.services.rectification_pro.scoring_service import ScoringService
 from app.services.rectification_pro.solar_service import SolarService
 from app.services.rectification_pro.totem_service import TotemService
 from app.services.rectification_pro.transit_service import TransitService
-from app.services.rectification_pro.timezone_context import resolve_pro_timezone
+from app.services.rectification_pro.timezone_context import resolve_pro_timezone, resolve_pro_timezone_context
 
 
 def _sample_chart() -> ChartResponse:
@@ -144,7 +144,47 @@ def test_resolve_pro_timezone_uses_coordinates_when_auto_timezone_name_missing()
     _tzinfo, timezone_used, timezone_offset_used = resolve_pro_timezone(payload)
 
     assert timezone_used == "Europe/Moscow"
-    assert timezone_offset_used is None
+    assert timezone_offset_used == "+04:00"
+
+
+def test_resolve_pro_timezone_context_tracks_source_offset_and_payload_path() -> None:
+    payload = RectificationProRunRequest(
+        birth_date_local=date(1990, 5, 12),
+        latitude=52.22977,
+        longitude=21.01178,
+        timezone_name=None,
+        timezone_mode="auto",
+        timezone_offset=None,
+        asc_windows=[],
+        events=[],
+    )
+
+    context = resolve_pro_timezone_context(payload, payload_path="chart_to_rectification")
+
+    assert context.timezone_name == "Europe/Warsaw"
+    assert context.timezone_offset == "+02:00"
+    assert context.timezone_source == "resolved_from_coordinates"
+    assert context.payload_path == "chart_to_rectification"
+    assert context.coordinates_used == {"latitude": 52.22977, "longitude": 21.01178}
+
+
+def test_resolve_pro_timezone_context_keeps_manual_timezone_override() -> None:
+    payload = RectificationProRunRequest(
+        birth_date_local=date(1990, 5, 12),
+        latitude=40.234167,
+        longitude=69.694722,
+        timezone_name="Asia/Tashkent",
+        timezone_mode="manual",
+        timezone_offset="+05:00",
+        asc_windows=[],
+        events=[],
+    )
+
+    context = resolve_pro_timezone_context(payload)
+
+    assert context.timezone_name == "GMT+05:00"
+    assert context.timezone_offset == "+05:00"
+    assert context.timezone_source == "manual_offset"
 
 
 def test_totem_returns_degree_index_and_warning() -> None:

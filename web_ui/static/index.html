@@ -724,12 +724,25 @@
             <div class="hint">Сравнивает production baseline с выбранной draft V2-карточкой, если для неё есть production-пара.</div>
           </div>
         </div>
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label for="rpUseAllRelevantV2Cards">formula_card_ids</label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; text-transform:none; letter-spacing:normal;">
+              <input id="rpUseAllRelevantV2Cards" type="checkbox" style="width:auto;" />
+              <span>All relevant V2 draft cards</span>
+            </label>
+            <div class="hint">Экспертный режим: собрать один combined report по child_birth + marriage_union + profession_change, если такие события есть в Stage 2.</div>
+          </div>
+          <div class="hint" style="align-self:end;">V2 multi-card report may take longer.</div>
+        </div>
         <div class="actions" style="margin-top:10px;">
           <button id="rpRunBtn" class="btn" type="button">Запустить Pro-ректификацию</button>
         </div>
         <div id="rpStatus" class="hint" style="margin-top:8px;"></div>
         <div style="margin-top:10px;"><strong>Лучшие окна времени</strong></div>
         <div id="rpBestCandidates" class="interval-list"></div>
+        <div style="margin-top:10px;"><strong>V2 multi-card report</strong></div>
+        <div id="rpFormulaMultiCard" class="bigbox"></div>
         <div style="margin-top:10px;"><strong>V1 vs V2</strong></div>
         <div id="rpFormulaComparison" class="bigbox"></div>
         <div style="margin-top:10px;"><strong>Confidence</strong></div>

@@ -746,5 +746,223 @@
       "why_result_changed": "v2 adds a larger child_birth rule pack, so candidate ranking is driven by more golden/supporting confirmations than v1."
     }
   },
+  "formula_multi_card_report": {
+    "enabled": true,
+    "multi_card_enabled": true,
+    "selected_card_ids": [
+      "RECT_CHILD_BIRTH_002_DRAFT",
+      "RECT_MARRIAGE_UNION_002_DRAFT",
+      "RECT_PROFESSION_CHANGE_002_DRAFT"
+    ],
+    "cards": [
+      {
+        "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+        "card_version": "child_birth_v2_draft_001",
+        "formulas_count": 94,
+        "priority_counts": {
+          "golden": 24,
+          "supporting": 39,
+          "context": 31,
+          "ambiguity_risk": 0
+        }
+      },
+      {
+        "card_id": "RECT_MARRIAGE_UNION_002_DRAFT",
+        "card_version": "marriage_union_v2_draft_001",
+        "formulas_count": 100,
+        "priority_counts": {
+          "golden": 30,
+          "supporting": 42,
+          "context": 28,
+          "ambiguity_risk": 0
+        }
+      },
+      {
+        "card_id": "RECT_PROFESSION_CHANGE_002_DRAFT",
+        "card_version": "profession_change_v2_draft_001",
+        "formulas_count": 106,
+        "priority_counts": {
+          "golden": 34,
+          "supporting": 46,
+          "context": 26,
+          "ambiguity_risk": 0
+        }
+      }
+    ],
+    "overall_best_candidate": {
+      "candidate_time_local": "1978-03-19T22:57:00",
+      "score": 138.2,
+      "matched_count": 7,
+      "rejected_count": 12,
+      "missed_count": 4,
+      "golden_matched_count": 4,
+      "supporting_matched_count": 2,
+      "context_matched_count": 1,
+      "context_score": 0.5,
+      "selection_reason": "Combined V2 report selected by the strongest shared golden confirmations across child birth, marriage and profession."
+    },
+    "overall_working_ranges": [
+      {
+        "start_local": "1978-03-19T22:56:47",
+        "end_local": "1978-03-19T23:01:50",
+        "candidate_count": 8,
+        "best_candidate": "1978-03-19T22:57:00",
+        "golden_matched_count": 4,
+        "score": 138.2,
+        "selection_reason": "Highest combined golden score in this range."
+      }
+    ],
+    "overall_working_time_range": {
+      "start_local": "1978-03-19T22:56:47",
+      "end_local": "1978-03-19T23:01:50",
+      "candidate_count": 8,
+      "best_candidate": "1978-03-19T22:57:00",
+      "golden_matched_count": 4,
+      "score": 138.2,
+      "selection_reason": "Highest combined golden score in this range."
+    },
+    "score_summary": {
+      "event_confirmation_score": 101.4,
+      "time_refinement_score": 36.8,
+      "score_breakdown": {
+        "golden_formula_score": 92.0,
+        "supporting_formula_score": 18.0,
+        "context_formula_score": 1.5,
+        "supporting_bonus": 6.7
+      }
+    },
+    "event_contribution_audit": [
+      {
+        "event_type": "child_birth",
+        "event_date": "2005-11-07",
+        "matched_count": 2,
+        "rejected_count": 1,
+        "missed_count": 1,
+        "score": 96.4,
+        "contribution_to_final_candidate": 69.75,
+        "golden_matched_count": 2,
+        "supporting_matched_count": 0,
+        "context_matched_count": 0,
+        "context_score": 0.0
+      },
+      {
+        "event_type": "marriage_union",
+        "event_date": "2012-08-18",
+        "matched_count": 3,
+        "rejected_count": 6,
+        "missed_count": 2,
+        "score": 28.5,
+        "contribution_to_final_candidate": 20.62,
+        "golden_matched_count": 1,
+        "supporting_matched_count": 1,
+        "context_matched_count": 1,
+        "context_score": 0.5
+      },
+      {
+        "event_type": "profession_change",
+        "event_date": "2016-05-01",
+        "matched_count": 2,
+        "rejected_count": 5,
+        "missed_count": 1,
+        "score": 13.3,
+        "contribution_to_final_candidate": 9.63,
+        "golden_matched_count": 1,
+        "supporting_matched_count": 1,
+        "context_matched_count": 0,
+        "context_score": 0.0
+      }
+    ],
+    "event_type_contribution": [
+      {
+        "event_type": "child_birth",
+        "card_ids": ["RECT_CHILD_BIRTH_002_DRAFT"],
+        "matched_count": 2,
+        "rejected_count": 1,
+        "missed_count": 1,
+        "score": 96.4,
+        "contribution_to_final_candidate": 69.75
+      },
+      {
+        "event_type": "marriage_union",
+        "card_ids": ["RECT_MARRIAGE_UNION_002_DRAFT"],
+        "matched_count": 3,
+        "rejected_count": 6,
+        "missed_count": 2,
+        "score": 28.5,
+        "contribution_to_final_candidate": 20.62
+      },
+      {
+        "event_type": "profession_change",
+        "card_ids": ["RECT_PROFESSION_CHANGE_002_DRAFT"],
+        "matched_count": 2,
+        "rejected_count": 5,
+        "missed_count": 1,
+        "score": 13.3,
+        "contribution_to_final_candidate": 9.63
+      }
+    ],
+    "card_contribution_audit": [
+      {
+        "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+        "matched_count": 2,
+        "rejected_count": 1,
+        "missed_count": 1,
+        "golden_matched_count": 2,
+        "supporting_matched_count": 0,
+        "context_matched_count": 0,
+        "context_score": 0.0,
+        "score": 96.4,
+        "contribution_to_final_candidate": 69.75
+      },
+      {
+        "card_id": "RECT_MARRIAGE_UNION_002_DRAFT",
+        "matched_count": 3,
+        "rejected_count": 6,
+        "missed_count": 2,
+        "golden_matched_count": 1,
+        "supporting_matched_count": 1,
+        "context_matched_count": 1,
+        "context_score": 0.5,
+        "score": 28.5,
+        "contribution_to_final_candidate": 20.62
+      },
+      {
+        "card_id": "RECT_PROFESSION_CHANGE_002_DRAFT",
+        "matched_count": 2,
+        "rejected_count": 5,
+        "missed_count": 1,
+        "golden_matched_count": 1,
+        "supporting_matched_count": 1,
+        "context_matched_count": 0,
+        "context_score": 0.0,
+        "score": 13.3,
+        "contribution_to_final_candidate": 9.63
+      }
+    ],
+    "top_matched_rules": [
+      "ruler_4_to_house_element_5:ruler_4:neptune->house_element_5:mercury:square",
+      "sun_to_jupiter:sun->jupiter:sextile",
+      "marriage_ruler_7_to_venus:ruler_7:venus->venus:conjunction",
+      "profession_cusp_10_to_saturn:cusp_10->saturn:trine"
+    ],
+    "top_rejected_reasons": [
+      {
+        "reason": "over_orb",
+        "count": 12
+      }
+    ],
+    "unresolved_source_summary": [
+      {
+        "reason": "unresolved_source",
+        "count": 2
+      }
+    ],
+    "debug": {
+      "direction_method": "symbolic_1deg_per_year",
+      "timezone_used": "GMT+05:00",
+      "timezone_offset_used": "+05:00",
+      "payload_path": "rectification_direct"
+    }
+  },
   "rpRawBox": true
 }

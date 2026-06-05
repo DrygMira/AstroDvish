@@ -456,6 +456,72 @@ def test_rectification_pro_can_compare_marriage_v1_and_v2_cards(monkeypatch, tmp
     assert "larger rule pack" in comparison["differences"]["why_result_changed"]
 
 
+def test_rectification_pro_can_run_explicit_multi_card_v2_report(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(3)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["title"] = "Child birth"
+    payload["events"][1]["event_type"] = "marriage_start"
+    payload["events"][1]["title"] = "Marriage"
+    payload["events"][2]["event_type"] = "profession_change"
+    payload["events"][2]["title"] = "Profession"
+    payload["settings"]["formula_card_ids"] = [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+    ]
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    multi = body["formula_multi_card_report"]
+    assert multi["enabled"] is True
+    assert multi["multi_card_enabled"] is True
+    assert multi["selected_card_ids"] == [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+    ]
+    assert multi["overall_best_candidate"]
+    assert multi["overall_working_ranges"]
+    assert {item["card_id"] for item in multi["card_contribution_audit"]} == {
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+    }
+    assert {item["event_type"] for item in multi["event_type_contribution"]} == {
+        "child_birth",
+        "marriage_union",
+        "profession_change",
+    }
+    assert body["formula_refinement_results"]["multi_card_enabled"] is True
+    assert body["formula_refinement_results"]["selected_card_ids"] == multi["selected_card_ids"]
+
+
+def test_rectification_pro_profession_v2_validation_report_table_matches_expert_columns(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "profession_change"
+    payload["events"][0]["title"] = "Profession"
+    payload["settings"]["formula_card_id"] = "RECT_PROFESSION_CHANGE_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    table = response.json()["formula_test_mode_results"][0]["validation_report_table"]
+    assert "Formula | Rule | Priority | Formula role | Status" in table
+    assert "Directed longitude" in table
+    assert "Natal longitude" in table
+    assert "Actual angle" in table
+    assert "Exact angle" in table
+    assert "Orb" in table
+    assert "Orb limit" in table
+    assert "Reject reason" in table
+
+
 def test_rectification_pro_comparison_includes_compact_summary(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     payload = _payload(1)
@@ -648,11 +714,19 @@ def test_rectification_pro_candidate_consistency_uses_best_candidate_time_and_ma
     assert best["house_elements_resolved_time"] == best["candidate_time_local"]
     assert best["directed_points_time"] == best["candidate_time_local"]
     assert best["timezone_used"] == "GMT+05:00"
+    assert best["timezone_source"] == "manual_offset"
+    assert best["utc_offset"] == "+05:00"
+    assert best["payload_path"] == "rectification_direct"
+    assert best["coordinates_used"] == {"latitude": 40.2341666667, "longitude": 69.6947222222}
 
     formula_result = body["formula_test_mode_results"][0]
     candidate_consistency = formula_result["validation_report"]["candidate_consistency"]
     assert candidate_consistency["selected_candidate_time"] == best["candidate_time_local"]
     assert candidate_consistency["timezone_used"] == "GMT+05:00"
+    assert candidate_consistency["timezone_source"] == "manual_offset"
+    assert candidate_consistency["utc_offset"] == "+05:00"
+    assert candidate_consistency["payload_path"] == "rectification_direct"
+    assert candidate_consistency["coordinates_used"] == {"latitude": 40.2341666667, "longitude": 69.6947222222}
     assert "event_date_used" in formula_result["validation_report_table"]
 
 
@@ -674,6 +748,7 @@ def test_rectification_pro_ruler_resolution_debug_includes_type_and_weight(monke
     ]
     assert resolution_items
     assert all("weight" in item for item in resolution_items)
+    assert all("ruler_system" in item for item in resolution_items)
     assert any(item.get("exclude_reason") == "ruler_type_not_allowed" for item in resolution_items)
 
 
