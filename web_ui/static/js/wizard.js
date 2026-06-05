@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: wizard.
-import { rectIntervalsListEl, rpBestCandidatesEl, rpConfidenceEl, rpExplainBodyEl, rpFormulaComparisonEl, rpMethodsSummaryEl, rpWarningsEl, wzBirthDateEl, wzCityQueryEl, wzIntervalsListEl, wzProgressTextEl, wzStage1SummaryEl, wzStage2ContextEl, wzStepBadgeEls, wzStepHintEls, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl } from "./dom.js";
+import { rectIntervalsListEl, rpBestCandidatesEl, rpCompareV1V2El, rpConfidenceEl, rpExplainBodyEl, rpFormulaCardIdEl, rpFormulaComparisonEl, rpFormulaMultiCardEl, rpMethodsSummaryEl, rpUseAllRelevantV2CardsEl, rpWarningsEl, wzBirthDateEl, wzCityQueryEl, wzIntervalsListEl, wzProgressTextEl, wzStage1SummaryEl, wzStage2ContextEl, wzStepBadgeEls, wzStepHintEls, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl } from "./dom.js";
 import { appState, rectDialogState, rectEventsState, rectificationWizardState } from "./state.js";
 import { formatCandidateGroupText, formatIntervalLine, formatStage1SecondaryCandidatesHtml, formatWarnings } from "./format.js";
 import { runRectification } from "./chart.js";
@@ -54,7 +54,11 @@ import { setWzProStatus, setWzStatus } from "./ui.js";
       rpConfidenceEl.textContent = "Pro-ректификация ещё не запускалась.";
       rpMethodsSummaryEl.textContent = "";
       rpWarningsEl.textContent = "";
+      rpFormulaMultiCardEl.textContent = "";
       rpFormulaComparisonEl.textContent = "";
+      rpFormulaCardIdEl.value = "";
+      rpCompareV1V2El.checked = false;
+      rpUseAllRelevantV2CardsEl.checked = false;
       if (rpExplainBodyEl) {
         rpExplainBodyEl.textContent = "";
       }

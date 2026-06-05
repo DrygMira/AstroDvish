@@ -1029,3 +1029,28 @@ Every future report must include:
     - profession standalone V2 draft
     - marriage v1/v2 comparison
     - combined multi-card V2 report
+
+## 42. Multi-Card Reset Hotfix Pending Deploy (2026-06-05)
+- final live browser smoke found one UI-only issue:
+  - `reResetBtn` cleared confidence text but left stale `formula_multi_card_report` rendered in `rpFormulaMultiCard`
+- root cause:
+  - `resetWizardDerivedState()` cleared:
+    - `rpConfidence`
+    - `rpMethodsSummary`
+    - `rpWarnings`
+    - `rpFormulaComparison`
+  - but did not clear:
+    - `rpFormulaMultiCard`
+    - explicit Pro selector/toggles
+- local hotfix:
+  - reset now also clears:
+    - `rpFormulaMultiCard`
+    - `rpFormulaCardId`
+    - `rpCompareV1V2`
+    - `rpUseAllRelevantV2Cards`
+- verification:
+  - focused UI tests: `3 passed`
+  - full pytest after hotfix: `325 passed, 1 xfailed`
+- next step:
+  - deploy the tiny UI reset hotfix
+  - rerun final live browser smoke for multi-card expert mode

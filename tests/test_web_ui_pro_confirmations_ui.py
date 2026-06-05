@@ -223,6 +223,16 @@ def test_pro_ui_contains_explicit_multi_card_v2_controls_and_report_markers() ->
     assert "event_type_contribution" in html
 
 
+def test_pro_ui_reset_path_clears_multi_card_report_and_expert_card_selection() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert 'rpFormulaMultiCardEl.textContent = ""' in html
+    assert 'rpFormulaCardIdEl.value = ""' in html
+    assert 'rpCompareV1V2El.checked = false' in html
+    assert 'rpUseAllRelevantV2CardsEl.checked = false' in html
+
+
 def test_pro_ui_contains_preview_mode_loader_markers() -> None:
     with TestClient(web_ui_main.app) as client:
         response, html = get_main_ui_bundle(client)
