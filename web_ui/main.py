@@ -4,17 +4,21 @@ import json
 import logging
 import os
 import re
-from datetime import datetime, timedelta, timezone
+import threading
+import time
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import urlparse
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from uuid import uuid4
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError, available_timezones
 
 import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, model_validator
 
+from app.services.aspects_service import OBJECT_DISPLAY_NAMES
 from app.utils.timezone_lookup import resolve_timezone_name
 
 PROMPT_PATH = Path(__file__).resolve().parent.parent / "PROMPT.md"
@@ -47,6 +51,66 @@ LLM_UNAVAILABLE_MESSAGE = (
 GEOCODE_CACHE_PATH = Path(__file__).resolve().parent.parent / "data" / "geocode_cache.json"
 GEOCODE_CACHE_MAX_ITEMS = 300
 GEOCODE_CACHE_VERSION = 1
+NO_TIME_FALLBACK_LOCAL_CLOCK = "12:00"
+NO_TIME_PLACEHOLDER_LATITUDE = 0.0
+NO_TIME_PLACEHOLDER_LONGITUDE = 0.0
+NO_TIME_STATIONARY_THRESHOLD = 0.0002
+NO_TIME_PHASE_EXACT_EPSILON = 0.05
+NO_TIME_MAJOR_ASPECTS: tuple[tuple[str, float, float], ...] = (
+    ("conjunction", 0.0, 1.0),
+    ("sextile", 60.0, 1.0),
+    ("square", 90.0, 1.0),
+    ("trine", 120.0, 1.0),
+    ("opposition", 180.0, 1.0),
+)
+NO_TIME_MINOR_ASPECTS: tuple[tuple[str, float, float], ...] = (
+    ("semi-sextile", 30.0, 0.5),
+    ("quincunx", 150.0, 0.5),
+)
+NO_TIME_TRANSIT_BODIES: tuple[str, ...] = (
+    "moon",
+    "sun",
+    "mercury",
+    "venus",
+    "mars",
+    "jupiter",
+    "saturn",
+    "uranus",
+    "neptune",
+    "pluto",
+)
+NO_TIME_NATAL_TARGET_BODIES: tuple[str, ...] = (
+    "sun",
+    "mercury",
+    "venus",
+    "mars",
+    "jupiter",
+    "saturn",
+    "uranus",
+    "neptune",
+    "pluto",
+)
+NO_TIME_MOON_SIGN_MEANINGS: dict[str, str] = {
+    "Aries": "инициатива / импульс / быстрый эмоциональный отклик",
+    "Taurus": "стабилизация / телесность / потребность в опоре",
+    "Gemini": "коммуникация / мыслительная активность / переключаемость",
+    "Cancer": "чувствительность / дом / эмоциональная память",
+    "Leo": "самовыражение / признание / сердечная энергия",
+    "Virgo": "анализ / порядок / внимание к деталям",
+    "Libra": "контакт / баланс / тема отношений",
+    "Scorpio": "интенсивность / внутренние триггеры / глубина",
+    "Sagittarius": "смысл / перспектива / движение вперёд",
+    "Capricorn": "структура / дисциплина / практичность",
+    "Aquarius": "дистанция / идеи / обновление взгляда",
+    "Pisces": "интуиция / расплывчатость / эмоциональный фон",
+}
+NO_TIME_SLOW_TRANSIT_REFERENCE_DURATIONS: dict[str, str] = {
+    "Saturn": "1–1.5 months",
+    "Jupiter": "2–3 months",
+    "Uranus": "1–1.5 years",
+    "Neptune": "1.5–2 years",
+    "Pluto": "2–3 years",
+}
 
 app = FastAPI(title="astro-web-ui", docs_url=None, redoc_url=None, openapi_url=None)
 logger = logging.getLogger(__name__)
@@ -101,6 +165,13 @@ DOCKER_COMPOSE_API_BASE_URL = _env("DOCKER_COMPOSE_API_BASE_URL", "http://astrod
 DOCKER_COMPOSE_API_FALLBACK_ENABLED = _env_flag("DOCKER_COMPOSE_API_FALLBACK_ENABLED", "0")
 WEB_UI_INTERNAL_API_BASE_URL = _env("WEB_UI_INTERNAL_API_BASE_URL", "http://127.0.0.1:8013")
 RECTIFICATION_PRO_TIMEOUT_SECONDS = int(_env("RECTIFICATION_PRO_TIMEOUT_SECONDS", "600") or "600")
+RECTIFICATION_PRO_JOB_TTL_SECONDS = int(_env("RECTIFICATION_PRO_JOB_TTL_SECONDS", "3600") or "3600")
+RECTIFICATION_PRO_MULTI_CARD_MAX_EVENTS = int(_env("RECTIFICATION_PRO_MULTI_CARD_MAX_EVENTS", "4") or "4")
+RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT = int(
+    _env("RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT", "12") or "12"
+)
+_RECTIFICATION_PRO_JOBS: dict[str, dict[str, Any]] = {}
+_RECTIFICATION_PRO_JOBS_LOCK = threading.Lock()
 
 QUESTION_BANK: list[dict[str, Any]] = [
     {
@@ -494,17 +565,28 @@ class GeocodeRequest(BaseModel):
 
 class GenerateRequest(BaseModel):
     api_base_url: str = ""
-    datetime_local: str
+    datetime_local: str | None = None
+    birth_date_local: str | None = None
     timezone_mode: Literal["auto", "manual"] = "auto"
     timezone_offset: str = ""
     timezone_name: str | None = None
-    latitude: float
-    longitude: float
+    profile_timezone_name: str | None = None
+    birth_city: str | None = None
+    birth_country: str | None = None
+    birth_region: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
     house_system: str = "P"
     aspect_orb_profile: Literal["avestan", "western"] = "avestan"
     zodiac_mode: str = "tropical"
     sidereal_mode: str | None = None
     prompt_text: str = "Сделай гороскоп по этим данным."
+
+    @model_validator(mode="after")
+    def _validate_generate_identity(self) -> GenerateRequest:
+        if not (self.datetime_local or self.birth_date_local):
+            raise ValueError("birth date is required")
+        return self
 
 
 class RectificationIntervalsRequest(BaseModel):
@@ -1952,7 +2034,135 @@ def _format_offset(local_aware: datetime) -> str:
     return f"{sign}{hours:02d}:{minutes:02d}"
 
 
+def _now_utc() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _parse_birth_date_local(value: str | None) -> date:
+    if not isinstance(value, str) or not value.strip():
+        raise HTTPException(status_code=422, detail="birth date is required")
+    try:
+        return date.fromisoformat(value.strip())
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="Invalid birth_date_local format") from exc
+
+
+def _safe_coordinates_or_placeholder(
+    latitude: float | None,
+    longitude: float | None,
+) -> tuple[float, float, str]:
+    if isinstance(latitude, (int, float)) and isinstance(longitude, (int, float)):
+        return float(latitude), float(longitude), "provided_coordinates"
+    return NO_TIME_PLACEHOLDER_LATITUDE, NO_TIME_PLACEHOLDER_LONGITUDE, "placeholder_for_planets_only"
+
+
+def _guess_timezone_name_from_region(*, region: str | None) -> str | None:
+    if not isinstance(region, str) or not region.strip():
+        return None
+    normalized_region = region.strip().lower().replace("-", " ").replace("_", " ")
+    matches = {
+        tz_name
+        for tz_name in available_timezones()
+        if tz_name.split("/")[-1].replace("_", " ").lower() == normalized_region
+    }
+    if len(matches) == 1:
+        return next(iter(matches))
+    return None
+
+
+def _resolve_no_time_timezone_context(payload: GenerateRequest) -> tuple[dict[str, Any], list[str]]:
+    birth_date = _parse_birth_date_local(payload.birth_date_local)
+    local_noon = datetime.combine(birth_date, datetime.min.time()).replace(hour=12)
+    datetime_local = f"{birth_date.isoformat()}T{NO_TIME_FALLBACK_LOCAL_CLOCK}:00"
+    warnings: list[str] = []
+
+    if payload.timezone_mode == "manual":
+        if not TZ_OFFSET_PATTERN.match(payload.timezone_offset):
+            raise HTTPException(status_code=422, detail="Invalid timezone_offset format. Use +03:00")
+        sign = 1 if payload.timezone_offset[0] == "+" else -1
+        hours = int(payload.timezone_offset[1:3])
+        minutes = int(payload.timezone_offset[4:6])
+        offset = timedelta(hours=hours, minutes=minutes) * sign
+        local_aware = local_noon.replace(tzinfo=timezone(offset))
+        warnings.append("manual_timezone_offset_used")
+        return (
+            {
+                "mode": "manual",
+                "timezone_name": payload.timezone_name or payload.profile_timezone_name,
+                "timezone_offset": payload.timezone_offset,
+                "timezone_source": "manual_offset",
+                "datetime_local": datetime_local,
+                "datetime_utc": local_aware.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+                "clarification_needed": False,
+            },
+            warnings,
+        )
+
+    timezone_name = (payload.timezone_name or "").strip()
+    timezone_source = "provided_timezone_name"
+    clarification_needed = False
+
+    if not timezone_name and payload.profile_timezone_name:
+        timezone_name = payload.profile_timezone_name.strip()
+        timezone_source = "profile_timezone_name"
+
+    if not timezone_name and isinstance(payload.latitude, (int, float)) and isinstance(payload.longitude, (int, float)):
+        try:
+            timezone_name = resolve_timezone_name(latitude=float(payload.latitude), longitude=float(payload.longitude))
+            timezone_source = "auto_by_coordinates"
+        except Exception:
+            timezone_name = ""
+
+    if not timezone_name:
+        timezone_name = _guess_timezone_name_from_region(region=payload.birth_region or payload.birth_city)
+        if timezone_name:
+            timezone_source = "region_unique_match"
+
+    if not timezone_name:
+        clarification_needed = True
+        warnings.append("timezone_clarification_needed_no_time_fallback_utc")
+        local_aware = local_noon.replace(tzinfo=timezone.utc)
+        return (
+            {
+                "mode": "auto",
+                "timezone_name": "UTC",
+                "timezone_offset": "+00:00",
+                "timezone_source": "fallback_utc_due_timezone_ambiguity",
+                "datetime_local": datetime_local,
+                "datetime_utc": local_aware.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+                "clarification_needed": clarification_needed,
+            },
+            warnings,
+        )
+
+    try:
+        timezone_info = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError as exc:
+        raise HTTPException(status_code=422, detail="Invalid timezone_name") from exc
+
+    local_aware = local_noon.replace(tzinfo=timezone_info)
+    auto_offset = _format_offset(local_aware)
+    if payload.timezone_offset and payload.timezone_offset != auto_offset:
+        warnings.append("manual_offset_ignored_in_auto_timezone_mode")
+
+    return (
+        {
+            "mode": "auto",
+            "timezone_name": timezone_name,
+            "timezone_offset": auto_offset,
+            "timezone_source": timezone_source,
+            "datetime_local": datetime_local,
+            "datetime_utc": local_aware.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "clarification_needed": clarification_needed,
+        },
+        warnings,
+    )
+
+
 def _resolve_timezone_context(payload: GenerateRequest) -> tuple[dict[str, Any], list[str]]:
+    if not payload.datetime_local:
+        return _resolve_no_time_timezone_context(payload)
+
     try:
         local_naive = datetime.fromisoformat(payload.datetime_local)
     except ValueError as exc:
@@ -1965,8 +2175,10 @@ def _resolve_timezone_context(payload: GenerateRequest) -> tuple[dict[str, Any],
         timezone_name = (payload.timezone_name or "").strip()
         timezone_source = "auto_by_coordinates"
         if not timezone_name:
+            if not isinstance(payload.latitude, (int, float)) or not isinstance(payload.longitude, (int, float)):
+                raise HTTPException(status_code=422, detail="latitude and longitude are required for full forecast auto timezone")
             try:
-                timezone_name = resolve_timezone_name(latitude=payload.latitude, longitude=payload.longitude)
+                timezone_name = resolve_timezone_name(latitude=float(payload.latitude), longitude=float(payload.longitude))
             except Exception as exc:
                 raise HTTPException(
                     status_code=422,
@@ -2112,6 +2324,303 @@ def _compact_llm_chart_context(chart: dict[str, Any]) -> dict[str, Any]:
         "houses": compact_houses,
         "aspects": compact_aspects,
         "meta": chart.get("meta"),
+    }
+
+
+def _sanitize_chart_for_no_time(chart: dict[str, Any]) -> dict[str, Any]:
+    objects_raw = chart.get("objects") if isinstance(chart, dict) else {}
+    sanitized_objects: dict[str, dict[str, Any]] = {}
+    if isinstance(objects_raw, dict):
+        for name, obj in objects_raw.items():
+            if not isinstance(obj, dict):
+                continue
+            sanitized_objects[str(name)] = {
+                **obj,
+                "house": None,
+            }
+
+    houses_raw = chart.get("houses") if isinstance(chart, dict) else {}
+    meta = dict(chart.get("meta") or {}) if isinstance(chart, dict) else {}
+    meta["forecast_precision"] = "birth_date_no_time"
+    meta["houses_available"] = False
+    meta["asc_mc_available"] = False
+
+    return {
+        "input": dict(chart.get("input") or {}) if isinstance(chart, dict) else {},
+        "normalized": dict(chart.get("normalized") or {}) if isinstance(chart, dict) else {},
+        "objects": sanitized_objects,
+        "aspects": [],
+        "houses": {
+            "system": houses_raw.get("system", "P") if isinstance(houses_raw, dict) else "P",
+            "cusps": {},
+            "cusp_details": {},
+        },
+        "angles": {},
+        "meta": meta,
+    }
+
+
+def _fetch_chart_response(
+    *,
+    resolved_api_base_url: str,
+    chart_payload: dict[str, Any],
+    timeout: int = 120,
+) -> dict[str, Any]:
+    path = "/api/v1/chart"
+    try:
+        response = _post_to_api_with_fallback(
+            base_url=resolved_api_base_url,
+            path=path,
+            payload=chart_payload,
+            timeout=timeout,
+        )
+    except httpx.HTTPError as exc:
+        logger.warning("Chart upstream unavailable: path=%s base_url=%s error=%s", path, resolved_api_base_url, exc)
+        raise HTTPException(
+            status_code=502,
+            detail=_build_upstream_unavailable_detail(
+                base_url=resolved_api_base_url,
+                path=path,
+                timeout=timeout,
+                exc=exc,
+            ),
+        ) from exc
+
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=response.status_code if response.status_code in {502, 504} else 502,
+            detail=_build_upstream_http_status_detail(
+                status_code=response.status_code,
+                path=path,
+                body_text=response.text,
+            ),
+        )
+    return response.json()
+
+
+def _body_display_name(name: str) -> str:
+    return OBJECT_DISPLAY_NAMES.get(name, name.replace("_", " ").title())
+
+
+def _motion_phase_from_speed(speed: float | None) -> str:
+    if speed is None or not isinstance(speed, (int, float)):
+        return "direct"
+    if abs(float(speed)) <= NO_TIME_STATIONARY_THRESHOLD:
+        return "stationary"
+    return "retrograde" if float(speed) < 0 else "direct"
+
+
+def _signed_delta_to_aspect(*, transit_degree: float, natal_degree: float, exact_angle: float) -> float:
+    return ((transit_degree - natal_degree - exact_angle + 540.0) % 360.0) - 180.0
+
+
+def _minimal_angular_distance(left: float, right: float) -> float:
+    delta = abs(left - right) % 360.0
+    return delta if delta <= 180.0 else 360.0 - delta
+
+
+def _to_local_iso(dt_utc: datetime, timezone_name: str) -> str:
+    return dt_utc.astimezone(ZoneInfo(timezone_name)).isoformat(timespec="seconds")
+
+
+def _collect_no_time_transit_aspects(
+    *,
+    natal_chart: dict[str, Any],
+    transit_chart: dict[str, Any],
+    timezone_name: str,
+    now_utc: datetime,
+) -> list[dict[str, Any]]:
+    natal_objects = natal_chart.get("objects") if isinstance(natal_chart, dict) else {}
+    transit_objects = transit_chart.get("objects") if isinstance(transit_chart, dict) else {}
+    if not isinstance(natal_objects, dict) or not isinstance(transit_objects, dict):
+        return []
+
+    all_aspects = [*NO_TIME_MAJOR_ASPECTS, *NO_TIME_MINOR_ASPECTS]
+    ranked: list[dict[str, Any]] = []
+    for transit_body in NO_TIME_TRANSIT_BODIES:
+        transit_obj = transit_objects.get(transit_body)
+        if not isinstance(transit_obj, dict):
+            continue
+        transit_degree = transit_obj.get("absolute_degree_0_360")
+        speed = transit_obj.get("speed_longitude_deg_per_day")
+        if not isinstance(transit_degree, (int, float)):
+            continue
+
+        for natal_body in NO_TIME_NATAL_TARGET_BODIES:
+            natal_obj = natal_objects.get(natal_body)
+            if not isinstance(natal_obj, dict):
+                continue
+            natal_degree = natal_obj.get("absolute_degree_0_360")
+            if not isinstance(natal_degree, (int, float)):
+                continue
+
+            for aspect_name, exact_angle, orb_limit in all_aspects:
+                actual_angle = _minimal_angular_distance(float(transit_degree), float(natal_degree))
+                orb = abs(actual_angle - exact_angle)
+                if orb > orb_limit:
+                    continue
+                if aspect_name in {"semi-sextile", "quincunx"} and orb > 0.25:
+                    continue
+
+                delta_signed = _signed_delta_to_aspect(
+                    transit_degree=float(transit_degree),
+                    natal_degree=float(natal_degree),
+                    exact_angle=exact_angle,
+                )
+                exact_at_local: str | None = None
+                active_from_local: str | None = None
+                active_to_local: str | None = None
+                phase = "exact" if abs(delta_signed) <= NO_TIME_PHASE_EXACT_EPSILON else "separating"
+                if isinstance(speed, (int, float)) and abs(float(speed)) > NO_TIME_STATIONARY_THRESHOLD:
+                    days_to_exact = -delta_signed / float(speed)
+                    exact_at_utc = now_utc + timedelta(days=days_to_exact)
+                    active_span_days = orb_limit / abs(float(speed))
+                    exact_at_local = _to_local_iso(exact_at_utc, timezone_name)
+                    active_from_local = _to_local_iso(exact_at_utc - timedelta(days=active_span_days), timezone_name)
+                    active_to_local = _to_local_iso(exact_at_utc + timedelta(days=active_span_days), timezone_name)
+                    if abs(delta_signed) <= NO_TIME_PHASE_EXACT_EPSILON:
+                        phase = "exact"
+                    else:
+                        phase = "applying" if days_to_exact > 0 else "separating"
+
+                transit_label = _body_display_name(transit_body)
+                entry = {
+                    "transit_body": transit_label,
+                    "natal_body": _body_display_name(natal_body),
+                    "aspect": aspect_name,
+                    "orb": round(float(orb), 4),
+                    "phase": phase,
+                    "motion": _motion_phase_from_speed(float(speed) if isinstance(speed, (int, float)) else None),
+                    "active_from": active_from_local,
+                    "exact_at": exact_at_local,
+                    "active_to": active_to_local,
+                    "transit_sign": transit_obj.get("sign_name_en"),
+                    "natal_sign": natal_obj.get("sign_name_en"),
+                    "reference_duration": NO_TIME_SLOW_TRANSIT_REFERENCE_DURATIONS.get(transit_label),
+                    "_score": (
+                        300 if transit_body == "moon" else
+                        250 if transit_body == "sun" else
+                        220 if transit_body == "mercury" else
+                        210 if transit_body == "venus" else
+                        200 if transit_body == "mars" else
+                        140 if transit_body == "jupiter" else
+                        120 if transit_body == "saturn" else
+                        80 if transit_body == "uranus" else
+                        70 if transit_body == "neptune" else
+                        60
+                    ) - (20 if aspect_name in {"semi-sextile", "quincunx"} else 0) - float(orb) * 10.0,
+                }
+                ranked.append(entry)
+
+    ranked.sort(key=lambda item: (-item["_score"], item["orb"]))
+    for item in ranked:
+        item.pop("_score", None)
+    return ranked[:20]
+
+
+def _build_no_time_moon_daily_windows(
+    *,
+    transit_chart: dict[str, Any],
+    timezone_context: dict[str, Any],
+    now_utc: datetime,
+) -> list[dict[str, Any]]:
+    moon = (transit_chart.get("objects") or {}).get("moon") if isinstance(transit_chart, dict) else None
+    if not isinstance(moon, dict):
+        return []
+    timezone_name = timezone_context.get("timezone_name") or "UTC"
+    current_local = now_utc.astimezone(ZoneInfo(timezone_name))
+    day_start = current_local.replace(hour=0, minute=0, second=0, microsecond=0)
+    day_end = day_start + timedelta(days=1)
+    return [
+        {
+            "moon_sign": moon.get("sign_name_en"),
+            "from": day_start.isoformat(timespec="seconds"),
+            "to": day_end.isoformat(timespec="seconds"),
+            "meaning": NO_TIME_MOON_SIGN_MEANINGS.get(moon.get("sign_name_en") or "", "эмоциональный фон дня"),
+        }
+    ]
+
+
+def _build_no_time_calculation_facts(
+    *,
+    natal_chart: dict[str, Any],
+    transit_chart: dict[str, Any],
+    timezone_context: dict[str, Any],
+    warnings: list[str],
+    coordinates_source: str,
+    now_utc: datetime,
+) -> dict[str, Any]:
+    transit_aspects = _collect_no_time_transit_aspects(
+        natal_chart=natal_chart,
+        transit_chart=transit_chart,
+        timezone_name=timezone_context.get("timezone_name") or "UTC",
+        now_utc=now_utc,
+    )
+    moon_daily_windows = _build_no_time_moon_daily_windows(
+        transit_chart=transit_chart,
+        timezone_context=timezone_context,
+        now_utc=now_utc,
+    )
+    return {
+        "precision": "birth_date_no_time",
+        "forecast_mode": "transit_to_natal_no_houses",
+        "birth_time_used": NO_TIME_FALLBACK_LOCAL_CLOCK,
+        "birth_time_assumption": "date_midpoint",
+        "houses_available": False,
+        "asc_mc_available": False,
+        "event_specificity": "low",
+        "forecast_character": "psychological_mental_energy",
+        "coordinates_source": coordinates_source,
+        "timezone_clarification_needed": bool(timezone_context.get("clarification_needed")),
+        "limitations": [
+            "No houses, ASC, MC or cusps without birth time",
+            "Forecast is less event-specific",
+            "Focus is psychological, energetic and mental",
+        ],
+        "transit_aspects": transit_aspects,
+        "moon_daily_windows": moon_daily_windows,
+        "warnings": warnings,
+    }
+
+
+def _compact_no_time_forecast_context(
+    *,
+    natal_chart: dict[str, Any],
+    transit_chart: dict[str, Any],
+    calculation_facts: dict[str, Any],
+    timezone_context: dict[str, Any],
+) -> dict[str, Any]:
+    natal_objects = natal_chart.get("objects") if isinstance(natal_chart, dict) else {}
+    transit_objects = transit_chart.get("objects") if isinstance(transit_chart, dict) else {}
+    compact_natal: dict[str, Any] = {}
+    compact_transits: dict[str, Any] = {}
+    if isinstance(natal_objects, dict):
+        for name in [*NO_TIME_NATAL_TARGET_BODIES, "moon"]:
+            obj = natal_objects.get(name)
+            if not isinstance(obj, dict):
+                continue
+            compact_natal[name] = {
+                "sign_name_en": obj.get("sign_name_en"),
+                "sign_degree": obj.get("sign_degree"),
+                "absolute_degree_0_360": obj.get("absolute_degree_0_360"),
+            }
+    if isinstance(transit_objects, dict):
+        for name in NO_TIME_TRANSIT_BODIES:
+            obj = transit_objects.get(name)
+            if not isinstance(obj, dict):
+                continue
+            compact_transits[name] = {
+                "sign_name_en": obj.get("sign_name_en"),
+                "sign_degree": obj.get("sign_degree"),
+                "absolute_degree_0_360": obj.get("absolute_degree_0_360"),
+                "speed_longitude_deg_per_day": obj.get("speed_longitude_deg_per_day"),
+                "retrograde": obj.get("retrograde"),
+            }
+    return {
+        "natal_positions": compact_natal,
+        "transit_positions": compact_transits,
+        "calculation_facts": calculation_facts,
+        "timezone": timezone_context,
     }
 
 
@@ -2894,6 +3403,49 @@ def _render_horoscope_via_openai(
     return {"text": chat_result["text"], "llm_debug": llm_debug}
 
 
+def _render_no_time_forecast_via_openai(
+    prompt_text: str,
+    forecast_context: dict[str, Any],
+) -> dict[str, Any]:
+    safe_prompt_text = _truncate_prompt_text(prompt_text)
+    system_prompt = (
+        "Ты астрологический ассистент. Пиши по-русски. "
+        "Перед тобой персональный прогноз без точного времени рождения. "
+        "Нельзя использовать дома, ASC, MC, куспиды, управителей домов и событийную house-логику. "
+        "Опирайся только на натальные положения планет, транзитные положения, транзитные аспекты к натальным планетам, "
+        "фазу аспекта (applying/exact/separating), фазу движения планеты (direct/retrograde/stationary) "
+        "и фон Луны по знаку/дневным окнам. "
+        "Прямо и честно объясни ограничение: без точного времени прогноз лучше описывает психологические, ментальные "
+        "и энергетические тренды, а не точные бытовые сценарии. "
+        "Не показывай пользователю внутренние технические имена режимов."
+    )
+    user_prompt = (
+        f"{safe_prompt_text}\n\n"
+        "Обязательная вводная формулировка для пользователя:\n"
+        "Этот прогноз построен без точного времени рождения, поэтому мы не используем дома, ASC и MC. "
+        "Он не показывает конкретные бытовые сценарии, зато хорошо описывает ваши психологические тренды, "
+        "уровень энергии, фоновые мысли и эмоциональные триггеры на ближайшие дни.\n\n"
+        "Ниже расчётный контекст no-time прогноза. Сначала дай краткий общий фон, "
+        "потом выдели 3-6 самых важных транзитных тем, затем заверши короткими практическими рекомендациями.\n\n"
+        f"{json.dumps(forecast_context, ensure_ascii=False)}"
+    )
+    chat_result = _call_llm_chat(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        request_kind=OPENROUTER_REQUEST_KIND_GENERATE,
+        route_label="/api/generate",
+        retry_on_affordable_402=True,
+    )
+    llm_debug = {
+        "provider": chat_result.get("provider", _load_llm_provider()),
+        "scenario": OPENROUTER_REQUEST_KIND_GENERATE,
+        "final_source": chat_result.get("final_source", "llm_primary"),
+        "fallback_used": bool(chat_result.get("fallback_used")),
+        "attempts": chat_result.get("attempts", []),
+    }
+    return {"text": chat_result["text"], "llm_debug": llm_debug}
+
+
 def _extract_usage_stats(openai_response: dict[str, Any]) -> dict[str, int | None]:
     usage = openai_response.get("usage", {}) or {}
     input_tokens = usage.get("input_tokens")
@@ -3123,6 +3675,147 @@ def _post_rectification_events(
             status_code=502,
             detail="Rectification events API returned invalid JSON",
         ) from exc
+
+
+def _guard_rectification_pro_payload(payload: dict[str, Any]) -> None:
+    if not isinstance(payload, dict):
+        return
+
+    raw_events = payload.get("events")
+    events_count = len(raw_events) if isinstance(raw_events, list) else 0
+    settings = payload.get("settings") if isinstance(payload.get("settings"), dict) else {}
+    raw_card_ids = settings.get("formula_card_ids")
+    selected_card_ids = [
+        str(card_id).strip()
+        for card_id in raw_card_ids
+        if str(card_id).strip()
+    ] if isinstance(raw_card_ids, list) else []
+
+    if len(selected_card_ids) <= 1:
+        return
+
+    complexity = events_count * len(selected_card_ids)
+    if (
+        events_count > RECTIFICATION_PRO_MULTI_CARD_MAX_EVENTS
+        or complexity > RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT
+    ):
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "message": "Rectification Pro payload too heavy for live multi-card run",
+                "user_message": (
+                    "Этот multi-card V2 запуск сейчас слишком тяжёлый для live-режима. "
+                    "Попробуйте до 4 событий, один V2 card или V1."
+                ),
+                "technical_message": (
+                    f"events={events_count} cards={len(selected_card_ids)} "
+                    f"complexity={complexity} limit={RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT}"
+                ),
+                "reason": "payload_too_heavy",
+                "events_count": events_count,
+                "selected_cards_count": len(selected_card_ids),
+                "selected_card_ids": selected_card_ids,
+            },
+        )
+
+
+def _cleanup_rectification_pro_jobs(now_ts: float | None = None) -> None:
+    cutoff = (now_ts or time.time()) - RECTIFICATION_PRO_JOB_TTL_SECONDS
+    expired_ids: list[str] = []
+    for job_id, payload in _RECTIFICATION_PRO_JOBS.items():
+        updated_at = float(payload.get("updated_at") or payload.get("created_at") or 0.0)
+        if updated_at < cutoff:
+            expired_ids.append(job_id)
+    for job_id in expired_ids:
+        _RECTIFICATION_PRO_JOBS.pop(job_id, None)
+
+
+def _get_rectification_pro_job(job_id: str) -> dict[str, Any] | None:
+    with _RECTIFICATION_PRO_JOBS_LOCK:
+        _cleanup_rectification_pro_jobs()
+        job = _RECTIFICATION_PRO_JOBS.get(job_id)
+        if job is None:
+            return None
+        return dict(job)
+
+
+def _run_rectification_pro_job(*, job_id: str, base_url: str, payload: dict[str, Any], timeout: int) -> None:
+    with _RECTIFICATION_PRO_JOBS_LOCK:
+        job = _RECTIFICATION_PRO_JOBS.get(job_id)
+        if job is None:
+            return
+        job["status"] = "running"
+        job["updated_at"] = time.time()
+
+    try:
+        result = _post_rectification_events(
+            base_url=base_url,
+            path="/api/v1/rectification/pro/run",
+            payload=payload,
+            timeout=timeout,
+        )
+    except HTTPException as exc:
+        with _RECTIFICATION_PRO_JOBS_LOCK:
+            job = _RECTIFICATION_PRO_JOBS.get(job_id)
+            if job is None:
+                return
+            job["status"] = "failed"
+            job["error"] = {"status_code": exc.status_code, "detail": exc.detail}
+            job["updated_at"] = time.time()
+        return
+    except Exception as exc:  # noqa: BLE001
+        with _RECTIFICATION_PRO_JOBS_LOCK:
+            job = _RECTIFICATION_PRO_JOBS.get(job_id)
+            if job is None:
+                return
+            job["status"] = "failed"
+            job["error"] = {
+                "status_code": 500,
+                "detail": {
+                    "message": "Unexpected async pro job error",
+                    "user_message": "Сервис Pro-ректификации временно недоступен. Попробуйте повторить позже.",
+                    "reason": "internal_async_job_error",
+                    "error_type": type(exc).__name__,
+                },
+            }
+            job["updated_at"] = time.time()
+        return
+
+    with _RECTIFICATION_PRO_JOBS_LOCK:
+        job = _RECTIFICATION_PRO_JOBS.get(job_id)
+        if job is None:
+            return
+        job["status"] = "completed"
+        job["result"] = result
+        job["updated_at"] = time.time()
+
+
+def _create_rectification_pro_job(*, base_url: str, payload: dict[str, Any], timeout: int) -> str:
+    job_id = str(uuid4())
+    now_ts = time.time()
+    with _RECTIFICATION_PRO_JOBS_LOCK:
+        _cleanup_rectification_pro_jobs(now_ts)
+        _RECTIFICATION_PRO_JOBS[job_id] = {
+            "job_id": job_id,
+            "status": "pending",
+            "result": None,
+            "error": None,
+            "created_at": now_ts,
+            "updated_at": now_ts,
+        }
+    worker = threading.Thread(
+        target=_run_rectification_pro_job,
+        kwargs={
+            "job_id": job_id,
+            "base_url": base_url,
+            "payload": payload,
+            "timeout": timeout,
+        },
+        daemon=True,
+        name=f"rectification-pro-job-{job_id}",
+    )
+    worker.start()
+    return job_id
 
 
 @app.get("/")
@@ -3375,48 +4068,125 @@ def generate(payload: GenerateRequest) -> JSONResponse:
     resolved_api_base_url = _resolve_api_base_url(payload.api_base_url)
     timezone_context, timezone_warnings = _resolve_timezone_context(payload)
     datetime_utc = timezone_context["datetime_utc"]
+    is_no_time_mode = not bool(payload.datetime_local) and bool(payload.birth_date_local)
+    llm_debug: dict[str, Any] | None = None
+    llm_status = "ok"
+    llm_message: str | None = None
+    warnings = list(timezone_warnings)
+
+    if is_no_time_mode:
+        latitude, longitude, coordinates_source = _safe_coordinates_or_placeholder(payload.latitude, payload.longitude)
+        natal_chart_response = _fetch_chart_response(
+            resolved_api_base_url=resolved_api_base_url,
+            chart_payload={
+                "datetime_utc": datetime_utc,
+                "latitude": latitude,
+                "longitude": longitude,
+                "house_system": payload.house_system,
+                "aspect_orb_profile": payload.aspect_orb_profile,
+                "zodiac_mode": payload.zodiac_mode,
+                "sidereal_mode": payload.sidereal_mode,
+            },
+        )
+        current_now_utc = _now_utc()
+        transit_chart_response = _fetch_chart_response(
+            resolved_api_base_url=resolved_api_base_url,
+            chart_payload={
+                "datetime_utc": current_now_utc.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+                "latitude": latitude,
+                "longitude": longitude,
+                "house_system": payload.house_system,
+                "aspect_orb_profile": payload.aspect_orb_profile,
+                "zodiac_mode": payload.zodiac_mode,
+                "sidereal_mode": payload.sidereal_mode,
+            },
+        )
+        calculation_facts = _build_no_time_calculation_facts(
+            natal_chart=natal_chart_response,
+            transit_chart=transit_chart_response,
+            timezone_context=timezone_context,
+            warnings=warnings,
+            coordinates_source=coordinates_source,
+            now_utc=current_now_utc,
+        )
+        chart_response = _sanitize_chart_for_no_time(natal_chart_response)
+        core_identity = {
+            "sun": (chart_response.get("objects") or {}).get("sun"),
+            "moon": (chart_response.get("objects") or {}).get("moon"),
+            "asc": None,
+        }
+        core_identity_warnings = ["core_identity_missing_asc_no_time_mode"]
+        try:
+            llm_result = _render_no_time_forecast_via_openai(
+                payload.prompt_text,
+                _compact_no_time_forecast_context(
+                    natal_chart=chart_response,
+                    transit_chart=transit_chart_response,
+                    calculation_facts=calculation_facts,
+                    timezone_context=timezone_context,
+                ),
+            )
+            horoscope_text = llm_result.get("text", "") if isinstance(llm_result, dict) else str(llm_result)
+            if isinstance(llm_result, dict):
+                llm_debug = llm_result.get("llm_debug")
+        except HTTPException as exc:
+            detail = exc.detail if isinstance(exc.detail, dict) else {"message": str(exc.detail)}
+            if exc.status_code != 502:
+                raise
+            llm_debug = {
+                "provider": detail.get("provider", _load_llm_provider()),
+                "scenario": OPENROUTER_REQUEST_KIND_GENERATE,
+                "final_source": "llm_unavailable",
+                "fallback_used": True,
+                "attempts": detail.get("attempts", []),
+                "status_code": detail.get("status_code"),
+                "reason": detail.get("reason"),
+                "model": detail.get("model"),
+                "key_name": detail.get("key_name"),
+                "requested_max_tokens": detail.get("requested_max_tokens"),
+                "applied_max_tokens": detail.get("applied_max_tokens"),
+                "route": detail.get("route", "/api/generate"),
+                "raw_error": detail.get("raw_error"),
+            }
+            horoscope_text = None
+            llm_status = "unavailable"
+            llm_message = LLM_UNAVAILABLE_MESSAGE
+            core_identity_warnings.append("llm_unavailable")
+
+        warnings.extend(core_identity_warnings)
+        return JSONResponse(
+            {
+                "chart_status": "ok",
+                "llm_status": llm_status,
+                "llm_message": llm_message,
+                "datetime_utc": datetime_utc,
+                "timezone": timezone_context,
+                "warnings": warnings,
+                "core_identity": core_identity,
+                "horoscope_text": horoscope_text,
+                "chart_response": chart_response,
+                "calculation_facts": calculation_facts,
+                "llm_debug": llm_debug,
+            }
+        )
+
+    if not isinstance(payload.latitude, (int, float)) or not isinstance(payload.longitude, (int, float)):
+        raise HTTPException(status_code=422, detail="latitude and longitude are required for full forecast mode")
 
     chart_payload = {
         "datetime_utc": datetime_utc,
-        "latitude": payload.latitude,
-        "longitude": payload.longitude,
+        "latitude": float(payload.latitude),
+        "longitude": float(payload.longitude),
         "house_system": payload.house_system,
         "aspect_orb_profile": payload.aspect_orb_profile,
         "zodiac_mode": payload.zodiac_mode,
         "sidereal_mode": payload.sidereal_mode,
     }
 
-    path = "/api/v1/chart"
-    try:
-        response = _post_to_api_with_fallback(
-            base_url=resolved_api_base_url,
-            path=path,
-            payload=chart_payload,
-            timeout=120,
-        )
-    except httpx.HTTPError as exc:
-        logger.warning("Chart upstream unavailable: path=%s base_url=%s error=%s", path, resolved_api_base_url, exc)
-        raise HTTPException(
-            status_code=502,
-            detail=_build_upstream_unavailable_detail(
-                base_url=resolved_api_base_url,
-                path=path,
-                timeout=120,
-                exc=exc,
-            ),
-        ) from exc
-
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=response.status_code if response.status_code in {502, 504} else 502,
-            detail=_build_upstream_http_status_detail(
-                status_code=response.status_code,
-                path=path,
-                body_text=response.text,
-            ),
-        )
-
-    chart_response = response.json()
+    chart_response = _fetch_chart_response(
+        resolved_api_base_url=resolved_api_base_url,
+        chart_payload=chart_payload,
+    )
     core_identity, core_identity_warnings = _build_core_identity_block(chart_response)
     llm_debug: dict[str, Any] | None = None
     llm_status = "ok"
@@ -3592,6 +4362,7 @@ def rectification_events_finalize(payload: RectificationEventsFinalizeRequest) -
 
 @app.post("/api/rectification/pro/run")
 def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
+    _guard_rectification_pro_payload(payload.payload)
     response_json = _post_rectification_events(
         base_url=payload.api_base_url,
         path="/api/v1/rectification/pro/run",
@@ -3599,6 +4370,32 @@ def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
         timeout=RECTIFICATION_PRO_TIMEOUT_SECONDS,
     )
     return JSONResponse(response_json)
+
+
+@app.post("/api/rectification/pro/run-async")
+def rectification_pro_run_async(payload: RectificationProRunRequest) -> JSONResponse:
+    _guard_rectification_pro_payload(payload.payload)
+    job_id = _create_rectification_pro_job(
+        base_url=payload.api_base_url,
+        payload=payload.payload,
+        timeout=RECTIFICATION_PRO_TIMEOUT_SECONDS,
+    )
+    return JSONResponse(
+        {
+            "job_id": job_id,
+            "status": "pending",
+            "poll_url": f"/api/rectification/pro/jobs/{job_id}",
+        },
+        status_code=202,
+    )
+
+
+@app.get("/api/rectification/pro/jobs/{job_id}")
+def rectification_pro_job_status(job_id: str) -> JSONResponse:
+    job = _get_rectification_pro_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Rectification Pro job not found")
+    return JSONResponse(job)
 
 
 # Явные MIME-типы: на Windows стандартный mimetypes часто отдаёт .js как
