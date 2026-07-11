@@ -157,6 +157,19 @@ import { generate } from "./chart.js";
       }, 1000);
     }
 
+    export function updateLlmOverlayMessage(message) {
+      llmOverlayMessageEl.innerHTML = `<strong>${message || "Р—Р°РїСЂРѕСЃ РІ РЅРµР№СЂРѕСЃРµС‚СЊ РѕС‚РїСЂР°РІР»РµРЅ, Р¶РґРёС‚Рµ..."}</strong>`;
+      llmOverlayEl.classList.add("active");
+      if (!appState.llmOverlayTimerId) {
+        appState.llmOverlayStartedAt = Date.now();
+        llmOverlayElapsedEl.textContent = "0 СЃРµРє";
+        appState.llmOverlayTimerId = setInterval(() => {
+          const elapsedSeconds = Math.floor((Date.now() - appState.llmOverlayStartedAt) / 1000);
+          llmOverlayElapsedEl.textContent = formatElapsedDuration(elapsedSeconds);
+        }, 1000);
+      }
+    }
+
     export function hideLlmOverlay() {
       if (appState.llmOverlayTimerId) {
         clearInterval(appState.llmOverlayTimerId);

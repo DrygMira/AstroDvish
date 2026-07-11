@@ -64,6 +64,7 @@
     export const rectCityBlockEl = document.getElementById("rectCityBlock");
     export const rectCityResultsEl = document.getElementById("rectCityResults");
     export const rectStatusEl = document.getElementById("rectStatus");
+    export const rectBirthDateEl = document.getElementById("rectBirthDate");
     export const rectZodiacModeEl = document.getElementById("rectZodiacMode");
     export const rectSiderealModeEl = document.getElementById("rectSiderealMode");
     export const rectIntervalsListEl = document.getElementById("rectIntervalsList");
@@ -72,6 +73,7 @@
     export const rdCityBlockEl = document.getElementById("rdCityBlock");
     export const rdCityResultsEl = document.getElementById("rdCityResults");
     export const rdStatusEl = document.getElementById("rdStatus");
+    export const rdBirthDateEl = document.getElementById("rdBirthDate");
     export const rdZodiacModeEl = document.getElementById("rdZodiacMode");
     export const rdSiderealModeEl = document.getElementById("rdSiderealMode");
     export const rdShowPromptToggleEl = document.getElementById("rdShowPromptToggle");
@@ -102,6 +104,7 @@
     export const reTechJsonBoxEl = document.getElementById("reTechJsonBox");
     export const reToggleJsonBtnEl = document.getElementById("reToggleJsonBtn");
     export const rpStatusEl = document.getElementById("rpStatus");
+    export const rpRunBtnEl = document.getElementById("rpRunBtn");
     export const rpBestCandidatesEl = document.getElementById("rpBestCandidates");
     export const rpFormulaCardIdEl = document.getElementById("rpFormulaCardId");
     export const rpCompareV1V2El = document.getElementById("rpCompareV1V2");

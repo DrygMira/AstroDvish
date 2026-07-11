@@ -1,5 +1,5 @@
 // Авто-извлечено из main.js (build-split). Модуль: coords.
-import { aspectOrbProfileEl, coordDmsWrapEl, coordValueFormatEl, datetimeLocalEl, datetimeLocalSecondsEl, datetimeUtcPreviewEl, latitudeDmsEl, latitudeEl, longitudeDmsEl, longitudeEl, rdSiderealModeEl, rdZodiacModeEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, timezoneOffsetHintEl, timezoneStatusEl, wzApiBaseUrlEl, wzBirthDateEl, wzCityQueryEl, wzCoordDmsWrapEl, wzCoordValueFormatEl, wzHouseSystemEl, wzLatitudeDmsEl, wzLatitudeEl, wzLongitudeDmsEl, wzLongitudeEl, wzSiderealModeEl, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl, wzTimezoneOffsetHintEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
+import { aspectOrbProfileEl, coordDmsWrapEl, coordValueFormatEl, datetimeLocalEl, datetimeLocalSecondsEl, datetimeUtcPreviewEl, latitudeDmsEl, latitudeEl, longitudeDmsEl, longitudeEl, rdBirthDateEl, rdSiderealModeEl, rdZodiacModeEl, rectBirthDateEl, rectSiderealModeEl, rectZodiacModeEl, siderealModeEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, timezoneOffsetHintEl, timezoneStatusEl, wzApiBaseUrlEl, wzBirthDateEl, wzCityQueryEl, wzCoordDmsWrapEl, wzCoordValueFormatEl, wzHouseSystemEl, wzLatitudeDmsEl, wzLatitudeEl, wzLongitudeDmsEl, wzLongitudeEl, wzSiderealModeEl, wzTimezoneModeEl, wzTimezoneNameEl, wzTimezoneOffsetEl, wzTimezoneOffsetHintEl, wzZodiacModeEl, zodiacModeEl } from "./dom.js";
 import { appState, sharedBirthContext } from "./state.js";
 import { buildDateTimeWithSeconds, decimalToDms, normalizeCoordinateNumber, normalizeSecondValue, parseDateTimeLocalParts, parseDmsCoordinate, resolveTimezoneOffsetForDisplay } from "./validation.js";
 import { getChartContextPatch, getWizardContextPatch, syncSharedBirthContext } from "./state-sync.js";
@@ -307,10 +307,20 @@ import { renderSharedCurrentData, setGenerateTechnicalDebug } from "./ui.js";
       const isAuto = timezoneModeEl.value === "auto";
       timezoneOffsetEl.disabled = isAuto;
       wzTimezoneOffsetEl.disabled = isAuto;
+      const timezoneDateValue =
+        rdBirthDateEl?.value ||
+        rectBirthDateEl?.value ||
+        wzBirthDateEl.value ||
+        sharedBirthContext.birthDateLocal;
+      const sharedDateTimeValue = datetimeLocalEl.value || sharedBirthContext.birthDateTimeLocal;
+      const timezoneDateTimeValue =
+        timezoneDateValue && sharedDateTimeValue && sharedDateTimeValue.startsWith(`${timezoneDateValue}T`)
+          ? sharedDateTimeValue
+          : null;
       const resolvedOffset = resolveTimezoneOffsetForDisplay(
         timezoneNameEl.value || wzTimezoneNameEl.value || sharedBirthContext.timezoneName,
-        datetimeLocalEl.value || sharedBirthContext.birthDateTimeLocal,
-        wzBirthDateEl.value || sharedBirthContext.birthDateLocal,
+        timezoneDateTimeValue,
+        timezoneDateValue,
       );
       sharedBirthContext.timezoneResolvedOffset = resolvedOffset;
       if (isAuto) {

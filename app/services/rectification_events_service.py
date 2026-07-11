@@ -22,8 +22,7 @@ from app.models.event_models import (
 MIN_EVENTS = 3
 GOOD_EVENTS_MIN = 5
 GOOD_EVENTS_MAX = 7
-MAX_EVENTS = 10
-MAX_STEPS = 14
+MAX_EVENTS = 25
 
 EVENT_QUESTION_BANK: list[EventQuestion] = [
     EventQuestion(
@@ -167,7 +166,27 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         requires_sequence_number=True,
     ),
     EventQuestion(
-        question_id="ev_surgery_13",
+        question_id="ev_education_work_start_13",
+        event_type=EventType.education_work_start,
+        question_text="Был ли значимый старт в учёбе или работе (поступление, первая работа, резкий профессиональный вход)?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+    ),
+    EventQuestion(
+        question_id="ev_profession_lifestyle_change_14",
+        event_type=EventType.profession_lifestyle_change,
+        question_text="Была ли радикальная смена профессии или образа жизни?",
+        options=[
+            EventQuestionOption(id="yes", text="Да"),
+            EventQuestionOption(id="no", text="Нет"),
+            EventQuestionOption(id="skip", text="Пропустить"),
+        ],
+    ),
+    EventQuestion(
+        question_id="ev_surgery_15",
         event_type=EventType.surgery,
         question_text="Были ли хирургические операции?",
         options=[
@@ -179,7 +198,7 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         requires_sequence_number=True,
     ),
     EventQuestion(
-        question_id="ev_major_accident_14",
+        question_id="ev_major_accident_16",
         event_type=EventType.major_accident,
         question_text="Были ли серьёзные аварии или происшествия с риском для жизни?",
         options=[
@@ -191,7 +210,7 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         requires_sequence_number=True,
     ),
     EventQuestion(
-        question_id="ev_imprisonment_15",
+        question_id="ev_imprisonment_17",
         event_type=EventType.imprisonment,
         question_text="Были ли периоды ограничения свободы (суд, заключение, изоляция)?",
         options=[
@@ -203,7 +222,7 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         requires_sequence_number=True,
     ),
     EventQuestion(
-        question_id="ev_military_service_16",
+        question_id="ev_military_service_18",
         event_type=EventType.military_service,
         question_text="Была ли военная служба, заметно изменившая ваш жизненный курс?",
         options=[
@@ -213,7 +232,7 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         ],
     ),
     EventQuestion(
-        question_id="ev_finance_rise_fall_17",
+        question_id="ev_finance_rise_fall_19",
         event_type=EventType.financial_rise_fall,
         question_text="Были ли резкие финансовые взлёты или падения?",
         options=[
@@ -225,7 +244,7 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         requires_sequence_number=True,
     ),
     EventQuestion(
-        question_id="ev_inner_crisis_18",
+        question_id="ev_inner_crisis_20",
         event_type=EventType.inner_crisis_turning_point,
         question_text="Был ли внутренний кризис или перелом идентичности, после которого вы стали жить иначе?",
         options=[
@@ -235,7 +254,7 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         ],
     ),
     EventQuestion(
-        question_id="ev_custom_major_19",
+        question_id="ev_custom_major_21",
         event_type=EventType.custom_major_event,
         question_text="Есть ли ещё одно крупное событие, которое важно учесть для ректификации?",
         options=[
@@ -245,6 +264,8 @@ EVENT_QUESTION_BANK: list[EventQuestion] = [
         ],
     ),
 ]
+
+MAX_STEPS = max(len(EVENT_QUESTION_BANK) + 12, 30)
 
 EVENT_TYPE_DEFAULT_LIFE_AREA: dict[EventType, LifeArea] = {
     EventType.child_birth: LifeArea.family,

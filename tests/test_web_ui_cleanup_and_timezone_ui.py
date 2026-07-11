@@ -66,6 +66,23 @@ def test_timezone_auto_ui_uses_resolved_offset_text_not_stale_manual_value() -> 
     assert 'ensureSelectDisplayValue(wzTimezoneOffsetEl, resolvedOffset || "auto");' in html
 
 
+def test_timezone_auto_ui_uses_direct_rectification_birth_date_before_shared_fallback() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert 'export const rdBirthDateEl = document.getElementById("rdBirthDate");' in html
+    assert 'export const rectBirthDateEl = document.getElementById("rectBirthDate");' in html
+    assert "const timezoneDateValue =" in html
+    assert "rdBirthDateEl?.value ||" in html
+    assert "rectBirthDateEl?.value ||" in html
+    assert "wzBirthDateEl.value ||" in html
+    assert "sharedBirthContext.birthDateLocal;" in html
+    assert "const sharedDateTimeValue = datetimeLocalEl.value || sharedBirthContext.birthDateTimeLocal;" in html
+    assert 'sharedDateTimeValue.startsWith(`${timezoneDateValue}T`)' in html
+    assert "? sharedDateTimeValue" in html
+
+
 def test_main_ui_has_mobile_safe_birth_seconds_input_and_hint() -> None:
     with TestClient(web_ui_main.app) as client:
         response, html = get_main_ui_bundle(client)
@@ -223,6 +240,15 @@ def test_main_ui_humanizes_non_json_proxy_errors() -> None:
     assert "function fetchWithTimeout(url, options = {}, timeoutMs = 180000)" in html
     assert "V2 comparison may take up to 2 minutes." in html
     assert '}, 620000);' in html
+
+
+def test_main_ui_humanizes_browser_level_fetch_failures() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+
+    assert response.status_code == 200
+    assert 'if (err instanceof TypeError)' in html
+    assert "Соединение с сервером прервалось" in html
 
 
 def test_main_ui_does_not_ship_ufa_city_or_coordinates_as_live_defaults() -> None:

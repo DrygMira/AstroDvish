@@ -1,12 +1,12 @@
 // Авто-извлечено из main.js (build-split). Модуль: pro.
-import { expertWrapEl, horoscopeBoxEl, modalEl, rdSiderealModeEl, rdZodiacModeEl, rpBestCandidatesEl, rpCompareV1V2El, rpConfidenceEl, rpExplainBodyEl, rpFormulaCardIdEl, rpFormulaComparisonEl, rpFormulaMultiCardEl, rpMethodsSummaryEl, rpUseAllRelevantV2CardsEl, rpWarningsEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleExpertBtnEl } from "./dom.js";
+import { expertWrapEl, horoscopeBoxEl, modalEl, rdSiderealModeEl, rdZodiacModeEl, rpBestCandidatesEl, rpCompareV1V2El, rpConfidenceEl, rpExplainBodyEl, rpFormulaCardIdEl, rpFormulaComparisonEl, rpFormulaMultiCardEl, rpMethodsSummaryEl, rpRunBtnEl, rpUseAllRelevantV2CardsEl, rpWarningsEl, timezoneModeEl, timezoneNameEl, timezoneOffsetEl, toggleExpertBtnEl } from "./dom.js";
 import { appState, rectDialogState, rectEventsState, rectificationWizardState, sharedBirthContext } from "./state.js";
 import { normalizeProEventCard } from "./validation.js";
 import { extractProMatchDetails, formatEventTypeLabel, formatJsonCompact, formatMethodLabel, formatPriorityCounts, formatRejectedReasonsCompact, formatRuleListCompact, formatUnresolvedSummaryCompact, getHeavyProRunWarning, renderTable } from "./format.js";
 import { fetchWithTimeout, parseResponseBody } from "./api.js";
 import { buildFormulaAspectRows, buildFormulaPointDebugRows, buildFormulaRuleStatusRows, renderExpertTables } from "./chart.js";
 import { renderRectEventsFinal } from "./stage2.js";
-import { hideLlmOverlay, setReStatus, setRpStatus, setStatus, setTab, setTechnicalMode, setWzProStatus, setWzStatus, showLlmOverlay } from "./ui.js";
+import { hideLlmOverlay, setReStatus, setRpStatus, setStatus, setTab, setTechnicalMode, setWzProStatus, setWzStatus, showLlmOverlay, updateLlmOverlayMessage } from "./ui.js";
 import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wizard.js";
 
     function resolveComparisonCardIds(selectedCardId) {
@@ -35,8 +35,28 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         if (eventType === "profession_change") {
           push("RECT_PROFESSION_CHANGE_002_DRAFT");
         }
+        if (eventType === "divorce_separation" || eventType === "divorce_breakup") {
+          push("RECT_DIVORCE_SEPARATION_002_DRAFT");
+        }
+        if (eventType === "death_father") {
+          push("RECT_FATHER_DEATH_002_DRAFT");
+        }
+        if (eventType === "death_mother") {
+          push("RECT_MOTHER_DEATH_002_DRAFT");
+        }
+        if (eventType === "death_sibling") {
+          push("RECT_SIBLING_DEATH_002_DRAFT");
+        }
+        if (eventType === "death_grandparent") {
+          push("RECT_GRANDPARENT_DEATH_002_DRAFT");
+        }
       });
       return selected;
+    }
+
+    function setProRunBusy(isBusy) {
+      rectificationWizardState.pro.isBusy = !!isBusy;
+      rpRunBtnEl.disabled = isBusy;
     }
 
     export function buildProAscWindowsFromStage1() {
@@ -623,6 +643,113 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       rpFormulaMultiCardEl.textContent = lines.join("\n");
     }
 
+    function normalizeExpertTableCell(value) {
+      if (value === null || value === undefined || value === "") return "—";
+      if (value === true) return "да";
+      if (value === false) return "нет";
+      return value;
+    }
+
+    function buildFormulaMultiCardTableSection(tableDef) {
+      const headers = Array.isArray(tableDef?.columns) ? tableDef.columns : [];
+      const rowObjects = Array.isArray(tableDef?.rows) ? tableDef.rows : [];
+      const rows = rowObjects.map((row) => headers.map((header) => normalizeExpertTableCell(row?.[header])));
+      const block = document.createElement("div");
+      block.className = "interval-item";
+      block.style.marginTop = "12px";
+      block.innerHTML =
+        `<div style="margin-bottom:8px;"><strong>${tableDef?.title || "Таблица"}</strong></div>` +
+        renderTable(headers, rows);
+      return block;
+    }
+
+    async function downloadFormulaMultiCardExcel(exportPayload) {
+      if (!exportPayload?.sheets?.length) {
+        throw new Error("Excel-экспорт для combined report пока недоступен.");
+      }
+      const response = await fetchWithTimeout(
+        "/api/rectification/pro/export-excel",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(exportPayload),
+        },
+        60000,
+      );
+      if (!response.ok) {
+        const { errorText } = await parseResponseBody(response);
+        throw new Error(errorText || "Не удалось сформировать Excel.");
+      }
+      return response.blob();
+    }
+
+    function renderFormulaMultiCardExpertReport(data) {
+      const report = data?.formula_multi_card_report || null;
+      rpFormulaMultiCardEl.innerHTML = "";
+      if (!report || !report.enabled) {
+        rpFormulaMultiCardEl.textContent = "formula_multi_card_report не запрошен.";
+        return;
+      }
+
+      const cardAudit = Array.isArray(report.card_contribution_audit) ? report.card_contribution_audit : [];
+      const workingRanges = Array.isArray(report.overall_working_ranges) ? report.overall_working_ranges : [];
+      const expertTables = Array.isArray(report.expert_tables) ? report.expert_tables : [];
+      const exportPayload = report.expert_excel_export || null;
+      const expertSheetNames = ["Итог", "Кандидаты времени", "Совпавшие формулы", "Отклонённые формулы", "Не найденные формулы", "Орбис до 2°", "По карточкам", "Блоки расчёта", "Спорные зоны", "Эффективность вопросов"];
+      const best = report.overall_best_candidate || {};
+
+      const summary = document.createElement("div");
+      summary.className = "interval-item";
+      summary.innerHTML = [
+        `Карточки: ${(report.selected_card_ids || []).join(", ") || "нет"}`,
+        `Лучший кандидат: ${best.candidate_time_local || "n/a"} | score=${best.score ?? "n/a"} | matched/rejected/missed=${best.matched_count ?? "n/a"}/${best.rejected_count ?? "n/a"}/${best.missed_count ?? "n/a"}`,
+        `Рабочих диапазонов: ${workingRanges.length} | карточек в отчёте: ${cardAudit.length}`,
+      ].map((line) => `<div>${line}</div>`).join("");
+      rpFormulaMultiCardEl.appendChild(summary);
+
+      if (exportPayload?.sheets?.length) {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        actions.style.marginTop = "10px";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn secondary";
+        button.textContent = "Скачать Excel";
+        button.onclick = async () => {
+          try {
+            setRpStatus("Подготавливаю Excel для combined report...");
+            const blob = await downloadFormulaMultiCardExcel(exportPayload);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = exportPayload.filename || "astrodvish-v2-combined-report.xlsx";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.setTimeout(() => window.URL.revokeObjectURL(url), 0);
+            setRpStatus("Excel готов.");
+          } catch (err) {
+            setRpStatus(`Ошибка: ${err?.message || err}`);
+          }
+        };
+        actions.appendChild(button);
+        rpFormulaMultiCardEl.appendChild(actions);
+      }
+
+      if (!expertTables.length) {
+        const fallback = document.createElement("div");
+        fallback.className = "hint";
+        fallback.style.marginTop = "10px";
+        fallback.textContent = `Подробные expert tables пока недоступны для этого combined report. Ожидаемые листы: ${expertSheetNames.join(", ")}.`;
+        rpFormulaMultiCardEl.appendChild(fallback);
+        return;
+      }
+
+      expertTables.forEach((tableDef) => {
+        rpFormulaMultiCardEl.appendChild(buildFormulaMultiCardTableSection(tableDef));
+      });
+    }
+
     export function renderLegacyProConfirmations(data) {
       const methods = data.method_results || {};
       const methodStats = summarizeMethodStats(methods);
@@ -910,7 +1037,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         (confidence.explanation ? `<div class="hint">${confidence.explanation}</div>` : "");
 
       renderProConfirmations(data);
-      renderFormulaMultiCardReport(data);
+      renderFormulaMultiCardExpertReport(data);
       renderFormulaCardComparison(data);
 
       const warnings = Array.isArray(data.warnings) ? data.warnings : [];
@@ -920,6 +1047,60 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       if (rpExplainBodyEl) {
         rpExplainBodyEl.innerHTML = buildProExplainabilityHtml(data);
       }
+    }
+
+    async function pollAsyncProJob(jobId, totalTimeoutMs = 620000, pollIntervalMs = 2500) {
+      const startedAt = Date.now();
+      while ((Date.now() - startedAt) < totalTimeoutMs) {
+        const elapsedSeconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
+        const statusRes = await fetchWithTimeout(
+          `/api/rectification/pro/jobs/${encodeURIComponent(jobId)}`,
+          { method: "GET", headers: { "Accept": "application/json" } },
+          Math.min(30000, pollIntervalMs + 10000),
+        );
+        const { jsonPayload, errorText } = await parseResponseBody(statusRes);
+        if (!statusRes.ok) {
+          throw new Error(errorText || "Не удалось получить статус Pro-расчёта.");
+        }
+
+        const status = String(jsonPayload?.status || "");
+        if (status === "completed") {
+          return jsonPayload?.result || null;
+        }
+        if (status === "failed") {
+          const detail = jsonPayload?.error?.detail;
+          if (detail && typeof detail === "object") {
+            throw new Error(detail.user_message || detail.message || "Pro-расчёт завершился с ошибкой.");
+          }
+          throw new Error("Pro-расчёт завершился с ошибкой.");
+        }
+
+        const progressParts = [];
+        const totalChunks = Number(jsonPayload?.total_chunks);
+        const completedChunks = Number(jsonPayload?.completed_chunks);
+        const currentChunkLabel = String(jsonPayload?.current_chunk_label || "").trim();
+        const progressPercent = Number(jsonPayload?.progress_percent);
+        const baseUserMessage = String(jsonPayload?.user_message || "").trim();
+        progressParts.push(baseUserMessage || "Multi-card run in progress. V2 comparison may take up to 2 minutes.");
+        if (Number.isFinite(totalChunks) && totalChunks > 0) {
+          const completedText = Number.isFinite(completedChunks) ? completedChunks : 0;
+          if (Number.isFinite(progressPercent) && progressPercent >= 0) {
+            progressParts.push(`Готово ${completedText} из ${totalChunks} блоков (${progressPercent}%).`);
+          } else {
+            progressParts.push(`Готово ${completedText} из ${totalChunks} блоков.`);
+          }
+        }
+        if (currentChunkLabel) {
+          progressParts.push(`Текущий блок: ${formatEventTypeLabel(currentChunkLabel)}.`);
+        }
+        progressParts.push(`Прошло ${elapsedSeconds} сек.`);
+        const progressStatus = progressParts.join(" ");
+        setRpStatus(progressStatus);
+        setWzProStatus(progressStatus);
+        updateLlmOverlayMessage(progressStatus);
+        await new Promise((resolve) => window.setTimeout(resolve, pollIntervalMs));
+      }
+      throw new Error("Расчёт занял слишком много времени. Попробуйте V1, меньше событий или повторите позже.");
     }
 
     export async function runUiProofPreviewFromQuery() {
@@ -960,7 +1141,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
     }
 
     export async function runProRectification() {
-      if (rectEventsState.isBusy || rectDialogState.isBusy) {
+      if (rectEventsState.isBusy || rectDialogState.isBusy || rectificationWizardState.pro.isBusy) {
         setRpStatus("Дождитесь завершения текущего шага.");
         setWzProStatus("Дождитесь завершения текущего шага.");
         return;
@@ -1047,12 +1228,54 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       }
 
       const heavyProWarning = getHeavyProRunWarning(payload);
+      const progressStatus = selectedMultiCardIds.length
+        ? "Multi-card run in progress. V2 comparison may take up to 2 minutes."
+        : "Pro run in progress...";
       if (selectedMultiCardIds.length) {
         rpCompareV1V2El.checked = false;
       }
-      setRpStatus(heavyProWarning || "Запускаем Pro-ректификацию...");
-      setWzProStatus(heavyProWarning || "Запускаем Pro-ректификацию...");
-      showLlmOverlay(heavyProWarning ? `${heavyProWarning} Запускаем Pro-ректификацию...` : "Запуск Pro-ректификации...");
+      setProRunBusy(true);
+      setRpStatus(heavyProWarning ? `${progressStatus} ${heavyProWarning}` : progressStatus);
+      setWzProStatus(heavyProWarning ? `${progressStatus} ${heavyProWarning}` : progressStatus);
+      showLlmOverlay(heavyProWarning ? `${progressStatus} ${heavyProWarning}` : progressStatus);
+      if (selectedMultiCardIds.length) {
+        try {
+          const createRes = await fetchWithTimeout("/api/rectification/pro/run-async", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              api_base_url: document.getElementById("reApiBaseUrl").value.trim(),
+              payload,
+            }),
+          }, 30000);
+          const createParsed = await parseResponseBody(createRes);
+          if (!createRes.ok) {
+            throw new Error(createParsed.errorText);
+          }
+          const jobId = String(createParsed.jsonPayload?.job_id || "").trim();
+          if (!jobId) {
+            throw new Error("Не удалось запустить async Pro-расчёт.");
+          }
+          const jsonPayload = await pollAsyncProJob(jobId, 620000, 2500);
+          if (!jsonPayload) {
+            throw new Error("Пустой ответ API");
+          }
+          renderProResult(jsonPayload);
+          setRpStatus(`Готово. confidence=${jsonPayload.confidence?.level || "n/a"}`);
+          rectificationWizardState.pro.started = true;
+          rectificationWizardState.pro.completed = true;
+          rectificationWizardState.pro.result = jsonPayload;
+          setWzProStatus(`Готово. confidence=${jsonPayload.confidence?.level || "n/a"}`);
+          renderWizardProgress();
+        } catch (err) {
+          setRpStatus("Ошибка: " + (err?.message || "network error"));
+          setWzProStatus("Ошибка: " + (err?.message || "network error"));
+        } finally {
+          setProRunBusy(false);
+          hideLlmOverlay();
+        }
+        return;
+      }
       try {
         const res = await fetchWithTimeout("/api/rectification/pro/run", {
           method: "POST",
@@ -1080,6 +1303,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
         setRpStatus("Ошибка: " + (err?.message || "network error"));
         setWzProStatus("Ошибка: " + (err?.message || "network error"));
       } finally {
+        setProRunBusy(false);
         hideLlmOverlay();
       }
     }

@@ -175,7 +175,7 @@ class RectificationProService:
             formula_test_mode_results_from_refinement = list(
                 ((formula_refinement_results.get("best_candidate") or {}).get("formula_test_mode_results") or [])
             )
-        self._strip_refinement_internal_chart(formula_refinement_results)
+        self._strip_refinement_internal_details(formula_refinement_results)
         formula_test_mode_started_at = perf_counter()
         if formula_test_mode_results_from_refinement:
             formula_test_mode_results = formula_test_mode_results_from_refinement
@@ -287,12 +287,18 @@ class RectificationProService:
             return []
         results = []
         for event in payload.events:
-            normalized_event_type = self._normalize_formula_event_type(str(event.event_type.value))
-            if normalized_event_type is None:
+            raw_event_type = str(event.event_type.value)
+            normalized_event_type = self._normalize_formula_event_type(raw_event_type)
+            evaluation_event_type = (
+                self._resolve_explicit_card_event_type(raw_event_type=raw_event_type, explicit_card_id=card_id)
+                if card_id
+                else normalized_event_type
+            )
+            if evaluation_event_type is None:
                 continue
             try:
                 result = self.formula_test_mode_service.evaluate(
-                    event_type=normalized_event_type,
+                    event_type=evaluation_event_type,
                     context={
                         "chart_response": best_chart.model_dump(mode="json"),
                         "candidate_birth_date": payload.birth_date_local.isoformat(),
@@ -339,7 +345,7 @@ class RectificationProService:
             refinement = self.formula_refinement_service.refine(payload, card_id=card_id)
             refinement["coarse_candidate"] = self._build_coarse_candidate_summary(None)
             refined_chart = self._chart_from_refinement_candidate(refinement)
-            self._strip_refinement_internal_chart(refinement)
+            self._strip_refinement_internal_details(refinement)
             formula_results = self._build_formula_test_mode_results(
                 payload=payload,
                 best_chart=refined_chart,
@@ -611,15 +617,23 @@ class RectificationProService:
         return ChartResponse.model_validate(chart_response)
 
     @staticmethod
-    def _strip_refinement_internal_chart(formula_refinement_results: dict[str, object]) -> None:
+    def _strip_refinement_internal_details(formula_refinement_results: dict[str, object]) -> None:
         top_candidates = formula_refinement_results.get("top_candidates")
         if isinstance(top_candidates, list):
             for item in top_candidates:
                 if isinstance(item, dict):
                     item.pop("chart_response", None)
+                    item.pop("formula_test_mode_results", None)
         best_candidate = formula_refinement_results.get("best_candidate")
         if isinstance(best_candidate, dict):
             best_candidate.pop("chart_response", None)
+            best_candidate.pop("formula_test_mode_results", None)
+        reference_time = formula_refinement_results.get("reference_time")
+        if isinstance(reference_time, dict):
+            evaluation = reference_time.get("evaluation")
+            if isinstance(evaluation, dict):
+                evaluation.pop("chart_response", None)
+                evaluation.pop("formula_test_mode_results", None)
 
     @staticmethod
     def _build_coarse_candidate_summary(best_candidate: CandidateScore | None) -> dict[str, object] | None:
@@ -660,3 +674,52 @@ class RectificationProService:
             "death_of_close_person": "death_close_person",
         }
         return mapping.get(event_type)
+
+    def _resolve_explicit_card_event_type(
+        self,
+        *,
+        raw_event_type: str,
+        explicit_card_id: str | None,
+    ) -> str | None:
+        if not explicit_card_id:
+            return self._normalize_formula_event_type(raw_event_type)
+        try:
+            card = self.formula_test_mode_service.loader.load_card(explicit_card_id)
+        except Exception:
+            return None
+        card_event_type = str(card.event_type)
+        if not self._card_matches_raw_event_type(
+            raw_event_type=raw_event_type,
+            card_event_type=card_event_type,
+        ):
+            return None
+        return card_event_type
+
+    @staticmethod
+    def _card_matches_raw_event_type(*, raw_event_type: str, card_event_type: str) -> bool:
+        accepted = RectificationProService._accepted_card_event_types(raw_event_type)
+        return bool(accepted) and str(card_event_type) in accepted
+
+    @staticmethod
+    def _accepted_card_event_types(raw_event_type: str) -> set[str]:
+        mapping = {
+            "child_birth": {"child_birth"},
+            "children_birth": {"child_birth"},
+            "profession_change": {"profession_change"},
+            "marriage_union": {"marriage_union"},
+            "marriage_start": {"marriage_union"},
+            "relationship_start": {"relationship_start"},
+            "marriage_relationship": {"relationship_start"},
+            "divorce_breakup": {"divorce_breakup", "divorce_separation"},
+            "divorce_separation": {"divorce_breakup", "divorce_separation"},
+            "death_close_person": {"death_close_person"},
+            "death_of_close_person": {"death_close_person"},
+            "death_close_person_other": {"death_close_person"},
+            "death_father": {"death_close_person", "death_father"},
+            "death_mother": {"death_close_person", "death_mother"},
+            "death_child": {"death_close_person"},
+            "death_spouse": {"death_close_person"},
+            "death_sibling": {"death_close_person", "death_sibling"},
+            "death_grandparent": {"death_close_person", "death_grandparent"},
+        }
+        return mapping.get(str(raw_event_type), set())

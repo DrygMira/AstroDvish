@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import logging
@@ -6,17 +6,25 @@ import os
 import re
 import threading
 import time
+from io import BytesIO
+from time import perf_counter
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import urlparse
 from uuid import uuid4
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError, available_timezones
+from zipfile import ZIP_DEFLATED, ZipFile
+from xml.sax.saxutils import escape
 
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, ValidationError, model_validator
+try:
+    import resource
+except ImportError:  # pragma: no cover - Windows fallback.
+    resource = None  # type: ignore[assignment]
 
 from app.services.aspects_service import OBJECT_DISPLAY_NAMES
 from app.utils.timezone_lookup import resolve_timezone_name
@@ -116,6 +124,95 @@ app = FastAPI(title="astro-web-ui", docs_url=None, redoc_url=None, openapi_url=N
 logger = logging.getLogger(__name__)
 
 
+def _collect_rectification_pro_runtime_snapshot() -> dict[str, Any]:
+    snapshot: dict[str, Any] = {
+        "pid": os.getpid(),
+        "process_cpu_seconds": round(time.process_time(), 4),
+    }
+    if hasattr(os, "getloadavg"):
+        try:
+            load1, load5, load15 = os.getloadavg()
+            snapshot["loadavg"] = {
+                "1m": round(float(load1), 4),
+                "5m": round(float(load5), 4),
+                "15m": round(float(load15), 4),
+            }
+        except OSError:
+            pass
+    if resource is not None:
+        try:
+            rss_raw = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+            rss_mb = (rss_raw / 1024.0) if os.name == "posix" else (rss_raw / (1024.0 * 1024.0))
+            snapshot["process_max_rss_mb"] = round(float(rss_mb), 2)
+        except (AttributeError, OSError, ValueError):
+            pass
+    return snapshot
+
+
+def _current_rectification_pro_chunk_limits() -> dict[str, int]:
+    return {
+        "async_max_events": RECTIFICATION_PRO_ASYNC_MULTI_CARD_MAX_EVENTS,
+        "async_complexity_limit": RECTIFICATION_PRO_ASYNC_MULTI_CARD_COMPLEXITY_LIMIT,
+        "chunked_max_events": RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS,
+        "chunked_max_chunks": RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS,
+        "chunked_max_events_per_chunk": RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK,
+    }
+
+
+def _resolve_rectification_pro_chunk_batch_size(
+    *,
+    relevant_events_count: int,
+    selected_cards_count: int,
+    complexity: int,
+) -> int:
+    max_size = max(1, RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK)
+    if max_size <= 3:
+        return max_size
+    if complexity >= 48 or relevant_events_count >= 9 or selected_cards_count >= 5:
+        return min(3, max_size)
+    return max_size
+
+
+def _log_rectification_pro_chunk_guard(
+    *,
+    level: int,
+    message: str,
+    job_id: str,
+    guard_stage: str,
+    events_count: int,
+    selected_cards_count: int,
+    planned_chunks: int | None,
+    chunk_size: int | None,
+    candidate_count: int | None,
+    formula_count: int | None,
+    estimated_weight: int | None,
+    guard_reason: str,
+    current_limit: dict[str, Any],
+    runtime_snapshot: dict[str, Any],
+) -> None:
+    logger.log(
+        level,
+        (
+            "%s job_id=%s stage=%s events=%s cards=%s planned_chunks=%s chunk_size=%s "
+            "candidate_count=%s formula_count=%s estimated_weight=%s guard_reason=%s "
+            "current_limit=%s runtime_snapshot=%s"
+        ),
+        message,
+        job_id,
+        guard_stage,
+        events_count,
+        selected_cards_count,
+        planned_chunks,
+        chunk_size,
+        candidate_count,
+        formula_count,
+        estimated_weight,
+        guard_reason,
+        json.dumps(current_limit, ensure_ascii=False, sort_keys=True),
+        json.dumps(runtime_snapshot, ensure_ascii=False, sort_keys=True),
+    )
+
+
 def _load_preview_fixture(filename: str) -> dict[str, Any]:
     path = FIXTURES_DIR / filename
     if not path.exists():
@@ -170,8 +267,48 @@ RECTIFICATION_PRO_MULTI_CARD_MAX_EVENTS = int(_env("RECTIFICATION_PRO_MULTI_CARD
 RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT = int(
     _env("RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT", "12") or "12"
 )
+RECTIFICATION_PRO_ASYNC_MULTI_CARD_MAX_EVENTS = int(
+    _env("RECTIFICATION_PRO_ASYNC_MULTI_CARD_MAX_EVENTS", "8") or "8"
+)
+RECTIFICATION_PRO_ASYNC_MULTI_CARD_COMPLEXITY_LIMIT = int(
+    _env("RECTIFICATION_PRO_ASYNC_MULTI_CARD_COMPLEXITY_LIMIT", "24") or "24"
+)
+RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS = int(
+    _env("RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS", "24") or "24"
+)
+RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS = int(
+    _env("RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS", "36") or "36"
+)
+RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK = int(
+    _env("RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK", "4") or "4"
+)
+RECTIFICATION_PRO_ACTIVE_JOB_STATUSES = {"queued", "pending", "running", "chunk_running", "partial_completed"}
+RECTIFICATION_PRO_TERMINAL_JOB_STATUSES = {"completed", "failed", "cancelled"}
 _RECTIFICATION_PRO_JOBS: dict[str, dict[str, Any]] = {}
 _RECTIFICATION_PRO_JOBS_LOCK = threading.Lock()
+
+RECTIFICATION_PRO_CHUNK_CARD_EVENT_TYPES: dict[str, set[str]] = {
+    "RECT_CHILD_BIRTH_002_DRAFT": {"child_birth", "children_birth"},
+    "RECT_MARRIAGE_UNION_002_DRAFT": {"marriage_start", "marriage_union"},
+    "RECT_PROFESSION_CHANGE_002_DRAFT": {"profession_change"},
+    "RECT_DIVORCE_SEPARATION_002_DRAFT": {"divorce_separation", "divorce_breakup"},
+    "RECT_FATHER_DEATH_002_DRAFT": {"death_father"},
+    "RECT_MOTHER_DEATH_002_DRAFT": {"death_mother"},
+    "RECT_SIBLING_DEATH_002_DRAFT": {"death_sibling"},
+    "RECT_GRANDPARENT_DEATH_002_DRAFT": {"death_grandparent"},
+}
+RECTIFICATION_PRO_CHUNK_LABELS: dict[str, str] = {
+    "child_birth": "деторождение",
+    "marriage_union": "брак / союз",
+    "marriage_start": "брак / союз",
+    "profession_change": "смена профессии",
+    "divorce_separation": "развод / прекращение союза",
+    "divorce_breakup": "развод / прекращение союза",
+    "death_father": "смерть отца",
+    "death_mother": "смерть матери",
+    "death_sibling": "смерть брата / сестры",
+    "death_grandparent": "смерть бабушки / дедушки",
+}
 
 QUESTION_BANK: list[dict[str, Any]] = [
     {
@@ -666,6 +803,18 @@ class RectificationEventsFinalizeRequest(BaseModel):
 class RectificationProRunRequest(BaseModel):
     api_base_url: str = ""
     payload: dict[str, Any]
+
+
+class RectificationProExcelSheetRequest(BaseModel):
+    sheet_name: str
+    columns: list[str] = Field(default_factory=list)
+    rows: list[dict[str, Any]] = Field(default_factory=list)
+    sort_default: list[str] = Field(default_factory=list)
+
+
+class RectificationProExcelExportRequest(BaseModel):
+    filename: str = "astrodvish-v2-combined-report.xlsx"
+    sheets: list[RectificationProExcelSheetRequest] = Field(default_factory=list)
 
 
 class AskQuestionOption(BaseModel):
@@ -3677,7 +3826,13 @@ def _post_rectification_events(
         ) from exc
 
 
-def _guard_rectification_pro_payload(payload: dict[str, Any]) -> None:
+def _guard_rectification_pro_payload(
+    payload: dict[str, Any],
+    *,
+    max_events: int = RECTIFICATION_PRO_MULTI_CARD_MAX_EVENTS,
+    complexity_limit: int = RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT,
+    user_message: str | None = None,
+) -> None:
     if not isinstance(payload, dict):
         return
 
@@ -3696,27 +3851,1631 @@ def _guard_rectification_pro_payload(payload: dict[str, Any]) -> None:
 
     complexity = events_count * len(selected_card_ids)
     if (
-        events_count > RECTIFICATION_PRO_MULTI_CARD_MAX_EVENTS
-        or complexity > RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT
+        events_count > max_events
+        or complexity > complexity_limit
     ):
         raise HTTPException(
             status_code=422,
             detail={
                 "message": "Rectification Pro payload too heavy for live multi-card run",
                 "user_message": (
-                    "Этот multi-card V2 запуск сейчас слишком тяжёлый для live-режима. "
+                    user_message
+                    or "Этот multi-card V2 запуск сейчас слишком тяжёлый для live-режима. "
                     "Попробуйте до 4 событий, один V2 card или V1."
                 ),
                 "technical_message": (
                     f"events={events_count} cards={len(selected_card_ids)} "
-                    f"complexity={complexity} limit={RECTIFICATION_PRO_MULTI_CARD_COMPLEXITY_LIMIT}"
+                    f"complexity={complexity} limit={complexity_limit}"
                 ),
                 "reason": "payload_too_heavy",
                 "events_count": events_count,
+                "max_events": max_events,
+                "complexity": complexity,
+                "complexity_limit": complexity_limit,
                 "selected_cards_count": len(selected_card_ids),
                 "selected_card_ids": selected_card_ids,
             },
         )
+
+
+def _extract_rectification_pro_selected_card_ids(payload: dict[str, Any]) -> list[str]:
+    if not isinstance(payload, dict):
+        return []
+    settings = payload.get("settings") if isinstance(payload.get("settings"), dict) else {}
+    raw_card_ids = settings.get("formula_card_ids")
+    if not isinstance(raw_card_ids, list):
+        return []
+    seen: set[str] = set()
+    selected_card_ids: list[str] = []
+    for raw_card_id in raw_card_ids:
+        card_id = str(raw_card_id or "").strip()
+        if not card_id or card_id in seen:
+            continue
+        seen.add(card_id)
+        selected_card_ids.append(card_id)
+    return selected_card_ids
+
+
+def _build_rectification_pro_chunk_payload_too_heavy_detail(
+    *,
+    job_id: str | None = None,
+    events_count: int,
+    selected_card_ids: list[str],
+    complexity: int,
+    complexity_limit: int,
+    user_message: str,
+    chunk_size: int | None = None,
+    candidate_count: int | None = None,
+    formula_count: int | None = None,
+    planned_chunks: int | None = None,
+    max_chunks: int | None = None,
+    max_events: int | None = None,
+    max_events_per_chunk: int | None = None,
+    estimated_weight: int | None = None,
+    guard_reason: str | None = None,
+    guard_stage: str | None = None,
+    current_limit: dict[str, Any] | None = None,
+    runtime_snapshot: dict[str, Any] | None = None,
+    recommendation: str | None = None,
+) -> dict[str, Any]:
+    detail = {
+        "message": "Rectification Pro payload too heavy for live multi-card run",
+        "user_message": user_message,
+        "technical_message": (
+            f"events={events_count} cards={len(selected_card_ids)} "
+            f"complexity={complexity} limit={complexity_limit}"
+        ),
+        "reason": "payload_too_heavy",
+        "events_count": events_count,
+        "complexity": complexity,
+        "complexity_limit": complexity_limit,
+        "selected_cards_count": len(selected_card_ids),
+        "selected_card_ids": selected_card_ids,
+        "candidate_count": candidate_count,
+        "formula_count": formula_count,
+    }
+    if job_id is not None:
+        detail["job_id"] = job_id
+    if chunk_size is not None:
+        detail["chunk_size"] = chunk_size
+    if planned_chunks is not None:
+        detail["planned_chunks"] = planned_chunks
+    if max_chunks is not None:
+        detail["max_chunks"] = max_chunks
+    if max_events is not None:
+        detail["max_events"] = max_events
+    if max_events_per_chunk is not None:
+        detail["max_events_per_chunk"] = max_events_per_chunk
+    if estimated_weight is not None:
+        detail["estimated_weight"] = estimated_weight
+    if guard_reason:
+        detail["guard_reason"] = guard_reason
+    if guard_stage:
+        detail["guard_stage"] = guard_stage
+    if current_limit:
+        detail["current_limit"] = current_limit
+    if runtime_snapshot:
+        detail["runtime_snapshot"] = runtime_snapshot
+    if recommendation:
+        detail["recommendation"] = recommendation
+    return detail
+
+
+def _split_rectification_pro_chunk_events(
+    events: list[dict[str, Any]],
+    *,
+    max_events_per_chunk: int,
+) -> list[list[dict[str, Any]]]:
+    if max_events_per_chunk <= 0:
+        return [list(events)] if events else []
+    return [
+        events[idx:idx + max_events_per_chunk]
+        for idx in range(0, len(events), max_events_per_chunk)
+        if events[idx:idx + max_events_per_chunk]
+    ]
+
+
+def _build_rectification_pro_chunk_plan(payload: dict[str, Any]) -> dict[str, Any] | None:
+    if not isinstance(payload, dict):
+        return None
+
+    selected_card_ids = _extract_rectification_pro_selected_card_ids(payload)
+    if len(selected_card_ids) <= 1:
+        return None
+
+    raw_events = payload.get("events")
+    events = [item for item in raw_events if isinstance(item, dict)] if isinstance(raw_events, list) else []
+    events_count = len(events)
+    complexity = events_count * len(selected_card_ids)
+    if (
+        events_count <= RECTIFICATION_PRO_ASYNC_MULTI_CARD_MAX_EVENTS
+        and complexity <= RECTIFICATION_PRO_ASYNC_MULTI_CARD_COMPLEXITY_LIMIT
+    ):
+        return None
+
+    chunk_items: list[dict[str, Any]] = []
+    skipped_card_ids: list[str] = []
+    max_events_per_chunk = 0
+    chunk_size = 0
+    relevant_events_count = 0
+
+    for card_id in selected_card_ids:
+        accepted_event_types = RECTIFICATION_PRO_CHUNK_CARD_EVENT_TYPES.get(card_id)
+        if not accepted_event_types:
+            skipped_card_ids.append(card_id)
+            continue
+        chunk_events = [
+            item
+            for item in events
+            if str(item.get("event_type") or "").strip() in accepted_event_types
+        ]
+        if not chunk_events:
+            skipped_card_ids.append(card_id)
+            continue
+
+        relevant_events_count += len(chunk_events)
+        chunk_label = sorted(accepted_event_types)[0]
+        chunk_batch_size = _resolve_rectification_pro_chunk_batch_size(
+            relevant_events_count=len(chunk_events),
+            selected_cards_count=len(selected_card_ids),
+            complexity=complexity,
+        )
+        chunk_size = max(chunk_size, chunk_batch_size)
+        event_batches = _split_rectification_pro_chunk_events(
+            chunk_events,
+            max_events_per_chunk=chunk_batch_size,
+        )
+        max_events_per_chunk = max(
+            max_events_per_chunk,
+            max((len(batch) for batch in event_batches), default=0),
+        )
+        for batch_idx, batch_events in enumerate(event_batches, start=1):
+            chunk_payload = json.loads(json.dumps(payload))
+            chunk_payload["events"] = batch_events
+            settings = chunk_payload.setdefault("settings", {})
+            settings["formula_card_id"] = card_id
+            settings["formula_card_ids"] = []
+            settings["compare_formula_card_ids"] = []
+            chunk_items.append(
+                {
+                    "card_id": card_id,
+                    "chunk_label": chunk_label,
+                    "event_types": sorted(
+                        {
+                            str(item.get("event_type") or "").strip()
+                            for item in batch_events
+                            if item.get("event_type")
+                        }
+                    ),
+                    "subchunk_index": batch_idx,
+                    "subchunk_count": len(event_batches),
+                    "payload": chunk_payload,
+                }
+            )
+
+    if len(chunk_items) <= 1:
+        return None
+
+    planned_chunks = len(chunk_items)
+    estimated_weight = complexity
+    guard_reason = None
+    diagnostic_job_id = f"guard-{uuid4()}"
+    current_limit = _current_rectification_pro_chunk_limits()
+    runtime_snapshot = _collect_rectification_pro_runtime_snapshot()
+    if events_count > RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS:
+        guard_reason = "events_limit_exceeded"
+    elif planned_chunks > RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS:
+        guard_reason = "planned_chunks_exceeded"
+    elif max_events_per_chunk > RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK:
+        guard_reason = "chunk_batch_too_large"
+
+    if guard_reason:
+        _log_rectification_pro_chunk_guard(
+            level=logging.WARNING,
+            message="Rectification Pro chunk plan rejected",
+            job_id=diagnostic_job_id,
+            guard_stage="pre_job_chunk_plan",
+            events_count=events_count,
+            selected_cards_count=len(selected_card_ids),
+            planned_chunks=planned_chunks,
+            chunk_size=chunk_size or max_events_per_chunk,
+            candidate_count=None,
+            formula_count=None,
+            estimated_weight=estimated_weight,
+            guard_reason=guard_reason,
+            current_limit=current_limit,
+            runtime_snapshot=runtime_snapshot,
+        )
+        raise HTTPException(
+            status_code=422,
+            detail=_build_rectification_pro_chunk_payload_too_heavy_detail(
+                job_id=diagnostic_job_id,
+                events_count=events_count,
+                selected_card_ids=selected_card_ids,
+                complexity=complexity,
+                complexity_limit=RECTIFICATION_PRO_ASYNC_MULTI_CARD_COMPLEXITY_LIMIT,
+                chunk_size=chunk_size or max_events_per_chunk,
+                candidate_count=None,
+                formula_count=None,
+                planned_chunks=planned_chunks,
+                max_chunks=RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS,
+                max_events=RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS,
+                max_events_per_chunk=RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK,
+                estimated_weight=estimated_weight,
+                guard_reason=guard_reason,
+                guard_stage="pre_job_chunk_plan",
+                current_limit=current_limit,
+                runtime_snapshot=runtime_snapshot,
+                recommendation=(
+                    "Сократите общее число событий, уменьшите события в одном типе "
+                    "или проверьте часть карточек отдельно."
+                ),
+                user_message=(
+                    "Этот multi-card V2 запуск слишком большой даже для поэтапного live-режима. "
+                    "Сократите события в одном блоке или проверьте карты по частям."
+                ),
+            ),
+        )
+
+    return {
+        "mode": "chunked_async_multi_card",
+        "selected_card_ids": selected_card_ids,
+        "skipped_card_ids": skipped_card_ids,
+        "total_chunks": len(chunk_items),
+        "planned_chunks": planned_chunks,
+        "relevant_events_count": relevant_events_count,
+        "max_events_per_chunk": max_events_per_chunk,
+        "chunk_size": chunk_size or max_events_per_chunk,
+        "estimated_weight": estimated_weight,
+        "chunks": chunk_items,
+    }
+
+
+def _rectification_pro_chunk_label_text(chunk_label: str) -> str:
+    return RECTIFICATION_PRO_CHUNK_LABELS.get(chunk_label, chunk_label or "блок")
+
+
+def _rectification_pro_chunk_user_message(
+    *,
+    completed_chunks: int,
+    total_chunks: int,
+    current_chunk_label: str | None,
+    status: str,
+) -> str:
+    if status == "completed":
+        return "Большой V2-отчёт по блокам завершён."
+    if status == "partial_completed":
+        return f"Готово {completed_chunks} из {total_chunks} блоков."
+    if current_chunk_label:
+        label = _rectification_pro_chunk_label_text(current_chunk_label)
+        return f"Считаем {completed_chunks + 1} из {total_chunks} блоков: {label}."
+    return "Большой V2-отчёт считается по блокам."
+
+
+def _merge_rectification_pro_chunk_counts(items: list[dict[str, Any]]) -> dict[str, int]:
+    merged = {"golden": 0, "supporting": 0, "context": 0, "ambiguity_risk": 0}
+    for item in items:
+        for tier in merged:
+            merged[tier] += int((item.get("priority_counts") or {}).get(tier) or 0)
+    return merged
+
+
+def _parse_rectification_local_dt(value: Any) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value))
+    except ValueError:
+        return None
+
+
+def _merge_rectification_pro_working_ranges(chunk_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    flattened: list[dict[str, Any]] = []
+    for item in chunk_results:
+        chunk = item["chunk"]
+        result = item["result"]
+        refinement = result.get("formula_refinement_results") or {}
+        ranges = refinement.get("working_time_ranges") or []
+        if not ranges and refinement.get("working_time_range"):
+            ranges = [refinement.get("working_time_range")]
+        best = refinement.get("best_candidate") or {}
+        for range_item in ranges:
+            if not isinstance(range_item, dict):
+                continue
+            start_dt = _parse_rectification_local_dt(range_item.get("start_local"))
+            end_dt = _parse_rectification_local_dt(range_item.get("end_local"))
+            if start_dt is None or end_dt is None:
+                continue
+            flattened.append(
+                {
+                    "start_dt": start_dt,
+                    "end_dt": end_dt,
+                    "start_local": range_item.get("start_local"),
+                    "end_local": range_item.get("end_local"),
+                    "candidate_count": int(range_item.get("candidate_count") or 0),
+                    "best_candidate": range_item.get("best_candidate") or best.get("candidate_time_local"),
+                    "golden_matched_count": int(range_item.get("golden_matched_count") or 0),
+                    "score": float(range_item.get("score") or best.get("score") or 0.0),
+                    "supporting_card_ids": [chunk.get("card_id")],
+                }
+            )
+
+    if not flattened:
+        return []
+
+    flattened.sort(key=lambda item: item["start_dt"])
+    merged: list[dict[str, Any]] = []
+    for item in flattened:
+        if not merged or item["start_dt"] > merged[-1]["end_dt"]:
+            merged.append(dict(item))
+            continue
+        current = merged[-1]
+        if item["end_dt"] > current["end_dt"]:
+            current["end_dt"] = item["end_dt"]
+            current["end_local"] = item["end_local"]
+        current["candidate_count"] += int(item.get("candidate_count") or 0)
+        current["golden_matched_count"] += int(item.get("golden_matched_count") or 0)
+        current["score"] = round(float(current.get("score") or 0.0) + float(item.get("score") or 0.0), 4)
+        for card_id in item.get("supporting_card_ids") or []:
+            if card_id not in current["supporting_card_ids"]:
+                current["supporting_card_ids"].append(card_id)
+        if float(item.get("score") or 0.0) >= float(current.get("score") or 0.0):
+            current["best_candidate"] = item.get("best_candidate")
+
+    for item in merged:
+        item.pop("start_dt", None)
+        item.pop("end_dt", None)
+    return merged
+
+
+def _summarize_rectification_pro_chunk_result(chunk: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
+    refinement = result.get("formula_refinement_results") or {}
+    best = refinement.get("best_candidate") or {}
+    return {
+        "chunk_label": _rectification_pro_chunk_label_text(str(chunk.get("chunk_label") or "")),
+        "card_id": chunk.get("card_id"),
+        "event_types": list(chunk.get("event_types") or []),
+        "event_count": len((chunk.get("payload") or {}).get("events") or []),
+        "subchunk_index": chunk.get("subchunk_index"),
+        "subchunk_count": chunk.get("subchunk_count"),
+        "best_candidate": best.get("candidate_time_local"),
+        "score": best.get("score"),
+        "working_time_range": refinement.get("working_time_range"),
+        "performance_debug": result.get("performance_debug") or {},
+    }
+
+
+def _aggregate_rectification_pro_ranked_reasons(items: list[list[dict[str, Any]]]) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    for group in items:
+        for item in group:
+            if not isinstance(item, dict):
+                continue
+            reason = str(item.get("reason") or "unknown")
+            counts[reason] = counts.get(reason, 0) + int(item.get("count") or 0)
+    return [
+        {"reason": reason, "count": count}
+        for reason, count in sorted(counts.items(), key=lambda pair: (-pair[1], pair[0]))[:10]
+    ]
+
+
+def _aggregate_rectification_pro_event_audit(chunk_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    audit: list[dict[str, Any]] = []
+    total_score = 0.0
+    for item in chunk_results:
+        best = ((item["result"].get("formula_refinement_results") or {}).get("best_candidate") or {})
+        for event_item in best.get("event_contribution_audit") or []:
+            if not isinstance(event_item, dict):
+                continue
+            copied = dict(event_item)
+            copied.setdefault("best_orb", None)
+            copied.setdefault("avg_orb", None)
+            copied.setdefault("affected_best_candidate", bool(float(copied.get("score") or 0.0)))
+            copied.setdefault(
+                "tier_summary",
+                {
+                    "golden": int(copied.get("golden_matched_count") or 0),
+                    "supporting": int(copied.get("supporting_matched_count") or 0),
+                    "context": int(copied.get("context_matched_count") or 0),
+                },
+            )
+            audit.append(copied)
+            total_score += float(copied.get("score") or 0.0)
+    for item in audit:
+        if total_score <= 0:
+            item["contribution_to_final_candidate"] = 0.0
+        else:
+            item["contribution_to_final_candidate"] = round((float(item.get("score") or 0.0) / total_score) * 100.0, 2)
+        item["score_contribution"] = round(float(item.get("score") or 0.0), 4)
+    return audit
+
+
+def _aggregate_rectification_pro_card_audit(chunk_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    merged: dict[str, dict[str, Any]] = {}
+    total_score = 0.0
+    for item in chunk_results:
+        best = ((item["result"].get("formula_refinement_results") or {}).get("best_candidate") or {})
+        chunk = item["chunk"]
+        audit_items = best.get("card_contribution_audit") or []
+        card_item = dict(audit_items[0]) if audit_items else {
+            "card_id": chunk.get("card_id"),
+            "score": float(best.get("score") or 0.0),
+            "matched_count": int(best.get("matched_count") or 0),
+            "rejected_count": int(best.get("rejected_count") or 0),
+            "missed_count": int(best.get("missing_count") or 0),
+            "golden_matched_count": int(best.get("golden_matched_count") or 0),
+            "supporting_matched_count": int(best.get("supporting_matched_count") or 0),
+            "context_matched_count": int(best.get("context_matched_count") or 0),
+            "context_score": float(best.get("context_score") or 0.0),
+            "top_rejected_reasons": best.get("top_rejected_reasons") or [],
+        }
+        card_id = str(card_item.get("card_id") or chunk.get("card_id") or "unknown")
+        merged_item = merged.setdefault(
+            card_id,
+            {
+                "card_id": card_id,
+                "score": 0.0,
+                "matched_count": 0,
+                "rejected_count": 0,
+                "missed_count": 0,
+                "golden_matched_count": 0,
+                "supporting_matched_count": 0,
+                "context_matched_count": 0,
+                "context_score": 0.0,
+                "top_rejected_reasons": [],
+            },
+        )
+        merged_item["score"] = round(float(merged_item["score"]) + float(card_item.get("score") or 0.0), 4)
+        merged_item["matched_count"] += int(card_item.get("matched_count") or 0)
+        merged_item["rejected_count"] += int(card_item.get("rejected_count") or 0)
+        merged_item["missed_count"] += int(card_item.get("missed_count") or 0)
+        merged_item["golden_matched_count"] += int(card_item.get("golden_matched_count") or 0)
+        merged_item["supporting_matched_count"] += int(card_item.get("supporting_matched_count") or 0)
+        merged_item["context_matched_count"] += int(card_item.get("context_matched_count") or 0)
+        merged_item["context_score"] = round(
+            float(merged_item["context_score"]) + float(card_item.get("context_score") or 0.0),
+            4,
+        )
+        merged_item["top_rejected_reasons"] = _aggregate_rectification_pro_ranked_reasons(
+            [
+                merged_item.get("top_rejected_reasons") or [],
+                card_item.get("top_rejected_reasons") or [],
+            ]
+        )
+        total_score += float(card_item.get("score") or 0.0)
+    card_items = list(merged.values())
+    for item in card_items:
+        if total_score <= 0:
+            item["contribution_to_final_candidate"] = 0.0
+        else:
+            item["contribution_to_final_candidate"] = round((float(item.get("score") or 0.0) / total_score) * 100.0, 2)
+    return card_items
+
+
+def _aggregate_rectification_pro_event_type_contribution(chunk_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    merged: dict[str, dict[str, Any]] = {}
+    total_score = 0.0
+    for item in chunk_results:
+        best = ((item["result"].get("formula_refinement_results") or {}).get("best_candidate") or {})
+        for event_item in best.get("event_type_contribution") or []:
+            if not isinstance(event_item, dict):
+                continue
+            event_type = str(event_item.get("event_type") or "unknown")
+            merged_item = merged.setdefault(
+                event_type,
+                {
+                    "event_type": event_type,
+                    "card_ids": [],
+                    "score": 0.0,
+                    "matched_count": 0,
+                    "rejected_count": 0,
+                    "missed_count": 0,
+                    "golden_matched_count": 0,
+                    "supporting_matched_count": 0,
+                    "context_matched_count": 0,
+                    "context_score": 0.0,
+                },
+            )
+            merged_item["score"] = round(float(merged_item["score"]) + float(event_item.get("score") or 0.0), 4)
+            merged_item["matched_count"] += int(event_item.get("matched_count") or 0)
+            merged_item["rejected_count"] += int(event_item.get("rejected_count") or 0)
+            merged_item["missed_count"] += int(event_item.get("missed_count") or 0)
+            merged_item["golden_matched_count"] += int(event_item.get("golden_matched_count") or 0)
+            merged_item["supporting_matched_count"] += int(event_item.get("supporting_matched_count") or 0)
+            merged_item["context_matched_count"] += int(event_item.get("context_matched_count") or 0)
+            merged_item["context_score"] = round(float(merged_item["context_score"]) + float(event_item.get("context_score") or 0.0), 4)
+            for card_id in event_item.get("card_ids") or []:
+                if card_id not in merged_item["card_ids"]:
+                    merged_item["card_ids"].append(card_id)
+            total_score += float(event_item.get("score") or 0.0)
+    result = list(merged.values())
+    for item in result:
+        if total_score <= 0:
+            item["contribution_to_final_candidate"] = 0.0
+        else:
+            item["contribution_to_final_candidate"] = round((float(item.get("score") or 0.0) / total_score) * 100.0, 2)
+    return result
+
+
+def _build_rectification_pro_question_efficiency_recommendation(item: dict[str, Any]) -> dict[str, str]:
+    matched_count = int(item.get("matched_count") or 0)
+    rejected_count = int(item.get("rejected_count") or 0)
+    missed_count = int(item.get("missed_count") or 0)
+    contribution_percent = float(item.get("contribution_to_final_candidate") or 0.0)
+    if matched_count >= 3 or contribution_percent >= 15.0:
+        return {
+            "recommendation_code": "keep",
+            "recommendation": "Оставить как сильный вопрос/событие.",
+        }
+    if matched_count <= 1 and contribution_percent < 5.0 and rejected_count >= matched_count:
+        return {
+            "recommendation_code": "merge",
+            "recommendation": "Кандидат на объединение с соседним вопросом или блоком.",
+        }
+    if missed_count > matched_count and contribution_percent < 10.0:
+        return {
+            "recommendation_code": "supplemental_block",
+            "recommendation": "Скорее дополнительный блок: сигнал слабый, но не нулевой.",
+        }
+    return {
+        "recommendation_code": "review_weak",
+        "recommendation": "Нужна экспертная проверка: польза пограничная, автоматом не удалять.",
+    }
+
+
+def _build_rectification_pro_question_efficiency_audit(
+    event_contribution_audit: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    audit: list[dict[str, Any]] = []
+    for item in event_contribution_audit:
+        recommendation = _build_rectification_pro_question_efficiency_recommendation(item)
+        audit.append(
+            {
+                "event_id": item.get("event_id"),
+                "event_type": item.get("event_type"),
+                "event_date": item.get("event_date"),
+                "card_id": item.get("card_id"),
+                "matched_count": int(item.get("matched_count") or 0),
+                "rejected_count": int(item.get("rejected_count") or 0),
+                "missed_count": int(item.get("missed_count") or 0),
+                "best_orb": item.get("best_orb"),
+                "avg_orb": item.get("avg_orb"),
+                "score_contribution": round(float(item.get("score_contribution") or item.get("score") or 0.0), 4),
+                "contribution_to_final_candidate": round(float(item.get("contribution_to_final_candidate") or 0.0), 2),
+                "affected_best_candidate": bool(item.get("affected_best_candidate")),
+                "tier_summary": {
+                    "golden": int((item.get("tier_summary") or {}).get("golden") or item.get("golden_matched_count") or 0),
+                    "supporting": int((item.get("tier_summary") or {}).get("supporting") or item.get("supporting_matched_count") or 0),
+                    "context": int((item.get("tier_summary") or {}).get("context") or item.get("context_matched_count") or 0),
+                },
+                "recommendation_code": recommendation["recommendation_code"],
+                "recommendation": recommendation["recommendation"],
+                "action_policy": "advisory_only",
+            }
+        )
+    return sorted(
+        audit,
+        key=lambda row: (
+            -float(row.get("contribution_to_final_candidate") or 0.0),
+            -int(row.get("matched_count") or 0),
+            float(row.get("best_orb") if row.get("best_orb") is not None else 999.0),
+            str(row.get("event_date") or ""),
+        ),
+    )
+
+
+def _build_rectification_pro_question_efficiency_excel_sheet(
+    question_efficiency_audit: list[dict[str, Any]],
+) -> dict[str, Any]:
+    rows: list[dict[str, Any]] = []
+    for item in question_efficiency_audit:
+        tier_summary = item.get("tier_summary") or {}
+        rows.append(
+            {
+                "Тип события": item.get("event_type"),
+                "Дата события": item.get("event_date"),
+                "ID карточки": item.get("card_id"),
+                "Совпало формул": item.get("matched_count"),
+                "Отклонено формул": item.get("rejected_count"),
+                "Не найдено формул": item.get("missed_count"),
+                "Лучший орбис": item.get("best_orb"),
+                "Средний орбис": item.get("avg_orb"),
+                "Вклад в score": item.get("score_contribution"),
+                "Вклад в итог %": item.get("contribution_to_final_candidate"),
+                "Повлиял на best candidate": item.get("affected_best_candidate"),
+                "Golden": tier_summary.get("golden"),
+                "Supporting": tier_summary.get("supporting"),
+                "Context": tier_summary.get("context"),
+                "Рекомендация": item.get("recommendation"),
+            }
+        )
+    return {
+        "sheet_name": "Эффективность вопросов",
+        "columns": list(rows[0].keys()) if rows else [
+            "Тип события",
+            "Дата события",
+            "ID карточки",
+            "Совпало формул",
+            "Отклонено формул",
+            "Не найдено формул",
+            "Лучший орбис",
+            "Средний орбис",
+            "Вклад в score",
+            "Вклад в итог %",
+            "Повлиял на best candidate",
+            "Golden",
+            "Supporting",
+            "Context",
+            "Рекомендация",
+        ],
+        "rows": rows,
+        "sort_default": ["ID карточки", "Дата события", "Вклад в итог %", "Лучший орбис"],
+    }
+
+
+def _rectification_pro_excel_number(value: Any) -> float | int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _rectification_pro_excel_sort_value(row: dict[str, Any], key: str) -> tuple[int, Any]:
+    value = row.get(key)
+    number = _rectification_pro_excel_number(value)
+    if number is not None:
+        return (0, number)
+    if value is None:
+        return (2, "")
+    return (1, str(value))
+
+
+def _sort_rectification_pro_excel_rows(rows: list[dict[str, Any]], sort_default: list[str]) -> list[dict[str, Any]]:
+    if not sort_default:
+        return list(rows)
+    return sorted(rows, key=lambda row: tuple(_rectification_pro_excel_sort_value(row, key) for key in sort_default))
+
+
+def _rectification_pro_excel_sheet(
+    sheet_name: str,
+    rows: list[dict[str, Any]],
+    columns: list[str],
+    sort_default: list[str],
+) -> dict[str, Any]:
+    sorted_rows = _sort_rectification_pro_excel_rows(rows, sort_default)
+    return {
+        "sheet_name": sheet_name,
+        "columns": columns,
+        "rows": sorted_rows,
+        "sort_default": sort_default,
+    }
+
+
+def _build_rectification_pro_formula_rule_indexes(
+    validation_report: dict[str, Any],
+) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+    expected_rules = ((validation_report.get("expected_by_card") or {}).get("direction_rules") or [])
+    expected_by_id = {
+        str(rule.get("id") or ""): rule
+        for rule in expected_rules
+        if isinstance(rule, dict) and str(rule.get("id") or "").strip()
+    }
+    debug_by_id = {
+        str(rule.get("rule_id") or ""): rule
+        for rule in (validation_report.get("rule_debug") or [])
+        if isinstance(rule, dict) and str(rule.get("rule_id") or "").strip()
+    }
+    return expected_by_id, debug_by_id
+
+
+def _build_rectification_pro_formula_event_lookup(
+    chunk: dict[str, Any],
+) -> tuple[dict[str, dict[str, Any]], dict[str, list[dict[str, Any]]], list[dict[str, Any]]]:
+    events = list((chunk.get("payload") or {}).get("events") or [])
+    event_by_id: dict[str, dict[str, Any]] = {}
+    events_by_type: dict[str, list[dict[str, Any]]] = {}
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        event_id = str(event.get("event_id") or "").strip()
+        event_type = str(event.get("event_type") or "").strip()
+        if event_id:
+            event_by_id[event_id] = event
+        events_by_type.setdefault(event_type, []).append(event)
+    return event_by_id, events_by_type, events
+
+
+def _resolve_rectification_pro_formula_event_meta(
+    *,
+    formula_result: dict[str, Any],
+    fallback_event: dict[str, Any] | None,
+) -> dict[str, Any]:
+    event_type = (
+        formula_result.get("source_event_type")
+        or formula_result.get("event_type")
+        or (fallback_event or {}).get("event_type")
+        or ""
+    )
+    return {
+        "event_type": str(event_type or ""),
+        "event_date": (
+            formula_result.get("source_event_date")
+            or formula_result.get("event_date")
+            or (fallback_event or {}).get("start_date")
+            or (fallback_event or {}).get("date_text")
+            or ""
+        ),
+        "event_id": formula_result.get("event_id") or (fallback_event or {}).get("event_id"),
+        "event_title": formula_result.get("source_event_title") or formula_result.get("event_title") or (fallback_event or {}).get("title"),
+    }
+
+
+def _build_rectification_pro_formula_status_row(
+    *,
+    card_id: str,
+    event_meta: dict[str, Any],
+    candidate_time: str | None,
+    rule_id: str,
+    expected_rule: dict[str, Any],
+    debug_rule: dict[str, Any],
+    item: dict[str, Any],
+    status_label: str,
+    rejection_reason: str | None = None,
+) -> dict[str, Any]:
+    checked_pairs = list(debug_rule.get("checked_pairs") or [])
+    matched_pairs = list(debug_rule.get("matched_pairs") or [])
+    rejected_pairs = list(debug_rule.get("rejected_pairs") or [])
+    pair = matched_pairs[0] if matched_pairs else rejected_pairs[0] if rejected_pairs else checked_pairs[0] if checked_pairs else {}
+    actual_angle = item.get("actual_angle", pair.get("actual_angle"))
+    exact_angle = item.get("exact_angle", pair.get("exact_angle"))
+    orb = item.get("orb", pair.get("orb"))
+    orb_limit = item.get("orb_limit", pair.get("orb_limit"))
+    return {
+        "ID карточки": card_id,
+        "Тип события": event_meta.get("event_type"),
+        "Дата события": event_meta.get("event_date"),
+        "Кандидат времени": candidate_time,
+        "ID формулы": rule_id,
+        "Уровень": expected_rule.get("priority") or debug_rule.get("priority"),
+        "Направленный объект": item.get("directed_point") or pair.get("directed_point"),
+        "Натальный объект": item.get("natal_target") or pair.get("natal_target"),
+        "Аспект": item.get("aspect_type") or expected_rule.get("aspect") or pair.get("aspect_type"),
+        "Точный угол": exact_angle,
+        "Фактический угол": actual_angle,
+        "Орбис": orb,
+        "Лимит орбиса": orb_limit,
+        "Статус": status_label,
+        "Вес / балл": item.get("score"),
+        "Причина отклонения": rejection_reason or item.get("reason"),
+    }
+
+
+def _collect_rectification_pro_formula_sheet_rows(
+    chunk_results: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    matched_rows: list[dict[str, Any]] = []
+    rejected_rows: list[dict[str, Any]] = []
+    missing_rows: list[dict[str, Any]] = []
+
+    for item in chunk_results:
+        chunk = item["chunk"]
+        result = item["result"]
+        refinement = result.get("formula_refinement_results") or {}
+        candidate_time = (refinement.get("best_candidate") or {}).get("candidate_time_local")
+        event_by_id, events_by_type, fallback_events = _build_rectification_pro_formula_event_lookup(chunk)
+        formula_results = list(result.get("formula_test_mode_results") or [])
+        for index, formula_result in enumerate(formula_results):
+            if not isinstance(formula_result, dict):
+                continue
+            validation_report = formula_result.get("validation_report") or {}
+            expected_by_id, debug_by_id = _build_rectification_pro_formula_rule_indexes(validation_report)
+            fallback_event = None
+            event_id = str(formula_result.get("event_id") or "").strip()
+            event_type = str(
+                formula_result.get("source_event_type")
+                or formula_result.get("event_type")
+                or validation_report.get("event_type")
+                or ""
+            ).strip()
+            if event_id:
+                fallback_event = event_by_id.get(event_id)
+            if fallback_event is None and event_type and events_by_type.get(event_type):
+                fallback_event = events_by_type[event_type][0]
+            if fallback_event is None and index < len(fallback_events):
+                fallback_event = fallback_events[index]
+            event_meta = _resolve_rectification_pro_formula_event_meta(
+                formula_result=formula_result,
+                fallback_event=fallback_event,
+            )
+            card_id = str(formula_result.get("card_id") or chunk.get("card_id") or refinement.get("card_id") or "unknown")
+
+            matched_items = formula_result.get("matched_formula_aspects") or validation_report.get("found_by_engine") or []
+            for matched in matched_items:
+                if not isinstance(matched, dict):
+                    continue
+                rule_id = str(matched.get("formula_rule_matched") or matched.get("rule_id") or "").strip()
+                matched_rows.append(
+                    _build_rectification_pro_formula_status_row(
+                        card_id=card_id,
+                        event_meta=event_meta,
+                        candidate_time=candidate_time,
+                        rule_id=rule_id,
+                        expected_rule=expected_by_id.get(rule_id, {}),
+                        debug_rule=debug_by_id.get(rule_id, {}),
+                        item=matched,
+                        status_label="совпало",
+                    )
+                )
+
+            rejected_items = formula_result.get("rejected_aspects") or validation_report.get("rejected_aspects") or []
+            for rejected in rejected_items:
+                if not isinstance(rejected, dict):
+                    continue
+                rule_id = str(rejected.get("formula_rule_matched") or rejected.get("rule_id") or "").strip()
+                rejected_rows.append(
+                    _build_rectification_pro_formula_status_row(
+                        card_id=card_id,
+                        event_meta=event_meta,
+                        candidate_time=candidate_time,
+                        rule_id=rule_id,
+                        expected_rule=expected_by_id.get(rule_id, {}),
+                        debug_rule=debug_by_id.get(rule_id, {}),
+                        item=rejected,
+                        status_label="отклонено",
+                        rejection_reason=str(rejected.get("reason") or ""),
+                    )
+                )
+
+            missing_items = formula_result.get("missing_formula_links") or validation_report.get("missed_by_engine") or []
+            for missing in missing_items:
+                if not isinstance(missing, dict):
+                    continue
+                rule_id = str(missing.get("rule_id") or missing.get("formula_rule_matched") or "").strip()
+                expected_rule = expected_by_id.get(rule_id, {})
+                missing_rows.append(
+                    {
+                        "ID карточки": card_id,
+                        "Тип события": event_meta.get("event_type"),
+                        "Дата события": event_meta.get("event_date"),
+                        "Кандидат времени": candidate_time,
+                        "ID формулы": rule_id,
+                        "Уровень": expected_rule.get("priority"),
+                        "Направленный объект": None,
+                        "Натальный объект": None,
+                        "Аспект": expected_rule.get("aspect"),
+                        "Точный угол": None,
+                        "Фактический угол": None,
+                        "Орбис": None,
+                        "Лимит орбиса": None,
+                        "Статус": "не найдено",
+                        "Вес / балл": None,
+                        "Причина отклонения": missing.get("reason"),
+                    }
+                )
+
+    orb_rows = [
+        dict(row)
+        for row in matched_rows + rejected_rows
+        if _rectification_pro_excel_number(row.get("Орбис")) is not None
+        and float(_rectification_pro_excel_number(row.get("Орбис")) or 0.0) <= 2.0
+    ]
+    return matched_rows, rejected_rows, missing_rows, orb_rows
+
+
+def _build_rectification_pro_multi_card_sheet_specs(
+    *,
+    payload: dict[str, Any],
+    formula_multi_card_report: dict[str, Any],
+    formula_refinement_results: dict[str, Any],
+    chunk_results: list[dict[str, Any]],
+    question_efficiency_audit: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    overall_best = formula_multi_card_report.get("overall_best_candidate") or {}
+    top_candidates = list(formula_refinement_results.get("top_candidates") or [])
+    working_ranges = list(formula_multi_card_report.get("overall_working_ranges") or [])
+    matched_rows, rejected_rows, missing_rows, orb_rows = _collect_rectification_pro_formula_sheet_rows(chunk_results)
+
+    summary_rows = [
+        {
+            "ID карточки": ", ".join(formula_multi_card_report.get("selected_card_ids") or []),
+            "Тип события": ", ".join(sorted({str(item.get("event_type") or "") for item in formula_multi_card_report.get("event_type_contribution") or [] if str(item.get("event_type") or "").strip()})),
+            "Дата события": ", ".join(sorted({str(item.get("event_date") or "") for item in formula_multi_card_report.get("event_contribution_audit") or [] if str(item.get("event_date") or "").strip()})),
+            "Кандидат времени": overall_best.get("candidate_time_local"),
+            "Статус": "combined_report_ready",
+            "Вес / балл": overall_best.get("score"),
+        }
+    ]
+
+    candidate_rows: list[dict[str, Any]] = []
+    for candidate in top_candidates:
+        if not isinstance(candidate, dict):
+            continue
+        candidate_rows.append(
+            {
+                "Кандидат времени": candidate.get("candidate_time_local"),
+                "Вес / балл": candidate.get("score"),
+                "Статус": "candidate",
+                "Совпало формул": candidate.get("matched_count"),
+                "Отклонено формул": candidate.get("rejected_count"),
+                "Не найдено формул": candidate.get("missing_count"),
+                "Golden": candidate.get("golden_matched_count"),
+                "Supporting": candidate.get("supporting_matched_count"),
+                "Context": candidate.get("context_matched_count"),
+            }
+        )
+    if not candidate_rows:
+        for item in working_ranges:
+            candidate_rows.append(
+                {
+                    "Кандидат времени": item.get("best_candidate"),
+                    "Вес / балл": item.get("score"),
+                    "Статус": "working_range",
+                    "Совпало формул": item.get("golden_matched_count"),
+                    "Отклонено формул": None,
+                    "Не найдено формул": None,
+                    "Golden": item.get("golden_matched_count"),
+                    "Supporting": None,
+                    "Context": None,
+                }
+            )
+
+    per_card_rows: list[dict[str, Any]] = []
+    cards_by_id = {
+        str(item.get("card_id") or ""): item
+        for item in formula_multi_card_report.get("cards") or []
+        if isinstance(item, dict)
+    }
+    for item in formula_multi_card_report.get("card_contribution_audit") or []:
+        if not isinstance(item, dict):
+            continue
+        card_meta = cards_by_id.get(str(item.get("card_id") or ""), {})
+        priority_counts = card_meta.get("priority_counts") or {}
+        per_card_rows.append(
+            {
+                "ID карточки": item.get("card_id"),
+                "Тип события": ", ".join(card_meta.get("event_types") or []) if isinstance(card_meta.get("event_types"), list) else None,
+                "Дата события": None,
+                "Кандидат времени": overall_best.get("candidate_time_local"),
+                "Статус": "card_summary",
+                "Вес / балл": item.get("score"),
+                "Совпало формул": item.get("matched_count"),
+                "Отклонено формул": item.get("rejected_count"),
+                "Не найдено формул": item.get("missed_count"),
+                "Golden": priority_counts.get("golden", item.get("golden_matched_count")),
+                "Supporting": priority_counts.get("supporting", item.get("supporting_matched_count")),
+                "Context": priority_counts.get("context", item.get("context_matched_count")),
+            }
+        )
+
+    chunk_rows: list[dict[str, Any]] = []
+    for chunk in formula_multi_card_report.get("chunks") or []:
+        if not isinstance(chunk, dict):
+            continue
+        perf = chunk.get("performance_debug") or {}
+        chunk_rows.append(
+            {
+                "ID карточки": chunk.get("card_id"),
+                "Тип события": ", ".join(chunk.get("event_types") or []),
+                "Дата события": None,
+                "Кандидат времени": chunk.get("best_candidate"),
+                "Статус": f"chunk {chunk.get('subchunk_index') or 1}/{chunk.get('subchunk_count') or 1}",
+                "Вес / балл": chunk.get("score"),
+                "Блок": chunk.get("chunk_label"),
+                "Событий в блоке": chunk.get("event_count"),
+                "Время блока, мс": perf.get("total_runtime_ms"),
+            }
+        )
+
+    disputed_rows: list[dict[str, Any]] = []
+    for reason in formula_multi_card_report.get("top_rejected_reasons") or []:
+        if not isinstance(reason, dict):
+            continue
+        disputed_rows.append(
+            {
+                "ID карточки": None,
+                "Тип события": None,
+                "Дата события": None,
+                "Кандидат времени": overall_best.get("candidate_time_local"),
+                "Статус": "rejected_reason",
+                "Вес / балл": reason.get("count"),
+                "Причина отклонения": reason.get("reason"),
+            }
+        )
+    for reason in formula_multi_card_report.get("unresolved_source_summary") or []:
+        if not isinstance(reason, dict):
+            continue
+        disputed_rows.append(
+            {
+                "ID карточки": None,
+                "Тип события": None,
+                "Дата события": None,
+                "Кандидат времени": overall_best.get("candidate_time_local"),
+                "Статус": "unresolved_source",
+                "Вес / балл": reason.get("count"),
+                "Причина отклонения": reason.get("reason"),
+            }
+        )
+
+    sheets = [
+        _build_rectification_pro_question_efficiency_excel_sheet(question_efficiency_audit),
+        _rectification_pro_excel_sheet(
+            "Итог",
+            summary_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "Статус", "Вес / балл"],
+            ["Кандидат времени"],
+        ),
+        _rectification_pro_excel_sheet(
+            "Кандидаты времени",
+            candidate_rows,
+            ["Кандидат времени", "Вес / балл", "Статус", "Совпало формул", "Отклонено формул", "Не найдено формул", "Golden", "Supporting", "Context"],
+            ["Кандидат времени", "Вес / балл"],
+        ),
+        _rectification_pro_excel_sheet(
+            "Совпавшие формулы",
+            matched_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "ID формулы", "Уровень", "Направленный объект", "Натальный объект", "Аспект", "Точный угол", "Фактический угол", "Орбис", "Лимит орбиса", "Статус", "Вес / балл", "Причина отклонения"],
+            ["ID карточки", "Тип события", "Статус", "Орбис"],
+        ),
+        _rectification_pro_excel_sheet(
+            "Отклонённые формулы",
+            rejected_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "ID формулы", "Уровень", "Направленный объект", "Натальный объект", "Аспект", "Точный угол", "Фактический угол", "Орбис", "Лимит орбиса", "Статус", "Вес / балл", "Причина отклонения"],
+            ["ID карточки", "Тип события", "Статус", "Орбис"],
+        ),
+        _rectification_pro_excel_sheet(
+            "Не найденные формулы",
+            missing_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "ID формулы", "Уровень", "Направленный объект", "Натальный объект", "Аспект", "Точный угол", "Фактический угол", "Орбис", "Лимит орбиса", "Статус", "Вес / балл", "Причина отклонения"],
+            ["ID карточки", "Тип события", "Статус", "ID формулы"],
+        ),
+        _rectification_pro_excel_sheet(
+            "Орбис до 2°",
+            orb_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "ID формулы", "Уровень", "Направленный объект", "Натальный объект", "Аспект", "Точный угол", "Фактический угол", "Орбис", "Лимит орбиса", "Статус", "Вес / балл", "Причина отклонения"],
+            ["ID карточки", "Тип события", "Статус", "Орбис"],
+        ),
+        _rectification_pro_excel_sheet(
+            "По карточкам",
+            per_card_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "Статус", "Вес / балл", "Совпало формул", "Отклонено формул", "Не найдено формул", "Golden", "Supporting", "Context"],
+            ["ID карточки", "Статус"],
+        ),
+        _rectification_pro_excel_sheet(
+            "Блоки расчёта",
+            chunk_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "Статус", "Вес / балл", "Блок", "Событий в блоке", "Время блока, мс"],
+            ["ID карточки", "Блок", "Статус"],
+        ),
+        _rectification_pro_excel_sheet(
+            "Спорные зоны",
+            disputed_rows,
+            ["ID карточки", "Тип события", "Дата события", "Кандидат времени", "Статус", "Вес / балл", "Причина отклонения"],
+            ["Статус", "Причина отклонения"],
+        ),
+    ]
+    return sheets
+
+
+def _build_rectification_pro_multi_card_expert_artifacts(
+    *,
+    payload: dict[str, Any],
+    formula_multi_card_report: dict[str, Any],
+    formula_refinement_results: dict[str, Any],
+    chunk_results: list[dict[str, Any]],
+    question_efficiency_audit: list[dict[str, Any]],
+) -> dict[str, Any]:
+    sheets = _build_rectification_pro_multi_card_sheet_specs(
+        payload=payload,
+        formula_multi_card_report=formula_multi_card_report,
+        formula_refinement_results=formula_refinement_results,
+        chunk_results=chunk_results,
+        question_efficiency_audit=question_efficiency_audit,
+    )
+    return {
+        "expert_tables": [
+            {
+                "title": sheet["sheet_name"],
+                "columns": list(sheet.get("columns") or []),
+                "rows": list(sheet.get("rows") or []),
+            }
+            for sheet in sheets
+        ],
+        "expert_excel_export": {
+            "action_policy": "advisory_only",
+            "filename": "astrodvish-v2-combined-report.xlsx",
+            "sheets": sheets,
+        },
+    }
+
+
+def _sanitize_rectification_pro_excel_filename(filename: str | None) -> str:
+    value = str(filename or "").strip() or "astrodvish-v2-combined-report.xlsx"
+    if not value.lower().endswith(".xlsx"):
+        value = f"{value}.xlsx"
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "-", value).strip("-")
+    return safe or "astrodvish-v2-combined-report.xlsx"
+
+
+def _sanitize_rectification_pro_sheet_name(sheet_name: str, used: set[str]) -> str:
+    value = re.sub(r"[\[\]:*?/\\]+", " ", str(sheet_name or "").strip())
+    value = re.sub(r"\s+", " ", value).strip() or "Лист"
+    value = value[:31]
+    candidate = value
+    suffix = 2
+    while candidate in used:
+        trimmed = value[: max(0, 31 - len(str(suffix)) - 1)].rstrip()
+        candidate = f"{trimmed}-{suffix}"
+        suffix += 1
+    used.add(candidate)
+    return candidate
+
+
+def _rectification_pro_xlsx_column_name(index: int) -> str:
+    value = ""
+    current = index
+    while current > 0:
+        current, remainder = divmod(current - 1, 26)
+        value = chr(65 + remainder) + value
+    return value or "A"
+
+
+def _rectification_pro_xlsx_cell_xml(cell_ref: str, value: Any, style_id: int = 0) -> str:
+    if value is None or value == "":
+        return f'<c r="{cell_ref}" s="{style_id}"/>'
+    number = _rectification_pro_excel_number(value)
+    if number is not None:
+        return f'<c r="{cell_ref}" s="{style_id}"><v>{number}</v></c>'
+    if isinstance(value, bool):
+        bool_value = "да" if value else "нет"
+        return f'<c r="{cell_ref}" s="{style_id}" t="inlineStr"><is><t>{escape(bool_value)}</t></is></c>'
+    return f'<c r="{cell_ref}" s="{style_id}" t="inlineStr"><is><t>{escape(str(value))}</t></is></c>'
+
+
+def _build_rectification_pro_xlsx_sheet_xml(sheet: dict[str, Any]) -> str:
+    columns = list(sheet.get("columns") or [])
+    rows = list(sheet.get("rows") or [])
+    last_column_name = _rectification_pro_xlsx_column_name(max(len(columns), 1))
+    last_row_number = max(len(rows) + 1, 1)
+    header_cells = "".join(
+        _rectification_pro_xlsx_cell_xml(f"{_rectification_pro_xlsx_column_name(index + 1)}1", header, style_id=1)
+        for index, header in enumerate(columns)
+    )
+    body_rows_xml: list[str] = [f'<row r="1">{header_cells}</row>']
+    for row_index, row in enumerate(rows, start=2):
+        cells = []
+        for col_index, header in enumerate(columns, start=1):
+            cell_ref = f"{_rectification_pro_xlsx_column_name(col_index)}{row_index}"
+            cells.append(_rectification_pro_xlsx_cell_xml(cell_ref, row.get(header)))
+        body_rows_xml.append(f'<row r="{row_index}">{"".join(cells)}</row>')
+
+    cols_xml: list[str] = []
+    for index, header in enumerate(columns, start=1):
+        max_len = len(str(header))
+        for row in rows:
+            value = row.get(header)
+            rendered = "" if value is None else ("да" if value is True else "нет" if value is False else str(value))
+            max_len = max(max_len, len(rendered))
+        width = min(max(max_len + 2, 12), 60)
+        cols_xml.append(f'<col min="{index}" max="{index}" width="{width}" customWidth="1"/>')
+
+    auto_filter_ref = f"A1:{last_column_name}{last_row_number}"
+    return (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        '<sheetViews><sheetView workbookViewId="0">'
+        '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>'
+        '<selection pane="bottomLeft" activeCell="A2" sqref="A2"/>'
+        "</sheetView></sheetViews>"
+        f"<cols>{''.join(cols_xml)}</cols>"
+        f'<sheetData>{"".join(body_rows_xml)}</sheetData>'
+        f'<autoFilter ref="{auto_filter_ref}"/>'
+        "</worksheet>"
+    )
+
+
+def _build_rectification_pro_excel_bytes(export_payload: RectificationProExcelExportRequest) -> bytes:
+    used_sheet_names: set[str] = set()
+    normalized_sheets: list[tuple[str, dict[str, Any]]] = []
+    for sheet in export_payload.sheets:
+        normalized_name = _sanitize_rectification_pro_sheet_name(sheet.sheet_name, used_sheet_names)
+        normalized_sheets.append(
+            (
+                normalized_name,
+                {
+                    "columns": list(sheet.columns or []),
+                    "rows": _sort_rectification_pro_excel_rows(list(sheet.rows or []), list(sheet.sort_default or [])),
+                },
+            )
+        )
+
+    workbook_sheets_xml = []
+    workbook_rels_xml = []
+    worksheets_xml: list[tuple[str, str]] = []
+    for index, (sheet_name, sheet) in enumerate(normalized_sheets, start=1):
+        workbook_sheets_xml.append(
+            f'<sheet name="{escape(sheet_name)}" sheetId="{index}" r:id="rId{index}"/>'
+        )
+        workbook_rels_xml.append(
+            f'<Relationship Id="rId{index}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet{index}.xml"/>'
+        )
+        worksheets_xml.append((f"xl/worksheets/sheet{index}.xml", _build_rectification_pro_xlsx_sheet_xml(sheet)))
+
+    workbook_rels_xml.append(
+        f'<Relationship Id="rId{len(normalized_sheets) + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+    )
+    workbook_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        f"<sheets>{''.join(workbook_sheets_xml)}</sheets>"
+        "</workbook>"
+    )
+    workbook_rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        f"{''.join(workbook_rels_xml)}"
+        "</Relationships>"
+    )
+    styles_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        '<fonts count="2">'
+        '<font><sz val="11"/><name val="Calibri"/></font>'
+        '<font><b/><sz val="11"/><name val="Calibri"/></font>'
+        '</fonts>'
+        '<fills count="2">'
+        '<fill><patternFill patternType="none"/></fill>'
+        '<fill><patternFill patternType="solid"><fgColor rgb="FFF4E3B2"/><bgColor indexed="64"/></patternFill></fill>'
+        '</fills>'
+        '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>'
+        '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+        '<cellXfs count="2">'
+        '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+        '<xf numFmtId="0" fontId="1" fillId="1" borderId="0" xfId="0" applyFont="1" applyFill="1"/>'
+        '</cellXfs>'
+        '</styleSheet>'
+    )
+    worksheet_content_overrides = "".join(
+        (
+            f'<Override PartName="/xl/worksheets/sheet{index}.xml" '
+            'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+        )
+        for index in range(1, len(normalized_sheets) + 1)
+    )
+    content_types_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        '<Default Extension="xml" ContentType="application/xml"/>'
+        '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+        '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+        '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
+        '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
+        f"{worksheet_content_overrides}"
+        '</Types>'
+    )
+    package_rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+        '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>'
+        '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>'
+        '</Relationships>'
+    )
+    core_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+        'xmlns:dc="http://purl.org/dc/elements/1.1/" '
+        'xmlns:dcterms="http://purl.org/dc/terms/" '
+        'xmlns:dcmitype="http://purl.org/dc/dcmitype/" '
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+        '<dc:title>AstroDvish V2 combined report</dc:title>'
+        '<dc:creator>Codex</dc:creator>'
+        '<cp:lastModifiedBy>Codex</cp:lastModifiedBy>'
+        f'<dcterms:created xsi:type="dcterms:W3CDTF">{datetime.now(timezone.utc).isoformat()}</dcterms:created>'
+        f'<dcterms:modified xsi:type="dcterms:W3CDTF">{datetime.now(timezone.utc).isoformat()}</dcterms:modified>'
+        '</cp:coreProperties>'
+    )
+    app_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+        'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+        '<Application>AstroDvish</Application>'
+        '</Properties>'
+    )
+
+    buffer = BytesIO()
+    with ZipFile(buffer, "w", compression=ZIP_DEFLATED) as archive:
+        archive.writestr("[Content_Types].xml", content_types_xml)
+        archive.writestr("_rels/.rels", package_rels)
+        archive.writestr("docProps/core.xml", core_xml)
+        archive.writestr("docProps/app.xml", app_xml)
+        archive.writestr("xl/workbook.xml", workbook_xml)
+        archive.writestr("xl/_rels/workbook.xml.rels", workbook_rels)
+        archive.writestr("xl/styles.xml", styles_xml)
+        for path, xml_content in worksheets_xml:
+            archive.writestr(path, xml_content)
+    return buffer.getvalue()
+
+
+def _aggregate_rectification_pro_chunk_results(
+    *,
+    payload: dict[str, Any],
+    chunk_plan: dict[str, Any],
+    chunk_results: list[dict[str, Any]],
+    total_runtime_ms: float,
+) -> dict[str, Any]:
+    selected_card_ids = list(chunk_plan.get("selected_card_ids") or [])
+    if not selected_card_ids:
+        selected_card_ids = [
+            str(item["chunk"].get("card_id") or "").strip()
+            for item in chunk_results
+            if str(item["chunk"].get("card_id") or "").strip()
+        ]
+    card_items_by_id: dict[str, dict[str, Any]] = {}
+    warnings: set[str] = set()
+    limitations: list[str] = []
+    formula_counts_by_card: dict[str, int] = {}
+    total_candidate_count = 0
+    score_breakdown = {
+        "matched_formula_score": 0.0,
+        "orb_strength_score": 0.0,
+        "participant_bonus_score": 0.0,
+        "golden_formula_score": 0.0,
+        "golden_orb_quality_score": 0.0,
+        "supporting_formula_score": 0.0,
+        "context_formula_score": 0.0,
+        "supporting_bonus": 0.0,
+        "ambiguity_penalty": 0.0,
+        "event_confirmation_score": 0.0,
+        "time_refinement_score": 0.0,
+        "rejected_penalty": 0.0,
+        "missing_penalty": 0.0,
+    }
+    top_formulas: list[str] = []
+    best_candidates: list[dict[str, Any]] = []
+    top_rejected_reasons_input: list[list[dict[str, Any]]] = []
+    unresolved_summary_input: list[list[dict[str, Any]]] = []
+
+    for item in chunk_results:
+        chunk = item["chunk"]
+        result = item["result"]
+        refinement = result.get("formula_refinement_results") or {}
+        best = refinement.get("best_candidate") or {}
+        warnings.update(result.get("warnings") or [])
+        for limitation in result.get("limitations") or []:
+            if limitation not in limitations:
+                limitations.append(limitation)
+        card_id = str(refinement.get("card_id") or chunk.get("card_id") or "").strip()
+        formula_counts_by_card[card_id] = max(
+            formula_counts_by_card.get(card_id, 0),
+            int((result.get("performance_debug") or {}).get("formula_count") or refinement.get("formulas_count") or 0),
+        )
+        total_candidate_count += int((result.get("performance_debug") or {}).get("candidate_count") or 0)
+        card_item = card_items_by_id.setdefault(
+            card_id,
+            {
+                "card_id": refinement.get("card_id") or chunk.get("card_id"),
+                "card_version": refinement.get("card_version"),
+                "formulas_count": int(refinement.get("formulas_count") or 0),
+                "priority_counts": dict(refinement.get("priority_counts") or {}),
+                "event_types": [],
+                "chunk_labels": [],
+                "chunk_count": 0,
+                "event_count": 0,
+            },
+        )
+        card_item["chunk_count"] += 1
+        card_item["event_count"] += len((chunk.get("payload") or {}).get("events") or [])
+        card_item["formulas_count"] = max(
+            int(card_item.get("formulas_count") or 0),
+            int(refinement.get("formulas_count") or 0),
+        )
+        for event_type in chunk.get("event_types") or []:
+            if event_type not in card_item["event_types"]:
+                card_item["event_types"].append(event_type)
+        chunk_label = chunk.get("chunk_label")
+        if chunk_label and chunk_label not in card_item["chunk_labels"]:
+            card_item["chunk_labels"].append(chunk_label)
+        best_candidates.append(dict(best))
+        for field in score_breakdown:
+            score_breakdown[field] = round(
+                float(score_breakdown[field]) + float((best.get("score_breakdown") or {}).get(field) or 0.0),
+                4,
+            )
+        top_formulas.extend([str(value) for value in (best.get("best_formulas") or []) if str(value).strip()])
+        top_rejected_reasons_input.append(best.get("top_rejected_reasons") or [])
+        unresolved_summary_input.append(best.get("unresolved_source_summary") or [])
+
+    card_audit = _aggregate_rectification_pro_card_audit(chunk_results)
+    event_type_contribution = _aggregate_rectification_pro_event_type_contribution(chunk_results)
+    event_contribution_audit = _aggregate_rectification_pro_event_audit(chunk_results)
+    question_efficiency_audit = _build_rectification_pro_question_efficiency_audit(event_contribution_audit)
+    working_ranges = _merge_rectification_pro_working_ranges(chunk_results)
+    total_score = round(sum(float(item.get("score") or 0.0) for item in card_audit), 4)
+    card_items = list(card_items_by_id.values())
+    total_formula_count = sum(formula_counts_by_card.values())
+    merged_priority_counts = _merge_rectification_pro_chunk_counts(card_items)
+    primary_range = None
+    if working_ranges:
+        primary_range = max(working_ranges, key=lambda item: float(item.get("score") or 0.0))
+
+    selected_candidate_time = None
+    if primary_range:
+        selected_candidate_time = primary_range.get("best_candidate")
+    if not selected_candidate_time and best_candidates:
+        selected_candidate_time = max(best_candidates, key=lambda item: float(item.get("score") or 0.0)).get("candidate_time_local")
+
+    overall_best_candidate = {
+        "candidate_time_local": selected_candidate_time,
+        "candidate_time_utc": None,
+        "score": total_score,
+        "matched_count": sum(int(item.get("matched_count") or 0) for item in card_audit),
+        "rejected_count": sum(int(item.get("rejected_count") or 0) for item in card_audit),
+        "missing_count": sum(int(item.get("missed_count") or 0) for item in card_audit),
+        "golden_matched_count": sum(int(item.get("golden_matched_count") or 0) for item in card_audit),
+        "golden_orb_sum": round(sum(float((candidate.get("golden_orb_sum") or 0.0)) for candidate in best_candidates), 4),
+        "supporting_matched_count": sum(int(item.get("supporting_matched_count") or 0) for item in card_audit),
+        "context_matched_count": sum(int(item.get("context_matched_count") or 0) for item in card_audit),
+        "context_score": round(sum(float(item.get("context_score") or 0.0) for item in card_audit), 4),
+        "supporting_bonus": round(sum(float(candidate.get("supporting_bonus") or 0.0) for candidate in best_candidates), 4),
+        "event_confirmation_score": round(sum(float(candidate.get("event_confirmation_score") or 0.0) for candidate in best_candidates), 4),
+        "time_refinement_score": round(sum(float(candidate.get("time_refinement_score") or 0.0) for candidate in best_candidates), 4),
+        "score_breakdown": score_breakdown,
+        "best_formulas": list(dict.fromkeys(top_formulas))[:10],
+        "top_rejected_reasons": _aggregate_rectification_pro_ranked_reasons(top_rejected_reasons_input),
+        "unresolved_source_summary": _aggregate_rectification_pro_ranked_reasons(unresolved_summary_input),
+        "event_contribution_audit": event_contribution_audit,
+        "card_contribution_audit": card_audit,
+        "event_type_contribution": event_type_contribution,
+        "selection_reason": (
+            f"chunked_async_multi_card aggregation across {len(chunk_results)} blocks; "
+            "best live-safe combined range selected from completed chunk summaries."
+        ),
+        "selected_card_ids": selected_card_ids,
+        "multi_card_enabled": True,
+        "selected_candidate_time": selected_candidate_time,
+        "chart_build_time": selected_candidate_time,
+        "natal_houses_time": selected_candidate_time,
+        "rulers_resolved_time": selected_candidate_time,
+        "house_elements_resolved_time": selected_candidate_time,
+        "directed_points_time": selected_candidate_time,
+        "timezone_used": next((candidate.get("timezone_used") for candidate in best_candidates if candidate.get("timezone_used")), payload.get("timezone_name")),
+        "timezone_offset_used": next((candidate.get("timezone_offset_used") for candidate in best_candidates if candidate.get("timezone_offset_used")), None),
+    }
+
+    formula_refinement_results = {
+        "enabled": True,
+        "step_seconds": None,
+        "supported_step_seconds": [],
+        "direction_method": "symbolic_1deg_per_year",
+        "timezone_used": overall_best_candidate.get("timezone_used"),
+        "timezone_offset_used": overall_best_candidate.get("timezone_offset_used"),
+        "timezone_source": "chunked_async_multi_card",
+        "timezone_name": overall_best_candidate.get("timezone_used"),
+        "utc_offset": overall_best_candidate.get("timezone_offset_used"),
+        "coordinates_used": {
+            "latitude": payload.get("latitude"),
+            "longitude": payload.get("longitude"),
+        },
+        "payload_path": "rectification_chunked_async_multi_card",
+        "card_id": "MULTI_CARD_V2_CHUNKED_ASYNC",
+        "card_version": "multi_card_v2_chunked_async",
+        "formulas_count": total_formula_count,
+        "priority_counts": merged_priority_counts,
+        "selected_card_ids": selected_card_ids,
+        "cards": card_items,
+        "multi_card_enabled": True,
+        "scanned_candidates_count": total_candidate_count,
+        "top_candidates": [
+            {
+                "candidate_time_local": candidate.get("candidate_time_local"),
+                "score": candidate.get("score"),
+                "matched_count": candidate.get("matched_count"),
+                "rejected_count": candidate.get("rejected_count"),
+                "missing_count": candidate.get("missing_count"),
+                "golden_matched_count": candidate.get("golden_matched_count"),
+                "supporting_matched_count": candidate.get("supporting_matched_count"),
+                "context_matched_count": candidate.get("context_matched_count"),
+                "context_score": candidate.get("context_score"),
+            }
+            for candidate in sorted(best_candidates, key=lambda item: float(item.get("score") or 0.0), reverse=True)
+        ],
+        "best_candidate": overall_best_candidate,
+        "coarse_candidate": None,
+        "working_time_ranges": working_ranges,
+        "working_time_range": primary_range,
+        "reference_time": {
+            "provided": ((payload.get("settings") or {}).get("formula_reference_time_local") if isinstance(payload.get("settings"), dict) else None),
+            "inside_working_time_range": False,
+            "evaluation": None,
+        },
+        "legacy_mode": False,
+        "aggregation_mode": "chunked_async_multi_card",
+        "chunks": [_summarize_rectification_pro_chunk_result(item["chunk"], item["result"]) for item in chunk_results],
+    }
+
+    formula_multi_card_report = {
+        "enabled": True,
+        "multi_card_enabled": True,
+        "aggregation_mode": "chunked_async_multi_card",
+        "selected_card_ids": selected_card_ids,
+        "cards": card_items,
+        "overall_best_candidate": overall_best_candidate,
+        "overall_working_ranges": working_ranges,
+        "overall_working_time_range": primary_range,
+        "score_summary": {
+            "event_confirmation_score": overall_best_candidate.get("event_confirmation_score"),
+            "time_refinement_score": overall_best_candidate.get("time_refinement_score"),
+            "score_breakdown": score_breakdown,
+        },
+        "event_contribution_audit": event_contribution_audit,
+        "question_efficiency_audit": question_efficiency_audit,
+        "event_type_contribution": event_type_contribution,
+        "card_contribution_audit": card_audit,
+        "top_matched_rules": overall_best_candidate.get("best_formulas") or [],
+        "top_rejected_reasons": overall_best_candidate.get("top_rejected_reasons") or [],
+        "unresolved_source_summary": overall_best_candidate.get("unresolved_source_summary") or [],
+        "expert_notes": [
+            "Combined report was calculated sequentially by explicit V2 card/event blocks.",
+            "This live-safe mode keeps single-card scoring unchanged and aggregates only completed chunk summaries.",
+        ],
+        "chunks": [_summarize_rectification_pro_chunk_result(item["chunk"], item["result"]) for item in chunk_results],
+        "debug": {
+            "direction_method": "symbolic_1deg_per_year",
+            "timezone_used": overall_best_candidate.get("timezone_used"),
+            "timezone_offset_used": overall_best_candidate.get("timezone_offset_used"),
+            "payload_path": "rectification_chunked_async_multi_card",
+        },
+    }
+    formula_multi_card_report.update(
+        _build_rectification_pro_multi_card_expert_artifacts(
+            payload=payload,
+            formula_multi_card_report=formula_multi_card_report,
+            formula_refinement_results=formula_refinement_results,
+            chunk_results=chunk_results,
+            question_efficiency_audit=question_efficiency_audit,
+        )
+    )
+
+    return {
+        "candidate_windows": [],
+        "best_candidates": [],
+        "method_results": {"directions": [], "solars": [], "lunars": [], "transits": [], "totems": []},
+        "formula_test_mode_results": [],
+        "formula_refinement_results": formula_refinement_results,
+        "formula_card_comparison": {},
+        "formula_multi_card_report": formula_multi_card_report,
+        "performance_debug": {
+            "card_id": "MULTI_CARD_V2_CHUNKED_ASYNC",
+            "formula_count": total_formula_count,
+            "event_count": len(payload.get("events") or []),
+            "candidate_count": total_candidate_count,
+            "total_runtime_ms": round(total_runtime_ms, 2),
+            "slowest_stage": "chunked_async_multi_card",
+            "stage_timings_ms": {
+                (
+                    f"{str(item['chunk'].get('card_id'))}#"
+                    f"{int(item['chunk'].get('subchunk_index') or 1)}/"
+                    f"{int(item['chunk'].get('subchunk_count') or 1)}"
+                ): float(((item["result"].get("performance_debug") or {}).get("total_runtime_ms") or 0.0))
+                for item in chunk_results
+            },
+        },
+        "confidence": {
+            "level": "high" if total_score > 0 else "low",
+            "time_window_minutes": None,
+            "explanation": "Combined V2 expert report aggregated from sequential chunk execution.",
+        },
+        "warnings": sorted(warnings.union({"chunked_multi_card_async_aggregation"})),
+        "limitations": limitations + [
+            "Combined expert report is aggregated from sequential per-card chunks to keep the live server stable.",
+        ],
+    }
 
 
 def _cleanup_rectification_pro_jobs(now_ts: float | None = None) -> None:
@@ -3739,13 +5498,216 @@ def _get_rectification_pro_job(job_id: str) -> dict[str, Any] | None:
         return dict(job)
 
 
-def _run_rectification_pro_job(*, job_id: str, base_url: str, payload: dict[str, Any], timeout: int) -> None:
+def _get_active_rectification_pro_job() -> dict[str, Any] | None:
+    with _RECTIFICATION_PRO_JOBS_LOCK:
+        _cleanup_rectification_pro_jobs()
+        for job in _RECTIFICATION_PRO_JOBS.values():
+            if job.get("status") in RECTIFICATION_PRO_ACTIVE_JOB_STATUSES:
+                return dict(job)
+    return None
+
+
+def _run_rectification_pro_job(
+    *,
+    job_id: str,
+    base_url: str,
+    payload: dict[str, Any],
+    timeout: int,
+    chunk_plan: dict[str, Any] | None = None,
+) -> None:
     with _RECTIFICATION_PRO_JOBS_LOCK:
         job = _RECTIFICATION_PRO_JOBS.get(job_id)
         if job is None:
             return
         job["status"] = "running"
+        job["mode"] = str(chunk_plan.get("mode")) if isinstance(chunk_plan, dict) else "single_async"
         job["updated_at"] = time.time()
+
+    if chunk_plan:
+        started_at = perf_counter()
+        chunk_results: list[dict[str, Any]] = []
+        partial_results: list[dict[str, Any]] = []
+        total_chunks = int(chunk_plan.get("total_chunks") or 0)
+        chunks = list(chunk_plan.get("chunks") or [])
+        for index, chunk in enumerate(chunks):
+            chunk_label = str(chunk.get("chunk_label") or "")
+            _log_rectification_pro_chunk_guard(
+                level=logging.INFO,
+                message="Rectification Pro chunk started",
+                job_id=job_id,
+                guard_stage="chunk_execution",
+                events_count=len((chunk.get("payload") or {}).get("events") or []),
+                selected_cards_count=1,
+                planned_chunks=total_chunks,
+                chunk_size=len((chunk.get("payload") or {}).get("events") or []),
+                candidate_count=None,
+                formula_count=None,
+                estimated_weight=int(chunk_plan.get("estimated_weight") or 0),
+                guard_reason=f"chunk_{index + 1}_started",
+                current_limit=_current_rectification_pro_chunk_limits(),
+                runtime_snapshot=_collect_rectification_pro_runtime_snapshot(),
+            )
+            with _RECTIFICATION_PRO_JOBS_LOCK:
+                job = _RECTIFICATION_PRO_JOBS.get(job_id)
+                if job is None:
+                    return
+                job["status"] = "chunk_running"
+                job["total_chunks"] = total_chunks
+                job["completed_chunks"] = len(partial_results)
+                job["failed_chunks"] = 0
+                job["current_chunk_label"] = chunk_label
+                job["progress_percent"] = int((len(partial_results) / max(total_chunks, 1)) * 100)
+                job["user_message"] = _rectification_pro_chunk_user_message(
+                    completed_chunks=len(partial_results),
+                    total_chunks=total_chunks,
+                    current_chunk_label=chunk_label,
+                    status="chunk_running",
+                )
+                job["partial_results"] = list(partial_results)
+                job["updated_at"] = time.time()
+            try:
+                result = _post_rectification_events(
+                    base_url=base_url,
+                    path="/api/v1/rectification/pro/run",
+                    payload=chunk.get("payload") or {},
+                    timeout=timeout,
+                )
+            except HTTPException as exc:
+                detail_dict = exc.detail if isinstance(exc.detail, dict) else {}
+                _log_rectification_pro_chunk_guard(
+                    level=logging.WARNING,
+                    message="Rectification Pro chunk failed",
+                    job_id=job_id,
+                    guard_stage="chunk_execution",
+                    events_count=len((chunk.get("payload") or {}).get("events") or []),
+                    selected_cards_count=1,
+                    planned_chunks=total_chunks,
+                    chunk_size=len((chunk.get("payload") or {}).get("events") or []),
+                    candidate_count=None,
+                    formula_count=None,
+                    estimated_weight=int(chunk_plan.get("estimated_weight") or 0),
+                    guard_reason=str(detail_dict.get("reason") or "http_exception"),
+                    current_limit=_current_rectification_pro_chunk_limits(),
+                    runtime_snapshot=_collect_rectification_pro_runtime_snapshot(),
+                )
+                with _RECTIFICATION_PRO_JOBS_LOCK:
+                    job = _RECTIFICATION_PRO_JOBS.get(job_id)
+                    if job is None:
+                        return
+                    job["status"] = "failed"
+                    job["completed_chunks"] = len(partial_results)
+                    job["failed_chunks"] = 1
+                    job["current_chunk_label"] = chunk_label
+                    job["progress_percent"] = int((len(partial_results) / max(total_chunks, 1)) * 100)
+                    job["partial_results"] = list(partial_results)
+                    job["error"] = {
+                        "status_code": exc.status_code,
+                        "detail": exc.detail,
+                    }
+                    job["updated_at"] = time.time()
+                return
+            except Exception as exc:  # noqa: BLE001
+                _log_rectification_pro_chunk_guard(
+                    level=logging.ERROR,
+                    message="Rectification Pro chunk crashed",
+                    job_id=job_id,
+                    guard_stage="chunk_execution",
+                    events_count=len((chunk.get("payload") or {}).get("events") or []),
+                    selected_cards_count=1,
+                    planned_chunks=total_chunks,
+                    chunk_size=len((chunk.get("payload") or {}).get("events") or []),
+                    candidate_count=None,
+                    formula_count=None,
+                    estimated_weight=int(chunk_plan.get("estimated_weight") or 0),
+                    guard_reason=type(exc).__name__,
+                    current_limit=_current_rectification_pro_chunk_limits(),
+                    runtime_snapshot=_collect_rectification_pro_runtime_snapshot(),
+                )
+                with _RECTIFICATION_PRO_JOBS_LOCK:
+                    job = _RECTIFICATION_PRO_JOBS.get(job_id)
+                    if job is None:
+                        return
+                    job["status"] = "failed"
+                    job["completed_chunks"] = len(partial_results)
+                    job["failed_chunks"] = 1
+                    job["current_chunk_label"] = chunk_label
+                    job["progress_percent"] = int((len(partial_results) / max(total_chunks, 1)) * 100)
+                    job["partial_results"] = list(partial_results)
+                    job["error"] = {
+                        "status_code": 500,
+                        "detail": {
+                            "message": "Unexpected async pro chunk error",
+                            "user_message": "Сервис Pro-ректификации временно недоступен. Попробуйте повторить позже.",
+                            "reason": "internal_async_chunk_error",
+                            "error_type": type(exc).__name__,
+                            "chunk_label": chunk_label,
+                        },
+                    }
+                    job["updated_at"] = time.time()
+                return
+
+            chunk_results.append({"chunk": chunk, "result": result})
+            partial_results.append(_summarize_rectification_pro_chunk_result(chunk, result))
+            perf = result.get("performance_debug") or {}
+            _log_rectification_pro_chunk_guard(
+                level=logging.INFO,
+                message="Rectification Pro chunk completed",
+                job_id=job_id,
+                guard_stage="chunk_execution",
+                events_count=len((chunk.get("payload") or {}).get("events") or []),
+                selected_cards_count=1,
+                planned_chunks=total_chunks,
+                chunk_size=len((chunk.get("payload") or {}).get("events") or []),
+                candidate_count=int(perf.get("candidate_count") or 0),
+                formula_count=int(perf.get("formula_count") or 0),
+                estimated_weight=int(chunk_plan.get("estimated_weight") or 0),
+                guard_reason=f"chunk_{index + 1}_completed",
+                current_limit=_current_rectification_pro_chunk_limits(),
+                runtime_snapshot=_collect_rectification_pro_runtime_snapshot(),
+            )
+            with _RECTIFICATION_PRO_JOBS_LOCK:
+                job = _RECTIFICATION_PRO_JOBS.get(job_id)
+                if job is None:
+                    return
+                job["status"] = "partial_completed" if index + 1 < total_chunks else "running"
+                job["completed_chunks"] = len(partial_results)
+                job["failed_chunks"] = 0
+                job["current_chunk_label"] = None if index + 1 >= total_chunks else str((chunks[index + 1].get("chunk_label") or ""))
+                job["progress_percent"] = int((len(partial_results) / max(total_chunks, 1)) * 100)
+                job["user_message"] = _rectification_pro_chunk_user_message(
+                    completed_chunks=len(partial_results),
+                    total_chunks=total_chunks,
+                    current_chunk_label=None,
+                    status="partial_completed",
+                )
+                job["partial_results"] = list(partial_results)
+                job["updated_at"] = time.time()
+
+        aggregated_result = _aggregate_rectification_pro_chunk_results(
+            payload=payload,
+            chunk_plan=chunk_plan,
+            chunk_results=chunk_results,
+            total_runtime_ms=(perf_counter() - started_at) * 1000,
+        )
+        with _RECTIFICATION_PRO_JOBS_LOCK:
+            job = _RECTIFICATION_PRO_JOBS.get(job_id)
+            if job is None:
+                return
+            job["status"] = "completed"
+            job["completed_chunks"] = len(partial_results)
+            job["failed_chunks"] = 0
+            job["current_chunk_label"] = None
+            job["progress_percent"] = 100
+            job["user_message"] = _rectification_pro_chunk_user_message(
+                completed_chunks=len(partial_results),
+                total_chunks=total_chunks,
+                current_chunk_label=None,
+                status="completed",
+            )
+            job["partial_results"] = list(partial_results)
+            job["result"] = aggregated_result
+            job["updated_at"] = time.time()
+        return
 
     try:
         result = _post_rectification_events(
@@ -3786,20 +5748,39 @@ def _run_rectification_pro_job(*, job_id: str, base_url: str, payload: dict[str,
         if job is None:
             return
         job["status"] = "completed"
+        job["progress_percent"] = 100
         job["result"] = result
         job["updated_at"] = time.time()
 
 
-def _create_rectification_pro_job(*, base_url: str, payload: dict[str, Any], timeout: int) -> str:
+def _create_rectification_pro_job(
+    *,
+    base_url: str,
+    payload: dict[str, Any],
+    timeout: int,
+    chunk_plan: dict[str, Any] | None = None,
+) -> str:
     job_id = str(uuid4())
     now_ts = time.time()
     with _RECTIFICATION_PRO_JOBS_LOCK:
         _cleanup_rectification_pro_jobs(now_ts)
         _RECTIFICATION_PRO_JOBS[job_id] = {
             "job_id": job_id,
-            "status": "pending",
+            "status": "queued",
+            "mode": str(chunk_plan.get("mode")) if isinstance(chunk_plan, dict) else "single_async",
             "result": None,
             "error": None,
+            "total_chunks": int(chunk_plan.get("total_chunks") or 1) if isinstance(chunk_plan, dict) else 1,
+            "completed_chunks": 0,
+            "failed_chunks": 0,
+            "current_chunk_label": None,
+            "progress_percent": 0,
+            "user_message": (
+                "Большой V2-отчёт считается по блокам."
+                if isinstance(chunk_plan, dict)
+                else "Тяжёлый Pro-расчёт поставлен в очередь."
+            ),
+            "partial_results": [],
             "created_at": now_ts,
             "updated_at": now_ts,
         }
@@ -3810,6 +5791,7 @@ def _create_rectification_pro_job(*, base_url: str, payload: dict[str, Any], tim
             "base_url": base_url,
             "payload": payload,
             "timeout": timeout,
+            "chunk_plan": chunk_plan,
         },
         daemon=True,
         name=f"rectification-pro-job-{job_id}",
@@ -4374,7 +6356,68 @@ def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
 
 @app.post("/api/rectification/pro/run-async")
 def rectification_pro_run_async(payload: RectificationProRunRequest) -> JSONResponse:
-    _guard_rectification_pro_payload(payload.payload)
+    active_job = _get_active_rectification_pro_job()
+    if active_job is not None:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "message": "Rectification Pro async job already running",
+                "user_message": (
+                    "Сейчас уже выполняется другой тяжёлый Pro-расчёт. "
+                    "Дождитесь завершения и запустите снова."
+                ),
+                "reason": "job_already_running",
+                "active_job_id": active_job.get("job_id"),
+                "active_status": active_job.get("status"),
+            },
+        )
+    chunk_plan = _build_rectification_pro_chunk_plan(payload.payload)
+    if chunk_plan is not None:
+        job_id = _create_rectification_pro_job(
+            base_url=payload.api_base_url,
+            payload=payload.payload,
+            timeout=RECTIFICATION_PRO_TIMEOUT_SECONDS,
+            chunk_plan=chunk_plan,
+        )
+        _log_rectification_pro_chunk_guard(
+            level=logging.INFO,
+            message="Rectification Pro chunk plan accepted",
+            job_id=job_id,
+            guard_stage="pre_job_chunk_plan",
+            events_count=len(payload.payload.get("events") or []) if isinstance(payload.payload, dict) else 0,
+            selected_cards_count=len(chunk_plan.get("selected_card_ids") or []),
+            planned_chunks=int(chunk_plan.get("planned_chunks") or 0),
+            chunk_size=int(chunk_plan.get("chunk_size") or 0),
+            candidate_count=None,
+            formula_count=None,
+            estimated_weight=int(chunk_plan.get("estimated_weight") or 0),
+            guard_reason="accepted",
+            current_limit=_current_rectification_pro_chunk_limits(),
+            runtime_snapshot=_collect_rectification_pro_runtime_snapshot(),
+        )
+        return JSONResponse(
+            {
+                "job_id": job_id,
+                "status": "queued",
+                "mode": chunk_plan["mode"],
+                "total_chunks": chunk_plan["total_chunks"],
+                "planned_chunks": chunk_plan["planned_chunks"],
+                "chunk_size": chunk_plan["chunk_size"],
+                "estimated_weight": chunk_plan["estimated_weight"],
+                "user_message": "Большой V2-отчёт считается по блокам. Это может занять больше времени.",
+                "poll_url": f"/api/rectification/pro/jobs/{job_id}",
+            },
+            status_code=202,
+        )
+    _guard_rectification_pro_payload(
+        payload.payload,
+        max_events=RECTIFICATION_PRO_ASYNC_MULTI_CARD_MAX_EVENTS,
+        complexity_limit=RECTIFICATION_PRO_ASYNC_MULTI_CARD_COMPLEXITY_LIMIT,
+        user_message=(
+            "Этот multi-card V2 запуск слишком большой для текущего live-сервера. "
+            "Запустите по группам событий или выберите один V2 card, чтобы расчёт не упал."
+        ),
+    )
     job_id = _create_rectification_pro_job(
         base_url=payload.api_base_url,
         payload=payload.payload,
@@ -4396,6 +6439,25 @@ def rectification_pro_job_status(job_id: str) -> JSONResponse:
     if job is None:
         raise HTTPException(status_code=404, detail="Rectification Pro job not found")
     return JSONResponse(job)
+
+
+@app.post("/api/rectification/pro/export-excel")
+def rectification_pro_export_excel(payload: RectificationProExcelExportRequest) -> Response:
+    if not payload.sheets:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "reason": "missing_excel_sheets",
+                "user_message": "Нет данных для Excel-экспорта combined report.",
+            },
+        )
+    content = _build_rectification_pro_excel_bytes(payload)
+    filename = _sanitize_rectification_pro_excel_filename(payload.filename)
+    return Response(
+        content=content,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 # Явные MIME-типы: на Windows стандартный mimetypes часто отдаёт .js как

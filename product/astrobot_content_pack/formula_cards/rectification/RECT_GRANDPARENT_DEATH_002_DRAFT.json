@@ -1,0 +1,3712 @@
+{
+  "card_id": "RECT_GRANDPARENT_DEATH_002_DRAFT",
+  "event_type": "death_grandparent",
+  "status": "draft",
+  "card_version": "death_grandparent_literal_draft_v2_imported_2026_07_05",
+  "school": "expert_rectification_v2_draft",
+  "title": "Death of grandparent (draft v2 imported sandbox)",
+  "core_logic": [
+    "house_4",
+    "house_8",
+    "house_11",
+    "saturn",
+    "pluto"
+  ],
+  "houses": [
+    "house_4",
+    "house_8",
+    "house_11"
+  ],
+  "planets": [
+    "pluto",
+    "saturn"
+  ],
+  "significators": [
+    "pluto",
+    "saturn"
+  ],
+  "aspects": [
+    "ancestor_loss_axis",
+    "death_axis_activation",
+    "family_line_loss"
+  ],
+  "method_priority": [
+    "directions",
+    "solars",
+    "transits"
+  ],
+  "strong_confirmation": [
+    "multiple_methods",
+    "ancestor_marker_activation",
+    "loss_axis_activation"
+  ],
+  "weak_confirmation": [
+    "single_transit_only",
+    "context_only_confirmation"
+  ],
+  "exclusions": [
+    "relationship_only_signature",
+    "career_only_signature"
+  ],
+  "direction_rules": [
+    {
+      "id": "cusp_8_to_cusp_4",
+      "title": "Directed cusp_8 -> Natal cusp_4",
+      "formula": "Directed cusp_8 -> Natal cusp_4",
+      "rule": "cusp_8_to_cusp_4",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #1",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_cusp_8",
+      "title": "Directed cusp_4 -> Natal cusp_8",
+      "formula": "Directed cusp_4 -> Natal cusp_8",
+      "rule": "cusp_4_to_cusp_8",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #2",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_ruler_4",
+      "title": "Directed cusp_8 -> Natal ruler_4",
+      "formula": "Directed cusp_8 -> Natal ruler_4",
+      "rule": "cusp_8_to_ruler_4",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #3",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_cusp_8",
+      "title": "Directed ruler_4 -> Natal cusp_8",
+      "formula": "Directed ruler_4 -> Natal cusp_8",
+      "rule": "ruler_4_to_cusp_8",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #4",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_cusp_4",
+      "title": "Directed ruler_8 -> Natal cusp_4",
+      "formula": "Directed ruler_8 -> Natal cusp_4",
+      "rule": "ruler_8_to_cusp_4",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #5",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_ruler_8",
+      "title": "Directed cusp_4 -> Natal ruler_8",
+      "formula": "Directed cusp_4 -> Natal ruler_8",
+      "rule": "cusp_4_to_ruler_8",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #6",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_cusp_4",
+      "title": "Directed cusp_11 -> Natal cusp_4",
+      "formula": "Directed cusp_11 -> Natal cusp_4",
+      "rule": "cusp_11_to_cusp_4",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #7",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_cusp_11",
+      "title": "Directed cusp_4 -> Natal cusp_11",
+      "formula": "Directed cusp_4 -> Natal cusp_11",
+      "rule": "cusp_4_to_cusp_11",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #8",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_ruler_4",
+      "title": "Directed cusp_11 -> Natal ruler_4",
+      "formula": "Directed cusp_11 -> Natal ruler_4",
+      "rule": "cusp_11_to_ruler_4",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #9",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_cusp_11",
+      "title": "Directed ruler_4 -> Natal cusp_11",
+      "formula": "Directed ruler_4 -> Natal cusp_11",
+      "rule": "ruler_4_to_cusp_11",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #10",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_11_to_cusp_4",
+      "title": "Directed ruler_11 -> Natal cusp_4",
+      "formula": "Directed ruler_11 -> Natal cusp_4",
+      "rule": "ruler_11_to_cusp_4",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #11",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_ruler_11",
+      "title": "Directed cusp_4 -> Natal ruler_11",
+      "formula": "Directed cusp_4 -> Natal ruler_11",
+      "rule": "cusp_4_to_ruler_11",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #12",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_cusp_11",
+      "title": "Directed cusp_8 -> Natal cusp_11",
+      "formula": "Directed cusp_8 -> Natal cusp_11",
+      "rule": "cusp_8_to_cusp_11",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #13",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_cusp_8",
+      "title": "Directed cusp_11 -> Natal cusp_8",
+      "formula": "Directed cusp_11 -> Natal cusp_8",
+      "rule": "cusp_11_to_cusp_8",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #14",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_8",
+      "title": "Directed saturn -> Natal cusp_8",
+      "formula": "Directed saturn -> Natal cusp_8",
+      "rule": "saturn_to_cusp_8",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #15",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_saturn",
+      "title": "Directed cusp_8 -> Natal saturn",
+      "formula": "Directed cusp_8 -> Natal saturn",
+      "rule": "cusp_8_to_saturn",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #16",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_ruler_8",
+      "title": "Directed saturn -> Natal ruler_8",
+      "formula": "Directed saturn -> Natal ruler_8",
+      "rule": "saturn_to_ruler_8",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #17",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "saturn",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_saturn",
+      "title": "Directed ruler_8 -> Natal saturn",
+      "formula": "Directed ruler_8 -> Natal saturn",
+      "rule": "ruler_8_to_saturn",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #18",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_11",
+      "title": "Directed saturn -> Natal cusp_11",
+      "formula": "Directed saturn -> Natal cusp_11",
+      "rule": "saturn_to_cusp_11",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #19",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_saturn",
+      "title": "Directed cusp_11 -> Natal saturn",
+      "formula": "Directed cusp_11 -> Natal saturn",
+      "rule": "cusp_11_to_saturn",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #20",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_ruler_11",
+      "title": "Directed saturn -> Natal ruler_11",
+      "formula": "Directed saturn -> Natal ruler_11",
+      "rule": "saturn_to_ruler_11",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #21",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "saturn",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_11_to_saturn",
+      "title": "Directed ruler_11 -> Natal saturn",
+      "formula": "Directed ruler_11 -> Natal saturn",
+      "rule": "ruler_11_to_saturn",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #22",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_4",
+      "title": "Directed saturn -> Natal cusp_4",
+      "formula": "Directed saturn -> Natal cusp_4",
+      "rule": "saturn_to_cusp_4",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #23",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_saturn",
+      "title": "Directed cusp_4 -> Natal saturn",
+      "formula": "Directed cusp_4 -> Natal saturn",
+      "rule": "cusp_4_to_saturn",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #24",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_ruler_4",
+      "title": "Directed saturn -> Natal ruler_4",
+      "formula": "Directed saturn -> Natal ruler_4",
+      "rule": "saturn_to_ruler_4",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #25",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "saturn",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_saturn",
+      "title": "Directed ruler_4 -> Natal saturn",
+      "formula": "Directed ruler_4 -> Natal saturn",
+      "rule": "ruler_4_to_saturn",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #26",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_cusp_4",
+      "title": "Directed pluto -> Natal cusp_4",
+      "formula": "Directed pluto -> Natal cusp_4",
+      "rule": "pluto_to_cusp_4",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #27",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "pluto",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_pluto",
+      "title": "Directed cusp_4 -> Natal pluto",
+      "formula": "Directed cusp_4 -> Natal pluto",
+      "rule": "cusp_4_to_pluto",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #28",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_ruler_4",
+      "title": "Directed pluto -> Natal ruler_4",
+      "formula": "Directed pluto -> Natal ruler_4",
+      "rule": "pluto_to_ruler_4",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #29",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "pluto",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_pluto",
+      "title": "Directed ruler_4 -> Natal pluto",
+      "formula": "Directed ruler_4 -> Natal pluto",
+      "rule": "ruler_4_to_pluto",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #30",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_saturn",
+      "title": "Directed pluto -> Natal saturn",
+      "formula": "Directed pluto -> Natal saturn",
+      "rule": "pluto_to_saturn",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #31",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "pluto",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_pluto",
+      "title": "Directed saturn -> Natal pluto",
+      "formula": "Directed saturn -> Natal pluto",
+      "rule": "saturn_to_pluto",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #32",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "saturn",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_ruler_4",
+      "title": "Directed ruler_8 -> Natal ruler_4",
+      "formula": "Directed ruler_8 -> Natal ruler_4",
+      "rule": "ruler_8_to_ruler_4",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #33",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_4_to_ruler_8",
+      "title": "Directed ruler_4 -> Natal ruler_8",
+      "formula": "Directed ruler_4 -> Natal ruler_8",
+      "rule": "ruler_4_to_ruler_8",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #34",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_11_to_ruler_4",
+      "title": "Directed ruler_11 -> Natal ruler_4",
+      "formula": "Directed ruler_11 -> Natal ruler_4",
+      "rule": "ruler_11_to_ruler_4",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #35",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_4_to_ruler_11",
+      "title": "Directed ruler_4 -> Natal ruler_11",
+      "formula": "Directed ruler_4 -> Natal ruler_11",
+      "rule": "ruler_4_to_ruler_11",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #36",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_8_to_house_element_4",
+      "title": "Directed cusp_8 -> Natal house_element_4",
+      "formula": "Directed cusp_8 -> Natal house_element_4",
+      "rule": "cusp_8_to_house_element_4",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #37",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_cusp_8",
+      "title": "Directed house_element_4 -> Natal cusp_8",
+      "formula": "Directed house_element_4 -> Natal cusp_8",
+      "rule": "house_element_4_to_cusp_8",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #38",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_8_to_house_element_4",
+      "title": "Directed ruler_8 -> Natal house_element_4",
+      "formula": "Directed ruler_8 -> Natal house_element_4",
+      "rule": "ruler_8_to_house_element_4",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #39",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_ruler_8",
+      "title": "Directed house_element_4 -> Natal ruler_8",
+      "formula": "Directed house_element_4 -> Natal ruler_8",
+      "rule": "house_element_4_to_ruler_8",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #40",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_11_to_house_element_4",
+      "title": "Directed cusp_11 -> Natal house_element_4",
+      "formula": "Directed cusp_11 -> Natal house_element_4",
+      "rule": "cusp_11_to_house_element_4",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #41",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_cusp_11",
+      "title": "Directed house_element_4 -> Natal cusp_11",
+      "formula": "Directed house_element_4 -> Natal cusp_11",
+      "rule": "house_element_4_to_cusp_11",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #42",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_11_to_house_element_4",
+      "title": "Directed ruler_11 -> Natal house_element_4",
+      "formula": "Directed ruler_11 -> Natal house_element_4",
+      "rule": "ruler_11_to_house_element_4",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #43",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_ruler_11",
+      "title": "Directed house_element_4 -> Natal ruler_11",
+      "formula": "Directed house_element_4 -> Natal ruler_11",
+      "rule": "house_element_4_to_ruler_11",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #44",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_cusp_4",
+      "title": "Directed house_element_8 -> Natal cusp_4",
+      "formula": "Directed house_element_8 -> Natal cusp_4",
+      "rule": "house_element_8_to_cusp_4",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #45",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_4_to_house_element_8",
+      "title": "Directed cusp_4 -> Natal house_element_8",
+      "formula": "Directed cusp_4 -> Natal house_element_8",
+      "rule": "cusp_4_to_house_element_8",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #46",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_ruler_4",
+      "title": "Directed house_element_8 -> Natal ruler_4",
+      "formula": "Directed house_element_8 -> Natal ruler_4",
+      "rule": "house_element_8_to_ruler_4",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #47",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_4_to_house_element_8",
+      "title": "Directed ruler_4 -> Natal house_element_8",
+      "formula": "Directed ruler_4 -> Natal house_element_8",
+      "rule": "ruler_4_to_house_element_8",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #48",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_11_to_cusp_4",
+      "title": "Directed house_element_11 -> Natal cusp_4",
+      "formula": "Directed house_element_11 -> Natal cusp_4",
+      "rule": "house_element_11_to_cusp_4",
+      "source": "house_element_11",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #49",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_11"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "house_element_11",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_4_to_house_element_11",
+      "title": "Directed cusp_4 -> Natal house_element_11",
+      "formula": "Directed cusp_4 -> Natal house_element_11",
+      "rule": "cusp_4_to_house_element_11",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "house_element_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #50",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "house_element_11"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "house_element_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_11_to_ruler_4",
+      "title": "Directed house_element_11 -> Natal ruler_4",
+      "formula": "Directed house_element_11 -> Natal ruler_4",
+      "rule": "house_element_11_to_ruler_4",
+      "source": "house_element_11",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #51",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_11"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "house_element_11",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_4_to_house_element_11",
+      "title": "Directed ruler_4 -> Natal house_element_11",
+      "formula": "Directed ruler_4 -> Natal house_element_11",
+      "rule": "ruler_4_to_house_element_11",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "house_element_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #52",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "house_element_11"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "house_element_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "pluto_to_house_element_4",
+      "title": "Directed pluto -> Natal house_element_4",
+      "formula": "Directed pluto -> Natal house_element_4",
+      "rule": "pluto_to_house_element_4",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #53",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "pluto",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_pluto",
+      "title": "Directed house_element_4 -> Natal pluto",
+      "formula": "Directed house_element_4 -> Natal pluto",
+      "rule": "house_element_4_to_pluto",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #54",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "saturn_to_house_element_4",
+      "title": "Directed saturn -> Natal house_element_4",
+      "formula": "Directed saturn -> Natal house_element_4",
+      "rule": "saturn_to_house_element_4",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #55",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "saturn",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_saturn",
+      "title": "Directed house_element_4 -> Natal saturn",
+      "formula": "Directed house_element_4 -> Natal saturn",
+      "rule": "house_element_4_to_saturn",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #56",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "moon_to_cusp_4",
+      "title": "Directed moon -> Natal cusp_4",
+      "formula": "Directed moon -> Natal cusp_4",
+      "rule": "moon_to_cusp_4",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #57",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "moon",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_4_to_moon",
+      "title": "Directed cusp_4 -> Natal moon",
+      "formula": "Directed cusp_4 -> Natal moon",
+      "rule": "cusp_4_to_moon",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #58",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_ruler_4",
+      "title": "Directed moon -> Natal ruler_4",
+      "formula": "Directed moon -> Natal ruler_4",
+      "rule": "moon_to_ruler_4",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #59",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "moon",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_moon",
+      "title": "Directed ruler_4 -> Natal moon",
+      "formula": "Directed ruler_4 -> Natal moon",
+      "rule": "ruler_4_to_moon",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #60",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_house_element_4",
+      "title": "Directed moon -> Natal house_element_4",
+      "formula": "Directed moon -> Natal house_element_4",
+      "rule": "moon_to_house_element_4",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #61",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "moon",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_4_to_moon",
+      "title": "Directed house_element_4 -> Natal moon",
+      "formula": "Directed house_element_4 -> Natal moon",
+      "rule": "house_element_4_to_moon",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #62",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_cusp_4",
+      "title": "Directed sun -> Natal cusp_4",
+      "formula": "Directed sun -> Natal cusp_4",
+      "rule": "sun_to_cusp_4",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #63",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "sun",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_4_to_sun",
+      "title": "Directed cusp_4 -> Natal sun",
+      "formula": "Directed cusp_4 -> Natal sun",
+      "rule": "cusp_4_to_sun",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #64",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Sun",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_ruler_4",
+      "title": "Directed sun -> Natal ruler_4",
+      "formula": "Directed sun -> Natal ruler_4",
+      "rule": "sun_to_ruler_4",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #65",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "sun",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_sun",
+      "title": "Directed ruler_4 -> Natal sun",
+      "formula": "Directed ruler_4 -> Natal sun",
+      "rule": "ruler_4_to_sun",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #66",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Sun",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_house_element_4",
+      "title": "Directed sun -> Natal house_element_4",
+      "formula": "Directed sun -> Natal house_element_4",
+      "rule": "sun_to_house_element_4",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #67",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "sun",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_4_to_sun",
+      "title": "Directed house_element_4 -> Natal sun",
+      "formula": "Directed house_element_4 -> Natal sun",
+      "rule": "house_element_4_to_sun",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #68",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "Sun",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_10_to_ruler_4",
+      "title": "Directed ruler_10 -> Natal ruler_4",
+      "formula": "Directed ruler_10 -> Natal ruler_4",
+      "rule": "ruler_10_to_ruler_4",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #69",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_ruler_10",
+      "title": "Directed ruler_4 -> Natal ruler_10",
+      "formula": "Directed ruler_4 -> Natal ruler_10",
+      "rule": "ruler_4_to_ruler_10",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #70",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_10_to_ruler_4",
+      "title": "Directed house_element_10 -> Natal ruler_4",
+      "formula": "Directed house_element_10 -> Natal ruler_4",
+      "rule": "house_element_10_to_ruler_4",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #71",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_house_element_10",
+      "title": "Directed ruler_4 -> Natal house_element_10",
+      "formula": "Directed ruler_4 -> Natal house_element_10",
+      "rule": "ruler_4_to_house_element_10",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #72",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "house_element_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_moon",
+      "title": "Directed saturn -> Natal moon",
+      "formula": "Directed saturn -> Natal moon",
+      "rule": "saturn_to_moon",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #73",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "saturn",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_saturn",
+      "title": "Directed moon -> Natal saturn",
+      "formula": "Directed moon -> Natal saturn",
+      "rule": "moon_to_saturn",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #74",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "moon",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_sun",
+      "title": "Directed saturn -> Natal sun",
+      "formula": "Directed saturn -> Natal sun",
+      "rule": "saturn_to_sun",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #75",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "saturn",
+      "display_target": "Sun",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_saturn",
+      "title": "Directed sun -> Natal saturn",
+      "formula": "Directed sun -> Natal saturn",
+      "rule": "sun_to_saturn",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #76",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "sun",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_moon",
+      "title": "Directed pluto -> Natal moon",
+      "formula": "Directed pluto -> Natal moon",
+      "rule": "pluto_to_moon",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #77",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "pluto",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_pluto",
+      "title": "Directed moon -> Natal pluto",
+      "formula": "Directed moon -> Natal pluto",
+      "rule": "moon_to_pluto",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #78",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "moon",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_sun",
+      "title": "Directed pluto -> Natal sun",
+      "formula": "Directed pluto -> Natal sun",
+      "rule": "pluto_to_sun",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "sun",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #79",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "sun"
+      ],
+      "display_source": "pluto",
+      "display_target": "Sun",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "sun_to_pluto",
+      "title": "Directed sun -> Natal pluto",
+      "formula": "Directed sun -> Natal pluto",
+      "rule": "sun_to_pluto",
+      "source": "sun",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal grandparent-death v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-05. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "8_Карточка_V2_смерть_бабушки_или_дедушки.txt block #80",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "sun"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "sun",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    }
+  ],
+  "notes": "Draft sandbox imported from Ekaterina death_grandparent v2 pack on 2026-07-05. Explicit expert/test selection only; production defaults unchanged.",
+  "draft_import_report": {
+    "source_files": [
+      "C:\\Users\\user\\Downloads\\Telegram Desktop\\8_Карточка_V2_смерть_бабушки_или_дедушки.txt"
+    ],
+    "source_formula_counts_header": {
+      "golden": 32,
+      "supporting": 24,
+      "context": 24,
+      "total": 80
+    },
+    "parsed_entries_count": 80,
+    "unique_rule_count_detected": 80,
+    "imported_formula_count": 80,
+    "imported_tier_counts": {
+      "golden": 32,
+      "supporting": 24,
+      "context": 24,
+      "ambiguity_risk": 0
+    },
+    "effective_direction_rules_count": 80,
+    "effective_tier_counts": {
+      "golden": 32,
+      "supporting": 24,
+      "context": 24,
+      "ambiguity_risk": 0
+    },
+    "duplicate_groups_count": 0,
+    "collapsed_duplicate_entries": 0,
+    "malformed_entries_count": 0,
+    "skipped_malformed_blocks": [],
+    "duplicates_report": [],
+    "recoverable_candidates": [],
+    "conflicts_for_review": [],
+    "conflicts_left_for_review": false,
+    "selector_tokens_detected": [
+      "cusp_11",
+      "cusp_4",
+      "cusp_8",
+      "house_element_10",
+      "house_element_11",
+      "house_element_4",
+      "house_element_8",
+      "moon",
+      "pluto",
+      "ruler_10",
+      "ruler_11",
+      "ruler_4",
+      "ruler_8",
+      "saturn",
+      "sun"
+    ],
+    "production_default_changed": false,
+    "explicit_selection_only": true,
+    "event_type_binding": "death_grandparent",
+    "import_timestamp_utc": "2026-07-05T13:58:12+00:00",
+    "expected_total": 80,
+    "expected_vs_imported_gap": 0
+  }
+}

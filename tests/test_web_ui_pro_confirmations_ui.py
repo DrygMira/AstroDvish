@@ -178,6 +178,11 @@ def test_pro_ui_contains_explicit_formula_card_selector_and_v1_v2_comparison_mar
     assert "RECT_CHILD_BIRTH_002_DRAFT" in html
     assert "RECT_PROFESSION_CHANGE_002_DRAFT" in html
     assert "RECT_MARRIAGE_UNION_002_DRAFT" in html
+    assert "RECT_DIVORCE_SEPARATION_002_DRAFT" in html
+    assert "RECT_FATHER_DEATH_002_DRAFT" in html
+    assert "RECT_MOTHER_DEATH_002_DRAFT" in html
+    assert "RECT_SIBLING_DEATH_002_DRAFT" in html
+    assert "RECT_GRANDPARENT_DEATH_002_DRAFT" in html
     assert "V1 vs V2" in html
     assert "formula_card_comparison" in html
     assert "working_time_ranges_difference" in html
@@ -218,9 +223,64 @@ def test_pro_ui_contains_explicit_multi_card_v2_controls_and_report_markers() ->
     assert response.status_code == 200
     assert "formula_card_ids" in html
     assert "All relevant V2 draft cards" in html
+    assert "divorce_separation" in html
+    assert "death_father" in html
+    assert "death_mother" in html
+    assert "death_sibling" in html
+    assert "death_grandparent" in html
     assert "formula_multi_card_report" in html
     assert "Per-card contribution" in html
     assert "event_type_contribution" in html
+    assert "Multi-card run in progress. V2 comparison may take up to 2 minutes." in html
+    assert "/api/rectification/pro/run-async" in html
+    assert "/api/rectification/pro/jobs/" in html
+
+
+def test_pro_ui_contains_combined_report_excel_export_and_expert_table_markers() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert "Скачать Excel" in html
+    assert "expert_tables" in html
+    assert "Эффективность вопросов" in html
+    assert "/api/rectification/pro/export-excel" in html
+
+
+def test_pro_ui_async_poll_updates_overlay_without_resetting_elapsed_timer() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert "updateLlmOverlayMessage(progressStatus" in html
+    assert "showLlmOverlay(progressStatus);" not in html
+
+
+def test_pro_ui_async_poll_uses_chunk_progress_fields_and_user_message() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert "jsonPayload?.user_message" in html
+    assert "jsonPayload?.completed_chunks" in html
+    assert "jsonPayload?.total_chunks" in html
+    assert "jsonPayload?.current_chunk_label" in html
+    assert "jsonPayload?.progress_percent" in html
+
+
+def _old_test_pro_ui_async_status_strings_do_not_contain_mojibake() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert "Ошибка:" in html
+    assert "Готово. confidence=" in html
+    assert "РћС€РёР±РєР°" not in html
+    assert "Р“РѕС‚РѕРІРѕ" not in html
+
+
+def test_pro_ui_disables_run_button_while_pro_job_is_in_progress() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert "rpRunBtnEl.disabled = isBusy;" in html
+    assert "rectificationWizardState.pro.isBusy" in html
 
 
 def test_pro_ui_reset_path_clears_multi_card_report_and_expert_card_selection() -> None:
@@ -349,3 +409,13 @@ def test_preview_chart_result_endpoint_returns_chart_payload_for_modal() -> None
     assert payload["chart_status"] == "ok"
     assert "horoscope_text" in payload
     assert "chart_response" in payload
+
+
+def test_pro_ui_async_status_strings_render_clean_russian_labels() -> None:
+    with TestClient(web_ui_main.app) as client:
+        response, html = get_main_ui_bundle(client)
+    assert response.status_code == 200
+    assert "Ошибка:" in html
+    assert "Готово. confidence=" in html
+    assert "Р С›РЎв‚¬Р С‘Р В±Р С”Р В°" not in html
+    assert "Р вЂњР С•РЎвЂљР С•Р Р†Р С•" not in html

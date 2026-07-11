@@ -32,6 +32,7 @@ services:
       astrodvish-api:
         condition: service_healthy
     ports:
+      - "80:8014"
       - "8014:8014"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8014/health', timeout=5).status == 200 else 1)"]

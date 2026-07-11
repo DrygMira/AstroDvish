@@ -175,18 +175,27 @@ class FormulaRefinementService:
     ) -> list[dict[str, Any]]:
         results: list[dict[str, Any]] = []
         for event in payload.events:
-            normalized_event_type = self._normalize_formula_event_type(str(event.event_type.value))
-            if normalized_event_type is None:
-                continue
+            raw_event_type = str(event.event_type.value)
+            normalized_event_type = self._normalize_formula_event_type(raw_event_type)
             event_card_ids = self._resolve_selected_card_ids_for_event(
-                event_type=normalized_event_type,
+                raw_event_type=raw_event_type,
                 selected_card_ids=card_ids,
             )
             explicit_card_ids = event_card_ids or ([card_id] if card_id else [None])
             for explicit_card_id in explicit_card_ids:
+                evaluation_event_type = (
+                    self._resolve_explicit_card_event_type(
+                        raw_event_type=raw_event_type,
+                        explicit_card_id=explicit_card_id,
+                    )
+                    if explicit_card_id
+                    else normalized_event_type
+                )
+                if evaluation_event_type is None:
+                    continue
                 try:
                     result = self.formula_test_mode_service.evaluate(
-                        event_type=normalized_event_type,
+                        event_type=evaluation_event_type,
                         context={
                             "chart_response": chart.model_dump(mode="json"),
                             "candidate_birth_date": payload.birth_date_local.isoformat(),
@@ -367,6 +376,13 @@ class FormulaRefinementService:
                 ),
                 4,
             )
+            matched_orbs = [
+                float(item.get("orb"))
+                for item in matched
+                if item.get("orb") is not None
+            ]
+            best_orb = round(min(matched_orbs), 4) if matched_orbs else None
+            avg_orb = round(sum(matched_orbs) / len(matched_orbs), 4) if matched_orbs else None
 
             event_contribution_audit.append(
                 {
@@ -384,6 +400,15 @@ class FormulaRefinementService:
                     "context_matched_count": len(event_context_rules),
                     "context_score": event_context_score,
                     "ambiguity_risk_count": len(event_ambiguity_rules),
+                    "best_orb": best_orb,
+                    "avg_orb": avg_orb,
+                    "score_contribution": round(float(result.get("score") or 0.0), 4),
+                    "affected_best_candidate": bool(matched or rejected or missing),
+                    "tier_summary": {
+                        "golden": len(event_golden_rules),
+                        "supporting": len(event_supporting_rules),
+                        "context": len(event_context_rules),
+                    },
                 }
             )
             card_id = str(result.get("card_id") or "unknown")
@@ -805,7 +830,7 @@ class FormulaRefinementService:
     def _resolve_selected_card_ids_for_event(
         self,
         *,
-        event_type: str,
+        raw_event_type: str,
         selected_card_ids: list[str] | None,
     ) -> list[str]:
         if not selected_card_ids:
@@ -816,9 +841,59 @@ class FormulaRefinementService:
                 card = self.formula_test_mode_service.loader.load_card(selected_card_id)
             except Exception:
                 continue
-            if str(card.event_type) == str(event_type):
+            if self._card_matches_raw_event_type(
+                raw_event_type=raw_event_type,
+                card_event_type=str(card.event_type),
+            ):
                 matched.append(selected_card_id)
         return matched
+
+    def _resolve_explicit_card_event_type(
+        self,
+        *,
+        raw_event_type: str,
+        explicit_card_id: str,
+    ) -> str | None:
+        try:
+            card = self.formula_test_mode_service.loader.load_card(explicit_card_id)
+        except Exception:
+            return None
+        card_event_type = str(card.event_type)
+        if not self._card_matches_raw_event_type(
+            raw_event_type=raw_event_type,
+            card_event_type=card_event_type,
+        ):
+            return None
+        return card_event_type
+
+    @staticmethod
+    def _card_matches_raw_event_type(*, raw_event_type: str, card_event_type: str) -> bool:
+        accepted = FormulaRefinementService._accepted_card_event_types(raw_event_type)
+        return bool(accepted) and str(card_event_type) in accepted
+
+    @staticmethod
+    def _accepted_card_event_types(raw_event_type: str) -> set[str]:
+        mapping = {
+            "child_birth": {"child_birth"},
+            "children_birth": {"child_birth"},
+            "profession_change": {"profession_change"},
+            "marriage_union": {"marriage_union"},
+            "marriage_start": {"marriage_union"},
+            "relationship_start": {"relationship_start"},
+            "marriage_relationship": {"relationship_start"},
+            "divorce_breakup": {"divorce_breakup", "divorce_separation"},
+            "divorce_separation": {"divorce_breakup", "divorce_separation"},
+            "death_close_person": {"death_close_person"},
+            "death_of_close_person": {"death_close_person"},
+            "death_close_person_other": {"death_close_person"},
+            "death_father": {"death_close_person", "death_father"},
+            "death_mother": {"death_close_person", "death_mother"},
+            "death_child": {"death_close_person"},
+            "death_spouse": {"death_close_person"},
+            "death_sibling": {"death_close_person", "death_sibling"},
+            "death_grandparent": {"death_close_person", "death_grandparent"},
+        }
+        return mapping.get(str(raw_event_type), set())
 
     @staticmethod
     def _build_working_time_ranges(candidates: list[dict[str, Any]], step_seconds: int) -> list[dict[str, Any]]:

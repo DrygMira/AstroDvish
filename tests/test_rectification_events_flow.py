@@ -226,6 +226,85 @@ def test_repeatable_relocation_supports_multiple_entries(monkeypatch, tmp_path) 
         assert state["question"]["event_type"] != "local_relocation"
 
 
+def test_stage2_keeps_all_four_work_and_profession_questions(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    seen_event_types: list[str] = []
+    with client:
+        state = client.post("/api/v1/rectification/events/start", json={}).json()
+        while state.get("status") == "ask_question":
+            seen_event_types.append(state["question"]["event_type"])
+            state = client.post(
+                "/api/v1/rectification/events/continue",
+                json={
+                    "dialog_history": state["dialog_history"],
+                    "last_answer": _answer(
+                        state["question"],
+                        idx=len(seen_event_types),
+                        skipped=True,
+                        sequence_number=None,
+                    ),
+                },
+            ).json()
+
+    work_questions = [
+        "job_start",
+        "profession_change",
+        "education_work_start",
+        "profession_lifestyle_change",
+    ]
+    for event_type in work_questions:
+        assert event_type in seen_event_types
+    assert seen_event_types.index("job_start") < seen_event_types.index("profession_change")
+    assert seen_event_types.index("profession_change") < seen_event_types.index("education_work_start")
+    assert seen_event_types.index("education_work_start") < seen_event_types.index("profession_lifestyle_change")
+
+
+def test_stage2_does_not_safe_finalize_right_after_tenth_event(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    with client:
+        state = client.post("/api/v1/rectification/events/start", json={}).json()
+        for idx in range(10):
+            assert state["status"] == "ask_question"
+            state = client.post(
+                "/api/v1/rectification/events/continue",
+                json={
+                    "dialog_history": state["dialog_history"],
+                    "last_answer": _answer(
+                        state["question"],
+                        idx=idx + 1,
+                        skipped=False,
+                        sequence_number=1,
+                    ),
+                },
+            ).json()
+
+    assert state["status"] == "ask_question"
+    assert state["events_collected_count"] == 10
+
+
+def test_stage2_can_reach_last_question_when_skipping_all_questions(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    seen_event_types: list[str] = []
+    with client:
+        state = client.post("/api/v1/rectification/events/start", json={}).json()
+        while state.get("status") == "ask_question":
+            seen_event_types.append(state["question"]["event_type"])
+            state = client.post(
+                "/api/v1/rectification/events/continue",
+                json={
+                    "dialog_history": state["dialog_history"],
+                    "last_answer": _answer(
+                        state["question"],
+                        idx=len(seen_event_types),
+                        skipped=True,
+                        sequence_number=None,
+                    ),
+                },
+            ).json()
+
+    assert "custom_major_event" in seen_event_types
+
+
 def test_events_empty_answer_retry(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     with client:

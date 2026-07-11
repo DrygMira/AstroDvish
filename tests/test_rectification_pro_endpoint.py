@@ -334,7 +334,7 @@ def test_rectification_pro_can_select_draft_card_explicitly(monkeypatch, tmp_pat
     }
     refinement = body["formula_refinement_results"]
     assert refinement["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
-    assert refinement["best_candidate"]["formula_test_mode_results"][0]["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT"
+    assert "formula_test_mode_results" not in (refinement["best_candidate"] or {})
     assert refinement["top_candidates"]
     assert "formula_test_mode_results" not in refinement["top_candidates"][0]
     assert "chart_response" not in refinement["top_candidates"][0]
@@ -386,6 +386,131 @@ def test_rectification_pro_can_select_marriage_union_v2_draft_card_explicitly(mo
         "ambiguity_risk": 0,
     }
     assert body["formula_refinement_results"]["card_id"] == "RECT_MARRIAGE_UNION_002_DRAFT"
+
+
+def test_rectification_pro_can_select_divorce_separation_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "divorce_separation"
+    payload["events"][0]["title"] = "Divorce"
+    payload["settings"]["formula_card_id"] = "RECT_DIVORCE_SEPARATION_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_DIVORCE_SEPARATION_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 106
+    assert result["priority_counts"] == {
+        "golden": 34,
+        "supporting": 38,
+        "context": 34,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_DIVORCE_SEPARATION_002_DRAFT"
+
+
+def test_rectification_pro_can_select_father_death_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "death_father"
+    payload["events"][0]["title"] = "Father death"
+    payload["settings"]["formula_card_id"] = "RECT_FATHER_DEATH_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_FATHER_DEATH_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 82
+    assert result["priority_counts"] == {
+        "golden": 32,
+        "supporting": 26,
+        "context": 24,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_FATHER_DEATH_002_DRAFT"
+
+
+def test_rectification_pro_can_select_mother_death_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "death_mother"
+    payload["events"][0]["title"] = "Mother death"
+    payload["settings"]["formula_card_id"] = "RECT_MOTHER_DEATH_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_MOTHER_DEATH_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 78
+    assert result["priority_counts"] == {
+        "golden": 32,
+        "supporting": 26,
+        "context": 20,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_MOTHER_DEATH_002_DRAFT"
+
+
+def test_rectification_pro_can_select_sibling_death_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "death_sibling"
+    payload["events"][0]["title"] = "Sibling death"
+    payload["settings"]["formula_card_id"] = "RECT_SIBLING_DEATH_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_SIBLING_DEATH_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 84
+    assert result["priority_counts"] == {
+        "golden": 34,
+        "supporting": 26,
+        "context": 24,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_SIBLING_DEATH_002_DRAFT"
+
+
+def test_rectification_pro_can_select_grandparent_death_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "death_grandparent"
+    payload["events"][0]["title"] = "Grandparent death"
+    payload["settings"]["formula_card_id"] = "RECT_GRANDPARENT_DEATH_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_GRANDPARENT_DEATH_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 80
+    assert result["priority_counts"] == {
+        "golden": 32,
+        "supporting": 24,
+        "context": 24,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_GRANDPARENT_DEATH_002_DRAFT"
 
 
 def test_rectification_pro_can_compare_v1_and_v2_cards(monkeypatch, tmp_path) -> None:
@@ -498,6 +623,76 @@ def test_rectification_pro_can_run_explicit_multi_card_v2_report(monkeypatch, tm
     }
     assert body["formula_refinement_results"]["multi_card_enabled"] is True
     assert body["formula_refinement_results"]["selected_card_ids"] == multi["selected_card_ids"]
+    assert "formula_test_mode_results" not in (body["formula_refinement_results"]["best_candidate"] or {})
+
+
+def test_rectification_pro_can_run_explicit_multi_card_v2_report_with_extended_death_cards(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(8)
+    payload["events"][0]["event_type"] = "child_birth"
+    payload["events"][0]["title"] = "Child birth"
+    payload["events"][1]["event_type"] = "marriage_start"
+    payload["events"][1]["title"] = "Marriage"
+    payload["events"][2]["event_type"] = "profession_change"
+    payload["events"][2]["title"] = "Profession"
+    payload["events"][3]["event_type"] = "divorce_separation"
+    payload["events"][3]["title"] = "Divorce"
+    payload["events"][4]["event_type"] = "death_father"
+    payload["events"][4]["title"] = "Father death"
+    payload["events"][5]["event_type"] = "death_mother"
+    payload["events"][5]["title"] = "Mother death"
+    payload["events"][6]["event_type"] = "death_sibling"
+    payload["events"][6]["title"] = "Sibling death"
+    payload["events"][7]["event_type"] = "death_grandparent"
+    payload["events"][7]["title"] = "Grandparent death"
+    payload["settings"]["formula_card_ids"] = [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+        "RECT_DIVORCE_SEPARATION_002_DRAFT",
+        "RECT_FATHER_DEATH_002_DRAFT",
+        "RECT_MOTHER_DEATH_002_DRAFT",
+        "RECT_SIBLING_DEATH_002_DRAFT",
+        "RECT_GRANDPARENT_DEATH_002_DRAFT",
+    ]
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    multi = response.json()["formula_multi_card_report"]
+    assert multi["enabled"] is True
+    assert multi["multi_card_enabled"] is True
+    assert multi["selected_card_ids"] == [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+        "RECT_DIVORCE_SEPARATION_002_DRAFT",
+        "RECT_FATHER_DEATH_002_DRAFT",
+        "RECT_MOTHER_DEATH_002_DRAFT",
+        "RECT_SIBLING_DEATH_002_DRAFT",
+        "RECT_GRANDPARENT_DEATH_002_DRAFT",
+    ]
+    assert {item["card_id"] for item in multi["card_contribution_audit"]} == {
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+        "RECT_DIVORCE_SEPARATION_002_DRAFT",
+        "RECT_FATHER_DEATH_002_DRAFT",
+        "RECT_MOTHER_DEATH_002_DRAFT",
+        "RECT_SIBLING_DEATH_002_DRAFT",
+        "RECT_GRANDPARENT_DEATH_002_DRAFT",
+    }
+    assert {item["event_type"] for item in multi["event_type_contribution"]} == {
+        "child_birth",
+        "marriage_union",
+        "profession_change",
+        "divorce_separation",
+        "death_father",
+        "death_mother",
+        "death_sibling",
+        "death_grandparent",
+    }
 
 
 def test_rectification_pro_profession_v2_validation_report_table_matches_expert_columns(monkeypatch, tmp_path) -> None:
@@ -878,7 +1073,7 @@ def test_rectification_pro_formula_refinement_uses_reference_triplet(monkeypatch
     assert response.status_code == 200
     body = response.json()
     best = body["formula_refinement_results"]["best_candidate"]
-    table = best["formula_test_mode_results"][0]["validation_report_table"]
+    table = body["formula_test_mode_results"][0]["validation_report_table"]
     assert "Directed ruler_4 -> Natal house_element_5 | ruler_4_to_house_element_5 | golden | event_confirmation | matched" in table
     assert "Directed Sun -> Natal Jupiter | sun_to_jupiter | golden | event_confirmation | matched" in table
     assert "Directed cusp_6 -> Natal Sun | cusp_6_to_sun | golden | time_refinement | matched" in table

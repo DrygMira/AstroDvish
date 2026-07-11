@@ -76,6 +76,7 @@ export const appState = {
         eventCards: [],
       },
       pro: {
+        isBusy: false,
         started: false,
         completed: false,
         result: null,

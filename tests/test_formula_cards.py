@@ -34,6 +34,11 @@ OLD_CHILD_BIRTH_RULE_IDS = {
 DRAFT_CHILD_BIRTH_CARD_ID = "RECT_CHILD_BIRTH_002_DRAFT"
 DRAFT_PROFESSION_CHANGE_CARD_ID = "RECT_PROFESSION_CHANGE_002_DRAFT"
 DRAFT_MARRIAGE_UNION_CARD_ID = "RECT_MARRIAGE_UNION_002_DRAFT"
+DRAFT_DIVORCE_SEPARATION_CARD_ID = "RECT_DIVORCE_SEPARATION_002_DRAFT"
+DRAFT_FATHER_DEATH_CARD_ID = "RECT_FATHER_DEATH_002_DRAFT"
+DRAFT_MOTHER_DEATH_CARD_ID = "RECT_MOTHER_DEATH_002_DRAFT"
+DRAFT_SIBLING_DEATH_CARD_ID = "RECT_SIBLING_DEATH_002_DRAFT"
+DRAFT_GRANDPARENT_DEATH_CARD_ID = "RECT_GRANDPARENT_DEATH_002_DRAFT"
 
 
 def test_all_requested_formula_cards_load_successfully() -> None:
@@ -45,6 +50,11 @@ def test_all_requested_formula_cards_load_successfully() -> None:
         DRAFT_CHILD_BIRTH_CARD_ID,
         DRAFT_PROFESSION_CHANGE_CARD_ID,
         DRAFT_MARRIAGE_UNION_CARD_ID,
+        DRAFT_DIVORCE_SEPARATION_CARD_ID,
+        DRAFT_FATHER_DEATH_CARD_ID,
+        DRAFT_MOTHER_DEATH_CARD_ID,
+        DRAFT_SIBLING_DEATH_CARD_ID,
+        DRAFT_GRANDPARENT_DEATH_CARD_ID,
         "RECT_DEATH_CLOSE_PERSON_001",
         "RECT_MARRIAGE_UNION_001",
         "RECT_RELATIONSHIP_START_001",
@@ -803,6 +813,291 @@ def test_marriage_union_defaults_to_production_card_when_draft_v2_exists() -> No
     )
 
     assert result["card_id"] == "RECT_MARRIAGE_UNION_001"
+
+
+def test_divorce_separation_v2_draft_card_exists_without_changing_production_default() -> None:
+    loader = FormulaCardLoader()
+    production = loader.load_card("RECT_DIVORCE_BREAKUP_001")
+    draft = loader.load_card(DRAFT_DIVORCE_SEPARATION_CARD_ID)
+
+    assert production.card_id == "RECT_DIVORCE_BREAKUP_001"
+    assert draft.card_id == DRAFT_DIVORCE_SEPARATION_CARD_ID
+    assert draft.event_type == "divorce_separation"
+    assert draft.status == "draft"
+    assert len(draft.direction_rules) == 106
+
+
+def test_parent_death_v2_draft_cards_exist_with_repo_canonical_event_types() -> None:
+    loader = FormulaCardLoader()
+    father = loader.load_card(DRAFT_FATHER_DEATH_CARD_ID)
+    mother = loader.load_card(DRAFT_MOTHER_DEATH_CARD_ID)
+    sibling = loader.load_card(DRAFT_SIBLING_DEATH_CARD_ID)
+    grandparent = loader.load_card(DRAFT_GRANDPARENT_DEATH_CARD_ID)
+
+    assert father.event_type == "death_father"
+    assert mother.event_type == "death_mother"
+    assert sibling.event_type == "death_sibling"
+    assert grandparent.event_type == "death_grandparent"
+    assert father.status == "draft"
+    assert mother.status == "draft"
+    assert sibling.status == "draft"
+    assert grandparent.status == "draft"
+    assert len(father.direction_rules) == 82
+    assert len(mother.direction_rules) == 78
+    assert len(sibling.direction_rules) == 84
+    assert len(grandparent.direction_rules) == 80
+
+
+def test_divorce_separation_v2_draft_card_import_counts_and_priority_tiers() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_DIVORCE_SEPARATION_CARD_ID)
+
+    assert len(card.direction_rules) == 106
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 34
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 38
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 34
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_father_death_v2_draft_card_import_counts_and_priority_tiers() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_FATHER_DEATH_CARD_ID)
+
+    assert len(card.direction_rules) == 82
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 32
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 26
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 24
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_mother_death_v2_draft_card_import_counts_and_priority_tiers_after_duplicate_collapse() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_MOTHER_DEATH_CARD_ID)
+
+    assert len(card.direction_rules) == 78
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 32
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 26
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 20
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_sibling_death_v2_draft_card_import_counts_and_priority_tiers_after_duplicate_collapse() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_SIBLING_DEATH_CARD_ID)
+
+    assert len(card.direction_rules) == 84
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 34
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 26
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 24
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_grandparent_death_v2_draft_card_import_counts_and_priority_tiers() -> None:
+    loader = FormulaCardLoader()
+    card = loader.load_card(DRAFT_GRANDPARENT_DEATH_CARD_ID)
+
+    assert len(card.direction_rules) == 80
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "golden") == 32
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "supporting") == 24
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "context") == 24
+    assert sum(1 for rule in card.direction_rules if rule.priority_tier == "ambiguity_risk") == 0
+
+
+def test_divorce_separation_v2_draft_raw_import_report_tracks_reconciliation() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_DIVORCE_SEPARATION_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 1
+    assert "Telegram Desktop" in report["source_files"][0]
+    assert report["source_files"][0].endswith(".txt")
+    assert report["source_formula_counts_header"] == {
+        "golden": 34,
+        "supporting": 38,
+        "context": 34,
+        "total": 106,
+    }
+    assert report["parsed_entries_count"] == 106
+    assert report["imported_formula_count"] == 106
+    assert report["imported_tier_counts"] == {
+        "golden": 34,
+        "supporting": 38,
+        "context": 34,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 0
+    assert report["collapsed_duplicate_entries"] == 0
+    assert report["malformed_entries_count"] == 0
+    assert report["conflicts_left_for_review"] is False
+
+
+def test_father_death_v2_draft_raw_import_report_tracks_reconciliation() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_FATHER_DEATH_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 1
+    assert "Telegram Desktop" in report["source_files"][0]
+    assert report["source_files"][0].endswith(".txt")
+    assert report["source_formula_counts_header"] == {
+        "golden": 32,
+        "supporting": 26,
+        "context": 24,
+        "total": 82,
+    }
+    assert report["parsed_entries_count"] == 82
+    assert report["imported_formula_count"] == 82
+    assert report["imported_tier_counts"] == {
+        "golden": 32,
+        "supporting": 26,
+        "context": 24,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 0
+    assert report["collapsed_duplicate_entries"] == 0
+    assert report["malformed_entries_count"] == 0
+    assert report["conflicts_left_for_review"] is False
+
+
+def test_mother_death_v2_draft_raw_import_report_tracks_clean_reimport() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_MOTHER_DEATH_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 1
+    assert "Telegram Desktop" in report["source_files"][0]
+    assert report["source_files"][0].endswith(".txt")
+    assert report["source_formula_counts_header"] == {
+        "golden": 32,
+        "supporting": 26,
+        "context": 20,
+        "total": 78,
+    }
+    assert report["parsed_entries_count"] == 78
+    assert report["imported_formula_count"] == 78
+    assert report["imported_tier_counts"] == {
+        "golden": 32,
+        "supporting": 26,
+        "context": 20,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 0
+    assert report["collapsed_duplicate_entries"] == 0
+    assert report["malformed_entries_count"] == 0
+    assert report["conflicts_left_for_review"] is False
+    assert report["conflicts_for_review"] == []
+
+
+def test_sibling_death_v2_draft_raw_import_report_tracks_duplicate_reconciliation() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_SIBLING_DEATH_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 1
+    assert "Telegram Desktop" in report["source_files"][0]
+    assert report["source_files"][0].endswith(".txt")
+    assert report["source_formula_counts_header"] == {
+        "golden": 38,
+        "supporting": 26,
+        "context": 24,
+        "total": 88,
+    }
+    assert report["parsed_entries_count"] == 88
+    assert report["imported_formula_count"] == 84
+    assert report["imported_tier_counts"] == {
+        "golden": 34,
+        "supporting": 26,
+        "context": 24,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 4
+    assert report["collapsed_duplicate_entries"] == 4
+    assert report["malformed_entries_count"] == 0
+    assert report["conflicts_left_for_review"] is False
+    assert {item["rule_id"] for item in report["duplicates_report"]} == {
+        "cusp_8_to_cusp_3",
+        "cusp_3_to_cusp_8",
+        "cusp_10_to_cusp_3",
+        "cusp_3_to_cusp_10",
+    }
+
+
+def test_grandparent_death_v2_draft_raw_import_report_tracks_clean_import() -> None:
+    raw = json.loads(
+        Path("product/astrobot_content_pack/formula_cards/rectification/RECT_GRANDPARENT_DEATH_002_DRAFT.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    report = raw["draft_import_report"]
+
+    assert len(report["source_files"]) == 1
+    assert "Telegram Desktop" in report["source_files"][0]
+    assert report["source_files"][0].endswith(".txt")
+    assert report["source_formula_counts_header"] == {
+        "golden": 32,
+        "supporting": 24,
+        "context": 24,
+        "total": 80,
+    }
+    assert report["parsed_entries_count"] == 80
+    assert report["imported_formula_count"] == 80
+    assert report["imported_tier_counts"] == {
+        "golden": 32,
+        "supporting": 24,
+        "context": 24,
+        "ambiguity_risk": 0,
+    }
+    assert report["duplicate_groups_count"] == 0
+    assert report["collapsed_duplicate_entries"] == 0
+    assert report["malformed_entries_count"] == 0
+    assert report["conflicts_left_for_review"] is False
+
+
+def test_new_parent_and_divorce_v2_draft_cards_have_literal_dsl_fields_and_list_allowed_aspects() -> None:
+    loader = FormulaCardLoader()
+    for card_id in (
+        DRAFT_DIVORCE_SEPARATION_CARD_ID,
+        DRAFT_FATHER_DEATH_CARD_ID,
+        DRAFT_MOTHER_DEATH_CARD_ID,
+        DRAFT_SIBLING_DEATH_CARD_ID,
+        DRAFT_GRANDPARENT_DEATH_CARD_ID,
+    ):
+        card = loader.load_card(card_id)
+        for rule in card.direction_rules:
+            assert rule.formula
+            assert rule.rule
+            assert rule.source
+            assert rule.target
+            assert rule.source_layer == "directed"
+            assert rule.target_layer == "natal"
+            assert isinstance(rule.allowed_aspects, list)
+            assert rule.allowed_aspects == ["conjunction", "square", "opposition", "trine", "sextile"]
+            assert rule.aspect_types == rule.allowed_aspects
+            assert rule.priority in {"golden", "supporting", "context", "ambiguity_risk"}
+
+
+def test_divorce_and_parent_death_v2_drafts_are_not_selected_without_explicit_card_id() -> None:
+    service = FormulaTestModeService()
+
+    for event_type in ("divorce_separation", "death_father", "death_mother", "death_sibling", "death_grandparent"):
+        with pytest.raises(ValueError) as exc:
+            service.evaluate(
+                event_type=event_type,
+                context={"indicators": [], "pro_result": {"method_results": {"directions": []}}},
+            )
+        assert f"no formula cards configured for event_type={event_type}" in str(exc.value)
 
 
 def test_death_close_person_card_contains_expected_core_and_planets() -> None:

@@ -4,6 +4,23 @@ import { tryParseResponseJson } from "./validation.js";
 import { extractErrorText, humanizeNonJsonError } from "./format.js";
 
     export async function parseResponseBody(res) {
+      if (res.ok) {
+        try {
+          const jsonPayload = await res.json();
+          return {
+            jsonPayload,
+            errorText: jsonPayload ? extractErrorText(jsonPayload) : "",
+          };
+        } catch (_) {
+          const text = await res.text();
+          const jsonPayload = tryParseResponseJson(text);
+          return {
+            jsonPayload,
+            errorText: jsonPayload ? extractErrorText(jsonPayload) : humanizeNonJsonError(res, text),
+          };
+        }
+      }
+
       const text = await res.text();
       const jsonPayload = tryParseResponseJson(text);
       return {
@@ -23,6 +40,9 @@ import { extractErrorText, humanizeNonJsonError } from "./format.js";
       } catch (err) {
         if (err?.name === "AbortError") {
           throw new Error("Расчёт занял слишком много времени. Попробуйте V1, меньше событий или повторите позже.");
+        }
+        if (err instanceof TypeError) {
+          throw new Error("Соединение с сервером прервалось. Попробуйте повторить позже.");
         }
         throw err;
       } finally {

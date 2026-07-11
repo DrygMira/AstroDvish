@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import io
 import httpx
+import time
+import zipfile
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 import web_ui.main as web_ui_main
@@ -14,6 +18,44 @@ class _DummyResponse:
 
     def json(self) -> dict:
         return self._payload
+
+
+def _build_multi_card_payload(events: list[dict[str, object]], card_ids: list[str]) -> dict[str, object]:
+    return {
+        "birth_date_local": "1990-05-12",
+        "latitude": 53.9006,
+        "longitude": 27.5590,
+        "timezone_name": "Europe/Moscow",
+        "asc_windows": [
+            {
+                "start_local": "1990-05-12T14:00:00",
+                "end_local": "1990-05-12T14:20:00",
+                "sign_name_en": "Libra",
+            }
+        ],
+        "events": events,
+        "settings": {
+            "formula_card_ids": card_ids,
+        },
+    }
+
+
+def _build_event(event_id: str, event_type: str, title: str) -> dict[str, object]:
+    return {
+        "event_id": event_id,
+        "event_type": event_type,
+        "title": title,
+        "date_text": "2015-05-12",
+        "date_precision": "exact",
+        "start_date": "2015-05-12",
+        "end_date": "2015-05-12",
+        "impact_level": 5,
+        "reversibility": "irreversible",
+        "life_area": "family",
+        "sequence_number": 1,
+        "notes": "",
+        "user_skipped": False,
+    }
 
 
 def test_web_ui_rectification_intervals_proxy_forwards_timezone_fields(monkeypatch) -> None:
@@ -347,6 +389,1132 @@ def test_web_ui_rectification_pro_proxy_success(monkeypatch) -> None:
     assert response.json()["mode"] == "rectification_pro"
     assert captured["path"] == "/api/v1/rectification/pro/run"
     assert captured["timeout"] == web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS
+
+
+def test_web_ui_rectification_pro_async_job_create_and_status(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_create_job(*, base_url: str, payload: dict[str, object], timeout: int) -> str:
+        captured["base_url"] = base_url
+        captured["payload"] = payload
+        captured["timeout"] = timeout
+        return "job-123"
+
+    def fake_get_job(job_id: str) -> dict[str, object] | None:
+        if job_id != "job-123":
+            return None
+        return {
+            "job_id": job_id,
+            "status": "completed",
+            "result": {"mode": "rectification_pro", "status": "completed"},
+            "error": None,
+        }
+
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    monkeypatch.setattr(web_ui_main, "_get_rectification_pro_job", fake_get_job)
+    client = TestClient(web_ui_main.app)
+
+    create_response = client.post(
+        "/api/rectification/pro/run-async",
+        json={"api_base_url": "http://127.0.0.1:8013", "payload": {"birth_date_local": "1990-05-12"}},
+    )
+    assert create_response.status_code == 202
+    assert create_response.json()["job_id"] == "job-123"
+    assert captured["timeout"] == web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS
+
+    status_response = client.get("/api/rectification/pro/jobs/job-123")
+    assert status_response.status_code == 200
+    assert status_response.json()["status"] == "completed"
+    assert status_response.json()["result"]["mode"] == "rectification_pro"
+
+
+def test_web_ui_rectification_pro_async_accepts_heavy_multi_card_payload(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_create_job(*, base_url: str, payload: dict[str, object], timeout: int) -> str:
+        captured["base_url"] = base_url
+        captured["payload"] = payload
+        captured["timeout"] = timeout
+        return "heavy-job-123"
+
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+
+    response = client.post(
+        "/api/rectification/pro/run-async",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {
+                "birth_date_local": "1990-05-12",
+                "latitude": 53.9006,
+                "longitude": 27.5590,
+                "timezone_name": "Europe/Moscow",
+                "asc_windows": [
+                    {
+                        "start_local": "1990-05-12T14:00:00",
+                        "end_local": "1990-05-12T14:20:00",
+                        "sign_name_en": "Libra",
+                    }
+                ],
+                "events": [
+                    {
+                        "event_id": f"ev{idx+1}",
+                        "event_type": "child_birth",
+                        "title": f"event {idx+1}",
+                        "date_text": f"201{idx}-05-12",
+                        "date_precision": "exact",
+                        "start_date": f"201{idx}-05-12",
+                        "end_date": f"201{idx}-05-12",
+                        "impact_level": 5,
+                        "reversibility": "irreversible",
+                        "life_area": "family",
+                        "sequence_number": idx + 1,
+                        "notes": "",
+                        "user_skipped": False,
+                    }
+                    for idx in range(5)
+                ],
+                "settings": {
+                    "formula_card_ids": [
+                        "RECT_CHILD_BIRTH_002_DRAFT",
+                        "RECT_MARRIAGE_UNION_002_DRAFT",
+                        "RECT_PROFESSION_CHANGE_002_DRAFT",
+                    ]
+                },
+            },
+        },
+    )
+
+    assert response.status_code == 202
+    assert response.json()["job_id"] == "heavy-job-123"
+    assert captured["timeout"] == web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS
+    assert len(captured["payload"]["events"]) == 5
+    assert len(captured["payload"]["settings"]["formula_card_ids"]) == 3
+
+
+def test_web_ui_rectification_pro_builds_chunked_plan_for_relevant_eight_card_payload() -> None:
+    payload = _build_multi_card_payload(
+        [
+            _build_event("ev1", "child_birth", "Child birth"),
+            _build_event("ev2", "marriage_start", "Marriage"),
+            _build_event("ev3", "profession_change", "Profession"),
+            _build_event("ev4", "divorce_separation", "Divorce"),
+            _build_event("ev5", "death_father", "Father death"),
+            _build_event("ev6", "death_mother", "Mother death"),
+            _build_event("ev7", "death_sibling", "Sibling death"),
+            _build_event("ev8", "death_grandparent", "Grandparent death"),
+        ],
+        [
+            "RECT_CHILD_BIRTH_002_DRAFT",
+            "RECT_MARRIAGE_UNION_002_DRAFT",
+            "RECT_PROFESSION_CHANGE_002_DRAFT",
+            "RECT_DIVORCE_SEPARATION_002_DRAFT",
+            "RECT_FATHER_DEATH_002_DRAFT",
+            "RECT_MOTHER_DEATH_002_DRAFT",
+            "RECT_SIBLING_DEATH_002_DRAFT",
+            "RECT_GRANDPARENT_DEATH_002_DRAFT",
+        ],
+    )
+
+    plan = web_ui_main._build_rectification_pro_chunk_plan(payload)
+
+    assert plan is not None
+    assert plan["mode"] == "chunked_async_multi_card"
+    assert plan["total_chunks"] == 8
+    assert [chunk["card_id"] for chunk in plan["chunks"]] == [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+        "RECT_DIVORCE_SEPARATION_002_DRAFT",
+        "RECT_FATHER_DEATH_002_DRAFT",
+        "RECT_MOTHER_DEATH_002_DRAFT",
+        "RECT_SIBLING_DEATH_002_DRAFT",
+        "RECT_GRANDPARENT_DEATH_002_DRAFT",
+    ]
+    assert all(len(chunk["payload"]["events"]) == 1 for chunk in plan["chunks"])
+    assert all(len(chunk["payload"]["settings"]["formula_card_ids"]) == 0 for chunk in plan["chunks"])
+    assert [chunk["payload"]["settings"]["formula_card_id"] for chunk in plan["chunks"]] == [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+        "RECT_PROFESSION_CHANGE_002_DRAFT",
+        "RECT_DIVORCE_SEPARATION_002_DRAFT",
+        "RECT_FATHER_DEATH_002_DRAFT",
+        "RECT_MOTHER_DEATH_002_DRAFT",
+        "RECT_SIBLING_DEATH_002_DRAFT",
+        "RECT_GRANDPARENT_DEATH_002_DRAFT",
+    ]
+
+
+def test_web_ui_rectification_pro_async_routes_relevant_eight_card_payload_to_chunked_job(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_create_job(
+        *,
+        base_url: str,
+        payload: dict[str, object],
+        timeout: int,
+        chunk_plan: dict[str, object] | None = None,
+    ) -> str:
+        captured["base_url"] = base_url
+        captured["payload"] = payload
+        captured["timeout"] = timeout
+        captured["chunk_plan"] = chunk_plan
+        return "chunk-job-123"
+
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+
+    response = client.post(
+        "/api/rectification/pro/run-async",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": _build_multi_card_payload(
+                [
+                    _build_event("ev1", "child_birth", "Child birth"),
+                    _build_event("ev2", "marriage_start", "Marriage"),
+                    _build_event("ev3", "profession_change", "Profession"),
+                    _build_event("ev4", "divorce_separation", "Divorce"),
+                    _build_event("ev5", "death_father", "Father death"),
+                    _build_event("ev6", "death_mother", "Mother death"),
+                    _build_event("ev7", "death_sibling", "Sibling death"),
+                    _build_event("ev8", "death_grandparent", "Grandparent death"),
+                ],
+                [
+                    "RECT_CHILD_BIRTH_002_DRAFT",
+                    "RECT_MARRIAGE_UNION_002_DRAFT",
+                    "RECT_PROFESSION_CHANGE_002_DRAFT",
+                    "RECT_DIVORCE_SEPARATION_002_DRAFT",
+                    "RECT_FATHER_DEATH_002_DRAFT",
+                    "RECT_MOTHER_DEATH_002_DRAFT",
+                    "RECT_SIBLING_DEATH_002_DRAFT",
+                    "RECT_GRANDPARENT_DEATH_002_DRAFT",
+                ],
+            ),
+        },
+    )
+
+    assert response.status_code == 202
+    body = response.json()
+    assert body["job_id"] == "chunk-job-123"
+    assert body["status"] == "queued"
+    assert body["mode"] == "chunked_async_multi_card"
+    assert body["total_chunks"] == 8
+    assert captured["timeout"] == web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS
+    assert captured["chunk_plan"] is not None
+    assert captured["chunk_plan"]["planned_chunks"] == 8
+    assert [len(chunk["payload"]["events"]) for chunk in captured["chunk_plan"]["chunks"]] == [1, 1, 1, 1, 1, 1, 1, 1]
+    detail = {"user_message": "live-СЃРµСЂРІРµСЂР°"}
+    assert captured["chunk_plan"]["total_chunks"] == 8
+
+
+def test_web_ui_rectification_pro_chunk_label_text_covers_new_death_cards() -> None:
+    assert web_ui_main._rectification_pro_chunk_label_text("death_sibling") == "смерть брата / сестры"
+    assert web_ui_main._rectification_pro_chunk_label_text("death_grandparent") == "смерть бабушки / дедушки"
+
+
+def test_web_ui_rectification_pro_builds_subchunks_for_one_event_type_over_four_events() -> None:
+    payload = _build_multi_card_payload(
+        [_build_event(f"ev{idx+1}", "child_birth", f"Child birth {idx+1}") for idx in range(9)],
+        [
+            "RECT_CHILD_BIRTH_002_DRAFT",
+            "RECT_MARRIAGE_UNION_002_DRAFT",
+            "RECT_PROFESSION_CHANGE_002_DRAFT",
+            "RECT_DIVORCE_SEPARATION_002_DRAFT",
+            "RECT_FATHER_DEATH_002_DRAFT",
+            "RECT_MOTHER_DEATH_002_DRAFT",
+        ],
+    )
+
+    plan = web_ui_main._build_rectification_pro_chunk_plan(payload)
+
+    assert plan is not None
+    assert plan["mode"] == "chunked_async_multi_card"
+    assert plan["total_chunks"] == 3
+    assert plan["planned_chunks"] == 3
+    assert plan["chunk_size"] == 3
+    assert plan["estimated_weight"] == 54
+    assert [len(chunk["payload"]["events"]) for chunk in plan["chunks"]] == [3, 3, 3]
+    assert [chunk["subchunk_index"] for chunk in plan["chunks"]] == [1, 2, 3]
+    assert all(chunk["subchunk_count"] == 3 for chunk in plan["chunks"])
+    assert all(chunk["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT" for chunk in plan["chunks"])
+
+
+def test_web_ui_rectification_pro_async_accepts_ten_event_multi_card_payload_via_chunked_job(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_create_job(
+        *,
+        base_url: str,
+        payload: dict[str, object],
+        timeout: int,
+        chunk_plan: dict[str, object] | None = None,
+    ) -> str:
+        captured["base_url"] = base_url
+        captured["payload"] = payload
+        captured["timeout"] = timeout
+        captured["chunk_plan"] = chunk_plan
+        return "chunk-job-10"
+
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+
+    response = client.post(
+        "/api/rectification/pro/run-async",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {
+                "birth_date_local": "1990-05-12",
+                "latitude": 53.9006,
+                "longitude": 27.5590,
+                "timezone_name": "Europe/Moscow",
+                "asc_windows": [
+                    {
+                        "start_local": "1990-05-12T14:00:00",
+                        "end_local": "1990-05-12T14:20:00",
+                        "sign_name_en": "Libra",
+                    }
+                ],
+                "events": [
+                    {
+                        "event_id": f"ev{idx+1}",
+                        "event_type": "child_birth",
+                        "title": f"event {idx+1}",
+                        "date_text": f"201{idx}-05-12",
+                        "date_precision": "exact",
+                        "start_date": f"201{idx}-05-12",
+                        "end_date": f"201{idx}-05-12",
+                        "impact_level": 5,
+                        "reversibility": "irreversible",
+                        "life_area": "family",
+                        "sequence_number": idx + 1,
+                        "notes": "",
+                        "user_skipped": False,
+                    }
+                    for idx in range(10)
+                ],
+                "settings": {
+                    "formula_card_ids": [
+                        "RECT_CHILD_BIRTH_002_DRAFT",
+                        "RECT_MARRIAGE_UNION_002_DRAFT",
+                        "RECT_PROFESSION_CHANGE_002_DRAFT",
+                        "RECT_DIVORCE_SEPARATION_002_DRAFT",
+                        "RECT_FATHER_DEATH_002_DRAFT",
+                        "RECT_MOTHER_DEATH_002_DRAFT",
+                    ]
+                },
+            },
+        },
+    )
+
+    assert response.status_code == 202
+    body = response.json()
+    assert body["job_id"] == "chunk-job-10"
+    assert body["status"] == "queued"
+    assert body["mode"] == "chunked_async_multi_card"
+    assert body["total_chunks"] == 4
+    assert captured["chunk_plan"] is not None
+    assert body["planned_chunks"] == 4
+    assert body["chunk_size"] == 3
+    assert captured["chunk_plan"]["planned_chunks"] == 4
+    assert captured["chunk_plan"]["chunk_size"] == 3
+    assert captured["chunk_plan"]["estimated_weight"] == 60
+    assert [len(chunk["payload"]["events"]) for chunk in captured["chunk_plan"]["chunks"]] == [3, 3, 3, 1]
+
+
+def test_web_ui_rectification_pro_async_accepts_sixteen_event_multi_card_payload_via_subchunks(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_create_job(
+        *,
+        base_url: str,
+        payload: dict[str, object],
+        timeout: int,
+        chunk_plan: dict[str, object] | None = None,
+    ) -> str:
+        captured["base_url"] = base_url
+        captured["payload"] = payload
+        captured["timeout"] = timeout
+        captured["chunk_plan"] = chunk_plan
+        return "chunk-job-16"
+
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+
+    response = client.post(
+        "/api/rectification/pro/run-async",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": _build_multi_card_payload(
+                [_build_event(f"ev{idx+1}", "child_birth", f"Child birth {idx+1}") for idx in range(16)],
+                [
+                    "RECT_CHILD_BIRTH_002_DRAFT",
+                    "RECT_MARRIAGE_UNION_002_DRAFT",
+                    "RECT_PROFESSION_CHANGE_002_DRAFT",
+                    "RECT_DIVORCE_SEPARATION_002_DRAFT",
+                    "RECT_FATHER_DEATH_002_DRAFT",
+                    "RECT_MOTHER_DEATH_002_DRAFT",
+                ],
+            ),
+        },
+    )
+
+    assert response.status_code == 202
+    body = response.json()
+    assert body["job_id"] == "chunk-job-16"
+    assert body["status"] == "queued"
+    assert body["mode"] == "chunked_async_multi_card"
+    assert body["total_chunks"] == 6
+    assert captured["chunk_plan"] is not None
+    assert body["planned_chunks"] == 6
+    assert body["chunk_size"] == 3
+    assert captured["chunk_plan"]["planned_chunks"] == 6
+    assert captured["chunk_plan"]["chunk_size"] == 3
+    assert captured["chunk_plan"]["estimated_weight"] == 96
+    assert [len(chunk["payload"]["events"]) for chunk in captured["chunk_plan"]["chunks"]] == [3, 3, 3, 3, 3, 1]
+
+
+def test_web_ui_rectification_pro_async_rejects_extreme_multi_card_payload_with_guard_details(monkeypatch) -> None:
+    def fake_create_job(
+        *,
+        base_url: str,
+        payload: dict[str, object],
+        timeout: int,
+        chunk_plan: dict[str, object] | None = None,
+    ) -> str:
+        raise AssertionError("oversized payload must be rejected before creating a job")
+
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+
+    response = client.post(
+        "/api/rectification/pro/run-async",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": _build_multi_card_payload(
+                [_build_event(f"ev{idx+1}", "child_birth", f"Child birth {idx+1}") for idx in range(25)],
+                [
+                    "RECT_CHILD_BIRTH_002_DRAFT",
+                    "RECT_MARRIAGE_UNION_002_DRAFT",
+                    "RECT_PROFESSION_CHANGE_002_DRAFT",
+                    "RECT_DIVORCE_SEPARATION_002_DRAFT",
+                    "RECT_FATHER_DEATH_002_DRAFT",
+                    "RECT_MOTHER_DEATH_002_DRAFT",
+                ],
+            ),
+        },
+    )
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["reason"] == "payload_too_heavy"
+    assert detail["guard_reason"] == "events_limit_exceeded"
+    assert detail["events_count"] == 25
+    assert detail["selected_cards_count"] == 6
+    assert detail["complexity"] == 150
+    assert detail["planned_chunks"] == 9
+    assert detail["chunk_size"] == 3
+    assert detail["candidate_count"] is None
+    assert detail["formula_count"] is None
+    assert detail["max_chunks"] == web_ui_main.RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS
+    assert detail["max_events"] == web_ui_main.RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS
+    assert detail["max_events_per_chunk"] == web_ui_main.RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK
+    assert detail["estimated_weight"] == 150
+    assert detail["guard_stage"] == "pre_job_chunk_plan"
+    assert detail["job_id"].startswith("guard-")
+    assert detail["current_limit"]["chunked_max_chunks"] == web_ui_main.RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS
+    assert "process_cpu_seconds" in detail["runtime_snapshot"]
+    assert detail["recommendation"]
+
+
+def test_web_ui_rectification_pro_async_rejects_when_another_job_is_running(monkeypatch) -> None:
+    def fake_create_job(*, base_url: str, payload: dict[str, object], timeout: int) -> str:
+        raise AssertionError("second async job must be rejected before creating a new worker")
+
+    now_ts = time.time()
+    with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+        web_ui_main._RECTIFICATION_PRO_JOBS["job-active"] = {
+            "job_id": "job-active",
+            "status": "running",
+            "result": None,
+            "error": None,
+            "created_at": now_ts,
+            "updated_at": now_ts,
+        }
+
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+    try:
+        response = client.post(
+            "/api/rectification/pro/run-async",
+            json={
+                "api_base_url": "http://127.0.0.1:8013",
+                "payload": {"birth_date_local": "1990-05-12"},
+            },
+        )
+    finally:
+        with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+            web_ui_main._RECTIFICATION_PRO_JOBS.clear()
+
+    assert response.status_code == 429
+    detail = response.json()["detail"]
+    assert detail["reason"] == "job_already_running"
+    assert detail["active_job_id"] == "job-active"
+    assert "выполняется" in detail["user_message"]
+
+
+def test_web_ui_rectification_pro_chunked_job_aggregates_results(monkeypatch) -> None:
+    payload = _build_multi_card_payload(
+        [
+            _build_event("ev1", "child_birth", "Child birth"),
+            _build_event("ev2", "marriage_start", "Marriage"),
+        ],
+        [
+            "RECT_CHILD_BIRTH_002_DRAFT",
+            "RECT_MARRIAGE_UNION_002_DRAFT",
+        ],
+    )
+    chunk_plan = {
+        "mode": "chunked_async_multi_card",
+        "total_chunks": 2,
+        "chunks": [
+            {
+                "chunk_label": "child_birth",
+                "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+                "event_types": ["child_birth"],
+                "payload": {
+                    **_build_multi_card_payload(
+                        [_build_event("ev1", "child_birth", "Child birth")],
+                        [],
+                    ),
+                    "settings": {"formula_card_id": "RECT_CHILD_BIRTH_002_DRAFT", "formula_card_ids": []},
+                },
+            },
+            {
+                "chunk_label": "marriage_union",
+                "card_id": "RECT_MARRIAGE_UNION_002_DRAFT",
+                "event_types": ["marriage_start"],
+                "payload": {
+                    **_build_multi_card_payload(
+                        [_build_event("ev2", "marriage_start", "Marriage")],
+                        [],
+                    ),
+                    "settings": {"formula_card_id": "RECT_MARRIAGE_UNION_002_DRAFT", "formula_card_ids": []},
+                },
+            },
+        ],
+    }
+
+    def fake_post(*, base_url: str, path: str, payload: dict[str, object], timeout: int) -> dict[str, object]:
+        card_id = payload["settings"]["formula_card_id"]
+        score = 80.0 if card_id == "RECT_CHILD_BIRTH_002_DRAFT" else 70.0
+        event_type = payload["events"][0]["event_type"]
+        return {
+            "formula_refinement_results": {
+                "enabled": True,
+                "card_id": card_id,
+                "card_version": "draft",
+                "formulas_count": 10,
+                "priority_counts": {"golden": 2, "supporting": 3, "context": 1, "ambiguity_risk": 0},
+                "working_time_range": {
+                    "start_local": "1990-05-12T14:00:00",
+                    "end_local": "1990-05-12T14:10:00",
+                    "candidate_count": 3,
+                    "best_candidate": "1990-05-12T14:05:00",
+                    "golden_matched_count": 2,
+                    "score": score,
+                },
+                "working_time_ranges": [
+                    {
+                        "start_local": "1990-05-12T14:00:00",
+                        "end_local": "1990-05-12T14:10:00",
+                        "candidate_count": 3,
+                        "best_candidate": "1990-05-12T14:05:00",
+                        "golden_matched_count": 2,
+                        "score": score,
+                    }
+                ],
+                "best_candidate": {
+                    "candidate_time_local": "1990-05-12T14:05:00",
+                    "candidate_time_utc": "1990-05-12T11:05:00Z",
+                    "score": score,
+                    "matched_count": 4,
+                    "rejected_count": 1,
+                    "missing_count": 1,
+                    "golden_matched_count": 2,
+                    "golden_orb_sum": 0.4,
+                    "supporting_matched_count": 1,
+                    "context_matched_count": 1,
+                    "context_score": 0.5,
+                    "supporting_bonus": 1.2,
+                    "event_confirmation_score": 3.0,
+                    "time_refinement_score": 2.0,
+                    "best_formulas": [f"{card_id}:rule"],
+                    "top_rejected_reasons": [{"reason": "orb_too_wide", "count": 1}],
+                    "unresolved_source_summary": [{"reason": "unresolved_source:moon", "count": 1}],
+                    "event_contribution_audit": [
+                        {
+                            "event_id": payload["events"][0]["event_id"],
+                            "event_type": event_type,
+                            "event_title": payload["events"][0]["title"],
+                            "event_date": payload["events"][0]["start_date"],
+                            "card_id": card_id,
+                            "score": score,
+                            "matched_count": 4,
+                            "rejected_count": 1,
+                            "missed_count": 1,
+                            "golden_matched_count": 2,
+                            "supporting_matched_count": 1,
+                            "context_matched_count": 1,
+                            "context_score": 0.5,
+                            "contribution_to_final_candidate": 100.0,
+                        }
+                    ],
+                    "card_contribution_audit": [
+                        {
+                            "card_id": card_id,
+                            "score": score,
+                            "matched_count": 4,
+                            "rejected_count": 1,
+                            "missed_count": 1,
+                            "golden_matched_count": 2,
+                            "supporting_matched_count": 1,
+                            "context_matched_count": 1,
+                            "context_score": 0.5,
+                            "contribution_to_final_candidate": 100.0,
+                            "top_rejected_reasons": [{"reason": "orb_too_wide", "count": 1}],
+                        }
+                    ],
+                    "event_type_contribution": [
+                        {
+                            "event_type": event_type,
+                            "card_ids": [card_id],
+                            "score": score,
+                            "matched_count": 4,
+                            "rejected_count": 1,
+                            "missed_count": 1,
+                            "golden_matched_count": 2,
+                            "supporting_matched_count": 1,
+                            "context_matched_count": 1,
+                            "context_score": 0.5,
+                            "contribution_to_final_candidate": 100.0,
+                        }
+                    ],
+                    "score_breakdown": {
+                        "matched_formula_score": 4.0,
+                        "orb_strength_score": 2.0,
+                        "participant_bonus_score": 1.0,
+                        "golden_formula_score": 3.0,
+                        "golden_orb_quality_score": 1.0,
+                        "supporting_formula_score": 1.0,
+                        "context_formula_score": 0.5,
+                        "supporting_bonus": 1.2,
+                        "ambiguity_penalty": 0.0,
+                        "event_confirmation_score": 3.0,
+                        "time_refinement_score": 2.0,
+                        "rejected_penalty": 0.5,
+                        "missing_penalty": 0.25,
+                    },
+                    "selection_reason": "best score in chunk",
+                    "selected_card_ids": [card_id],
+                    "multi_card_enabled": False,
+                    "selected_candidate_time": "1990-05-12T14:05:00",
+                    "chart_build_time": "1990-05-12T14:05:00",
+                    "natal_houses_time": "1990-05-12T14:05:00",
+                    "rulers_resolved_time": "1990-05-12T14:05:00",
+                    "house_elements_resolved_time": "1990-05-12T14:05:00",
+                    "directed_points_time": "1990-05-12T14:05:00",
+                    "timezone_used": "Europe/Moscow",
+                    "timezone_offset_used": "+03:00",
+                },
+            },
+            "formula_multi_card_report": {},
+            "performance_debug": {
+                "card_id": card_id,
+                "formula_count": 10,
+                "event_count": 1,
+                "candidate_count": 3,
+                "total_runtime_ms": 1200.0,
+                "slowest_stage": "formula_refinement_ms",
+                "stage_timings_ms": {"formula_refinement_ms": 700.0},
+            },
+            "confidence": {"level": "high", "time_window_minutes": 10},
+            "warnings": [],
+            "limitations": [],
+        }
+
+    now_ts = time.time()
+    with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+        web_ui_main._RECTIFICATION_PRO_JOBS["chunk-job"] = {
+            "job_id": "chunk-job",
+            "status": "queued",
+            "result": None,
+            "error": None,
+            "created_at": now_ts,
+            "updated_at": now_ts,
+        }
+
+    monkeypatch.setattr(web_ui_main, "_post_rectification_events", fake_post)
+    try:
+        web_ui_main._run_rectification_pro_job(
+            job_id="chunk-job",
+            base_url="http://127.0.0.1:8013",
+            payload=payload,
+            timeout=web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS,
+            chunk_plan=chunk_plan,
+        )
+        job = web_ui_main._get_rectification_pro_job("chunk-job")
+    finally:
+        with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+            web_ui_main._RECTIFICATION_PRO_JOBS.clear()
+
+    assert job is not None
+    assert job["status"] == "completed"
+    assert job["total_chunks"] == 2
+    assert job["completed_chunks"] == 2
+    assert job["progress_percent"] == 100
+    result = job["result"]
+    assert result["formula_multi_card_report"]["enabled"] is True
+    assert result["formula_multi_card_report"]["selected_card_ids"] == [
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+    ]
+    assert len(result["formula_multi_card_report"]["chunks"]) == 2
+    assert {item["card_id"] for item in result["formula_multi_card_report"]["card_contribution_audit"]} == {
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+    }
+    assert {item["event_type"] for item in result["formula_multi_card_report"]["event_type_contribution"]} == {
+        "child_birth",
+        "marriage_start",
+    }
+    event_metrics = result["formula_multi_card_report"]["event_contribution_audit"][0]
+    assert "best_orb" in event_metrics
+    assert "avg_orb" in event_metrics
+    assert "score_contribution" in event_metrics
+    assert "affected_best_candidate" in event_metrics
+    assert event_metrics["card_id"] in {
+        "RECT_CHILD_BIRTH_002_DRAFT",
+        "RECT_MARRIAGE_UNION_002_DRAFT",
+    }
+    assert set((event_metrics.get("tier_summary") or {}).keys()) == {"golden", "supporting", "context"}
+    expert_tables = result["formula_multi_card_report"].get("expert_tables")
+    assert expert_tables
+    assert {
+        "Итог",
+        "Кандидаты времени",
+        "Совпавшие формулы",
+        "Отклонённые формулы",
+        "Не найденные формулы",
+        "Орбис до 2°",
+        "По карточкам",
+        "Блоки расчёта",
+        "Спорные зоны",
+        "Эффективность вопросов",
+    }.issubset({item["title"] for item in expert_tables})
+    question_efficiency = result["formula_multi_card_report"]["question_efficiency_audit"][0]
+    assert question_efficiency["recommendation_code"] in {"keep", "merge", "supplemental_block", "review_weak"}
+    assert question_efficiency["action_policy"] == "advisory_only"
+    excel_export = result["formula_multi_card_report"]["expert_excel_export"]
+    assert excel_export["action_policy"] == "advisory_only"
+    assert excel_export["sheets"][0]["sheet_name"] == "Эффективность вопросов"
+    assert excel_export["sheets"][0]["rows"]
+    assert {
+        "Итог",
+        "Кандидаты времени",
+        "Совпавшие формулы",
+        "Отклонённые формулы",
+        "Не найденные формулы",
+        "Орбис до 2°",
+        "По карточкам",
+        "Блоки расчёта",
+        "Спорные зоны",
+        "Эффективность вопросов",
+    }.issubset({sheet["sheet_name"] for sheet in excel_export["sheets"]})
+
+
+def test_web_ui_rectification_pro_export_excel_endpoint_returns_xlsx() -> None:
+    payload = {
+        "filename": "astrodvish-v2-combined-report.xlsx",
+        "sheets": [
+            {
+                "sheet_name": "Итог",
+                "columns": ["ID карточки", "Статус"],
+                "rows": [{"ID карточки": "RECT_CHILD_BIRTH_002_DRAFT", "Статус": "готово"}],
+            },
+            {
+                "sheet_name": "Эффективность вопросов",
+                "columns": ["Тип события", "Вклад в score"],
+                "rows": [{"Тип события": "child_birth", "Вклад в score": 96.4}],
+            },
+        ],
+    }
+
+    with TestClient(web_ui_main.app) as client:
+        response = client.post("/api/rectification/pro/export-excel", json=payload)
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    assert "attachment;" in response.headers["content-disposition"]
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        workbook_xml = archive.read("xl/workbook.xml").decode("utf-8")
+        first_sheet_xml = archive.read("xl/worksheets/sheet1.xml").decode("utf-8")
+    assert "Итог" in workbook_xml
+    assert "Эффективность вопросов" in workbook_xml
+    assert "RECT_CHILD_BIRTH_002_DRAFT" in first_sheet_xml
+
+
+def test_web_ui_rectification_pro_chunked_job_merges_repeated_card_subchunks(monkeypatch) -> None:
+    payload = _build_multi_card_payload(
+        [
+            _build_event("ev1", "child_birth", "Child birth 1"),
+            _build_event("ev2", "child_birth", "Child birth 2"),
+            _build_event("ev3", "child_birth", "Child birth 3"),
+            _build_event("ev4", "child_birth", "Child birth 4"),
+            _build_event("ev5", "marriage_start", "Marriage"),
+        ],
+        [
+            "RECT_CHILD_BIRTH_002_DRAFT",
+            "RECT_MARRIAGE_UNION_002_DRAFT",
+        ],
+    )
+    chunk_plan = {
+        "mode": "chunked_async_multi_card",
+        "selected_card_ids": [
+            "RECT_CHILD_BIRTH_002_DRAFT",
+            "RECT_MARRIAGE_UNION_002_DRAFT",
+        ],
+        "total_chunks": 3,
+        "planned_chunks": 3,
+        "chunks": [
+            {
+                "chunk_label": "child_birth",
+                "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+                "event_types": ["child_birth"],
+                "subchunk_index": 1,
+                "subchunk_count": 2,
+                "payload": {
+                    **_build_multi_card_payload(
+                        [
+                            _build_event("ev1", "child_birth", "Child birth 1"),
+                            _build_event("ev2", "child_birth", "Child birth 2"),
+                        ],
+                        [],
+                    ),
+                    "settings": {"formula_card_id": "RECT_CHILD_BIRTH_002_DRAFT", "formula_card_ids": []},
+                },
+            },
+            {
+                "chunk_label": "child_birth",
+                "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+                "event_types": ["child_birth"],
+                "subchunk_index": 2,
+                "subchunk_count": 2,
+                "payload": {
+                    **_build_multi_card_payload(
+                        [
+                            _build_event("ev3", "child_birth", "Child birth 3"),
+                            _build_event("ev4", "child_birth", "Child birth 4"),
+                        ],
+                        [],
+                    ),
+                    "settings": {"formula_card_id": "RECT_CHILD_BIRTH_002_DRAFT", "formula_card_ids": []},
+                },
+            },
+            {
+                "chunk_label": "marriage_union",
+                "card_id": "RECT_MARRIAGE_UNION_002_DRAFT",
+                "event_types": ["marriage_start"],
+                "subchunk_index": 1,
+                "subchunk_count": 1,
+                "payload": {
+                    **_build_multi_card_payload(
+                        [_build_event("ev5", "marriage_start", "Marriage")],
+                        [],
+                    ),
+                    "settings": {"formula_card_id": "RECT_MARRIAGE_UNION_002_DRAFT", "formula_card_ids": []},
+                },
+            },
+        ],
+    }
+
+    def fake_post(*, base_url: str, path: str, payload: dict[str, object], timeout: int) -> dict[str, object]:
+        card_id = payload["settings"]["formula_card_id"]
+        event_type = payload["events"][0]["event_type"]
+        event_count = len(payload["events"])
+        score = 40.0 if card_id == "RECT_CHILD_BIRTH_002_DRAFT" else 25.0
+        return {
+            "formula_refinement_results": {
+                "enabled": True,
+                "card_id": card_id,
+                "card_version": "draft",
+                "formulas_count": 10 if card_id == "RECT_CHILD_BIRTH_002_DRAFT" else 8,
+                "priority_counts": {"golden": 2, "supporting": 3, "context": 1, "ambiguity_risk": 0},
+                "working_time_range": {
+                    "start_local": "1990-05-12T14:00:00",
+                    "end_local": "1990-05-12T14:10:00",
+                    "candidate_count": 3,
+                    "best_candidate": "1990-05-12T14:05:00",
+                    "golden_matched_count": 2,
+                    "score": score,
+                },
+                "working_time_ranges": [],
+                "best_candidate": {
+                    "candidate_time_local": "1990-05-12T14:05:00",
+                    "score": score,
+                    "matched_count": event_count * 2,
+                    "rejected_count": event_count,
+                    "missing_count": 0,
+                    "golden_matched_count": event_count,
+                    "golden_orb_sum": 0.4,
+                    "supporting_matched_count": event_count,
+                    "context_matched_count": 0,
+                    "context_score": 0.25,
+                    "supporting_bonus": 1.0,
+                    "event_confirmation_score": 2.0,
+                    "time_refinement_score": 1.5,
+                    "best_formulas": [f"{card_id}:rule"],
+                    "top_rejected_reasons": [{"reason": "orb_too_wide", "count": event_count}],
+                    "unresolved_source_summary": [],
+                    "event_contribution_audit": [
+                        {
+                            "event_id": event["event_id"],
+                            "event_type": event["event_type"],
+                            "event_title": event["title"],
+                            "event_date": event["start_date"],
+                            "card_id": card_id,
+                            "score": score / event_count,
+                            "matched_count": 2,
+                            "rejected_count": 1,
+                            "missed_count": 0,
+                            "golden_matched_count": 1,
+                            "supporting_matched_count": 1,
+                            "context_matched_count": 0,
+                            "context_score": 0.0,
+                        }
+                        for event in payload["events"]
+                    ],
+                    "card_contribution_audit": [
+                        {
+                            "card_id": card_id,
+                            "score": score,
+                            "matched_count": event_count * 2,
+                            "rejected_count": event_count,
+                            "missed_count": 0,
+                            "golden_matched_count": event_count,
+                            "supporting_matched_count": event_count,
+                            "context_matched_count": 0,
+                            "context_score": 0.25,
+                            "top_rejected_reasons": [{"reason": "orb_too_wide", "count": event_count}],
+                        }
+                    ],
+                    "event_type_contribution": [
+                        {
+                            "event_type": event_type,
+                            "card_ids": [card_id],
+                            "score": score,
+                            "matched_count": event_count * 2,
+                            "rejected_count": event_count,
+                            "missed_count": 0,
+                            "golden_matched_count": event_count,
+                            "supporting_matched_count": event_count,
+                            "context_matched_count": 0,
+                            "context_score": 0.25,
+                        }
+                    ],
+                    "score_breakdown": {
+                        "matched_formula_score": score,
+                        "orb_strength_score": 2.0,
+                        "participant_bonus_score": 1.0,
+                        "golden_formula_score": 3.0,
+                        "golden_orb_quality_score": 1.0,
+                        "supporting_formula_score": 1.0,
+                        "context_formula_score": 0.25,
+                        "supporting_bonus": 1.0,
+                        "ambiguity_penalty": 0.0,
+                        "event_confirmation_score": 2.0,
+                        "time_refinement_score": 1.5,
+                        "rejected_penalty": 0.0,
+                        "missing_penalty": 0.0,
+                    },
+                    "selected_card_ids": [card_id],
+                    "timezone_used": "Europe/Moscow",
+                    "timezone_offset_used": "+03:00",
+                },
+            },
+            "formula_multi_card_report": {},
+            "performance_debug": {
+                "card_id": card_id,
+                "formula_count": 10 if card_id == "RECT_CHILD_BIRTH_002_DRAFT" else 8,
+                "event_count": event_count,
+                "candidate_count": 3,
+                "total_runtime_ms": 1200.0,
+                "slowest_stage": "formula_refinement_ms",
+                "stage_timings_ms": {"formula_refinement_ms": 700.0},
+            },
+            "confidence": {"level": "high", "time_window_minutes": 10},
+            "warnings": [],
+            "limitations": [],
+        }
+
+    now_ts = time.time()
+    with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+        web_ui_main._RECTIFICATION_PRO_JOBS["chunk-job-sub"] = {
+            "job_id": "chunk-job-sub",
+            "status": "queued",
+            "result": None,
+            "error": None,
+            "created_at": now_ts,
+            "updated_at": now_ts,
+        }
+
+    monkeypatch.setattr(web_ui_main, "_post_rectification_events", fake_post)
+    try:
+        web_ui_main._run_rectification_pro_job(
+            job_id="chunk-job-sub",
+            base_url="http://127.0.0.1:8013",
+            payload=payload,
+            timeout=web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS,
+            chunk_plan=chunk_plan,
+        )
+        job = web_ui_main._get_rectification_pro_job("chunk-job-sub")
+    finally:
+        with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+            web_ui_main._RECTIFICATION_PRO_JOBS.clear()
+
+    assert job is not None
+    result = job["result"]
+    card_audit = result["formula_multi_card_report"]["card_contribution_audit"]
+    assert len(card_audit) == 2
+    child_card = next(item for item in card_audit if item["card_id"] == "RECT_CHILD_BIRTH_002_DRAFT")
+    assert child_card["matched_count"] == 8
+    assert child_card["rejected_count"] == 4
+    assert result["formula_refinement_results"]["formulas_count"] == 18
+    assert len(result["formula_multi_card_report"]["chunks"]) == 3
+
+
+def test_web_ui_rectification_pro_chunked_job_keeps_partial_results_on_failure(monkeypatch) -> None:
+    payload = _build_multi_card_payload(
+        [
+            _build_event("ev1", "child_birth", "Child birth"),
+            _build_event("ev2", "marriage_start", "Marriage"),
+        ],
+        [
+            "RECT_CHILD_BIRTH_002_DRAFT",
+            "RECT_MARRIAGE_UNION_002_DRAFT",
+        ],
+    )
+    chunk_plan = {
+        "mode": "chunked_async_multi_card",
+        "total_chunks": 2,
+        "chunks": [
+            {
+                "chunk_label": "child_birth",
+                "card_id": "RECT_CHILD_BIRTH_002_DRAFT",
+                "event_types": ["child_birth"],
+                "payload": {
+                    **_build_multi_card_payload(
+                        [_build_event("ev1", "child_birth", "Child birth")],
+                        [],
+                    ),
+                    "settings": {"formula_card_id": "RECT_CHILD_BIRTH_002_DRAFT", "formula_card_ids": []},
+                },
+            },
+            {
+                "chunk_label": "marriage_union",
+                "card_id": "RECT_MARRIAGE_UNION_002_DRAFT",
+                "event_types": ["marriage_start"],
+                "payload": {
+                    **_build_multi_card_payload(
+                        [_build_event("ev2", "marriage_start", "Marriage")],
+                        [],
+                    ),
+                    "settings": {"formula_card_id": "RECT_MARRIAGE_UNION_002_DRAFT", "formula_card_ids": []},
+                },
+            },
+        ],
+    }
+
+    def fake_post(*, base_url: str, path: str, payload: dict[str, object], timeout: int) -> dict[str, object]:
+        card_id = payload["settings"]["formula_card_id"]
+        if card_id == "RECT_MARRIAGE_UNION_002_DRAFT":
+            raise HTTPException(
+                status_code=504,
+                detail={
+                    "reason": "upstream_timeout",
+                    "user_message": "Расчёт занял слишком много времени. Попробуйте позже.",
+                },
+            )
+        return {
+            "formula_refinement_results": {
+                "enabled": True,
+                "card_id": card_id,
+                "card_version": "draft",
+                "formulas_count": 10,
+                "priority_counts": {"golden": 2, "supporting": 3, "context": 1, "ambiguity_risk": 0},
+                "working_time_range": {
+                    "start_local": "1990-05-12T14:00:00",
+                    "end_local": "1990-05-12T14:10:00",
+                    "candidate_count": 3,
+                    "best_candidate": "1990-05-12T14:05:00",
+                    "golden_matched_count": 2,
+                    "score": 80.0,
+                },
+                "working_time_ranges": [],
+                "best_candidate": {
+                    "candidate_time_local": "1990-05-12T14:05:00",
+                    "score": 80.0,
+                    "matched_count": 4,
+                    "rejected_count": 1,
+                    "missing_count": 1,
+                    "golden_matched_count": 2,
+                    "supporting_matched_count": 1,
+                    "context_matched_count": 1,
+                    "context_score": 0.5,
+                    "event_contribution_audit": [],
+                    "card_contribution_audit": [],
+                    "event_type_contribution": [],
+                    "score_breakdown": {},
+                },
+            },
+            "formula_multi_card_report": {},
+            "performance_debug": {"card_id": card_id, "formula_count": 10, "event_count": 1, "candidate_count": 3},
+            "confidence": {"level": "high"},
+            "warnings": [],
+            "limitations": [],
+        }
+
+    now_ts = time.time()
+    with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+        web_ui_main._RECTIFICATION_PRO_JOBS["chunk-job"] = {
+            "job_id": "chunk-job",
+            "status": "queued",
+            "result": None,
+            "error": None,
+            "created_at": now_ts,
+            "updated_at": now_ts,
+        }
+
+    monkeypatch.setattr(web_ui_main, "_post_rectification_events", fake_post)
+    try:
+        web_ui_main._run_rectification_pro_job(
+            job_id="chunk-job",
+            base_url="http://127.0.0.1:8013",
+            payload=payload,
+            timeout=web_ui_main.RECTIFICATION_PRO_TIMEOUT_SECONDS,
+            chunk_plan=chunk_plan,
+        )
+        job = web_ui_main._get_rectification_pro_job("chunk-job")
+    finally:
+        with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+            web_ui_main._RECTIFICATION_PRO_JOBS.clear()
+
+    assert job is not None
+    assert job["status"] == "failed"
+    assert job["completed_chunks"] == 1
+    assert job["failed_chunks"] == 1
+    assert job["current_chunk_label"] == "marriage_union"
+    assert len(job["partial_results"]) == 1
+    assert job["error"]["detail"]["reason"] == "upstream_timeout"
 
 
 def test_web_ui_rectification_pro_proxy_preserves_backend_422(monkeypatch) -> None:

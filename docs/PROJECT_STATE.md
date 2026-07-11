@@ -10,6 +10,29 @@ State owner note:
 ## 1. Current focus
 AstroDvish / Astra Engine / Pro-ректификация / formula-driven refinement.
 
+## 1a. Current V2 draft card expansion
+- imported new explicit-only V2 draft cards:
+  - `RECT_DIVORCE_SEPARATION_002_DRAFT`
+  - `RECT_FATHER_DEATH_002_DRAFT`
+  - `RECT_MOTHER_DEATH_002_DRAFT`
+  - `RECT_SIBLING_DEATH_002_DRAFT`
+  - `RECT_GRANDPARENT_DEATH_002_DRAFT`
+- latest local V2 import refresh:
+  - `RECT_MOTHER_DEATH_002_DRAFT` re-imported from revised source pack with clean `78/78` import and no remaining tier conflicts
+  - `RECT_SIBLING_DEATH_002_DRAFT` added for `death_sibling`
+  - `RECT_GRANDPARENT_DEATH_002_DRAFT` added for `death_grandparent`
+- repo canonical event bindings used:
+  - `divorce_separation`
+  - `death_father`
+  - `death_mother`
+  - `death_sibling`
+  - `death_grandparent`
+- requested naming `father_death` / `mother_death` was mapped to existing repo canonical types `death_father` / `death_mother`
+- production defaults unchanged:
+  - `RECT_DIVORCE_BREAKUP_001` remains legacy production/default path
+  - `RECT_DEATH_CLOSE_PERSON_001` remains legacy production/default path
+- mother-death draft import has 4 repeated rule ids across tiers; card keeps the stronger tier, imports `78` unique rules, and records all 4 conflicts for expert review
+
 ## 2. Latest stable deploy
 - branch: `codex/shared-birth-context-ui`
 - commit: `be3cebf`
@@ -39,6 +62,170 @@ AstroDvish / Astra Engine / Pro-ректификация / formula-driven refine
 
 ## 4. Current unresolved issue
 Методология подтверждена Екатериной: системе не нужно попадать ровно в `22:59:45`, если лучший кандидат лежит внутри валидного экспертного диапазона. Текущий лучший кандидат: `22:57:00`; ручной эталон: `22:59:45`; оба лежат внутри рабочего диапазона. Следующий слой: поддержка нескольких рабочих диапазонов в одном Asc-интервале.
+
+## 4a. Latest manual-path findings
+- Ekaterina reported three manual live-path issues:
+  - direct rectification timezone showed `-1 hour`
+  - profession V2 report looked unchanged
+  - multi-card V2 looked unavailable after full questionnaire
+- Local full manual browser investigation found the direct timezone bug was real in UI:
+  - `updateTimezoneUiState()` used chart `datetimeLocal` / wizard date instead of direct rectification birth date
+  - this made auto offset depend on the wrong date/DST context
+- Fix applied locally:
+  - direct rectification auto timezone now resolves against `rdBirthDate` / `rectBirthDate` before shared fallback
+  - chart `birthDateTimeLocal` is used only when its calendar date matches the active birth date
+- Local manual browser proof after the fix:
+  - direct rectification timezone for `Warsaw`, `1990-01-15` now shows `Europe/Warsaw`, `+01:00`
+  - explicit profession V2 report renders with the detailed validation table on the manual path
+  - multi-card V2 manual path renders after a long run; UI warns that it may take up to 2 minutes
+- Browser regression smoke added:
+  - `scripts/browser_smoke_manual_v2.py`
+  - covers direct rectification, Stage 1 final, Stage 2 with `child_birth + marriage_start + profession_change`, explicit profession report, multi-card render, reset
+- Multi-card UX improvement added locally:
+  - visible status `Multi-card run in progress. V2 comparison may take up to 2 minutes.`
+- Remaining blocker for this exact task:
+  - live host `185.250.150.192` was unreachable from the current environment during verification, so fresh live proof and deploy were not completed in this session
+
+## 4b. Live incident fix (2026-06-11)
+- live host in use: `45.133.18.90`
+- deployed urgent hotfix with server rollback backup:
+  - `/opt/astrodvish_backups/live_incident_20260611_2212.tgz`
+- root causes confirmed:
+  - Stage 2 safe-finalized at `10` events because `MAX_EVENTS = 10`
+  - Stage 2 could stop too early because `MAX_STEPS = 14` while the question bank is longer
+  - heavy multi-card Pro runs could drive live API into OOM/restart and then surface as temporary Pro unavailability
+  - Pro polling UI reset the lower overlay timer every ~2-3 seconds
+- fix deployed:
+  - Stage 2 limits raised to allow long manual questionnaires
+  - all work/profession questions stay in the live Stage 2 flow
+  - heavy multi-card live payloads are rejected early with controlled `422 payload_too_heavy`
+  - async Pro polling updates overlay text without resetting elapsed timer
+  - Pro run button is locked while a run is in progress
+- live proof after deploy:
+  - `/health` = `200`
+  - Stage 2 after event `10` still returns `ask_question`
+  - full Stage 2 live flow exposes `21` questions including:
+    - `job_start`
+    - `profession_change`
+    - `education_work_start`
+    - `profession_lifestyle_change`
+  - heavy `5 events x 3 cards` multi-card request returns controlled `422` with `reason=payload_too_heavy`
+  - no new API restart, no new kernel OOM after the guarded heavy request
+- current remaining risk:
+  - large expert multi-card runs are now intentionally limited on live; true heavy async/polling processing still needs a later architecture task if expert wants big event sets online
+
+## 4c. Multi-card V2 heavy async unblock (2026-06-12)
+- user-facing issue:
+  - live UI showed `Этот multi-card V2 запуск сейчас слишком тяжёлый для live-режима...`
+  - this came from the temporary hard guard added after the OOM incident
+- fix:
+  - frontend no longer blocks multi-card V2 before request submission
+  - `/api/rectification/pro/run-async` now accepts heavy multi-card payloads and creates a polling job
+  - synchronous `/api/rectification/pro/run` keeps the protective heavy-payload guard
+- deploy:
+  - live target: `45.133.18.90`
+  - project path: `/opt/astrodvish`
+  - updated runtime files:
+    - `web_ui/main.py`
+    - `web_ui/static/js/pro.js`
+    - `web_ui/static/js/format.js`
+  - Docker services rebuilt/restarted through `docker compose up -d --build astrodvish-web-ui`
+  - rollback backup:
+    - `/opt/astrodvish_backups/pre_multicard_async_unblock_.tgz`
+- verification:
+  - focused web UI proxy/confirmation tests: `45 passed`
+  - full pytest reached final result `352 passed, 1 xfailed`; shell wrapper timed out after the final summary line at about `6m08s`
+  - public `/health = 200`
+  - served live `static/js/pro.js` contains `/api/rectification/pro/run-async`
+  - live heavy multi-card public path, `5 events x 3 V2 cards`:
+    - `POST /api/rectification/pro/run-async = 202`
+    - polling reached `completed`
+    - backend `/api/v1/rectification/pro/run = 200`
+    - backend duration about `32287ms`
+- remaining risk:
+  - async delivery prevents browser/proxy timeout UX, but backend computation can still be expensive
+  - if expert payloads become much larger, concurrency limiting or a persistent job queue is still recommended
+
+## 4d. Multi-card V2 OOM guard follow-up (2026-06-12)
+- live host in use: `45.133.18.90`
+- root cause for `Pro service temporarily unavailable` after async unblock:
+  - oversized real multi-card V2 payload reached backend API
+  - API Python process grew to about `3.3GiB RSS`
+  - Linux OOM killer terminated the API process
+  - web_ui then returned controlled upstream unavailable message
+- operational fix:
+  - enabled `4G` swap on server and persisted it in `/etc/fstab`
+  - stopped the runaway live job by restarting `astrodvish-api` and `astrodvish-web-ui`
+- code fix:
+  - async `/api/rectification/pro/run-async` now has separate larger-but-safe guard:
+    - `RECTIFICATION_PRO_ASYNC_MULTI_CARD_MAX_EVENTS=8`
+    - `RECTIFICATION_PRO_ASYNC_MULTI_CARD_COMPLEXITY_LIMIT=24`
+  - tested `5 events x 3 V2 cards` stays allowed
+  - oversized `10 events x 6 V2 cards` is rejected before backend with controlled `422 payload_too_heavy`
+- live proof:
+  - `/health = 200`
+  - `5x3` async job reached `completed`
+  - `10x6` async request returned controlled `422`
+  - API after deploy: `RestartCount=0`, `OOMKilled=false`
+- remaining risk:
+  - very large all-card expert runs still need chunked/server-side job architecture or a larger server
+  - current live policy is safe bounded execution, not unlimited multi-card processing
+
+## 4e. Local follow-up after intermittent Pro failures (2026-06-15)
+- new user-visible symptoms:
+  - browser sometimes showed raw `Failed to fetch`
+  - Pro UI sometimes showed controlled `Сервис Pro-ректификации временно недоступен`
+- investigation result:
+  - live server `45.133.18.90` was healthy during inspection:
+    - `astrodvish-api` and `astrodvish-web-ui` uptime about `2 days`
+    - `RestartCount=0`
+    - no fresh OOM entries in `dmesg`
+  - raw `Failed to fetch` came from frontend code path:
+    - `web_ui/static/js/api.js::fetchWithTimeout()` re-threw browser `TypeError` unchanged
+  - async Pro path still had no concurrency guard:
+    - live accepted multiple heavy `/api/rectification/pro/run-async` jobs in parallel
+    - this keeps the system vulnerable to retry storms and overlapping expert runs
+- local fix prepared, not deployed in this session:
+  - browser-level fetch failures are now humanized into a controlled message
+  - async Pro create path now rejects a second active heavy job with `429 job_already_running`
+  - local verification: `355 passed, 1 xfailed`
+
+## 4f. Chunked V2 combined report prepared locally (2026-06-15)
+- goal:
+  - keep one expert-visible combined V2 report
+  - avoid one giant live multi-card payload
+- local implementation:
+  - heavy explicit multi-card V2 async runs can switch into `chunked_async_multi_card`
+  - chunk strategy: `1 explicit V2 card x relevant Stage 2 events`
+  - current supported expert chunks:
+    - `child_birth`
+    - `marriage_union`
+    - `profession_change`
+    - `divorce_separation`
+    - `death_father`
+    - `death_mother`
+  - chunks run sequentially inside existing web_ui async job storage
+  - completed chunks are preserved in job state as partial results
+  - final combined report is aggregated from completed chunk summaries, without changing formula math or production defaults
+- progress/status:
+  - async job now exposes:
+    - `total_chunks`
+    - `completed_chunks`
+    - `current_chunk_label`
+    - `failed_chunks`
+    - `progress_percent`
+    - `user_message`
+  - frontend polling now shows chunk progress instead of only elapsed time
+- guards:
+  - existing `payload_too_heavy` guard remains
+  - oversized requests that are still unsafe even after chunking are rejected with controlled `422`
+  - second heavy async job still gets controlled `429 job_already_running`
+- local verification:
+  - focused web_ui proxy + Pro UI + cleanup/timezone suite: `78 passed`
+  - focused rectification Pro endpoint suite: `38 passed`
+- remaining step:
+  - no deploy yet in this session
+  - next step is live deploy to `45.133.18.90` and public proof for the 6-card combined report path
 
 ## 5. Current reference case
 - birth: `1978-03-19 22:59:45 GMT+05`
