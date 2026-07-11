@@ -1241,3 +1241,30 @@ Every future report must include:
 - next step:
   - deploy the tiny UI reset hotfix
   - rerun final live browser smoke for multi-card expert mode
+
+## 43. Repo/live reconciliation and V2 death-cards verification (2026-07-12)
+- A. what changed:
+  - локальный git-репозиторий и этот документ отставали от live: 5 death/divorce V2 draft cards и chunked combined report уже были задеплоены `2026-07-05`, но так и не были закоммичены
+  - зафиксировано двумя коммитами на ветке `codex/shared-birth-context-ui`:
+    - `5a2826b` — death/divorce V2 draft cards + chunked combined report + question-efficiency Excel-лист
+    - `3f6d3e8` — удаление 81 закоммиченного снапшота из `tests/_tmp`, игнор `tests/_tmp/`, `*.pem`, `deploy/`
+  - локальная гигиена: убраны битые строки `OPENAI_API_KEY _BACKUP_*` из `.env`
+- B. tests:
+  - полный `pytest`: `374 passed, 1 xfailed` (до и после чистки `tests/_tmp` — идентично)
+- C. live/proof (`45.133.18.90`, `/opt/astrodvish`, Docker):
+  - сверка 21 ключевого файла (код + 8 карточек + `docker-compose.yml`): server == локальный HEAD побайтово (с нормализацией CRLF/LF), расхождений `0`
+  - контейнеры `astrodvish-api` / `astrodvish-web-ui`: `healthy`, uptime `6d`, `RestartCount=0`, `OOMKilled=false`
+  - health: api `:8013 = 200`, web `:80 = 200`, web `:8014 = 200`
+  - live chunked combined report `8 событий x 8 V2 cards`: `mode=chunked_async_multi_card`, `8/8` блоков `completed`, `failed_chunks=0`, все 8 карточек во вкладе, best candidate внутри окна, `export-excel = 200` (валидный xlsx)
+- D. production card status:
+  - live default `child_birth` (без explicit card) по-прежнему `RECT_CHILD_BIRTH_001`
+- E. draft card status:
+  - все 8 `*_002_DRAFT` помечены `status=draft`, в production по `event_type` не попадают (проверено загрузчиком локально и default-путём на live)
+- F. risks:
+  - потолок combined report: `24 события` / `36 chunks`, сверх — контролируемый `422 payload_too_heavy`, не OOM
+  - `death_*`, `divorce_separation`, `profession_change` не имеют production-карточки (только draft) — работают лишь через explicit / multi-card
+- G. ready for deploy / deploy status:
+  - отдельная пересборка НЕ выполнялась и не требуется: live уже содержит ровно закоммиченный код (деплой был `2026-07-05`)
+  - rollback-бэкапы уже на сервере: `/opt/astrodvish_backups/pre_v2_death_cards_20260705_181302.tgz`, `pre_v2_death_cards_ui_hotfix_20260705_1820.tgz`
+- next step:
+  - при желании — экспертный live-ретест Екатериной combined report по цепочке событий и Excel-выгрузки
