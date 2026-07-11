@@ -32,3 +32,10 @@ htmlcov/
 # Local ephemeris data (keep directory placeholder only)
 ephe/*
 !ephe/.gitkeep
+
+# Временные снапшоты деплоев и pytest-артефакты — не коммитить
+tests/_tmp/
+
+# Приватные ключи и локальные deploy-артефакты — никогда не коммитить
+*.pem
+deploy/
