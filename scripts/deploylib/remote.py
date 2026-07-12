@@ -69,3 +69,48 @@ def write_text(client: "paramiko.SSHClient", remote: str, content: str) -> None:
 def q(path: str) -> str:
     """Безопасное экранирование пути для удалённого bash."""
     return shlex.quote(path)
+
+
+LEFTOVER_FILES = ["main.py", "api.js"]  # хвосты в корне от прежних ручных копирований
+
+
+def backup(client, remote_path: str, backups_dir: str, tag: str, ts: str) -> str:
+    """Снять tar-бэкап текущего live (без ephe и без каталога бэкапов). Вернуть путь бэкапа."""
+    run(client, f"mkdir -p {q(backups_dir)}")
+    backup_path = f"{backups_dir}/predeploy_{ts}_{tag}.tgz"
+    base = Path(remote_path).name
+    parent = str(Path(remote_path).parent)
+    run(
+        client,
+        f"tar czf {q(backup_path)} -C {q(parent)} "
+        f"--exclude={q(base + '/ephe')} {q(base)}",
+        timeout=600,
+    )
+    return backup_path
+
+
+def upload_and_extract(client, local_tar: Path, remote_path: str) -> None:
+    remote_tar = f"/tmp/{local_tar.name}"
+    put(client, local_tar, remote_tar)
+    run(client, f"mkdir -p {q(remote_path)}")
+    run(client, f"tar xzf {q(remote_tar)} -C {q(remote_path)}", timeout=600)
+    run(client, f"rm -f {q(remote_tar)}", check=False)
+
+
+def remove_leftovers(client, remote_path: str, names: list[str] = LEFTOVER_FILES) -> list[str]:
+    removed = []
+    for name in names:
+        target = f"{remote_path}/{name}"
+        rc = run(client, f"test -f {q(target)} && rm -f {q(target)} && echo removed || echo absent")
+        if "removed" in rc:
+            removed.append(name)
+    return removed
+
+
+def write_stamp(client, remote_path: str, stamp_json: str, patch_text: str | None) -> None:
+    write_text(client, f"{remote_path}/DEPLOYED.json", stamp_json)
+    patch_path = f"{remote_path}/DEPLOYED_uncommitted.patch"
+    if patch_text:
+        write_text(client, patch_path, patch_text)
+    else:
+        run(client, f"rm -f {q(patch_path)}", check=False)
