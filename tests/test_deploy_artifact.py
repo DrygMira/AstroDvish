@@ -37,3 +37,16 @@ def test_list_includes_tracked_and_new_but_not_ignored(repo: Path) -> None:
     assert "ignored/junk.txt" not in files
     assert "trace.log" not in files
     assert files == sorted(files)  # отсортировано и без дублей
+
+
+def test_is_dirty_reflects_working_tree(repo: Path) -> None:
+    assert artifact.is_dirty(repo) is False
+    (repo / "keep.py").write_text("x = 2\n", encoding="utf-8")
+    assert artifact.is_dirty(repo) is True
+
+
+def test_commit_info_has_sha_short_branch(repo: Path) -> None:
+    info = artifact.commit_info(repo)
+    assert len(info["commit"]) == 40
+    assert info["commit"].startswith(info["short"])
+    assert info["branch"]  # непустая ветка

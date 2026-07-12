@@ -25,3 +25,15 @@ def list_deploy_files(repo_root: Path) -> list[str]:
     untracked = _git(repo_root, "ls-files", "--others", "--exclude-standard").splitlines()
     files = {p.strip() for p in (*tracked, *untracked) if p.strip()}
     return sorted(files)
+
+
+def is_dirty(repo_root: Path) -> bool:
+    """True, если в рабочем дереве есть незакоммиченные изменения."""
+    return bool(_git(repo_root, "status", "--porcelain").strip())
+
+
+def commit_info(repo_root: Path) -> dict[str, str]:
+    """Текущий коммит: полный sha, короткий, имя ветки."""
+    commit = _git(repo_root, "rev-parse", "HEAD").strip()
+    branch = _git(repo_root, "rev-parse", "--abbrev-ref", "HEAD").strip()
+    return {"commit": commit, "short": commit[:7], "branch": branch}
