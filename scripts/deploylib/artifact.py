@@ -1,7 +1,10 @@
 """Чистая логика сборки артефакта деплоя (без сети)."""
 from __future__ import annotations
 
+import hashlib
+import io
 import subprocess
+import tarfile
 from pathlib import Path
 
 
@@ -48,3 +51,28 @@ def is_pushed_to_remote(repo_root: Path, remote: str, branch: str) -> bool:
         return False
     target = f"{remote}/{branch}"
     return any(line.strip() == target for line in contains)
+
+
+def build_artifact(repo_root: Path, files: list[str], out_path: Path) -> str:
+    """Собрать .tar.gz из файлов (posix-имена, фикс. mtime) и вернуть sha256 по содержимому.
+
+    content-sha считается по (path, bytes) и не зависит от gzip-заголовка,
+    поэтому одинаковое дерево → одинаковый sha (детерминированно).
+    Несуществующие пути (удалённые в рабочем дереве) пропускаются.
+    """
+    hasher = hashlib.sha256()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with tarfile.open(out_path, "w:gz") as tar:
+        for rel in files:
+            local = repo_root.joinpath(*rel.split("/"))
+            if not local.is_file():
+                continue
+            data = local.read_bytes()
+            hasher.update(rel.encode("utf-8") + b"\x00")
+            hasher.update(data)
+            info = tarfile.TarInfo(name=rel)  # posix-путь как есть
+            info.size = len(data)
+            info.mtime = 0
+            info.mode = 0o644
+            tar.addfile(info, io.BytesIO(data))
+    return hasher.hexdigest()

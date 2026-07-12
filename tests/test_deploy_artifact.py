@@ -1,4 +1,5 @@
 import subprocess
+import tarfile
 from pathlib import Path
 
 import pytest
@@ -70,3 +71,30 @@ def test_is_pushed_to_remote(tmp_path: Path) -> None:
     _git(work, "fetch", "-q", "origin")
     # после пуша — да
     assert artifact.is_pushed_to_remote(work, "origin", branch) is True
+
+
+def test_build_artifact_is_deterministic_and_correct(repo: Path, tmp_path: Path) -> None:
+    (repo / "sub").mkdir()
+    (repo / "sub" / "b.py").write_text("y = 2\n", encoding="utf-8")
+    files = ["keep.py", "sub/b.py"]
+
+    out1 = tmp_path / "a1.tgz"
+    out2 = tmp_path / "a2.tgz"
+    sha1 = artifact.build_artifact(repo, files, out1)
+    sha2 = artifact.build_artifact(repo, files, out2)
+
+    # content-sha не зависит от gzip-mtime → детерминирован
+    assert sha1 == sha2
+    assert len(sha1) == 64
+
+    with tarfile.open(out1) as tar:
+        names = sorted(tar.getnames())
+    assert names == ["keep.py", "sub/b.py"]  # posix-пути, вложенность сохранена
+
+
+def test_build_artifact_skips_missing_files(repo: Path, tmp_path: Path) -> None:
+    out = tmp_path / "a.tgz"
+    sha = artifact.build_artifact(repo, ["keep.py", "deleted.py"], out)
+    assert len(sha) == 64
+    with tarfile.open(out) as tar:
+        assert tar.getnames() == ["keep.py"]
