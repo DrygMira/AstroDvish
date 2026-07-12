@@ -1,0 +1,3 @@
+# Локальные зависимости инструмента деплоя (scripts/deploy.py).
+# НЕ входят в серверный Docker-образ (Dockerfile ставит только requirements.txt).
+paramiko==3.5.0
