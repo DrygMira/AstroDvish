@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import shlex
+import time
 from pathlib import Path
 
 try:
@@ -114,3 +115,42 @@ def write_stamp(client, remote_path: str, stamp_json: str, patch_text: str | Non
         write_text(client, patch_path, patch_text)
     else:
         run(client, f"rm -f {q(patch_path)}", check=False)
+
+
+CONTAINERS = ["astrodvish-api", "astrodvish-web-ui"]
+
+
+def compose_up(client, remote_path: str) -> None:
+    run(client, f"cd {q(remote_path)} && docker compose up -d --build", timeout=900)
+
+
+def wait_healthy(client, containers: list[str] = CONTAINERS, timeout: int = 180) -> bool:
+    """Ждать, пока все контейнеры в состоянии healthy. True/False по факту."""
+    deadline = time.time() + timeout
+    fmt = "{{.State.Health.Status}}"
+    while time.time() < deadline:
+        statuses = {}
+        for name in containers:
+            out = run(client, f"docker inspect -f '{fmt}' {q(name)}", check=False).strip()
+            statuses[name] = out
+        if all(s == "healthy" for s in statuses.values()):
+            return True
+        time.sleep(5)
+    return False
+
+
+def rollback(client, remote_path: str, backup_path: str) -> None:
+    """Восстановить live из бэкапа и пересобрать."""
+    parent = str(Path(remote_path).parent)
+    run(client, f"rm -rf {q(remote_path + '.broken')}", check=False)
+    run(client, f"mv {q(remote_path)} {q(remote_path + '.broken')}")
+    run(client, f"mkdir -p {q(remote_path)}")
+    run(client, f"tar xzf {q(backup_path)} -C {q(parent)}", timeout=600)
+    # ephe в бэкап не входит → перенести из .broken, если там был
+    run(
+        client,
+        f"[ -d {q(remote_path + '.broken/ephe')} ] && cp -a {q(remote_path + '.broken/ephe')} {q(remote_path + '/ephe')} || true",
+        check=False,
+    )
+    compose_up(client, remote_path)
+    run(client, f"rm -rf {q(remote_path + '.broken')}", check=False)
