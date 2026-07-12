@@ -98,3 +98,17 @@ def test_build_artifact_skips_missing_files(repo: Path, tmp_path: Path) -> None:
     assert len(sha) == 64
     with tarfile.open(out) as tar:
         assert tar.getnames() == ["keep.py"]
+
+
+def test_build_stamp_shape(repo: Path) -> None:
+    stamp = artifact.build_stamp(
+        repo_root=repo,
+        artifact_sha="deadbeef",
+        remote="dryg",
+        deployed_at="2026-07-12T00:00:00Z",
+    )
+    assert stamp["artifact_sha256"] == "deadbeef"
+    assert stamp["deployed_at"] == "2026-07-12T00:00:00Z"
+    assert stamp["dirty"] in (True, False)
+    assert "commit" in stamp and "short" in stamp and "branch" in stamp
+    assert "pushed_to_dryg" in stamp

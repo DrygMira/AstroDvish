@@ -76,3 +76,24 @@ def build_artifact(repo_root: Path, files: list[str], out_path: Path) -> str:
             info.mode = 0o644
             tar.addfile(info, io.BytesIO(data))
     return hasher.hexdigest()
+
+
+def build_stamp(
+    repo_root: Path,
+    artifact_sha: str,
+    remote: str,
+    deployed_at: str,
+) -> dict:
+    """Метаданные для DEPLOYED.json (deployed_at передаётся снаружи — детерминизм в тестах)."""
+    info = commit_info(repo_root)
+    dirty = is_dirty(repo_root)
+    pushed = is_pushed_to_remote(repo_root, remote, info["branch"])
+    return {
+        "commit": info["commit"],
+        "short": info["short"],
+        "branch": info["branch"],
+        "dirty": dirty,
+        f"pushed_to_{remote}": pushed,
+        "artifact_sha256": artifact_sha,
+        "deployed_at": deployed_at,
+    }
