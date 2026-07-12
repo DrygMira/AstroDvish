@@ -37,3 +37,14 @@ def commit_info(repo_root: Path) -> dict[str, str]:
     commit = _git(repo_root, "rev-parse", "HEAD").strip()
     branch = _git(repo_root, "rev-parse", "--abbrev-ref", "HEAD").strip()
     return {"commit": commit, "short": commit[:7], "branch": branch}
+
+
+def is_pushed_to_remote(repo_root: Path, remote: str, branch: str) -> bool:
+    """True, если текущий HEAD содержится в <remote>/<branch> (уже запушен)."""
+    head = _git(repo_root, "rev-parse", "HEAD").strip()
+    try:
+        contains = _git(repo_root, "branch", "-r", "--contains", head).splitlines()
+    except subprocess.CalledProcessError:
+        return False
+    target = f"{remote}/{branch}"
+    return any(line.strip() == target for line in contains)

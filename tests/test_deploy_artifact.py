@@ -50,3 +50,23 @@ def test_commit_info_has_sha_short_branch(repo: Path) -> None:
     assert len(info["commit"]) == 40
     assert info["commit"].startswith(info["short"])
     assert info["branch"]  # непустая ветка
+
+
+def test_is_pushed_to_remote(tmp_path: Path) -> None:
+    bare = tmp_path / "bare.git"
+    _git(tmp_path, "init", "-q", "--bare", str(bare))
+    work = tmp_path / "work"
+    _git(tmp_path, "clone", "-q", str(bare), str(work))
+    _git(work, "config", "user.email", "t@t")
+    _git(work, "config", "user.name", "t")
+    (work / "a.txt").write_text("a", encoding="utf-8")
+    _git(work, "add", "a.txt")
+    _git(work, "commit", "-qm", "c1")
+    branch = artifact.commit_info(work)["branch"]
+
+    # ещё не запушено
+    assert artifact.is_pushed_to_remote(work, "origin", branch) is False
+    _git(work, "push", "-q", "origin", branch)
+    _git(work, "fetch", "-q", "origin")
+    # после пуша — да
+    assert artifact.is_pushed_to_remote(work, "origin", branch) is True
