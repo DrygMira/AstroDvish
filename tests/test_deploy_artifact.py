@@ -4,7 +4,14 @@ from pathlib import Path
 
 import pytest
 
-from scripts.deploylib import artifact
+from scripts.deploylib import artifact, remote
+
+
+def test_split_remote_path_is_posix() -> None:
+    # Удалённый путь Linux-сервера должен разбираться POSIX-style
+    # даже когда инструмент запущен на Windows (Path().parent там дал бы '\\opt').
+    assert remote.split_remote_path("/opt/astrodvish") == ("/opt", "astrodvish")
+    assert remote.split_remote_path("/opt/app/sub") == ("/opt/app", "sub")
 
 
 def _git(repo: Path, *args: str) -> str:

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import shlex
 import time
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 try:
     import paramiko
@@ -75,12 +75,21 @@ def q(path: str) -> str:
 LEFTOVER_FILES = ["main.py", "api.js"]  # хвосты в корне от прежних ручных копирований
 
 
+def split_remote_path(remote_path: str) -> tuple[str, str]:
+    """(parent, base) для POSIX-пути сервера.
+
+    Через PurePosixPath, а не Path: инструмент запускается на Windows, где
+    Path("/opt/astrodvish").parent дал бы '\\opt' и сломал удалённые команды.
+    """
+    p = PurePosixPath(remote_path)
+    return str(p.parent), p.name
+
+
 def backup(client, remote_path: str, backups_dir: str, tag: str, ts: str) -> str:
     """Снять tar-бэкап текущего live (без ephe и без каталога бэкапов). Вернуть путь бэкапа."""
     run(client, f"mkdir -p {q(backups_dir)}")
     backup_path = f"{backups_dir}/predeploy_{ts}_{tag}.tgz"
-    base = Path(remote_path).name
-    parent = str(Path(remote_path).parent)
+    parent, base = split_remote_path(remote_path)
     run(
         client,
         f"tar czf {q(backup_path)} -C {q(parent)} "
@@ -141,7 +150,7 @@ def wait_healthy(client, containers: list[str] = CONTAINERS, timeout: int = 180)
 
 def rollback(client, remote_path: str, backup_path: str) -> None:
     """Восстановить live из бэкапа и пересобрать."""
-    parent = str(Path(remote_path).parent)
+    parent, _ = split_remote_path(remote_path)
     run(client, f"rm -rf {q(remote_path + '.broken')}", check=False)
     run(client, f"mv {q(remote_path)} {q(remote_path + '.broken')}")
     run(client, f"mkdir -p {q(remote_path)}")
