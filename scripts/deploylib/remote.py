@@ -85,6 +85,18 @@ def split_remote_path(remote_path: str) -> tuple[str, str]:
     return str(p.parent), p.name
 
 
+def validate_backup_listing(listing: str, base: str) -> bool:
+    """True, если листинг tar-бэкапа не пуст и все записи лежат под <base>/.
+
+    Защита разрушающих путей: пустой .tgz (20-байтный gzip после упавшего tar)
+    или архив с чужим корнем при откате затёрли бы /opt/<base> в ноль.
+    """
+    entries = [line.strip() for line in listing.splitlines() if line.strip()]
+    if not entries:
+        return False
+    return all(e == base or e.startswith(base + "/") for e in entries)
+
+
 def backup(client, remote_path: str, backups_dir: str, tag: str, ts: str) -> str:
     """Снять tar-бэкап текущего live (без ephe и без каталога бэкапов). Вернуть путь бэкапа."""
     run(client, f"mkdir -p {q(backups_dir)}")
@@ -96,6 +108,10 @@ def backup(client, remote_path: str, backups_dir: str, tag: str, ts: str) -> str
         f"--exclude={q(base + '/ephe')} {q(base)}",
         timeout=600,
     )
+    listing = run(client, f"tar tzf {q(backup_path)} 2>/dev/null | head -50", check=False)
+    if not validate_backup_listing(listing, base):
+        run(client, f"rm -f {q(backup_path)}", check=False)
+        raise RemoteError(f"бэкап {backup_path} создался пустым/битым и был удалён — деплой прерван")
     return backup_path
 
 
@@ -150,7 +166,12 @@ def wait_healthy(client, containers: list[str] = CONTAINERS, timeout: int = 180)
 
 def rollback(client, remote_path: str, backup_path: str) -> None:
     """Восстановить live из бэкапа и пересобрать."""
-    parent, _ = split_remote_path(remote_path)
+    parent, base = split_remote_path(remote_path)
+    listing = run(client, f"tar tzf {q(backup_path)} 2>/dev/null | head -200", check=False)
+    if not validate_backup_listing(listing, base):
+        raise RemoteError(
+            f"бэкап {backup_path} пустой или не содержит {base}/ — откат прерван, сервер не тронут"
+        )
     run(client, f"rm -rf {q(remote_path + '.broken')}", check=False)
     run(client, f"mv {q(remote_path)} {q(remote_path + '.broken')}")
     run(client, f"mkdir -p {q(remote_path)}")

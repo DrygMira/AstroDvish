@@ -14,6 +14,16 @@ def test_split_remote_path_is_posix() -> None:
     assert remote.split_remote_path("/opt/app/sub") == ("/opt/app", "sub")
 
 
+def test_validate_backup_listing() -> None:
+    ok = "astrodvish/\nastrodvish/docker-compose.yml\nastrodvish/app/main.py\n"
+    assert remote.validate_backup_listing(ok, "astrodvish") is True
+    # пустой архив (20-байтный gzip после упавшего tar) — невалиден
+    assert remote.validate_backup_listing("", "astrodvish") is False
+    assert remote.validate_backup_listing("\n\n", "astrodvish") is False
+    # архив с чужим корнем — откат в /opt/astrodvish им делать нельзя
+    assert remote.validate_backup_listing("other/file.py\n", "astrodvish") is False
+
+
 def _git(repo: Path, *args: str) -> str:
     return subprocess.run(
         ["git", *args], cwd=repo, capture_output=True, text=True, check=True
