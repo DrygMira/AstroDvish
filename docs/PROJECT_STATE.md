@@ -1268,3 +1268,25 @@ Every future report must include:
   - rollback-бэкапы уже на сервере: `/opt/astrodvish_backups/pre_v2_death_cards_20260705_181302.tgz`, `pre_v2_death_cards_ui_hotfix_20260705_1820.tgz`
 - next step:
   - при желании — экспертный live-ретест Екатериной combined report по цепочке событий и Excel-выгрузки
+
+## 44. Deploy source-of-truth tool + первый живой деплой инструментом (2026-07-13)
+- A. what changed:
+  - создан инструмент воспроизводимого деплоя `scripts/deploy.py` (+ `scripts/deploylib/artifact.py`, `scripts/deploylib/remote.py`, `scripts/requirements-deploy.txt`, `docs/DEPLOY.md`): режимы `--plan` / deploy / `--status` / `--rollback <tgz>`
+  - выкладка: артефакт из рабочего дерева (`git ls-files` + новые не-игнорируемые; `.env`/`ephe`/секреты исключены) → бэкап `predeploy_*.tgz` → бирка `DEPLOYED.json` (+ `.patch` при dirty) → распаковка + подчистка хвостов → `docker compose up -d --build` → health-gate → авто-откат при провале
+  - спека и план: `docs/superpowers/specs/2026-07-12-deploy-source-of-truth-design.md`, `docs/superpowers/plans/2026-07-12-deploy-source-of-truth.md`
+  - коммиты: `4f066b0..c6ffa51` (11 шт., TDD) + фикс `c83fcd7`
+- B. tests:
+  - `tests/test_deploy_artifact.py`: 8 юнит-тестов чистой логики (список файлов, dirty, commit-инфо, pushed, детерминированный tar+sha256, stamp, POSIX-разбор удалённого пути)
+  - полный `pytest`: `382 passed, 1 xfailed`
+- C. live/proof (`45.133.18.90`, `/opt/astrodvish`):
+  - первый живой прогон поймал реальный баг: на Windows `Path('/opt/astrodvish').parent` давал `\opt` → tar бэкапа падал; прод не пострадал (падение до любых изменений); фикс — `split_remote_path` на `PurePosixPath` + юнит-тест (`c83fcd7`)
+  - повторный деплой `c83fcd7`: УСПЕХ — бэкап `predeploy_20260713T174042Z_c83fcd7.tgz` (161 файл), хвосты `main.py`/`api.js` удалены из корня live, контейнеры `healthy`, `RestartCount=0`, `OOMKilled=false`
+  - `--status`: `совпадает (git == live)`; `DEPLOYED.json`: commit `c83fcd7`, `dirty=false`, `pushed_to_dryg=true`, artifact sha256 `4d1d691f…`
+  - регресс: default `child_birth` = `RECT_CHILD_BIRTH_001`; combined `8 событий x 8 V2 cards`: `8/8 completed`, `failed=0`, Excel `200` (77 KB)
+  - пустой 20-байтный бэкап от упавшего первого прогона удалён с сервера
+- D/E. production/draft карточки: не менялись (см. §43)
+- F. risks:
+  - `--rollback` пока не валидирует бэкап: пустой/битый `.tgz` затёр бы `/opt/astrodvish` — guard в работе (следующий шаг)
+  - точечные удаления файлов на сервере инструмент не делает (только перезапись/добавление + явный список хвостов) — осознанное ограничение дизайна
+- G. deploy status:
+  - live = `c83fcd7` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
