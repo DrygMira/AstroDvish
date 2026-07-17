@@ -7,6 +7,51 @@ State owner note:
   - `docs/AGENTS.md` wins for permanent rules
   - `PROJECT_STATE.md` wins for current state
 
+## 0. TL;DR — быстрый указатель на текущее состояние (обновлено 2026-07-17)
+
+> Секции 1-44 ниже — хронологический журнал (append-only), не трогаем историю.
+> Этот блок — единственное место, которое стоит обновлять на каждой значимой вехе.
+> Точный коммит здесь не фиксируем намеренно — он устаревает после первого же нового
+> коммита; актуальность проверяй инструментом, а не текстом.
+
+**Продукт:** AstroDvish — платформа ректификации времени рождения. Фокус разработки —
+только модуль ректификации (Telegram-бот SHiNE в работе не участвует).
+
+**Архитектура:** FastAPI `app/` (:8013, astro-core API) + `web_ui/` (бэкенд + статика на
+vanilla JS, :8014/:8016). Docker Compose на проде, контейнеры `astrodvish-api` /
+`astrodvish-web-ui`.
+
+**Прод:** `45.133.18.90:/opt/astrodvish`. Проверить, что прод == код:
+
+```
+.venv\Scripts\python.exe scripts/deploy.py --status
+```
+
+Деплой — тем же инструментом (`scripts/deploy.py`, см. `docs/DEPLOY.md`): бэкап → бирка
+`DEPLOYED.json` → выкладка → health-gate → авто-откат; бэкап/откат защищены от
+пустых/битых архивов.
+
+**Formula cards:**
+- production-дефолты (`status != draft`, подставляются автоматически без явного выбора):
+  `RECT_CHILD_BIRTH_001`, `RECT_DIVORCE_BREAKUP_001`, `RECT_DEATH_CLOSE_PERSON_001` и др.
+  legacy V1
+- 8 V2-карточек (`*_002_DRAFT`) — explicit-only (`status=draft`), в дефолтный подбор не
+  попадают, работают только через явный выбор карточки / multi-card combined report
+
+**Тесты:** из корня в `.venv`:
+
+```
+.venv\Scripts\python.exe -m pytest -q -n auto
+```
+
+~3.5 мин параллельно (было ~8 мин серийно), 383 passed, 1 xfailed на 2026-07-17.
+
+**Известные пределы:** combined report — максимум 24 события / 36 chunks, сверх —
+контролируемый `422 payload_too_heavy` (не падение по памяти).
+
+**Открытые пункты (не срочно):** ротация ключа OpenAI, staging-окружение, worker-очередь
+под особо тяжёлые combined-прогоны.
+
 ## 1. Current focus
 AstroDvish / Astra Engine / Pro-ректификация / formula-driven refinement.
 
@@ -1286,7 +1331,7 @@ Every future report must include:
   - пустой 20-байтный бэкап от упавшего первого прогона удалён с сервера
 - D/E. production/draft карточки: не менялись (см. §43)
 - F. risks:
-  - `--rollback` пока не валидирует бэкап: пустой/битый `.tgz` затёр бы `/opt/astrodvish` — guard в работе (следующий шаг)
+  - `--rollback` пока не валидирует бэкап: пустой/битый `.tgz` затёр бы `/opt/astrodvish` — **закрыто** тем же днём: guard добавлен (`cd4c3fe`, TDD, тесты зелёные), см. §0
   - точечные удаления файлов на сервере инструмент не делает (только перезапись/добавление + явный список хвостов) — осознанное ограничение дизайна
 - G. deploy status:
   - live = `c83fcd7` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
