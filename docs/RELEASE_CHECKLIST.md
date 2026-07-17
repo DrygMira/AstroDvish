@@ -35,13 +35,13 @@ Linux/macOS:
 Windows:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest -q -n auto
 ```
 
 Linux/macOS:
 
 ```bash
-python -m pytest -q
+python -m pytest -q -n auto
 ```
 
 ## 4) Проверить health
