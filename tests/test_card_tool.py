@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.cardlib import card_io, parser
+from scripts.cardlib import card_io, parser, verify
 
 
 SAMPLE_META = {
@@ -255,3 +255,53 @@ def test_built_card_loads_via_real_formula_card_loader(tmp_path: Path) -> None:
     assert loaded.event_type == "test_event"
     assert len(loaded.direction_rules) == 3
     assert {r.id for r in loaded.direction_rules} == {"R1", "R2", "R3"}
+
+
+def _write_clean_card(cards_root: Path, card_id: str = "RECT_TEST_002_DRAFT") -> None:
+    meta = card_io.load_meta_dict(SAMPLE_META)
+    parsed = parser.parse_formulas(SAMPLE_TEXT, meaning="m", comment="c", source_name="s.txt")
+    card = card_io.build_card(
+        card_id=card_id, event_type="test_event", meta=meta, parsed=parsed,
+        source_files=["s.txt"], expected_total=3,
+    )
+    card_io.write_card(card, cards_root)
+
+
+def test_verify_card_ok_for_clean_draft_card(tmp_path: Path) -> None:
+    _write_clean_card(tmp_path)
+    result = verify.verify_card("RECT_TEST_002_DRAFT", tmp_path)
+    assert result.ok is True
+    assert result.checks["loads"] is True
+    assert result.checks["status_is_draft"] is True
+    assert result.checks["counts_match_expected"] is True
+    assert result.problems == []
+
+
+def test_verify_card_fails_when_missing(tmp_path: Path) -> None:
+    result = verify.verify_card("RECT_MISSING_002_DRAFT", tmp_path)
+    assert result.ok is False
+    assert result.checks["loads"] is False
+
+
+def test_verify_card_flags_non_draft_status(tmp_path: Path) -> None:
+    _write_clean_card(tmp_path)
+    card = card_io.read_card("RECT_TEST_002_DRAFT", tmp_path)
+    card["status"] = "test"
+    card_io.write_card(card, tmp_path)
+    result = verify.verify_card("RECT_TEST_002_DRAFT", tmp_path)
+    assert result.ok is False
+    assert result.checks["status_is_draft"] is False
+    assert any("draft" in p for p in result.problems)
+
+
+def test_verify_card_flags_expected_vs_imported_gap(tmp_path: Path) -> None:
+    meta = card_io.load_meta_dict(SAMPLE_META)
+    parsed = parser.parse_formulas(SAMPLE_TEXT, meaning="m", comment="c", source_name="s.txt")
+    card = card_io.build_card(
+        card_id="RECT_TEST_002_DRAFT", event_type="test_event", meta=meta, parsed=parsed,
+        source_files=["s.txt"], expected_total=99,  # намеренно неверный ожидаемый total
+    )
+    card_io.write_card(card, tmp_path)
+    result = verify.verify_card("RECT_TEST_002_DRAFT", tmp_path)
+    assert result.ok is False
+    assert result.checks["counts_match_expected"] is False
