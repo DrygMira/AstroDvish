@@ -6359,6 +6359,22 @@ def rectification_events_finalize(payload: RectificationEventsFinalizeRequest) -
     return JSONResponse(response_json)
 
 
+@app.get("/api/rectification/pro/v2-draft-cards")
+def get_rectification_pro_v2_draft_cards() -> JSONResponse:
+    """Список draft-карточек с их event_type (канон + legacy-алиасы) для фронтенда.
+
+    Источник правды — JSON-файлы карточек на диске (см. _v2_draft_card_accepted_event_types).
+    Фронтенд (pro.js) кэширует этот список вместо хардкода, чтобы новая draft-карточка
+    появлялась в UI без правок JS.
+    """
+    accepted = _v2_draft_card_accepted_event_types()
+    cards = [
+        {"card_id": card_id, "event_types": sorted(event_types)}
+        for card_id, event_types in sorted(accepted.items())
+    ]
+    return JSONResponse({"cards": cards})
+
+
 @app.post("/api/rectification/pro/run")
 def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
     _guard_rectification_pro_payload(payload.payload)

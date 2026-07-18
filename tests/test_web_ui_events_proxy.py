@@ -645,6 +645,16 @@ def test_v2_draft_card_accepted_event_types_picks_up_new_card_without_code_chang
     assert derived == {"RECT_NEW_EVENT_002_DRAFT": {"brand_new_event"}}
 
 
+def test_v2_draft_cards_endpoint_returns_all_eight_real_cards() -> None:
+    client = TestClient(web_ui_main.app)
+    response = client.get("/api/rectification/pro/v2-draft-cards")
+    assert response.status_code == 200
+    cards = {item["card_id"]: item["event_types"] for item in response.json()["cards"]}
+    assert cards["RECT_CHILD_BIRTH_002_DRAFT"] == ["child_birth", "children_birth"]
+    assert cards["RECT_MOTHER_DEATH_002_DRAFT"] == ["death_mother"]
+    assert len(cards) == 8
+
+
 def test_v2_draft_card_accepted_event_types_ignores_non_draft_cards(tmp_path) -> None:
     import json
 
