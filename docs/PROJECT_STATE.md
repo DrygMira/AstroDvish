@@ -1335,3 +1335,22 @@ Every future report must include:
   - точечные удаления файлов на сервере инструмент не делает (только перезапись/добавление + явный список хвостов) — осознанное ограничение дизайна
 - G. deploy status:
   - live = `c83fcd7` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
+
+## 45. card_tool.py (V2-карточки: add/verify) + убран хардкод card_id↔event_type (2026-07-18)
+- A. what changed:
+  - `scripts/card_tool.py` + `scripts/cardlib/` (`parser.py`, `card_io.py`, `verify.py`): `add` парсит txt-пак формул Екатерины в draft-карточку (с diff при переимпорте существующей), `verify [--live]` проверяет структуру/статус/счётчики локально и опционально прогоняет карточку через реальный API
+  - `web_ui/main.py`: список V2 draft-карточек для роутинга событий (`RECTIFICATION_PRO_CHUNK_CARD_EVENT_TYPES`) больше не хардкод — выводится из JSON-файлов на диске + маленькая таблица legacy-алиасов (3 записи). Новый эндпоинт `GET /api/rectification/pro/v2-draft-cards`
+  - `web_ui/static/js/pro.js` + `index.html`: подбор карточек по событиям и выпадающий список в Expert UI берут карточки из этого эндпоинта вместо хардкода в JS/HTML
+  - коммиты: `499824f..f225d45` (10 шт.)
+- B. tests:
+  - `tests/test_card_tool.py`: 21 юнит-тест (парсинг, сборка карточки, diff, verify), включая интеграционную проверку через реальный `FormulaCardLoader`
+  - `parser.parse_formulas` сверен байт-в-байт с 3 уже задеплоенными карточками (mother/sibling/grandparent death) на их реальных исходных txt-файлах
+  - `card_tool.py add` пересобрал `RECT_MOTHER_DEATH_002_DRAFT` из реального источника — совпадение по всем полям и всем 78 id+тирам с закоммиченной версией
+  - 1 существующий тест (`test_web_ui_pro_confirmations_ui.py`) проверял ID карточек как статичный текст в HTML — поправлен на суть (проверяет, что UI дёргает endpoint), покрытие всех 8 карточек не потеряно (see `test_v2_draft_cards_endpoint_returns_all_eight_real_cards`)
+  - полный `pytest -n auto`: `407 passed, 1 xfailed`
+- C. live/proof (`45.133.18.90`):
+  - деплой `f225d45`: УСПЕХ, health OK, `--status` = совпадает
+  - `GET /api/rectification/pro/v2-draft-cards` на проде: 200, все 8 карточек с верными event_types/алиасами
+  - regress: default `child_birth` = `RECT_CHILD_BIRTH_001`; combined `8 событий x 8 V2 cards`: `8/8 completed`, Excel `200`
+  - живая браузерная проверка (локально): select с 11 опциями (auto + 2 V1 + 8 V2) заполняется динамически, 0 ошибок в консоли, добавление нового draft-JSON делает карточку доступной в роутинге без единой правки кода (доказано тестом)
+- next step: П5 (эталонные регресс-кейсы по карточке) — ждёт референсов от Екатерины
