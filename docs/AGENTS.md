@@ -59,6 +59,10 @@
 - Heavy Pro runs must be tested with both `1 event` and `multi-event` payloads when relevant.
 - Report `performance_debug` for heavy rectification work.
 
+## Tooling Rules
+- Deploy: use `scripts/deploy.py` (`--status` to check git-vs-live drift, `--plan` for dry run, no flags to deploy for real — asks confirmation unless `-y`). Never hand-roll SSH/paramiko. See `docs/DEPLOY.md`.
+- New/updated V2 draft formula card: use `scripts/card_tool.py add --source <txt> --card-id ... --event-type ... --meta <meta.json> --expected-total N` (parses the source pack, writes the card JSON, shows a diff if the card already exists), then `scripts/card_tool.py verify <card_id> --live` before considering it done. Never hand-write a one-off import script.
+
 ## Reporting Format
 - Keep reports maximum short.
 - Default report shape:
