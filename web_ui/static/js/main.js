@@ -6,7 +6,7 @@ import { loadPrompt, loadRectificationPrompt } from "./api.js";
 import { generate, hideHoroscopeContinuation, renderExpertTables, runRectification } from "./chart.js";
 import { applySharedContextToForms, calculateUtcPreview, fillOffsets, fillSecondOptions, nowLocalInputValue, setDateTimeWithSeconds, syncFromDecimalInputs, syncFromDmsInputs, todayLocalDateValue, updateCoordinateFormatUi, updateTimezoneUiState, withActiveCoordinateInput } from "./coords.js";
 import { applyPlaceSelectionToSharedContext, searchCity, searchCityRect, searchCityRectDialog, searchCityWizard } from "./geocode.js";
-import { applyProTestEventsPreset, runProRectification, runUiProofPreviewFromQuery } from "./pro.js";
+import { applyProTestEventsPreset, populateV2DraftCardOptions, runProRectification, runUiProofPreviewFromQuery } from "./pro.js";
 import { resetRectDialogState, startRectificationDialog } from "./stage1.js";
 import { continueRectEventsFlow, finalizeRectEventsFlow, resetRectEventsState, startRectEventsFlow } from "./stage2.js";
 import { getChartContextPatch, getRectContextPatch, getRectDialogContextPatch, getWizardContextPatch, syncSharedBirthContext } from "./state-sync.js";
@@ -252,6 +252,7 @@ import { applyWizardBirthDataFromUi, renderWizardProgress, resetWizardDerivedSta
 
     fillOffsets();
     fillSecondOptions();
+    populateV2DraftCardOptions();
     for (let i = 0; i < timezoneOffsetEl.options.length; i++) {
       wzTimezoneOffsetEl.appendChild(timezoneOffsetEl.options[i].cloneNode(true));
     }

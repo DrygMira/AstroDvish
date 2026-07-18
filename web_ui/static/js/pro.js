@@ -18,40 +18,46 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       return pairs[normalized] || [];
     }
 
-    function resolveRelevantV2DraftCardIds(events) {
+    // Кэш списка draft-карточек с бэкенда (GET /api/rectification/pro/v2-draft-cards).
+    // Источник правды — JSON-файлы карточек на диске; новая карточка появляется тут
+    // без правок этого файла. Промис кэшируется, чтобы не дёргать endpoint повторно.
+    let v2DraftCardsFetchPromise = null;
+
+    async function fetchV2DraftCards() {
+      if (!v2DraftCardsFetchPromise) {
+        v2DraftCardsFetchPromise = fetch("/api/rectification/pro/v2-draft-cards")
+          .then((res) => (res.ok ? res.json() : { cards: [] }))
+          .then((data) => (Array.isArray(data?.cards) ? data.cards : []))
+          .catch(() => []);
+      }
+      return v2DraftCardsFetchPromise;
+    }
+
+    async function resolveRelevantV2DraftCardIds(events) {
       const list = Array.isArray(events) ? events : [];
+      const cards = await fetchV2DraftCards();
       const selected = [];
-      const push = (cardId) => {
-        if (cardId && !selected.includes(cardId)) selected.push(cardId);
-      };
       list.forEach((event) => {
         const eventType = String(event?.event_type || "").trim();
-        if (eventType === "child_birth" || eventType === "children_birth") {
-          push("RECT_CHILD_BIRTH_002_DRAFT");
-        }
-        if (eventType === "marriage_start" || eventType === "marriage_union") {
-          push("RECT_MARRIAGE_UNION_002_DRAFT");
-        }
-        if (eventType === "profession_change") {
-          push("RECT_PROFESSION_CHANGE_002_DRAFT");
-        }
-        if (eventType === "divorce_separation" || eventType === "divorce_breakup") {
-          push("RECT_DIVORCE_SEPARATION_002_DRAFT");
-        }
-        if (eventType === "death_father") {
-          push("RECT_FATHER_DEATH_002_DRAFT");
-        }
-        if (eventType === "death_mother") {
-          push("RECT_MOTHER_DEATH_002_DRAFT");
-        }
-        if (eventType === "death_sibling") {
-          push("RECT_SIBLING_DEATH_002_DRAFT");
-        }
-        if (eventType === "death_grandparent") {
-          push("RECT_GRANDPARENT_DEATH_002_DRAFT");
-        }
+        if (!eventType) return;
+        cards.forEach((card) => {
+          if (card.event_types.includes(eventType) && !selected.includes(card.card_id)) {
+            selected.push(card.card_id);
+          }
+        });
       });
       return selected;
+    }
+
+    export async function populateV2DraftCardOptions() {
+      const cards = await fetchV2DraftCards();
+      cards.forEach((card) => {
+        if (rpFormulaCardIdEl.querySelector(`option[value="${card.card_id}"]`)) return;
+        const option = document.createElement("option");
+        option.value = card.card_id;
+        option.textContent = card.card_id;
+        rpFormulaCardIdEl.appendChild(option);
+      });
     }
 
     function setProRunBusy(isBusy) {
@@ -1167,7 +1173,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
 
       const selectedFormulaCardId = rpFormulaCardIdEl.value || null;
       const selectedMultiCardIds = rpUseAllRelevantV2CardsEl.checked
-        ? resolveRelevantV2DraftCardIds(events)
+        ? await resolveRelevantV2DraftCardIds(events)
         : [];
       const payload = {
         birth_date_local: (sharedBirthContext.birthDateLocal || document.getElementById("rdBirthDate").value || "").split("T")[0],

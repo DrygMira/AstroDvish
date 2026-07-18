@@ -175,14 +175,12 @@ def test_pro_ui_contains_explicit_formula_card_selector_and_v1_v2_comparison_mar
     assert response.status_code == 200
     assert "formula_card_id" in html
     assert "compare_formula_card_ids" in html
-    assert "RECT_CHILD_BIRTH_002_DRAFT" in html
-    assert "RECT_PROFESSION_CHANGE_002_DRAFT" in html
-    assert "RECT_MARRIAGE_UNION_002_DRAFT" in html
-    assert "RECT_DIVORCE_SEPARATION_002_DRAFT" in html
-    assert "RECT_FATHER_DEATH_002_DRAFT" in html
-    assert "RECT_MOTHER_DEATH_002_DRAFT" in html
-    assert "RECT_SIBLING_DEATH_002_DRAFT" in html
-    assert "RECT_GRANDPARENT_DEATH_002_DRAFT" in html
+    assert "rpFormulaCardId" in html
+    # Список V2 draft-карточек больше не статичный текст в бандле — он подгружается
+    # в рантайме через populateV2DraftCardOptions() (см. pro.js) с этого endpoint;
+    # полное покрытие всех 8 карточек — в test_v2_draft_cards_endpoint_returns_all_eight_real_cards.
+    assert "/api/rectification/pro/v2-draft-cards" in html
+    assert "populateV2DraftCardOptions" in html
     assert "V1 vs V2" in html
     assert "formula_card_comparison" in html
     assert "working_time_ranges_difference" in html

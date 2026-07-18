@@ -708,15 +708,9 @@
             <select id="rpFormulaCardId">
               <option value="">auto / production default</option>
               <option value="RECT_CHILD_BIRTH_001">RECT_CHILD_BIRTH_001</option>
-              <option value="RECT_CHILD_BIRTH_002_DRAFT">RECT_CHILD_BIRTH_002_DRAFT</option>
               <option value="RECT_MARRIAGE_UNION_001">RECT_MARRIAGE_UNION_001</option>
-              <option value="RECT_MARRIAGE_UNION_002_DRAFT">RECT_MARRIAGE_UNION_002_DRAFT</option>
-              <option value="RECT_PROFESSION_CHANGE_002_DRAFT">RECT_PROFESSION_CHANGE_002_DRAFT</option>
-              <option value="RECT_DIVORCE_SEPARATION_002_DRAFT">RECT_DIVORCE_SEPARATION_002_DRAFT</option>
-              <option value="RECT_FATHER_DEATH_002_DRAFT">RECT_FATHER_DEATH_002_DRAFT</option>
-              <option value="RECT_MOTHER_DEATH_002_DRAFT">RECT_MOTHER_DEATH_002_DRAFT</option>
-              <option value="RECT_SIBLING_DEATH_002_DRAFT">RECT_SIBLING_DEATH_002_DRAFT</option>
-              <option value="RECT_GRANDPARENT_DEATH_002_DRAFT">RECT_GRANDPARENT_DEATH_002_DRAFT</option>
+              <!-- V2 draft-карточки добавляются в рантайме: populateV2DraftCardOptions() в pro.js,
+                   источник — GET /api/rectification/pro/v2-draft-cards -->
             </select>
             <div class="hint">Для экспертного теста можно явно выбрать draft-карточку без замены production default.</div>
           </div>
