@@ -27,6 +27,7 @@ except ImportError:  # pragma: no cover - Windows fallback.
     resource = None  # type: ignore[assignment]
 
 from app.services.aspects_service import OBJECT_DISPLAY_NAMES
+from app.services.rectification_formula.formula_card_loader import FormulaCardLoader
 from app.utils.timezone_lookup import resolve_timezone_name
 
 PROMPT_PATH = Path(__file__).resolve().parent.parent / "PROMPT.md"
@@ -287,16 +288,31 @@ RECTIFICATION_PRO_TERMINAL_JOB_STATUSES = {"completed", "failed", "cancelled"}
 _RECTIFICATION_PRO_JOBS: dict[str, dict[str, Any]] = {}
 _RECTIFICATION_PRO_JOBS_LOCK = threading.Lock()
 
-RECTIFICATION_PRO_CHUNK_CARD_EVENT_TYPES: dict[str, set[str]] = {
-    "RECT_CHILD_BIRTH_002_DRAFT": {"child_birth", "children_birth"},
-    "RECT_MARRIAGE_UNION_002_DRAFT": {"marriage_start", "marriage_union"},
-    "RECT_PROFESSION_CHANGE_002_DRAFT": {"profession_change"},
-    "RECT_DIVORCE_SEPARATION_002_DRAFT": {"divorce_separation", "divorce_breakup"},
-    "RECT_FATHER_DEATH_002_DRAFT": {"death_father"},
-    "RECT_MOTHER_DEATH_002_DRAFT": {"death_mother"},
-    "RECT_SIBLING_DEATH_002_DRAFT": {"death_sibling"},
-    "RECT_GRANDPARENT_DEATH_002_DRAFT": {"death_grandparent"},
+# Легаси/альтернативные написания event_type -> канонический вид (= card.event_type
+# в JSON-файле карточки). Список карточек НЕ дублируется тут — он выводится из
+# product/astrobot_content_pack/formula_cards/rectification/*.json на диске
+# (см. _v2_draft_card_accepted_event_types). Новая draft-карточка = новый JSON-файл,
+# без правок этого модуля; запись сюда нужна, только если у нового event_type
+# есть legacy-синоним.
+V2_DRAFT_EVENT_TYPE_ALIASES: dict[str, str] = {
+    "children_birth": "child_birth",
+    "marriage_start": "marriage_union",
+    "divorce_breakup": "divorce_separation",
 }
+
+
+def _v2_draft_card_accepted_event_types(cards_root: Path | None = None) -> dict[str, set[str]]:
+    """card_id -> множество event_type строк (канон + legacy-алиасы), которые на него route."""
+    loader = FormulaCardLoader(cards_root=cards_root)
+    result: dict[str, set[str]] = {}
+    for card in loader.list_cards():
+        if card.status != "draft":
+            continue
+        aliases = {raw for raw, canonical in V2_DRAFT_EVENT_TYPE_ALIASES.items() if canonical == card.event_type}
+        result[card.card_id] = {card.event_type} | aliases
+    return result
+
+
 RECTIFICATION_PRO_CHUNK_LABELS: dict[str, str] = {
     "child_birth": "деторождение",
     "marriage_union": "брак / союз",
@@ -3998,9 +4014,10 @@ def _build_rectification_pro_chunk_plan(payload: dict[str, Any]) -> dict[str, An
     max_events_per_chunk = 0
     chunk_size = 0
     relevant_events_count = 0
+    card_accepted_event_types = _v2_draft_card_accepted_event_types()
 
     for card_id in selected_card_ids:
-        accepted_event_types = RECTIFICATION_PRO_CHUNK_CARD_EVENT_TYPES.get(card_id)
+        accepted_event_types = card_accepted_event_types.get(card_id)
         if not accepted_event_types:
             skipped_card_ids.append(card_id)
             continue

@@ -612,6 +612,57 @@ def test_web_ui_rectification_pro_chunk_label_text_covers_new_death_cards() -> N
     assert web_ui_main._rectification_pro_chunk_label_text("death_grandparent") == "смерть бабушки / дедушки"
 
 
+def test_v2_draft_card_accepted_event_types_derived_from_disk_matches_real_cards() -> None:
+    derived = web_ui_main._v2_draft_card_accepted_event_types()
+    assert derived == {
+        "RECT_CHILD_BIRTH_002_DRAFT": {"child_birth", "children_birth"},
+        "RECT_MARRIAGE_UNION_002_DRAFT": {"marriage_start", "marriage_union"},
+        "RECT_PROFESSION_CHANGE_002_DRAFT": {"profession_change"},
+        "RECT_DIVORCE_SEPARATION_002_DRAFT": {"divorce_separation", "divorce_breakup"},
+        "RECT_FATHER_DEATH_002_DRAFT": {"death_father"},
+        "RECT_MOTHER_DEATH_002_DRAFT": {"death_mother"},
+        "RECT_SIBLING_DEATH_002_DRAFT": {"death_sibling"},
+        "RECT_GRANDPARENT_DEATH_002_DRAFT": {"death_grandparent"},
+    }
+
+
+def test_v2_draft_card_accepted_event_types_picks_up_new_card_without_code_changes(tmp_path) -> None:
+    """Главный эффект П3: новая draft-карточка = новый JSON-файл, без правок web_ui/main.py."""
+    import json
+
+    new_card = {
+        "card_id": "RECT_NEW_EVENT_002_DRAFT",
+        "event_type": "brand_new_event",
+        "status": "draft",
+        "core_logic": ["house_1"],
+        "aspects": ["x"],
+        "method_priority": ["directions"],
+        "direction_rules": [],
+    }
+    (tmp_path / "RECT_NEW_EVENT_002_DRAFT.json").write_text(json.dumps(new_card), encoding="utf-8")
+
+    derived = web_ui_main._v2_draft_card_accepted_event_types(cards_root=tmp_path)
+    assert derived == {"RECT_NEW_EVENT_002_DRAFT": {"brand_new_event"}}
+
+
+def test_v2_draft_card_accepted_event_types_ignores_non_draft_cards(tmp_path) -> None:
+    import json
+
+    production_card = {
+        "card_id": "RECT_SOMETHING_001",
+        "event_type": "something",
+        "status": "test",
+        "core_logic": ["house_1"],
+        "aspects": ["x"],
+        "method_priority": ["directions"],
+        "direction_rules": [],
+    }
+    (tmp_path / "RECT_SOMETHING_001.json").write_text(json.dumps(production_card), encoding="utf-8")
+
+    derived = web_ui_main._v2_draft_card_accepted_event_types(cards_root=tmp_path)
+    assert derived == {}
+
+
 def test_web_ui_rectification_pro_builds_subchunks_for_one_event_type_over_four_events() -> None:
     payload = _build_multi_card_payload(
         [_build_event(f"ev{idx+1}", "child_birth", f"Child birth {idx+1}") for idx in range(9)],
