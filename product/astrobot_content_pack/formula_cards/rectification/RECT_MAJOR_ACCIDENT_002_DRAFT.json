@@ -1,0 +1,4941 @@
+{
+  "card_id": "RECT_MAJOR_ACCIDENT_002_DRAFT",
+  "event_type": "major_accident",
+  "status": "draft",
+  "card_version": "major_accident_v2_draft_2026_07_21",
+  "school": "expert_rectification_v2_draft",
+  "title": "Major accident / life risk (draft v2 imported sandbox)",
+  "core_logic": [
+    "house_1",
+    "house_8",
+    "mars",
+    "uranus",
+    "pluto"
+  ],
+  "houses": [
+    "house_1",
+    "house_8"
+  ],
+  "planets": [
+    "mars",
+    "uranus",
+    "pluto"
+  ],
+  "significators": [
+    "mars",
+    "uranus",
+    "pluto"
+  ],
+  "aspects": [
+    "life_risk_axis",
+    "danger_axis_activation",
+    "sudden_crisis_signature"
+  ],
+  "method_priority": [
+    "directions",
+    "solars",
+    "transits"
+  ],
+  "strong_confirmation": [
+    "multiple_methods",
+    "danger_marker_activation",
+    "risk_axis_activation"
+  ],
+  "weak_confirmation": [
+    "single_transit_only",
+    "context_only_confirmation"
+  ],
+  "exclusions": [
+    "relationship_only_signature",
+    "career_only_signature"
+  ],
+  "direction_rules": [
+    {
+      "id": "cusp_1_to_cusp_8",
+      "title": "Directed cusp_1 -> Natal cusp_8",
+      "formula": "Directed cusp_1 -> Natal cusp_8",
+      "rule": "cusp_1_to_cusp_8",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #1",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_cusp_1",
+      "title": "Directed cusp_8 -> Natal cusp_1",
+      "formula": "Directed cusp_8 -> Natal cusp_1",
+      "rule": "cusp_8_to_cusp_1",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #2",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_cusp_8",
+      "title": "Directed ruler_1 -> Natal cusp_8",
+      "formula": "Directed ruler_1 -> Natal cusp_8",
+      "rule": "ruler_1_to_cusp_8",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #3",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_ruler_1",
+      "title": "Directed cusp_8 -> Natal ruler_1",
+      "formula": "Directed cusp_8 -> Natal ruler_1",
+      "rule": "cusp_8_to_ruler_1",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #4",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_cusp_1",
+      "title": "Directed ruler_8 -> Natal cusp_1",
+      "formula": "Directed ruler_8 -> Natal cusp_1",
+      "rule": "ruler_8_to_cusp_1",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #5",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_ruler_8",
+      "title": "Directed cusp_1 -> Natal ruler_8",
+      "formula": "Directed cusp_1 -> Natal ruler_8",
+      "rule": "cusp_1_to_ruler_8",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #6",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_ruler_8",
+      "title": "Directed ruler_1 -> Natal ruler_8",
+      "formula": "Directed ruler_1 -> Natal ruler_8",
+      "rule": "ruler_1_to_ruler_8",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #7",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_ruler_1",
+      "title": "Directed ruler_8 -> Natal ruler_1",
+      "formula": "Directed ruler_8 -> Natal ruler_1",
+      "rule": "ruler_8_to_ruler_1",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #8",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_3_to_cusp_8",
+      "title": "Directed cusp_3 -> Natal cusp_8",
+      "formula": "Directed cusp_3 -> Natal cusp_8",
+      "rule": "cusp_3_to_cusp_8",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #9",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_cusp_3",
+      "title": "Directed cusp_8 -> Natal cusp_3",
+      "formula": "Directed cusp_8 -> Natal cusp_3",
+      "rule": "cusp_8_to_cusp_3",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #10",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_3_to_cusp_8",
+      "title": "Directed ruler_3 -> Natal cusp_8",
+      "formula": "Directed ruler_3 -> Natal cusp_8",
+      "rule": "ruler_3_to_cusp_8",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #11",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_ruler_3",
+      "title": "Directed cusp_8 -> Natal ruler_3",
+      "formula": "Directed cusp_8 -> Natal ruler_3",
+      "rule": "cusp_8_to_ruler_3",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #12",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_cusp_1",
+      "title": "Directed mars -> Natal cusp_1",
+      "formula": "Directed mars -> Natal cusp_1",
+      "rule": "mars_to_cusp_1",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #13",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "mars",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_mars",
+      "title": "Directed cusp_1 -> Natal mars",
+      "formula": "Directed cusp_1 -> Natal mars",
+      "rule": "cusp_1_to_mars",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #14",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_ruler_1",
+      "title": "Directed mars -> Natal ruler_1",
+      "formula": "Directed mars -> Natal ruler_1",
+      "rule": "mars_to_ruler_1",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #15",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "mars",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_mars",
+      "title": "Directed ruler_1 -> Natal mars",
+      "formula": "Directed ruler_1 -> Natal mars",
+      "rule": "ruler_1_to_mars",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #16",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_cusp_8",
+      "title": "Directed mars -> Natal cusp_8",
+      "formula": "Directed mars -> Natal cusp_8",
+      "rule": "mars_to_cusp_8",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #17",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "mars",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_mars",
+      "title": "Directed cusp_8 -> Natal mars",
+      "formula": "Directed cusp_8 -> Natal mars",
+      "rule": "cusp_8_to_mars",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #18",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_ruler_8",
+      "title": "Directed mars -> Natal ruler_8",
+      "formula": "Directed mars -> Natal ruler_8",
+      "rule": "mars_to_ruler_8",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #19",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "mars",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_mars",
+      "title": "Directed ruler_8 -> Natal mars",
+      "formula": "Directed ruler_8 -> Natal mars",
+      "rule": "ruler_8_to_mars",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #20",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_cusp_1",
+      "title": "Directed uranus -> Natal cusp_1",
+      "formula": "Directed uranus -> Natal cusp_1",
+      "rule": "uranus_to_cusp_1",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #21",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "uranus",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_uranus",
+      "title": "Directed cusp_1 -> Natal uranus",
+      "formula": "Directed cusp_1 -> Natal uranus",
+      "rule": "cusp_1_to_uranus",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #22",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_ruler_1",
+      "title": "Directed uranus -> Natal ruler_1",
+      "formula": "Directed uranus -> Natal ruler_1",
+      "rule": "uranus_to_ruler_1",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #23",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "uranus",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_uranus",
+      "title": "Directed ruler_1 -> Natal uranus",
+      "formula": "Directed ruler_1 -> Natal uranus",
+      "rule": "ruler_1_to_uranus",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #24",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_cusp_8",
+      "title": "Directed uranus -> Natal cusp_8",
+      "formula": "Directed uranus -> Natal cusp_8",
+      "rule": "uranus_to_cusp_8",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #25",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "uranus",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_uranus",
+      "title": "Directed cusp_8 -> Natal uranus",
+      "formula": "Directed cusp_8 -> Natal uranus",
+      "rule": "cusp_8_to_uranus",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #26",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_ruler_8",
+      "title": "Directed uranus -> Natal ruler_8",
+      "formula": "Directed uranus -> Natal ruler_8",
+      "rule": "uranus_to_ruler_8",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #27",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "uranus",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_uranus",
+      "title": "Directed ruler_8 -> Natal uranus",
+      "formula": "Directed ruler_8 -> Natal uranus",
+      "rule": "ruler_8_to_uranus",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #28",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_cusp_1",
+      "title": "Directed pluto -> Natal cusp_1",
+      "formula": "Directed pluto -> Natal cusp_1",
+      "rule": "pluto_to_cusp_1",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #29",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "pluto",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_pluto",
+      "title": "Directed cusp_1 -> Natal pluto",
+      "formula": "Directed cusp_1 -> Natal pluto",
+      "rule": "cusp_1_to_pluto",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #30",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_ruler_1",
+      "title": "Directed pluto -> Natal ruler_1",
+      "formula": "Directed pluto -> Natal ruler_1",
+      "rule": "pluto_to_ruler_1",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #31",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "pluto",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_pluto",
+      "title": "Directed ruler_1 -> Natal pluto",
+      "formula": "Directed ruler_1 -> Natal pluto",
+      "rule": "ruler_1_to_pluto",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #32",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_cusp_8",
+      "title": "Directed pluto -> Natal cusp_8",
+      "formula": "Directed pluto -> Natal cusp_8",
+      "rule": "pluto_to_cusp_8",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #33",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "pluto",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_pluto",
+      "title": "Directed cusp_8 -> Natal pluto",
+      "formula": "Directed cusp_8 -> Natal pluto",
+      "rule": "cusp_8_to_pluto",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #34",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_ruler_8",
+      "title": "Directed pluto -> Natal ruler_8",
+      "formula": "Directed pluto -> Natal ruler_8",
+      "rule": "pluto_to_ruler_8",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #35",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "pluto",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_pluto",
+      "title": "Directed ruler_8 -> Natal pluto",
+      "formula": "Directed ruler_8 -> Natal pluto",
+      "rule": "ruler_8_to_pluto",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #36",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_uranus",
+      "title": "Directed mars -> Natal uranus",
+      "formula": "Directed mars -> Natal uranus",
+      "rule": "mars_to_uranus",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #37",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "mars",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_mars",
+      "title": "Directed uranus -> Natal mars",
+      "formula": "Directed uranus -> Natal mars",
+      "rule": "uranus_to_mars",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #38",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "uranus",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_pluto",
+      "title": "Directed mars -> Natal pluto",
+      "formula": "Directed mars -> Natal pluto",
+      "rule": "mars_to_pluto",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #39",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "mars",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_mars",
+      "title": "Directed pluto -> Natal mars",
+      "formula": "Directed pluto -> Natal mars",
+      "rule": "pluto_to_mars",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #40",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "pluto",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_house_element_1",
+      "title": "Directed cusp_8 -> Natal house_element_1",
+      "formula": "Directed cusp_8 -> Natal house_element_1",
+      "rule": "cusp_8_to_house_element_1",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #41",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_cusp_8",
+      "title": "Directed house_element_1 -> Natal cusp_8",
+      "formula": "Directed house_element_1 -> Natal cusp_8",
+      "rule": "house_element_1_to_cusp_8",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #42",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_8_to_house_element_1",
+      "title": "Directed ruler_8 -> Natal house_element_1",
+      "formula": "Directed ruler_8 -> Natal house_element_1",
+      "rule": "ruler_8_to_house_element_1",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #43",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_ruler_8",
+      "title": "Directed house_element_1 -> Natal ruler_8",
+      "formula": "Directed house_element_1 -> Natal ruler_8",
+      "rule": "house_element_1_to_ruler_8",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #44",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_cusp_1",
+      "title": "Directed house_element_8 -> Natal cusp_1",
+      "formula": "Directed house_element_8 -> Natal cusp_1",
+      "rule": "house_element_8_to_cusp_1",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #45",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_house_element_8",
+      "title": "Directed cusp_1 -> Natal house_element_8",
+      "formula": "Directed cusp_1 -> Natal house_element_8",
+      "rule": "cusp_1_to_house_element_8",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #46",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_ruler_1",
+      "title": "Directed house_element_8 -> Natal ruler_1",
+      "formula": "Directed house_element_8 -> Natal ruler_1",
+      "rule": "house_element_8_to_ruler_1",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #47",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_house_element_8",
+      "title": "Directed ruler_1 -> Natal house_element_8",
+      "formula": "Directed ruler_1 -> Natal house_element_8",
+      "rule": "ruler_1_to_house_element_8",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #48",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_house_element_8",
+      "title": "Directed house_element_1 -> Natal house_element_8",
+      "formula": "Directed house_element_1 -> Natal house_element_8",
+      "rule": "house_element_1_to_house_element_8",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #49",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_house_element_1",
+      "title": "Directed house_element_8 -> Natal house_element_1",
+      "formula": "Directed house_element_8 -> Natal house_element_1",
+      "rule": "house_element_8_to_house_element_1",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #50",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "mars_to_house_element_1",
+      "title": "Directed mars -> Natal house_element_1",
+      "formula": "Directed mars -> Natal house_element_1",
+      "rule": "mars_to_house_element_1",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #51",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "mars",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_mars",
+      "title": "Directed house_element_1 -> Natal mars",
+      "formula": "Directed house_element_1 -> Natal mars",
+      "rule": "house_element_1_to_mars",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #52",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "mars_to_house_element_8",
+      "title": "Directed mars -> Natal house_element_8",
+      "formula": "Directed mars -> Natal house_element_8",
+      "rule": "mars_to_house_element_8",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #53",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "mars",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_mars",
+      "title": "Directed house_element_8 -> Natal mars",
+      "formula": "Directed house_element_8 -> Natal mars",
+      "rule": "house_element_8_to_mars",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #54",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "uranus_to_house_element_1",
+      "title": "Directed uranus -> Natal house_element_1",
+      "formula": "Directed uranus -> Natal house_element_1",
+      "rule": "uranus_to_house_element_1",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #55",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "uranus",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_uranus",
+      "title": "Directed house_element_1 -> Natal uranus",
+      "formula": "Directed house_element_1 -> Natal uranus",
+      "rule": "house_element_1_to_uranus",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #56",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "uranus_to_house_element_8",
+      "title": "Directed uranus -> Natal house_element_8",
+      "formula": "Directed uranus -> Natal house_element_8",
+      "rule": "uranus_to_house_element_8",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #57",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "uranus",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_uranus",
+      "title": "Directed house_element_8 -> Natal uranus",
+      "formula": "Directed house_element_8 -> Natal uranus",
+      "rule": "house_element_8_to_uranus",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #58",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "pluto_to_house_element_1",
+      "title": "Directed pluto -> Natal house_element_1",
+      "formula": "Directed pluto -> Natal house_element_1",
+      "rule": "pluto_to_house_element_1",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #59",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "pluto",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_pluto",
+      "title": "Directed house_element_1 -> Natal pluto",
+      "formula": "Directed house_element_1 -> Natal pluto",
+      "rule": "house_element_1_to_pluto",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #60",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "pluto_to_house_element_8",
+      "title": "Directed pluto -> Natal house_element_8",
+      "formula": "Directed pluto -> Natal house_element_8",
+      "rule": "pluto_to_house_element_8",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #61",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "pluto",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_pluto",
+      "title": "Directed house_element_8 -> Natal pluto",
+      "formula": "Directed house_element_8 -> Natal pluto",
+      "rule": "house_element_8_to_pluto",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #62",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_9_to_cusp_8",
+      "title": "Directed cusp_9 -> Natal cusp_8",
+      "formula": "Directed cusp_9 -> Natal cusp_8",
+      "rule": "cusp_9_to_cusp_8",
+      "source": "cusp_9",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #63",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_9"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "cusp_9",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_8_to_cusp_9",
+      "title": "Directed cusp_8 -> Natal cusp_9",
+      "formula": "Directed cusp_8 -> Natal cusp_9",
+      "rule": "cusp_8_to_cusp_9",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "cusp_9",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #64",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "cusp_9"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "cusp_9",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_9_to_cusp_8",
+      "title": "Directed ruler_9 -> Natal cusp_8",
+      "formula": "Directed ruler_9 -> Natal cusp_8",
+      "rule": "ruler_9_to_cusp_8",
+      "source": "ruler_9",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #65",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_9"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "ruler_9",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_8_to_ruler_9",
+      "title": "Directed cusp_8 -> Natal ruler_9",
+      "formula": "Directed cusp_8 -> Natal ruler_9",
+      "rule": "cusp_8_to_ruler_9",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "ruler_9",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #66",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "ruler_9"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "ruler_9",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_8_to_cusp_3",
+      "title": "Directed ruler_8 -> Natal cusp_3",
+      "formula": "Directed ruler_8 -> Natal cusp_3",
+      "rule": "ruler_8_to_cusp_3",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #67",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_3_to_ruler_8",
+      "title": "Directed cusp_3 -> Natal ruler_8",
+      "formula": "Directed cusp_3 -> Natal ruler_8",
+      "rule": "cusp_3_to_ruler_8",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #68",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_8_to_cusp_9",
+      "title": "Directed ruler_8 -> Natal cusp_9",
+      "formula": "Directed ruler_8 -> Natal cusp_9",
+      "rule": "ruler_8_to_cusp_9",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "cusp_9",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #69",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "cusp_9"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "cusp_9",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_9_to_ruler_8",
+      "title": "Directed cusp_9 -> Natal ruler_8",
+      "formula": "Directed cusp_9 -> Natal ruler_8",
+      "rule": "cusp_9_to_ruler_8",
+      "source": "cusp_9",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #70",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_9"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "cusp_9",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_12_to_cusp_1",
+      "title": "Directed cusp_12 -> Natal cusp_1",
+      "formula": "Directed cusp_12 -> Natal cusp_1",
+      "rule": "cusp_12_to_cusp_1",
+      "source": "cusp_12",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #71",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_12"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_12",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_cusp_12",
+      "title": "Directed cusp_1 -> Natal cusp_12",
+      "formula": "Directed cusp_1 -> Natal cusp_12",
+      "rule": "cusp_1_to_cusp_12",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #72",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_12"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_12_to_cusp_1",
+      "title": "Directed ruler_12 -> Natal cusp_1",
+      "formula": "Directed ruler_12 -> Natal cusp_1",
+      "rule": "ruler_12_to_cusp_1",
+      "source": "ruler_12",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #73",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_12"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_12",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_ruler_12",
+      "title": "Directed cusp_1 -> Natal ruler_12",
+      "formula": "Directed cusp_1 -> Natal ruler_12",
+      "rule": "cusp_1_to_ruler_12",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #74",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_12"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_6_to_cusp_1",
+      "title": "Directed cusp_6 -> Natal cusp_1",
+      "formula": "Directed cusp_6 -> Natal cusp_1",
+      "rule": "cusp_6_to_cusp_1",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #75",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_cusp_6",
+      "title": "Directed cusp_1 -> Natal cusp_6",
+      "formula": "Directed cusp_1 -> Natal cusp_6",
+      "rule": "cusp_1_to_cusp_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #76",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_cusp_1",
+      "title": "Directed ruler_6 -> Natal cusp_1",
+      "formula": "Directed ruler_6 -> Natal cusp_1",
+      "rule": "ruler_6_to_cusp_1",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #77",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_ruler_6",
+      "title": "Directed cusp_1 -> Natal ruler_6",
+      "formula": "Directed cusp_1 -> Natal ruler_6",
+      "rule": "cusp_1_to_ruler_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #78",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "moon_to_cusp_1",
+      "title": "Directed moon -> Natal cusp_1",
+      "formula": "Directed moon -> Natal cusp_1",
+      "rule": "moon_to_cusp_1",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #79",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "moon",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_1_to_moon",
+      "title": "Directed cusp_1 -> Natal moon",
+      "formula": "Directed cusp_1 -> Natal moon",
+      "rule": "cusp_1_to_moon",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #80",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_ruler_1",
+      "title": "Directed moon -> Natal ruler_1",
+      "formula": "Directed moon -> Natal ruler_1",
+      "rule": "moon_to_ruler_1",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #81",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "moon",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_1_to_moon",
+      "title": "Directed ruler_1 -> Natal moon",
+      "formula": "Directed ruler_1 -> Natal moon",
+      "rule": "ruler_1_to_moon",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #82",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_house_element_1",
+      "title": "Directed moon -> Natal house_element_1",
+      "formula": "Directed moon -> Natal house_element_1",
+      "rule": "moon_to_house_element_1",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #83",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "moon",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_1_to_moon",
+      "title": "Directed house_element_1 -> Natal moon",
+      "formula": "Directed house_element_1 -> Natal moon",
+      "rule": "house_element_1_to_moon",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #84",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_mars",
+      "title": "Directed saturn -> Natal mars",
+      "formula": "Directed saturn -> Natal mars",
+      "rule": "saturn_to_mars",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #85",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "saturn",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "mars_to_saturn",
+      "title": "Directed mars -> Natal saturn",
+      "formula": "Directed mars -> Natal saturn",
+      "rule": "mars_to_saturn",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #86",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "mars",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_uranus",
+      "title": "Directed saturn -> Natal uranus",
+      "formula": "Directed saturn -> Natal uranus",
+      "rule": "saturn_to_uranus",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #87",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "saturn",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "uranus_to_saturn",
+      "title": "Directed uranus -> Natal saturn",
+      "formula": "Directed uranus -> Natal saturn",
+      "rule": "uranus_to_saturn",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #88",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "uranus",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_pluto",
+      "title": "Directed saturn -> Natal pluto",
+      "formula": "Directed saturn -> Natal pluto",
+      "rule": "saturn_to_pluto",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #89",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "saturn",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_saturn",
+      "title": "Directed pluto -> Natal saturn",
+      "formula": "Directed pluto -> Natal saturn",
+      "rule": "pluto_to_saturn",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #90",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "pluto",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "neptune_to_moon",
+      "title": "Directed neptune -> Natal moon",
+      "formula": "Directed neptune -> Natal moon",
+      "rule": "neptune_to_moon",
+      "source": "neptune",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #91",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "neptune"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "neptune",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_neptune",
+      "title": "Directed moon -> Natal neptune",
+      "formula": "Directed moon -> Natal neptune",
+      "rule": "moon_to_neptune",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "neptune",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #92",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "neptune"
+      ],
+      "display_source": "moon",
+      "display_target": "Neptune",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "neptune_to_mars",
+      "title": "Directed neptune -> Natal mars",
+      "formula": "Directed neptune -> Natal mars",
+      "rule": "neptune_to_mars",
+      "source": "neptune",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #93",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "neptune"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "neptune",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "mars_to_neptune",
+      "title": "Directed mars -> Natal neptune",
+      "formula": "Directed mars -> Natal neptune",
+      "rule": "mars_to_neptune",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "neptune",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #94",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "neptune"
+      ],
+      "display_source": "mars",
+      "display_target": "Neptune",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "neptune_to_uranus",
+      "title": "Directed neptune -> Natal uranus",
+      "formula": "Directed neptune -> Natal uranus",
+      "rule": "neptune_to_uranus",
+      "source": "neptune",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #95",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "neptune"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "neptune",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "uranus_to_neptune",
+      "title": "Directed uranus -> Natal neptune",
+      "formula": "Directed uranus -> Natal neptune",
+      "rule": "uranus_to_neptune",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "neptune",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #96",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "neptune"
+      ],
+      "display_source": "uranus",
+      "display_target": "Neptune",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_ruler_1",
+      "title": "Directed ruler_6 -> Natal ruler_1",
+      "formula": "Directed ruler_6 -> Natal ruler_1",
+      "rule": "ruler_6_to_ruler_1",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #97",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_1_to_ruler_6",
+      "title": "Directed ruler_1 -> Natal ruler_6",
+      "formula": "Directed ruler_1 -> Natal ruler_6",
+      "rule": "ruler_1_to_ruler_6",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #98",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_house_element_1",
+      "title": "Directed ruler_6 -> Natal house_element_1",
+      "formula": "Directed ruler_6 -> Natal house_element_1",
+      "rule": "ruler_6_to_house_element_1",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #99",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_1_to_ruler_6",
+      "title": "Directed house_element_1 -> Natal ruler_6",
+      "formula": "Directed house_element_1 -> Natal ruler_6",
+      "rule": "house_element_1_to_ruler_6",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #100",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_12_to_ruler_1",
+      "title": "Directed ruler_12 -> Natal ruler_1",
+      "formula": "Directed ruler_12 -> Natal ruler_1",
+      "rule": "ruler_12_to_ruler_1",
+      "source": "ruler_12",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #101",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_12"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_12",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_1_to_ruler_12",
+      "title": "Directed ruler_1 -> Natal ruler_12",
+      "formula": "Directed ruler_1 -> Natal ruler_12",
+      "rule": "ruler_1_to_ruler_12",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #102",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_12"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_12_to_house_element_1",
+      "title": "Directed ruler_12 -> Natal house_element_1",
+      "formula": "Directed ruler_12 -> Natal house_element_1",
+      "rule": "ruler_12_to_house_element_1",
+      "source": "ruler_12",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #103",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_12"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "ruler_12",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_1_to_ruler_12",
+      "title": "Directed house_element_1 -> Natal ruler_12",
+      "formula": "Directed house_element_1 -> Natal ruler_12",
+      "rule": "house_element_1_to_ruler_12",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "ruler_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #104",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "ruler_12"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "ruler_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_ruler_8",
+      "title": "Directed ruler_2 -> Natal ruler_8",
+      "formula": "Directed ruler_2 -> Natal ruler_8",
+      "rule": "ruler_2_to_ruler_8",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #105",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_8_to_ruler_2",
+      "title": "Directed ruler_8 -> Natal ruler_2",
+      "formula": "Directed ruler_8 -> Natal ruler_2",
+      "rule": "ruler_8_to_ruler_2",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #106",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_house_element_8",
+      "title": "Directed ruler_2 -> Natal house_element_8",
+      "formula": "Directed ruler_2 -> Natal house_element_8",
+      "rule": "ruler_2_to_house_element_8",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #107",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_8_to_ruler_2",
+      "title": "Directed house_element_8 -> Natal ruler_2",
+      "formula": "Directed house_element_8 -> Natal ruler_2",
+      "rule": "house_element_8_to_ruler_2",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal major-accident/life-risk v2 formula from Ekaterina draft pack (source title: авария, нападение, несчастный случай, риск для жизни).",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules. Bound to canonical event_type major_accident (closest existing EventType to the source title; surgery_accident_life_risk was considered but rejected due to overlap with the dedicated surgery card).",
+      "expert_review_needed": false,
+      "source_note": "12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt block #108",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    }
+  ],
+  "notes": "Draft sandbox card for major_accident, built with scripts/card_tool.py. Explicit expert/test selection only; production defaults unchanged.",
+  "draft_import_report": {
+    "source_files": [
+      "C:\\Users\\user\\Downloads\\Telegram Desktop\\12_Карточка_V2_авария,_нападение,_несчастный_случай,_риск_для_жизни.txt"
+    ],
+    "parsed_entries_count": 108,
+    "imported_formula_count": 108,
+    "imported_tier_counts": {
+      "golden": 40,
+      "supporting": 38,
+      "context": 30,
+      "ambiguity_risk": 0
+    },
+    "duplicate_groups_count": 0,
+    "collapsed_duplicate_entries": 0,
+    "malformed_entries_count": 0,
+    "skipped_malformed_blocks": [],
+    "duplicates_report": [],
+    "conflicts_for_review": [],
+    "conflicts_left_for_review": false,
+    "production_default_changed": false,
+    "explicit_selection_only": true,
+    "event_type_binding": "major_accident",
+    "import_timestamp_utc": "2026-07-21T18:28:44+00:00",
+    "expected_total": 108,
+    "expected_vs_imported_gap": 0
+  }
+}

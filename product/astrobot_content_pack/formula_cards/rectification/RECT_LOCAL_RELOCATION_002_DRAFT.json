@@ -1,0 +1,4042 @@
+{
+  "card_id": "RECT_LOCAL_RELOCATION_002_DRAFT",
+  "event_type": "local_relocation",
+  "status": "draft",
+  "card_version": "local_relocation_v2_draft_2026_07_21",
+  "school": "expert_rectification_v2_draft",
+  "title": "Local relocation (draft v2 imported sandbox)",
+  "core_logic": [
+    "house_3",
+    "house_4",
+    "moon",
+    "mercury",
+    "uranus"
+  ],
+  "houses": [
+    "house_1",
+    "house_3",
+    "house_4"
+  ],
+  "planets": [
+    "moon",
+    "mercury",
+    "uranus"
+  ],
+  "significators": [
+    "moon",
+    "mercury",
+    "uranus"
+  ],
+  "aspects": [
+    "local_relocation_axis",
+    "domestic_axis_activation",
+    "mobility_signature"
+  ],
+  "method_priority": [
+    "directions",
+    "solars",
+    "transits"
+  ],
+  "strong_confirmation": [
+    "multiple_methods",
+    "relocation_marker_activation",
+    "domestic_axis_activation"
+  ],
+  "weak_confirmation": [
+    "single_transit_only",
+    "context_only_confirmation"
+  ],
+  "exclusions": [
+    "relationship_only_signature",
+    "career_only_signature"
+  ],
+  "direction_rules": [
+    {
+      "id": "cusp_3_to_cusp_4",
+      "title": "Directed cusp_3 -> Natal cusp_4",
+      "formula": "Directed cusp_3 -> Natal cusp_4",
+      "rule": "cusp_3_to_cusp_4",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #1",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_cusp_3",
+      "title": "Directed cusp_4 -> Natal cusp_3",
+      "formula": "Directed cusp_4 -> Natal cusp_3",
+      "rule": "cusp_4_to_cusp_3",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #2",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_3_to_ruler_4",
+      "title": "Directed cusp_3 -> Natal ruler_4",
+      "formula": "Directed cusp_3 -> Natal ruler_4",
+      "rule": "cusp_3_to_ruler_4",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #3",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_cusp_3",
+      "title": "Directed ruler_4 -> Natal cusp_3",
+      "formula": "Directed ruler_4 -> Natal cusp_3",
+      "rule": "ruler_4_to_cusp_3",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #4",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_3_to_cusp_4",
+      "title": "Directed ruler_3 -> Natal cusp_4",
+      "formula": "Directed ruler_3 -> Natal cusp_4",
+      "rule": "ruler_3_to_cusp_4",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #5",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_ruler_3",
+      "title": "Directed cusp_4 -> Natal ruler_3",
+      "formula": "Directed cusp_4 -> Natal ruler_3",
+      "rule": "cusp_4_to_ruler_3",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #6",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_3_to_ruler_4",
+      "title": "Directed ruler_3 -> Natal ruler_4",
+      "formula": "Directed ruler_3 -> Natal ruler_4",
+      "rule": "ruler_3_to_ruler_4",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #7",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_ruler_3",
+      "title": "Directed ruler_4 -> Natal ruler_3",
+      "formula": "Directed ruler_4 -> Natal ruler_3",
+      "rule": "ruler_4_to_ruler_3",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #8",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "moon_to_cusp_3",
+      "title": "Directed moon -> Natal cusp_3",
+      "formula": "Directed moon -> Natal cusp_3",
+      "rule": "moon_to_cusp_3",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #9",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "moon",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_3_to_moon",
+      "title": "Directed cusp_3 -> Natal moon",
+      "formula": "Directed cusp_3 -> Natal moon",
+      "rule": "cusp_3_to_moon",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #10",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "moon_to_ruler_3",
+      "title": "Directed moon -> Natal ruler_3",
+      "formula": "Directed moon -> Natal ruler_3",
+      "rule": "moon_to_ruler_3",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #11",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "moon",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_3_to_moon",
+      "title": "Directed ruler_3 -> Natal moon",
+      "formula": "Directed ruler_3 -> Natal moon",
+      "rule": "ruler_3_to_moon",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #12",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mercury_to_cusp_4",
+      "title": "Directed mercury -> Natal cusp_4",
+      "formula": "Directed mercury -> Natal cusp_4",
+      "rule": "mercury_to_cusp_4",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #13",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "mercury",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_mercury",
+      "title": "Directed cusp_4 -> Natal mercury",
+      "formula": "Directed cusp_4 -> Natal mercury",
+      "rule": "cusp_4_to_mercury",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #14",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mercury_to_ruler_4",
+      "title": "Directed mercury -> Natal ruler_4",
+      "formula": "Directed mercury -> Natal ruler_4",
+      "rule": "mercury_to_ruler_4",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #15",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "mercury",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_mercury",
+      "title": "Directed ruler_4 -> Natal mercury",
+      "formula": "Directed ruler_4 -> Natal mercury",
+      "rule": "ruler_4_to_mercury",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #16",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_cusp_4",
+      "title": "Directed uranus -> Natal cusp_4",
+      "formula": "Directed uranus -> Natal cusp_4",
+      "rule": "uranus_to_cusp_4",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #17",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "uranus",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_uranus",
+      "title": "Directed cusp_4 -> Natal uranus",
+      "formula": "Directed cusp_4 -> Natal uranus",
+      "rule": "cusp_4_to_uranus",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #18",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_ruler_4",
+      "title": "Directed uranus -> Natal ruler_4",
+      "formula": "Directed uranus -> Natal ruler_4",
+      "rule": "uranus_to_ruler_4",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #19",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "uranus",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_4_to_uranus",
+      "title": "Directed ruler_4 -> Natal uranus",
+      "formula": "Directed ruler_4 -> Natal uranus",
+      "rule": "ruler_4_to_uranus",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #20",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_moon",
+      "title": "Directed uranus -> Natal moon",
+      "formula": "Directed uranus -> Natal moon",
+      "rule": "uranus_to_moon",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #21",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "uranus",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "moon_to_uranus",
+      "title": "Directed moon -> Natal uranus",
+      "formula": "Directed moon -> Natal uranus",
+      "rule": "moon_to_uranus",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #22",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "moon",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_mercury",
+      "title": "Directed uranus -> Natal mercury",
+      "formula": "Directed uranus -> Natal mercury",
+      "rule": "uranus_to_mercury",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #23",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "uranus",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mercury_to_uranus",
+      "title": "Directed mercury -> Natal uranus",
+      "formula": "Directed mercury -> Natal uranus",
+      "rule": "mercury_to_uranus",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #24",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "mercury",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "moon_to_mercury",
+      "title": "Directed moon -> Natal mercury",
+      "formula": "Directed moon -> Natal mercury",
+      "rule": "moon_to_mercury",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #25",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "moon",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mercury_to_moon",
+      "title": "Directed mercury -> Natal moon",
+      "formula": "Directed mercury -> Natal moon",
+      "rule": "mercury_to_moon",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #26",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "mercury",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_cusp_4",
+      "title": "Directed cusp_1 -> Natal cusp_4",
+      "formula": "Directed cusp_1 -> Natal cusp_4",
+      "rule": "cusp_1_to_cusp_4",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #27",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_4_to_cusp_1",
+      "title": "Directed cusp_4 -> Natal cusp_1",
+      "formula": "Directed cusp_4 -> Natal cusp_1",
+      "rule": "cusp_4_to_cusp_1",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #28",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_cusp_3",
+      "title": "Directed cusp_1 -> Natal cusp_3",
+      "formula": "Directed cusp_1 -> Natal cusp_3",
+      "rule": "cusp_1_to_cusp_3",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #29",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_3_to_cusp_1",
+      "title": "Directed cusp_3 -> Natal cusp_1",
+      "formula": "Directed cusp_3 -> Natal cusp_1",
+      "rule": "cusp_3_to_cusp_1",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #30",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_cusp_3",
+      "title": "Directed ruler_1 -> Natal cusp_3",
+      "formula": "Directed ruler_1 -> Natal cusp_3",
+      "rule": "ruler_1_to_cusp_3",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #31",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_3_to_ruler_1",
+      "title": "Directed cusp_3 -> Natal ruler_1",
+      "formula": "Directed cusp_3 -> Natal ruler_1",
+      "rule": "cusp_3_to_ruler_1",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #32",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_3_to_house_element_4",
+      "title": "Directed cusp_3 -> Natal house_element_4",
+      "formula": "Directed cusp_3 -> Natal house_element_4",
+      "rule": "cusp_3_to_house_element_4",
+      "source": "cusp_3",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #33",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_3"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "cusp_3",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_cusp_3",
+      "title": "Directed house_element_4 -> Natal cusp_3",
+      "formula": "Directed house_element_4 -> Natal cusp_3",
+      "rule": "house_element_4_to_cusp_3",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "cusp_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #34",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "cusp_3"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "cusp_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_3_to_house_element_4",
+      "title": "Directed ruler_3 -> Natal house_element_4",
+      "formula": "Directed ruler_3 -> Natal house_element_4",
+      "rule": "ruler_3_to_house_element_4",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #35",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_ruler_3",
+      "title": "Directed house_element_4 -> Natal ruler_3",
+      "formula": "Directed house_element_4 -> Natal ruler_3",
+      "rule": "house_element_4_to_ruler_3",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #36",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_4_to_house_element_3",
+      "title": "Directed cusp_4 -> Natal house_element_3",
+      "formula": "Directed cusp_4 -> Natal house_element_3",
+      "rule": "cusp_4_to_house_element_3",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "house_element_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #37",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "house_element_3"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "house_element_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_3_to_cusp_4",
+      "title": "Directed house_element_3 -> Natal cusp_4",
+      "formula": "Directed house_element_3 -> Natal cusp_4",
+      "rule": "house_element_3_to_cusp_4",
+      "source": "house_element_3",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #38",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_3"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "house_element_3",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_4_to_house_element_3",
+      "title": "Directed ruler_4 -> Natal house_element_3",
+      "formula": "Directed ruler_4 -> Natal house_element_3",
+      "rule": "ruler_4_to_house_element_3",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "house_element_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #39",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "house_element_3"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "house_element_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_3_to_ruler_4",
+      "title": "Directed house_element_3 -> Natal ruler_4",
+      "formula": "Directed house_element_3 -> Natal ruler_4",
+      "rule": "house_element_3_to_ruler_4",
+      "source": "house_element_3",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #40",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_3"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "house_element_3",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_3_to_house_element_4",
+      "title": "Directed house_element_3 -> Natal house_element_4",
+      "formula": "Directed house_element_3 -> Natal house_element_4",
+      "rule": "house_element_3_to_house_element_4",
+      "source": "house_element_3",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #41",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_3"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "house_element_3",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_house_element_3",
+      "title": "Directed house_element_4 -> Natal house_element_3",
+      "formula": "Directed house_element_4 -> Natal house_element_3",
+      "rule": "house_element_4_to_house_element_3",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "house_element_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #42",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "house_element_3"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "house_element_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "moon_to_house_element_3",
+      "title": "Directed moon -> Natal house_element_3",
+      "formula": "Directed moon -> Natal house_element_3",
+      "rule": "moon_to_house_element_3",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "house_element_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #43",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "house_element_3"
+      ],
+      "display_source": "moon",
+      "display_target": "house_element_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_3_to_moon",
+      "title": "Directed house_element_3 -> Natal moon",
+      "formula": "Directed house_element_3 -> Natal moon",
+      "rule": "house_element_3_to_moon",
+      "source": "house_element_3",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #44",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_3"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "house_element_3",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "mercury_to_house_element_4",
+      "title": "Directed mercury -> Natal house_element_4",
+      "formula": "Directed mercury -> Natal house_element_4",
+      "rule": "mercury_to_house_element_4",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #45",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "mercury",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_mercury",
+      "title": "Directed house_element_4 -> Natal mercury",
+      "formula": "Directed house_element_4 -> Natal mercury",
+      "rule": "house_element_4_to_mercury",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #46",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "uranus_to_house_element_4",
+      "title": "Directed uranus -> Natal house_element_4",
+      "formula": "Directed uranus -> Natal house_element_4",
+      "rule": "uranus_to_house_element_4",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #47",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "uranus",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_4_to_uranus",
+      "title": "Directed house_element_4 -> Natal uranus",
+      "formula": "Directed house_element_4 -> Natal uranus",
+      "rule": "house_element_4_to_uranus",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #48",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_cusp_4",
+      "title": "Directed ruler_1 -> Natal cusp_4",
+      "formula": "Directed ruler_1 -> Natal cusp_4",
+      "rule": "ruler_1_to_cusp_4",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #49",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_4_to_ruler_1",
+      "title": "Directed cusp_4 -> Natal ruler_1",
+      "formula": "Directed cusp_4 -> Natal ruler_1",
+      "rule": "cusp_4_to_ruler_1",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #50",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_ruler_4",
+      "title": "Directed ruler_1 -> Natal ruler_4",
+      "formula": "Directed ruler_1 -> Natal ruler_4",
+      "rule": "ruler_1_to_ruler_4",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #51",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_4_to_ruler_1",
+      "title": "Directed ruler_4 -> Natal ruler_1",
+      "formula": "Directed ruler_4 -> Natal ruler_1",
+      "rule": "ruler_4_to_ruler_1",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #52",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_ruler_3",
+      "title": "Directed ruler_1 -> Natal ruler_3",
+      "formula": "Directed ruler_1 -> Natal ruler_3",
+      "rule": "ruler_1_to_ruler_3",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #53",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_3_to_ruler_1",
+      "title": "Directed ruler_3 -> Natal ruler_1",
+      "formula": "Directed ruler_3 -> Natal ruler_1",
+      "rule": "ruler_3_to_ruler_1",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #54",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_ruler_4",
+      "title": "Directed cusp_1 -> Natal ruler_4",
+      "formula": "Directed cusp_1 -> Natal ruler_4",
+      "rule": "cusp_1_to_ruler_4",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #55",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_4_to_cusp_1",
+      "title": "Directed ruler_4 -> Natal cusp_1",
+      "formula": "Directed ruler_4 -> Natal cusp_1",
+      "rule": "ruler_4_to_cusp_1",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #56",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_ruler_3",
+      "title": "Directed cusp_1 -> Natal ruler_3",
+      "formula": "Directed cusp_1 -> Natal ruler_3",
+      "rule": "cusp_1_to_ruler_3",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #57",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_3_to_cusp_1",
+      "title": "Directed ruler_3 -> Natal cusp_1",
+      "formula": "Directed ruler_3 -> Natal cusp_1",
+      "rule": "ruler_3_to_cusp_1",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #58",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "moon_to_cusp_4",
+      "title": "Directed moon -> Natal cusp_4",
+      "formula": "Directed moon -> Natal cusp_4",
+      "rule": "moon_to_cusp_4",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #59",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "moon",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_4_to_moon",
+      "title": "Directed cusp_4 -> Natal moon",
+      "formula": "Directed cusp_4 -> Natal moon",
+      "rule": "cusp_4_to_moon",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #60",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_ruler_4",
+      "title": "Directed moon -> Natal ruler_4",
+      "formula": "Directed moon -> Natal ruler_4",
+      "rule": "moon_to_ruler_4",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #61",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "moon",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_moon",
+      "title": "Directed ruler_4 -> Natal moon",
+      "formula": "Directed ruler_4 -> Natal moon",
+      "rule": "ruler_4_to_moon",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #62",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "venus_to_cusp_4",
+      "title": "Directed venus -> Natal cusp_4",
+      "formula": "Directed venus -> Natal cusp_4",
+      "rule": "venus_to_cusp_4",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "cusp_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #63",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "cusp_4"
+      ],
+      "display_source": "venus",
+      "display_target": "cusp_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_4_to_venus",
+      "title": "Directed cusp_4 -> Natal venus",
+      "formula": "Directed cusp_4 -> Natal venus",
+      "rule": "cusp_4_to_venus",
+      "source": "cusp_4",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #64",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_4"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "cusp_4",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "venus_to_ruler_4",
+      "title": "Directed venus -> Natal ruler_4",
+      "formula": "Directed venus -> Natal ruler_4",
+      "rule": "venus_to_ruler_4",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #65",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "venus",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_venus",
+      "title": "Directed ruler_4 -> Natal venus",
+      "formula": "Directed ruler_4 -> Natal venus",
+      "rule": "ruler_4_to_venus",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #66",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "venus_to_house_element_4",
+      "title": "Directed venus -> Natal house_element_4",
+      "formula": "Directed venus -> Natal house_element_4",
+      "rule": "venus_to_house_element_4",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #67",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "venus",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_4_to_venus",
+      "title": "Directed house_element_4 -> Natal venus",
+      "formula": "Directed house_element_4 -> Natal venus",
+      "rule": "house_element_4_to_venus",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #68",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_moon",
+      "title": "Directed saturn -> Natal moon",
+      "formula": "Directed saturn -> Natal moon",
+      "rule": "saturn_to_moon",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #69",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "saturn",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_saturn",
+      "title": "Directed moon -> Natal saturn",
+      "formula": "Directed moon -> Natal saturn",
+      "rule": "moon_to_saturn",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #70",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "moon",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_mercury",
+      "title": "Directed saturn -> Natal mercury",
+      "formula": "Directed saturn -> Natal mercury",
+      "rule": "saturn_to_mercury",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #71",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "saturn",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "mercury_to_saturn",
+      "title": "Directed mercury -> Natal saturn",
+      "formula": "Directed mercury -> Natal saturn",
+      "rule": "mercury_to_saturn",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #72",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "mercury",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_ruler_4",
+      "title": "Directed ruler_2 -> Natal ruler_4",
+      "formula": "Directed ruler_2 -> Natal ruler_4",
+      "rule": "ruler_2_to_ruler_4",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #73",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_ruler_2",
+      "title": "Directed ruler_4 -> Natal ruler_2",
+      "formula": "Directed ruler_4 -> Natal ruler_2",
+      "rule": "ruler_4_to_ruler_2",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #74",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_house_element_4",
+      "title": "Directed ruler_2 -> Natal house_element_4",
+      "formula": "Directed ruler_2 -> Natal house_element_4",
+      "rule": "ruler_2_to_house_element_4",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #75",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_4"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_4_to_ruler_2",
+      "title": "Directed house_element_4 -> Natal ruler_2",
+      "formula": "Directed house_element_4 -> Natal ruler_2",
+      "rule": "house_element_4_to_ruler_2",
+      "source": "house_element_4",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #76",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_4"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_4",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_ruler_4",
+      "title": "Directed ruler_6 -> Natal ruler_4",
+      "formula": "Directed ruler_6 -> Natal ruler_4",
+      "rule": "ruler_6_to_ruler_4",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_4",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #77",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_4"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_4",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_4_to_ruler_6",
+      "title": "Directed ruler_4 -> Natal ruler_6",
+      "formula": "Directed ruler_4 -> Natal ruler_6",
+      "rule": "ruler_4_to_ruler_6",
+      "source": "ruler_4",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #78",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_4"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_4",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_ruler_3",
+      "title": "Directed ruler_6 -> Natal ruler_3",
+      "formula": "Directed ruler_6 -> Natal ruler_3",
+      "rule": "ruler_6_to_ruler_3",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #79",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_3"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_3_to_ruler_6",
+      "title": "Directed ruler_3 -> Natal ruler_6",
+      "formula": "Directed ruler_3 -> Natal ruler_6",
+      "rule": "ruler_3_to_ruler_6",
+      "source": "ruler_3",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #80",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_3"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_3",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "mercury_to_ruler_6",
+      "title": "Directed mercury -> Natal ruler_6",
+      "formula": "Directed mercury -> Natal ruler_6",
+      "rule": "mercury_to_ruler_6",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #81",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "mercury",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_mercury",
+      "title": "Directed ruler_6 -> Natal mercury",
+      "formula": "Directed ruler_6 -> Natal mercury",
+      "rule": "ruler_6_to_mercury",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #82",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "mercury_to_house_element_3",
+      "title": "Directed mercury -> Natal house_element_3",
+      "formula": "Directed mercury -> Natal house_element_3",
+      "rule": "mercury_to_house_element_3",
+      "source": "mercury",
+      "source_layer": "directed",
+      "target": "house_element_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #83",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mercury"
+      ],
+      "target_selectors": [
+        "house_element_3"
+      ],
+      "display_source": "mercury",
+      "display_target": "house_element_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_3_to_mercury",
+      "title": "Directed house_element_3 -> Natal mercury",
+      "formula": "Directed house_element_3 -> Natal mercury",
+      "rule": "house_element_3_to_mercury",
+      "source": "house_element_3",
+      "source_layer": "directed",
+      "target": "mercury",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #84",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_3"
+      ],
+      "target_selectors": [
+        "mercury"
+      ],
+      "display_source": "house_element_3",
+      "display_target": "Mercury",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "uranus_to_house_element_3",
+      "title": "Directed uranus -> Natal house_element_3",
+      "formula": "Directed uranus -> Natal house_element_3",
+      "rule": "uranus_to_house_element_3",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "house_element_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #85",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "house_element_3"
+      ],
+      "display_source": "uranus",
+      "display_target": "house_element_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_3_to_uranus",
+      "title": "Directed house_element_3 -> Natal uranus",
+      "formula": "Directed house_element_3 -> Natal uranus",
+      "rule": "house_element_3_to_uranus",
+      "source": "house_element_3",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #86",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_3"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "house_element_3",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_house_element_3",
+      "title": "Directed ruler_2 -> Natal house_element_3",
+      "formula": "Directed ruler_2 -> Natal house_element_3",
+      "rule": "ruler_2_to_house_element_3",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_3",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #87",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_3"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_3",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_3_to_ruler_2",
+      "title": "Directed house_element_3 -> Natal ruler_2",
+      "formula": "Directed house_element_3 -> Natal ruler_2",
+      "rule": "house_element_3_to_ruler_2",
+      "source": "house_element_3",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal local-relocation v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-21. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "9 - Карточка V2 - ближний переезд.txt block #88",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_3"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_3",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    }
+  ],
+  "notes": "Draft sandbox card for local_relocation, built with scripts/card_tool.py. Explicit expert/test selection only; production defaults unchanged.",
+  "draft_import_report": {
+    "source_files": [
+      "C:\\Users\\user\\Downloads\\Telegram Desktop\\9 - Карточка V2 - ближний переезд.txt"
+    ],
+    "parsed_entries_count": 88,
+    "imported_formula_count": 88,
+    "imported_tier_counts": {
+      "golden": 32,
+      "supporting": 26,
+      "context": 30,
+      "ambiguity_risk": 0
+    },
+    "duplicate_groups_count": 0,
+    "collapsed_duplicate_entries": 0,
+    "malformed_entries_count": 0,
+    "skipped_malformed_blocks": [],
+    "duplicates_report": [],
+    "conflicts_for_review": [],
+    "conflicts_left_for_review": false,
+    "production_default_changed": false,
+    "explicit_selection_only": true,
+    "event_type_binding": "local_relocation",
+    "import_timestamp_utc": "2026-07-21T18:28:31+00:00",
+    "expected_total": 88,
+    "expected_vs_imported_gap": 0
+  }
+}

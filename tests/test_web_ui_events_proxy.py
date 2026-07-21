@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import io
+import json
 import httpx
 import time
 import zipfile
+from pathlib import Path
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
@@ -613,8 +615,10 @@ def test_web_ui_rectification_pro_chunk_label_text_covers_new_death_cards() -> N
 
 
 def test_v2_draft_card_accepted_event_types_derived_from_disk_matches_real_cards() -> None:
+    # Проверяем known-подмножество карточек (а не точное число) — набор карточек
+    # на диске растёт со временем, тест не должен требовать правки при каждом добавлении.
     derived = web_ui_main._v2_draft_card_accepted_event_types()
-    assert derived == {
+    expected_subset = {
         "RECT_CHILD_BIRTH_002_DRAFT": {"child_birth", "children_birth"},
         "RECT_MARRIAGE_UNION_002_DRAFT": {"marriage_start", "marriage_union"},
         "RECT_PROFESSION_CHANGE_002_DRAFT": {"profession_change"},
@@ -623,7 +627,19 @@ def test_v2_draft_card_accepted_event_types_derived_from_disk_matches_real_cards
         "RECT_MOTHER_DEATH_002_DRAFT": {"death_mother"},
         "RECT_SIBLING_DEATH_002_DRAFT": {"death_sibling"},
         "RECT_GRANDPARENT_DEATH_002_DRAFT": {"death_grandparent"},
+        "RECT_LOCAL_RELOCATION_002_DRAFT": {"local_relocation"},
+        "RECT_LONG_DISTANCE_RELOCATION_002_DRAFT": {"long_distance_relocation"},
+        "RECT_MAJOR_ACCIDENT_002_DRAFT": {"major_accident"},
+        "RECT_SURGERY_002_DRAFT": {"surgery"},
     }
+    for card_id, event_types in expected_subset.items():
+        assert derived.get(card_id) == event_types, f"{card_id}: {derived.get(card_id)!r}"
+    # число карточек-источников на диске должно совпадать с числом ключей в derived
+    cards_root = Path(__file__).resolve().parents[1] / "product" / "astrobot_content_pack" / "formula_cards" / "rectification"
+    draft_files_count = sum(
+        1 for p in cards_root.glob("*.json") if json.loads(p.read_text(encoding="utf-8")).get("status") == "draft"
+    )
+    assert len(derived) == draft_files_count
 
 
 def test_v2_draft_card_accepted_event_types_picks_up_new_card_without_code_changes(tmp_path) -> None:
@@ -645,14 +661,19 @@ def test_v2_draft_card_accepted_event_types_picks_up_new_card_without_code_chang
     assert derived == {"RECT_NEW_EVENT_002_DRAFT": {"brand_new_event"}}
 
 
-def test_v2_draft_cards_endpoint_returns_all_eight_real_cards() -> None:
+def test_v2_draft_cards_endpoint_returns_all_real_cards() -> None:
     client = TestClient(web_ui_main.app)
     response = client.get("/api/rectification/pro/v2-draft-cards")
     assert response.status_code == 200
     cards = {item["card_id"]: item["event_types"] for item in response.json()["cards"]}
     assert cards["RECT_CHILD_BIRTH_002_DRAFT"] == ["child_birth", "children_birth"]
     assert cards["RECT_MOTHER_DEATH_002_DRAFT"] == ["death_mother"]
-    assert len(cards) == 8
+    assert cards["RECT_SURGERY_002_DRAFT"] == ["surgery"]
+    cards_root = Path(__file__).resolve().parents[1] / "product" / "astrobot_content_pack" / "formula_cards" / "rectification"
+    draft_files_count = sum(
+        1 for p in cards_root.glob("*.json") if json.loads(p.read_text(encoding="utf-8")).get("status") == "draft"
+    )
+    assert len(cards) == draft_files_count
 
 
 def test_v2_draft_card_accepted_event_types_ignores_non_draft_cards(tmp_path) -> None:
