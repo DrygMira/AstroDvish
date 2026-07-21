@@ -1354,3 +1354,27 @@ Every future report must include:
   - regress: default `child_birth` = `RECT_CHILD_BIRTH_001`; combined `8 событий x 8 V2 cards`: `8/8 completed`, Excel `200`
   - живая браузерная проверка (локально): select с 11 опциями (auto + 2 V1 + 8 V2) заполняется динамически, 0 ошибок в консоли, добавление нового draft-JSON делает карточку доступной в роутинге без единой правки кода (доказано тестом)
 - next step: П5 (эталонные регресс-кейсы по карточке) — ждёт референсов от Екатерины
+
+## 46. Четыре новых V2 draft-карточки через card_tool.py (2026-07-21)
+- A. what changed:
+  - `RECT_LOCAL_RELOCATION_002_DRAFT` (`local_relocation`, 88 формул: 32/26/30)
+  - `RECT_LONG_DISTANCE_RELOCATION_002_DRAFT` (`long_distance_relocation`, 98: 36/32/30)
+  - `RECT_MAJOR_ACCIDENT_002_DRAFT` (`major_accident`, 108: 40/38/30)
+  - `RECT_SURGERY_002_DRAFT` (`surgery`, 116: 44/42/30)
+  - все 4 добавлены через `scripts/card_tool.py add` из новых txt-паков Екатерины; event_type — существующие каноны `EventType` (не изобретены заново)
+  - коммит: `d9e18df`
+- B. tests:
+  - каждая карточка: `card_tool.py add` + `verify` + `verify --live` — все зелёные
+  - 2 теста, жёстко считавшие «ровно 8 карточек», переписаны на known-подмножество + динамический счётчик с диска (не потребуют правки при следующих карточках)
+  - полный `pytest -n auto`: `407 passed, 1 xfailed`
+- C. live/proof (`45.133.18.90`):
+  - деплой `d9e18df`: УСПЕХ, health OK, `--status` = совпадает
+  - все 4 новые карточки: `card_tool.py verify --live` направленный прямо на публичный `45.133.18.90:8014` — все OK
+  - `GET /v2-draft-cards` на проде: 200, все 12 карточек
+  - regress 8 исходных V2-карточек (combined report + Excel) не сломан
+- D/E. production/draft карточки: не менялись, все 4 новые — `status=draft`, explicit-only
+- F. risks / открытые вопросы (не блокируют деплой, но требуют внимания):
+  - source-файл хирургии имел пропущенную пустую строку между двумя блоками формул (склейка, потеря правила) — использована исправленная копия для импорта, оригинал в Downloads не тронут
+  - `major_accident` для карточки 12 — обоснованный, но не подтверждённый Екатериной выбор канона (альтернатива `surgery_accident_life_risk` отклонена из-за пересечения с surgery)
+  - meta-поля всех 4 карточек (core_logic/houses/planets/significators/confirmation/exclusions) выведены мной из содержимого golden-формул, не подтверждены экспертом — отмечено в `expert_note` каждой карточки
+- G. deploy status: live = `d9e18df` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
