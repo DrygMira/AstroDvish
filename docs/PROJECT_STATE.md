@@ -1401,3 +1401,15 @@ Every future report must include:
   - формат таблицы Excel (сортировка дат) — отдельная UX-задача, не начата
   - таблица «спорные зоны» — НЕ баг: две разные метрики (top_rejected_reasons / unresolved_source_summary) обе показывают одно и то же значение "Кандидат времени" (просто контекст), что выглядит как дублирующиеся строки. Кандидат на UX-полировку
 - G. deploy status: live = `3c56d08` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
+
+## 48. 13-я V2 draft-карточка: imprisonment, урок из §47 применён превентивно (2026-07-27)
+- A. what changed:
+  - `RECT_IMPRISONMENT_002_DRAFT` (`imprisonment`, 108 формул: 36/42/30) — из txt-пака «ограничение свободы, изоляция, принудительное уединение»
+  - `event_type=imprisonment` выбран сознательно вместо `freedom_restriction` (одинаковая русская подпись "Ограничение свободы" у обоих): `imprisonment` — активный тип с реальным вопросом мастера (`ev_imprisonment_17`, текст почти дословно совпадает с заголовком карточки); `freedom_restriction` нигде не привязан ни к одному вопросу — похоже на неиспользуемый legacy-алиас
+  - **до** добавления карточки проверено: `imprisonment` отсутствовал в тех же двух захардкоженных gate-таблицах, что чинили в §47 → добавлен туда превентивно, тем же коммитом, ДО того как баг успел проявиться
+  - процесс: сначала написан падающий explicit-select тест (подтвердил тот же класс бага — пустой `formula_test_mode_results`), затем регистрация в gate-таблицах, тест прошёл
+  - коммит: `3daf9e3`
+- B. tests: новый `test_rectification_pro_can_select_imprisonment_v2_draft_card_explicitly`; самообновляющиеся тесты (§46-47) подхватили 13-ю карточку без правок; полный `pytest -n auto`: `412 passed, 1 xfailed`
+- C. live/proof (`45.133.18.90`): деплой `3daf9e3` УСПЕХ; `--status` = совпадает; `card_tool.py verify --live` на публичном адресе — реальное совпадение, `formulas_count=108`; regress 8 исходных карточек не сломан
+- F. risks: meta-поля не подтверждены Екатериной (тот же паттерн, что и §46); выбор `imprisonment` vs `freedom_restriction` — обоснованное, но не подтверждённое ею решение
+- G. deploy status: live = `3daf9e3` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
