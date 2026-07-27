@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import date
 from pathlib import Path
 
@@ -140,6 +141,94 @@ def test_invalid_card_fails_when_allowed_aspects_is_not_list(tmp_path: Path) -> 
         loader.list_cards()
 
     assert "allowed_aspects must be a list" in str(exc.value)
+
+
+def _cache_probe_card(card_id: str, status: str = "test") -> dict:
+    return {
+        "card_id": card_id,
+        "event_type": "child_birth",
+        "status": status,
+        "core_logic": ["house_5"],
+        "houses": ["house_5"],
+        "planets": ["sun"],
+        "significators": ["sun"],
+        "aspects": ["child_axis"],
+        "method_priority": ["directions"],
+        "direction_rules": [
+            {
+                "id": f"{card_id.lower()}_rule",
+                "title": "Rule",
+                "source_selectors": ["sun"],
+                "target_selectors": ["jupiter"],
+                "aspect_types": ["sextile"],
+                "orb_limit": 1.0,
+                "required": True,
+                "weight": 1.0,
+            }
+        ],
+    }
+
+
+def _record_card_file_reads(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    """Пишет в список каждое реальное чтение json-карточки с диска."""
+    reads: list[str] = []
+    original_read_text = Path.read_text
+
+    def counting_read_text(self: Path, *args: object, **kwargs: object) -> str:
+        if self.suffix == ".json":
+            reads.append(self.name)
+        return original_read_text(self, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(Path, "read_text", counting_read_text)
+    return reads
+
+
+def test_formula_card_loader_reads_each_file_from_disk_only_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Неизменившиеся карточки не должны перечитываться с диска на каждый вызов.
+
+    Это горячий путь ректификации: load_card/list_cards вызываются десятки раз
+    за один расчёт, и без кэша каждый вызов заново читает и валидирует всю папку.
+    """
+    loader = _write_formula_cards(
+        tmp_path,
+        [_cache_probe_card("RECT_CACHE_A_001"), _cache_probe_card("RECT_CACHE_B_001")],
+    )
+    reads = _record_card_file_reads(monkeypatch)
+
+    first = loader.list_cards()
+    second = loader.list_cards()
+    picked = loader.load_card("RECT_CACHE_B_001")
+
+    assert {card.card_id for card in first} == {"RECT_CACHE_A_001", "RECT_CACHE_B_001"}
+    assert {card.card_id for card in second} == {"RECT_CACHE_A_001", "RECT_CACHE_B_001"}
+    assert picked.card_id == "RECT_CACHE_B_001"
+    assert sorted(reads) == ["RECT_CACHE_A_001.json", "RECT_CACHE_B_001.json"], (
+        f"каждый файл должен читаться с диска один раз, а прочитано: {sorted(reads)}"
+    )
+
+
+def test_formula_card_loader_reloads_card_after_file_changed_on_disk(tmp_path: Path) -> None:
+    """Кэш обязан сбрасываться при правке файла, иначе сломается разработка карточек.
+
+    Новое содержимое того же размера — проверяем именно реакцию на время
+    изменения, а не только на размер файла.
+    """
+    loader = _write_formula_cards(tmp_path, [_cache_probe_card("RECT_CACHE_RELOAD_001", status="test")])
+    assert loader.load_card("RECT_CACHE_RELOAD_001").status == "test"
+
+    card_path = tmp_path / "cards" / "RECT_CACHE_RELOAD_001.json"
+    size_before = card_path.stat().st_size
+    card_path.write_text(
+        json.dumps(_cache_probe_card("RECT_CACHE_RELOAD_001", status="beta"), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    assert card_path.stat().st_size == size_before, "проверка задумана на файле того же размера"
+    changed_at = card_path.stat().st_mtime + 10
+    os.utime(card_path, (changed_at, changed_at))
+
+    assert loader.load_card("RECT_CACHE_RELOAD_001").status == "beta"
 
 
 def test_child_birth_card_contains_house_5_and_house_4_core() -> None:

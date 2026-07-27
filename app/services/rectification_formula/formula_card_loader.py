@@ -27,6 +27,11 @@ class FormulaCardLoader:
         self.cards_root = cards_root or (
             Path(__file__).resolve().parents[3] / "product" / "astrobot_content_pack" / "formula_cards" / "rectification"
         )
+        # Разобранные карточки держим в памяти, пока файл на диске не изменился.
+        # Без этого горячий путь ректификации перечитывал, хешировал и заново
+        # валидировал всю папку на каждый вызов -- ~2500 загрузок за один расчёт
+        # и 86% его времени.
+        self._cache: dict[Path, tuple[int, int, FormulaCard]] = {}
 
     def list_cards(self) -> list[FormulaCard]:
         cards: list[FormulaCard] = []
@@ -44,6 +49,19 @@ class FormulaCardLoader:
         return [card for card in self.list_cards() if card.event_type == event_type]
 
     def _load_path(self, path: Path) -> FormulaCard:
+        stat = path.stat()
+        cached = self._cache.get(path)
+        if cached is not None and cached[0] == stat.st_mtime_ns and cached[1] == stat.st_size:
+            return cached[2]
+
+        card = self._parse_path(path)
+        # Присваивание в dict атомарно под GIL: гонка двух потоков в худшем случае
+        # приведёт к повторному разбору одного файла, но не к порче кэша, поэтому
+        # блокировку на горячем пути не ставим.
+        self._cache[path] = (stat.st_mtime_ns, stat.st_size, card)
+        return card
+
+    def _parse_path(self, path: Path) -> FormulaCard:
         raw_text = path.read_text(encoding="utf-8")
         try:
             raw = json.loads(raw_text)
