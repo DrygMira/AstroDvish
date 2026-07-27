@@ -672,6 +672,10 @@ class RectificationProService:
             "death_grandparent": "death_close_person",
             "death_close_person_other": "death_close_person",
             "death_of_close_person": "death_close_person",
+            "local_relocation": "local_relocation",
+            "long_distance_relocation": "long_distance_relocation",
+            "major_accident": "major_accident",
+            "surgery": "surgery",
         }
         return mapping.get(event_type)
 
@@ -721,5 +725,9 @@ class RectificationProService:
             "death_spouse": {"death_close_person"},
             "death_sibling": {"death_close_person", "death_sibling"},
             "death_grandparent": {"death_close_person", "death_grandparent"},
+            "local_relocation": {"local_relocation"},
+            "long_distance_relocation": {"long_distance_relocation"},
+            "major_accident": {"major_accident"},
+            "surgery": {"surgery"},
         }
         return mapping.get(str(raw_event_type), set())

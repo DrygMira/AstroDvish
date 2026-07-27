@@ -136,22 +136,6 @@ def _http_post_json(url: str, body: dict, timeout: int = 120) -> tuple[int, dict
         return exc.code, json.loads(exc.read() or b"{}")
 
 
-def _find_key(obj: object, key: str) -> object | None:
-    if isinstance(obj, dict):
-        if key in obj:
-            return obj[key]
-        for value in obj.values():
-            found = _find_key(value, key)
-            if found is not None:
-                return found
-    elif isinstance(obj, list):
-        for value in obj:
-            found = _find_key(value, key)
-            if found is not None:
-                return found
-    return None
-
-
 def _live_check(*, card_id: str, event_type: str, host_url: str, api_base_url: str) -> tuple[bool, str]:
     event = {
         "event_id": "card_tool_check",
@@ -173,7 +157,10 @@ def _live_check(*, card_id: str, event_type: str, host_url: str, api_base_url: s
         "payload": {
             **REFERENCE_BIRTH_PAYLOAD,
             "events": [event],
-            "settings": {"formula_card_ids": [card_id]},
+            # formula_card_id (в единственном числе) -- поле явного выбора одной карточки;
+            # НЕ formula_card_ids (список) -- то поле для сравнения нескольких карточек и
+            # проходит другую, более мягкую валидацию, которая не гарантирует реальный матчинг.
+            "settings": {"formula_card_id": card_id},
         },
     }
     try:
@@ -184,10 +171,19 @@ def _live_check(*, card_id: str, event_type: str, host_url: str, api_base_url: s
     if status != 200:
         return False, f"HTTP {status}: {json.dumps(data, ensure_ascii=False)[:400]}"
 
-    found_card_id = _find_key(data, "card_id")
-    if found_card_id != card_id:
-        return False, f"карточка не применилась: card_id в ответе = {found_card_id!r}, ожидался {card_id!r}"
-    return True, f"карточка применилась, card_id={found_card_id}"
+    # Проверяем реальный результат матчинга (formula_test_mode_results), а не
+    # эхо card_id из debug/performance-полей -- те присутствуют в ответе независимо
+    # от того, применилась ли карточка на самом деле.
+    results = data.get("formula_test_mode_results") or []
+    if not results:
+        return False, "карточка не применилась: formula_test_mode_results пуст (событие отфильтровано движком)"
+    matched_card_id = results[0].get("card_id")
+    formulas_count = results[0].get("formulas_count")
+    if matched_card_id != card_id:
+        return False, f"карточка не применилась: card_id в результате = {matched_card_id!r}, ожидался {card_id!r}"
+    if not formulas_count:
+        return False, f"карточка применилась, но formulas_count={formulas_count!r} (правила не загрузились)"
+    return True, f"карточка применилась, card_id={matched_card_id}, formulas_count={formulas_count}"
 
 
 def main() -> int:
