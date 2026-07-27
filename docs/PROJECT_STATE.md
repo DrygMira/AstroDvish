@@ -1378,3 +1378,26 @@ Every future report must include:
   - `major_accident` для карточки 12 — обоснованный, но не подтверждённый Екатериной выбор канона (альтернатива `surgery_accident_life_risk` отклонена из-за пересечения с surgery)
   - meta-поля всех 4 карточек (core_logic/houses/planets/significators/confirmation/exclusions) выведены мной из содержимого golden-формул, не подтверждены экспертом — отмечено в `expert_note` каждой карточки
 - G. deploy status: live = `d9e18df` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
+
+## 47. Найден и исправлен реальный баг: новые event_type молча отфильтровывались (2026-07-27)
+- A. what changed (root cause, найдено через живое тестирование Екатериной):
+  - `RectificationProService` и `FormulaRefinementService` (`app/services/rectification_pro/`) каждый хранят СВОЮ копию захардкоженной таблицы `_accepted_card_event_types` — она решает, разрешено ли explicit `formula_card_id` обрабатывать событие данного `raw_event_type`
+  - `local_relocation`/`long_distance_relocation`/`major_accident`/`surgery` отсутствовали в ОБЕИХ копиях → при explicit-выборе любой из 4 новых карточек событие тихо пропускалось (`continue`), `formula_test_mode_results` оставался пустым, БЕЗ ошибки
+  - в отчёте web_ui это проявлялось как «card_id есть в таблице, но Тип события/Дата — нигде» — потому что у `_aggregate_rectification_pro_card_audit` есть fallback на `chunk.get("card_id")`, а у `_aggregate_rectification_pro_event_type_contribution` fallback'а нет
+  - это же объясняет часть «13 событий → 10 в отчёте»: события с этими 4 типами не давали результата вообще
+  - добавлены self-identity записи (`event_type -> {event_type}`) в обе таблицы, по образцу уже существующего `relationship_start` (V2-only, без V1-бакета)
+  - попутно найден и исправлен баг в собственном `scripts/card_tool.py`: `verify --live` использовал `formula_card_ids` (множественное число, поле для сравнения) вместо `formula_card_id`, и слишком мягкий рекурсивный поиск `card_id` в ответе — тот находил безусловное эхо в `performance_debug.card_id` даже когда карточка реально не сработала. Из-за этого `verify --live` при добавлении 4 карточек (§46) дал ложноположительный OK
+  - коммит: `3c56d08`
+- B. tests:
+  - для бага написан падающий тест ДО фикса (`test_rectification_pro_can_select_major_accident_v2_draft_card_explicitly`) — подтверждён `IndexError` (пустой `formula_test_mode_results`), затем зафиксирован фикс
+  - добавлены аналогичные explicit-select тесты для всех 4 новых карточек (по образцу существующих `test_rectification_pro_can_select_<card>_explicitly`)
+  - полный `pytest -n auto`: `411 passed, 1 xfailed`
+- C. live/proof (`45.133.18.90`):
+  - деплой `3c56d08`: УСПЕХ, `--status` = совпадает
+  - все 4 новые карточки: `card_tool.py verify --live` (уже исправленным инструментом) — теперь с настоящим доказательством `formulas_count` (88/98/108/116), не просто эхом строки
+  - regress исходных 8 карточек (combined + Excel) не сломан
+- F. risks / открытое (не устранено в этом же диффе, требует отдельного решения):
+  - `web_ui`'s chunk-plan builder (`_build_rectification_pro_chunk_plan`) молча исключает события, чей `event_type` не совпал НИ С ОДНОЙ выбранной картой — `skipped_card_ids` считается, но никогда не отдаётся наружу (ни в ответ API, ни в Excel). Вероятно объясняет оставшиеся ~2 события из «13→10». Предложено Екатерине/пользователю как следующий шаг — нужно ок на дизайн (что именно показывать: список пропущенных событий/причину)
+  - формат таблицы Excel (сортировка дат) — отдельная UX-задача, не начата
+  - таблица «спорные зоны» — НЕ баг: две разные метрики (top_rejected_reasons / unresolved_source_summary) обе показывают одно и то же значение "Кандидат времени" (просто контекст), что выглядит как дублирующиеся строки. Кандидат на UX-полировку
+- G. deploy status: live = `3c56d08` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
