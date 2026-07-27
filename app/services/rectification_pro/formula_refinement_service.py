@@ -656,6 +656,8 @@ class FormulaRefinementService:
             "major_accident": "major_accident",
             "surgery": "surgery",
             "imprisonment": "imprisonment",
+            "financial_rise_fall": "financial_rise_fall",
+            "military_service": "military_service",
         }
         return mapping.get(event_type)
 
@@ -902,6 +904,8 @@ class FormulaRefinementService:
             "major_accident": {"major_accident"},
             "surgery": {"surgery"},
             "imprisonment": {"imprisonment"},
+            "financial_rise_fall": {"financial_rise_fall"},
+            "military_service": {"military_service"},
         }
         return mapping.get(str(raw_event_type), set())
 

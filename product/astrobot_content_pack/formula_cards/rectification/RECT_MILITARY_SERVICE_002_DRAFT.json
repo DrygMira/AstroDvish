@@ -1,0 +1,4851 @@
+{
+  "card_id": "RECT_MILITARY_SERVICE_002_DRAFT",
+  "event_type": "military_service",
+  "status": "draft",
+  "card_version": "military_service_v2_draft_2026_07_27",
+  "school": "expert_rectification_v2_draft",
+  "title": "Military service, conscription (draft v2 imported sandbox)",
+  "core_logic": [
+    "house_1",
+    "house_6",
+    "house_10",
+    "mars",
+    "saturn"
+  ],
+  "houses": [
+    "house_1",
+    "house_6",
+    "house_10",
+    "house_12"
+  ],
+  "planets": [
+    "mars",
+    "saturn"
+  ],
+  "significators": [
+    "mars",
+    "saturn"
+  ],
+  "aspects": [
+    "military_service_axis",
+    "duty_axis_activation",
+    "institutional_signature"
+  ],
+  "method_priority": [
+    "directions",
+    "solars",
+    "transits"
+  ],
+  "strong_confirmation": [
+    "multiple_methods",
+    "service_marker_activation",
+    "duty_axis_activation"
+  ],
+  "weak_confirmation": [
+    "single_transit_only",
+    "context_only_confirmation"
+  ],
+  "exclusions": [
+    "relationship_only_signature",
+    "financial_only_signature"
+  ],
+  "direction_rules": [
+    {
+      "id": "cusp_1_to_cusp_6",
+      "title": "Directed cusp_1 -> Natal cusp_6",
+      "formula": "Directed cusp_1 -> Natal cusp_6",
+      "rule": "cusp_1_to_cusp_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #1",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_cusp_1",
+      "title": "Directed cusp_6 -> Natal cusp_1",
+      "formula": "Directed cusp_6 -> Natal cusp_1",
+      "rule": "cusp_6_to_cusp_1",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #2",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_cusp_10",
+      "title": "Directed cusp_1 -> Natal cusp_10",
+      "formula": "Directed cusp_1 -> Natal cusp_10",
+      "rule": "cusp_1_to_cusp_10",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #3",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_cusp_1",
+      "title": "Directed cusp_10 -> Natal cusp_1",
+      "formula": "Directed cusp_10 -> Natal cusp_1",
+      "rule": "cusp_10_to_cusp_1",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #4",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_cusp_10",
+      "title": "Directed cusp_6 -> Natal cusp_10",
+      "formula": "Directed cusp_6 -> Natal cusp_10",
+      "rule": "cusp_6_to_cusp_10",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #5",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_cusp_6",
+      "title": "Directed cusp_10 -> Natal cusp_6",
+      "formula": "Directed cusp_10 -> Natal cusp_6",
+      "rule": "cusp_10_to_cusp_6",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #6",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_cusp_6",
+      "title": "Directed ruler_1 -> Natal cusp_6",
+      "formula": "Directed ruler_1 -> Natal cusp_6",
+      "rule": "ruler_1_to_cusp_6",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #7",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_ruler_1",
+      "title": "Directed cusp_6 -> Natal ruler_1",
+      "formula": "Directed cusp_6 -> Natal ruler_1",
+      "rule": "cusp_6_to_ruler_1",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #8",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_cusp_10",
+      "title": "Directed ruler_1 -> Natal cusp_10",
+      "formula": "Directed ruler_1 -> Natal cusp_10",
+      "rule": "ruler_1_to_cusp_10",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #9",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_ruler_1",
+      "title": "Directed cusp_10 -> Natal ruler_1",
+      "formula": "Directed cusp_10 -> Natal ruler_1",
+      "rule": "cusp_10_to_ruler_1",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #10",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_6_to_cusp_1",
+      "title": "Directed ruler_6 -> Natal cusp_1",
+      "formula": "Directed ruler_6 -> Natal cusp_1",
+      "rule": "ruler_6_to_cusp_1",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #11",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_ruler_6",
+      "title": "Directed cusp_1 -> Natal ruler_6",
+      "formula": "Directed cusp_1 -> Natal ruler_6",
+      "rule": "cusp_1_to_ruler_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #12",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_10_to_cusp_1",
+      "title": "Directed ruler_10 -> Natal cusp_1",
+      "formula": "Directed ruler_10 -> Natal cusp_1",
+      "rule": "ruler_10_to_cusp_1",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #13",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_ruler_10",
+      "title": "Directed cusp_1 -> Natal ruler_10",
+      "formula": "Directed cusp_1 -> Natal ruler_10",
+      "rule": "cusp_1_to_ruler_10",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #14",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_6_to_cusp_10",
+      "title": "Directed ruler_6 -> Natal cusp_10",
+      "formula": "Directed ruler_6 -> Natal cusp_10",
+      "rule": "ruler_6_to_cusp_10",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #15",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_ruler_6",
+      "title": "Directed cusp_10 -> Natal ruler_6",
+      "formula": "Directed cusp_10 -> Natal ruler_6",
+      "rule": "cusp_10_to_ruler_6",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #16",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_10_to_cusp_6",
+      "title": "Directed ruler_10 -> Natal cusp_6",
+      "formula": "Directed ruler_10 -> Natal cusp_6",
+      "rule": "ruler_10_to_cusp_6",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #17",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_ruler_10",
+      "title": "Directed cusp_6 -> Natal ruler_10",
+      "formula": "Directed cusp_6 -> Natal ruler_10",
+      "rule": "cusp_6_to_ruler_10",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #18",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_cusp_1",
+      "title": "Directed mars -> Natal cusp_1",
+      "formula": "Directed mars -> Natal cusp_1",
+      "rule": "mars_to_cusp_1",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #19",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "mars",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_mars",
+      "title": "Directed cusp_1 -> Natal mars",
+      "formula": "Directed cusp_1 -> Natal mars",
+      "rule": "cusp_1_to_mars",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #20",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_cusp_6",
+      "title": "Directed mars -> Natal cusp_6",
+      "formula": "Directed mars -> Natal cusp_6",
+      "rule": "mars_to_cusp_6",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #21",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "mars",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_mars",
+      "title": "Directed cusp_6 -> Natal mars",
+      "formula": "Directed cusp_6 -> Natal mars",
+      "rule": "cusp_6_to_mars",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #22",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_cusp_10",
+      "title": "Directed mars -> Natal cusp_10",
+      "formula": "Directed mars -> Natal cusp_10",
+      "rule": "mars_to_cusp_10",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #23",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "mars",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_mars",
+      "title": "Directed cusp_10 -> Natal mars",
+      "formula": "Directed cusp_10 -> Natal mars",
+      "rule": "cusp_10_to_mars",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #24",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_1",
+      "title": "Directed saturn -> Natal cusp_1",
+      "formula": "Directed saturn -> Natal cusp_1",
+      "rule": "saturn_to_cusp_1",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #25",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_1_to_saturn",
+      "title": "Directed cusp_1 -> Natal saturn",
+      "formula": "Directed cusp_1 -> Natal saturn",
+      "rule": "cusp_1_to_saturn",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #26",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_6",
+      "title": "Directed saturn -> Natal cusp_6",
+      "formula": "Directed saturn -> Natal cusp_6",
+      "rule": "saturn_to_cusp_6",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #27",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_saturn",
+      "title": "Directed cusp_6 -> Natal saturn",
+      "formula": "Directed cusp_6 -> Natal saturn",
+      "rule": "cusp_6_to_saturn",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #28",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_10",
+      "title": "Directed saturn -> Natal cusp_10",
+      "formula": "Directed saturn -> Natal cusp_10",
+      "rule": "saturn_to_cusp_10",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #29",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_10_to_saturn",
+      "title": "Directed cusp_10 -> Natal saturn",
+      "formula": "Directed cusp_10 -> Natal saturn",
+      "rule": "cusp_10_to_saturn",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #30",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "mars_to_saturn",
+      "title": "Directed mars -> Natal saturn",
+      "formula": "Directed mars -> Natal saturn",
+      "rule": "mars_to_saturn",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #31",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "mars",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_mars",
+      "title": "Directed saturn -> Natal mars",
+      "formula": "Directed saturn -> Natal mars",
+      "rule": "saturn_to_mars",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #32",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "saturn",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_12_to_cusp_6",
+      "title": "Directed cusp_12 -> Natal cusp_6",
+      "formula": "Directed cusp_12 -> Natal cusp_6",
+      "rule": "cusp_12_to_cusp_6",
+      "source": "cusp_12",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #33",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_12"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "cusp_12",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_cusp_12",
+      "title": "Directed cusp_6 -> Natal cusp_12",
+      "formula": "Directed cusp_6 -> Natal cusp_12",
+      "rule": "cusp_6_to_cusp_12",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "cusp_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #34",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "cusp_12"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "cusp_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_12_to_cusp_6",
+      "title": "Directed ruler_12 -> Natal cusp_6",
+      "formula": "Directed ruler_12 -> Natal cusp_6",
+      "rule": "ruler_12_to_cusp_6",
+      "source": "ruler_12",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #35",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_12"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "ruler_12",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_6_to_ruler_12",
+      "title": "Directed cusp_6 -> Natal ruler_12",
+      "formula": "Directed cusp_6 -> Natal ruler_12",
+      "rule": "cusp_6_to_ruler_12",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "ruler_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #36",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "ruler_12"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "ruler_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_1_to_ruler_6",
+      "title": "Directed ruler_1 -> Natal ruler_6",
+      "formula": "Directed ruler_1 -> Natal ruler_6",
+      "rule": "ruler_1_to_ruler_6",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #37",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_ruler_1",
+      "title": "Directed ruler_6 -> Natal ruler_1",
+      "formula": "Directed ruler_6 -> Natal ruler_1",
+      "rule": "ruler_6_to_ruler_1",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #38",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_ruler_10",
+      "title": "Directed ruler_1 -> Natal ruler_10",
+      "formula": "Directed ruler_1 -> Natal ruler_10",
+      "rule": "ruler_1_to_ruler_10",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #39",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_ruler_1",
+      "title": "Directed ruler_10 -> Natal ruler_1",
+      "formula": "Directed ruler_10 -> Natal ruler_1",
+      "rule": "ruler_10_to_ruler_1",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #40",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_ruler_10",
+      "title": "Directed ruler_6 -> Natal ruler_10",
+      "formula": "Directed ruler_6 -> Natal ruler_10",
+      "rule": "ruler_6_to_ruler_10",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #41",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_ruler_6",
+      "title": "Directed ruler_10 -> Natal ruler_6",
+      "formula": "Directed ruler_10 -> Natal ruler_6",
+      "rule": "ruler_10_to_ruler_6",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #42",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_6_to_house_element_1",
+      "title": "Directed cusp_6 -> Natal house_element_1",
+      "formula": "Directed cusp_6 -> Natal house_element_1",
+      "rule": "cusp_6_to_house_element_1",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #43",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_cusp_6",
+      "title": "Directed house_element_1 -> Natal cusp_6",
+      "formula": "Directed house_element_1 -> Natal cusp_6",
+      "rule": "house_element_1_to_cusp_6",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #44",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_10_to_house_element_1",
+      "title": "Directed cusp_10 -> Natal house_element_1",
+      "formula": "Directed cusp_10 -> Natal house_element_1",
+      "rule": "cusp_10_to_house_element_1",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #45",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_cusp_10",
+      "title": "Directed house_element_1 -> Natal cusp_10",
+      "formula": "Directed house_element_1 -> Natal cusp_10",
+      "rule": "house_element_1_to_cusp_10",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #46",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_cusp_1",
+      "title": "Directed house_element_6 -> Natal cusp_1",
+      "formula": "Directed house_element_6 -> Natal cusp_1",
+      "rule": "house_element_6_to_cusp_1",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #47",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_house_element_6",
+      "title": "Directed cusp_1 -> Natal house_element_6",
+      "formula": "Directed cusp_1 -> Natal house_element_6",
+      "rule": "cusp_1_to_house_element_6",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #48",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_cusp_1",
+      "title": "Directed house_element_10 -> Natal cusp_1",
+      "formula": "Directed house_element_10 -> Natal cusp_1",
+      "rule": "house_element_10_to_cusp_1",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #49",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_1_to_house_element_10",
+      "title": "Directed cusp_1 -> Natal house_element_10",
+      "formula": "Directed cusp_1 -> Natal house_element_10",
+      "rule": "cusp_1_to_house_element_10",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #50",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "house_element_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_cusp_10",
+      "title": "Directed house_element_6 -> Natal cusp_10",
+      "formula": "Directed house_element_6 -> Natal cusp_10",
+      "rule": "house_element_6_to_cusp_10",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #51",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_10_to_house_element_6",
+      "title": "Directed cusp_10 -> Natal house_element_6",
+      "formula": "Directed cusp_10 -> Natal house_element_6",
+      "rule": "cusp_10_to_house_element_6",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #52",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_cusp_6",
+      "title": "Directed house_element_10 -> Natal cusp_6",
+      "formula": "Directed house_element_10 -> Natal cusp_6",
+      "rule": "house_element_10_to_cusp_6",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #53",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_6_to_house_element_10",
+      "title": "Directed cusp_6 -> Natal house_element_10",
+      "formula": "Directed cusp_6 -> Natal house_element_10",
+      "rule": "cusp_6_to_house_element_10",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #54",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "house_element_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_house_element_6",
+      "title": "Directed house_element_1 -> Natal house_element_6",
+      "formula": "Directed house_element_1 -> Natal house_element_6",
+      "rule": "house_element_1_to_house_element_6",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #55",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_house_element_1",
+      "title": "Directed house_element_6 -> Natal house_element_1",
+      "formula": "Directed house_element_6 -> Natal house_element_1",
+      "rule": "house_element_6_to_house_element_1",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #56",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_1_to_house_element_10",
+      "title": "Directed house_element_1 -> Natal house_element_10",
+      "formula": "Directed house_element_1 -> Natal house_element_10",
+      "rule": "house_element_1_to_house_element_10",
+      "source": "house_element_1",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #57",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_1"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "house_element_1",
+      "display_target": "house_element_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_house_element_1",
+      "title": "Directed house_element_10 -> Natal house_element_1",
+      "formula": "Directed house_element_10 -> Natal house_element_1",
+      "rule": "house_element_10_to_house_element_1",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "house_element_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #58",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "house_element_1"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "house_element_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_house_element_10",
+      "title": "Directed house_element_6 -> Natal house_element_10",
+      "formula": "Directed house_element_6 -> Natal house_element_10",
+      "rule": "house_element_6_to_house_element_10",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "house_element_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #59",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "house_element_10"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "house_element_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_10_to_house_element_6",
+      "title": "Directed house_element_10 -> Natal house_element_6",
+      "formula": "Directed house_element_10 -> Natal house_element_6",
+      "rule": "house_element_10_to_house_element_6",
+      "source": "house_element_10",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #60",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_10"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "house_element_10",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "mars_to_ruler_1",
+      "title": "Directed mars -> Natal ruler_1",
+      "formula": "Directed mars -> Natal ruler_1",
+      "rule": "mars_to_ruler_1",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #61",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "mars",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_mars",
+      "title": "Directed ruler_1 -> Natal mars",
+      "formula": "Directed ruler_1 -> Natal mars",
+      "rule": "ruler_1_to_mars",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #62",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "mars_to_ruler_6",
+      "title": "Directed mars -> Natal ruler_6",
+      "formula": "Directed mars -> Natal ruler_6",
+      "rule": "mars_to_ruler_6",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #63",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "mars",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_mars",
+      "title": "Directed ruler_6 -> Natal mars",
+      "formula": "Directed ruler_6 -> Natal mars",
+      "rule": "ruler_6_to_mars",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #64",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "mars_to_ruler_10",
+      "title": "Directed mars -> Natal ruler_10",
+      "formula": "Directed mars -> Natal ruler_10",
+      "rule": "mars_to_ruler_10",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #65",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "mars",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_mars",
+      "title": "Directed ruler_10 -> Natal mars",
+      "formula": "Directed ruler_10 -> Natal mars",
+      "rule": "ruler_10_to_mars",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #66",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "saturn_to_ruler_1",
+      "title": "Directed saturn -> Natal ruler_1",
+      "formula": "Directed saturn -> Natal ruler_1",
+      "rule": "saturn_to_ruler_1",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #67",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "saturn",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_1_to_saturn",
+      "title": "Directed ruler_1 -> Natal saturn",
+      "formula": "Directed ruler_1 -> Natal saturn",
+      "rule": "ruler_1_to_saturn",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #68",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "saturn_to_ruler_6",
+      "title": "Directed saturn -> Natal ruler_6",
+      "formula": "Directed saturn -> Natal ruler_6",
+      "rule": "saturn_to_ruler_6",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #69",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "saturn",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_6_to_saturn",
+      "title": "Directed ruler_6 -> Natal saturn",
+      "formula": "Directed ruler_6 -> Natal saturn",
+      "rule": "ruler_6_to_saturn",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #70",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "saturn_to_ruler_10",
+      "title": "Directed saturn -> Natal ruler_10",
+      "formula": "Directed saturn -> Natal ruler_10",
+      "rule": "saturn_to_ruler_10",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #71",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "saturn",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_10_to_saturn",
+      "title": "Directed ruler_10 -> Natal saturn",
+      "formula": "Directed ruler_10 -> Natal saturn",
+      "rule": "ruler_10_to_saturn",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #72",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "mars_to_house_element_6",
+      "title": "Directed mars -> Natal house_element_6",
+      "formula": "Directed mars -> Natal house_element_6",
+      "rule": "mars_to_house_element_6",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #73",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "mars",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_mars",
+      "title": "Directed house_element_6 -> Natal mars",
+      "formula": "Directed house_element_6 -> Natal mars",
+      "rule": "house_element_6_to_mars",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #74",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "saturn_to_house_element_6",
+      "title": "Directed saturn -> Natal house_element_6",
+      "formula": "Directed saturn -> Natal house_element_6",
+      "rule": "saturn_to_house_element_6",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #75",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "saturn",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_6_to_saturn",
+      "title": "Directed house_element_6 -> Natal saturn",
+      "formula": "Directed house_element_6 -> Natal saturn",
+      "rule": "house_element_6_to_saturn",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #76",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_12_to_cusp_1",
+      "title": "Directed cusp_12 -> Natal cusp_1",
+      "formula": "Directed cusp_12 -> Natal cusp_1",
+      "rule": "cusp_12_to_cusp_1",
+      "source": "cusp_12",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #77",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_12"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "cusp_12",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_1_to_cusp_12",
+      "title": "Directed cusp_1 -> Natal cusp_12",
+      "formula": "Directed cusp_1 -> Natal cusp_12",
+      "rule": "cusp_1_to_cusp_12",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "cusp_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #78",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "cusp_12"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "cusp_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_12_to_cusp_1",
+      "title": "Directed ruler_12 -> Natal cusp_1",
+      "formula": "Directed ruler_12 -> Natal cusp_1",
+      "rule": "ruler_12_to_cusp_1",
+      "source": "ruler_12",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #79",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_12"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "ruler_12",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_1_to_ruler_12",
+      "title": "Directed cusp_1 -> Natal ruler_12",
+      "formula": "Directed cusp_1 -> Natal ruler_12",
+      "rule": "cusp_1_to_ruler_12",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "ruler_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #80",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "ruler_12"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "ruler_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_12_to_ruler_1",
+      "title": "Directed ruler_12 -> Natal ruler_1",
+      "formula": "Directed ruler_12 -> Natal ruler_1",
+      "rule": "ruler_12_to_ruler_1",
+      "source": "ruler_12",
+      "source_layer": "directed",
+      "target": "ruler_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #81",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_12"
+      ],
+      "target_selectors": [
+        "ruler_1"
+      ],
+      "display_source": "ruler_12",
+      "display_target": "ruler_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_1_to_ruler_12",
+      "title": "Directed ruler_1 -> Natal ruler_12",
+      "formula": "Directed ruler_1 -> Natal ruler_12",
+      "rule": "ruler_1_to_ruler_12",
+      "source": "ruler_1",
+      "source_layer": "directed",
+      "target": "ruler_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #82",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_1"
+      ],
+      "target_selectors": [
+        "ruler_12"
+      ],
+      "display_source": "ruler_1",
+      "display_target": "ruler_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_12_to_cusp_1",
+      "title": "Directed house_element_12 -> Natal cusp_1",
+      "formula": "Directed house_element_12 -> Natal cusp_1",
+      "rule": "house_element_12_to_cusp_1",
+      "source": "house_element_12",
+      "source_layer": "directed",
+      "target": "cusp_1",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #83",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_12"
+      ],
+      "target_selectors": [
+        "cusp_1"
+      ],
+      "display_source": "house_element_12",
+      "display_target": "cusp_1",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_1_to_house_element_12",
+      "title": "Directed cusp_1 -> Natal house_element_12",
+      "formula": "Directed cusp_1 -> Natal house_element_12",
+      "rule": "cusp_1_to_house_element_12",
+      "source": "cusp_1",
+      "source_layer": "directed",
+      "target": "house_element_12",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #84",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_1"
+      ],
+      "target_selectors": [
+        "house_element_12"
+      ],
+      "display_source": "cusp_1",
+      "display_target": "house_element_12",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_cusp_6",
+      "title": "Directed moon -> Natal cusp_6",
+      "formula": "Directed moon -> Natal cusp_6",
+      "rule": "moon_to_cusp_6",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "cusp_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #85",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "cusp_6"
+      ],
+      "display_source": "moon",
+      "display_target": "cusp_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_6_to_moon",
+      "title": "Directed cusp_6 -> Natal moon",
+      "formula": "Directed cusp_6 -> Natal moon",
+      "rule": "cusp_6_to_moon",
+      "source": "cusp_6",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #86",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_6"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "cusp_6",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_ruler_6",
+      "title": "Directed moon -> Natal ruler_6",
+      "formula": "Directed moon -> Natal ruler_6",
+      "rule": "moon_to_ruler_6",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #87",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "moon",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_moon",
+      "title": "Directed ruler_6 -> Natal moon",
+      "formula": "Directed ruler_6 -> Natal moon",
+      "rule": "ruler_6_to_moon",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #88",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_house_element_6",
+      "title": "Directed moon -> Natal house_element_6",
+      "formula": "Directed moon -> Natal house_element_6",
+      "rule": "moon_to_house_element_6",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #89",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "moon",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_6_to_moon",
+      "title": "Directed house_element_6 -> Natal moon",
+      "formula": "Directed house_element_6 -> Natal moon",
+      "rule": "house_element_6_to_moon",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #90",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_mars",
+      "title": "Directed pluto -> Natal mars",
+      "formula": "Directed pluto -> Natal mars",
+      "rule": "pluto_to_mars",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "mars",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #91",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "mars"
+      ],
+      "display_source": "pluto",
+      "display_target": "Mars",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "mars_to_pluto",
+      "title": "Directed mars -> Natal pluto",
+      "formula": "Directed mars -> Natal pluto",
+      "rule": "mars_to_pluto",
+      "source": "mars",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #92",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "mars"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "mars",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_saturn",
+      "title": "Directed pluto -> Natal saturn",
+      "formula": "Directed pluto -> Natal saturn",
+      "rule": "pluto_to_saturn",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #93",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "pluto",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_pluto",
+      "title": "Directed saturn -> Natal pluto",
+      "formula": "Directed saturn -> Natal pluto",
+      "rule": "saturn_to_pluto",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #94",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "saturn",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_cusp_10",
+      "title": "Directed pluto -> Natal cusp_10",
+      "formula": "Directed pluto -> Natal cusp_10",
+      "rule": "pluto_to_cusp_10",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "cusp_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #95",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "cusp_10"
+      ],
+      "display_source": "pluto",
+      "display_target": "cusp_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_10_to_pluto",
+      "title": "Directed cusp_10 -> Natal pluto",
+      "formula": "Directed cusp_10 -> Natal pluto",
+      "rule": "cusp_10_to_pluto",
+      "source": "cusp_10",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #96",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_10"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "cusp_10",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_ruler_10",
+      "title": "Directed pluto -> Natal ruler_10",
+      "formula": "Directed pluto -> Natal ruler_10",
+      "rule": "pluto_to_ruler_10",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #97",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "pluto",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_10_to_pluto",
+      "title": "Directed ruler_10 -> Natal pluto",
+      "formula": "Directed ruler_10 -> Natal pluto",
+      "rule": "ruler_10_to_pluto",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #98",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_ruler_6",
+      "title": "Directed ruler_2 -> Natal ruler_6",
+      "formula": "Directed ruler_2 -> Natal ruler_6",
+      "rule": "ruler_2_to_ruler_6",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #99",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_ruler_2",
+      "title": "Directed ruler_6 -> Natal ruler_2",
+      "formula": "Directed ruler_6 -> Natal ruler_2",
+      "rule": "ruler_6_to_ruler_2",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #100",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_house_element_6",
+      "title": "Directed ruler_2 -> Natal house_element_6",
+      "formula": "Directed ruler_2 -> Natal house_element_6",
+      "rule": "ruler_2_to_house_element_6",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #101",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_6"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_6_to_ruler_2",
+      "title": "Directed house_element_6 -> Natal ruler_2",
+      "formula": "Directed house_element_6 -> Natal ruler_2",
+      "rule": "house_element_6_to_ruler_2",
+      "source": "house_element_6",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #102",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_6"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_6",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_8_to_ruler_6",
+      "title": "Directed ruler_8 -> Natal ruler_6",
+      "formula": "Directed ruler_8 -> Natal ruler_6",
+      "rule": "ruler_8_to_ruler_6",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #103",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_ruler_8",
+      "title": "Directed ruler_6 -> Natal ruler_8",
+      "formula": "Directed ruler_6 -> Natal ruler_8",
+      "rule": "ruler_6_to_ruler_8",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #104",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_8_to_ruler_10",
+      "title": "Directed ruler_8 -> Natal ruler_10",
+      "formula": "Directed ruler_8 -> Natal ruler_10",
+      "rule": "ruler_8_to_ruler_10",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #105",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_10_to_ruler_8",
+      "title": "Directed ruler_10 -> Natal ruler_8",
+      "formula": "Directed ruler_10 -> Natal ruler_8",
+      "rule": "ruler_10_to_ruler_8",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal military-service v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt block #106",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    }
+  ],
+  "notes": "Draft sandbox card for military_service, built with scripts/card_tool.py. Explicit expert/test selection only; production defaults unchanged.",
+  "draft_import_report": {
+    "source_files": [
+      "C:\\Users\\user\\Downloads\\Telegram Desktop\\14_Карточка_V2_военная_служба,_служба_в_армии,_призыв,_воинская.txt"
+    ],
+    "parsed_entries_count": 106,
+    "imported_formula_count": 106,
+    "imported_tier_counts": {
+      "golden": 36,
+      "supporting": 40,
+      "context": 30,
+      "ambiguity_risk": 0
+    },
+    "duplicate_groups_count": 0,
+    "collapsed_duplicate_entries": 0,
+    "malformed_entries_count": 0,
+    "skipped_malformed_blocks": [],
+    "duplicates_report": [],
+    "conflicts_for_review": [],
+    "conflicts_left_for_review": false,
+    "production_default_changed": false,
+    "explicit_selection_only": true,
+    "event_type_binding": "military_service",
+    "import_timestamp_utc": "2026-07-27T17:01:34+00:00",
+    "expected_total": 106,
+    "expected_vs_imported_gap": 0
+  }
+}

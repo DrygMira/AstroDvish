@@ -563,6 +563,56 @@ def test_rectification_pro_can_select_imprisonment_v2_draft_card_explicitly(monk
     assert body["formula_refinement_results"]["card_id"] == "RECT_IMPRISONMENT_002_DRAFT"
 
 
+def test_rectification_pro_can_select_financial_rise_fall_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "financial_rise_fall"
+    payload["events"][0]["title"] = "Financial rise/fall"
+    payload["settings"]["formula_card_id"] = "RECT_FINANCIAL_RISE_FALL_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_FINANCIAL_RISE_FALL_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 116
+    assert result["priority_counts"] == {
+        "golden": 40,
+        "supporting": 46,
+        "context": 30,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_FINANCIAL_RISE_FALL_002_DRAFT"
+
+
+def test_rectification_pro_can_select_military_service_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "military_service"
+    payload["events"][0]["title"] = "Military service"
+    payload["settings"]["formula_card_id"] = "RECT_MILITARY_SERVICE_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_MILITARY_SERVICE_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 106
+    assert result["priority_counts"] == {
+        "golden": 36,
+        "supporting": 40,
+        "context": 30,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_MILITARY_SERVICE_002_DRAFT"
+
+
 def test_rectification_pro_can_select_mother_death_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     payload = _payload(1)

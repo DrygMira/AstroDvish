@@ -1,0 +1,5303 @@
+{
+  "card_id": "RECT_FINANCIAL_RISE_FALL_002_DRAFT",
+  "event_type": "financial_rise_fall",
+  "status": "draft",
+  "card_version": "financial_rise_fall_v2_draft_2026_07_27",
+  "school": "expert_rectification_v2_draft",
+  "title": "Financial rise / fall, sharp change in material situation (draft v2 imported sandbox)",
+  "core_logic": [
+    "house_2",
+    "house_8",
+    "house_11",
+    "jupiter",
+    "saturn"
+  ],
+  "houses": [
+    "house_2",
+    "house_8",
+    "house_11"
+  ],
+  "planets": [
+    "jupiter",
+    "venus",
+    "saturn",
+    "uranus",
+    "pluto"
+  ],
+  "significators": [
+    "jupiter",
+    "saturn"
+  ],
+  "aspects": [
+    "financial_change_axis",
+    "material_axis_activation",
+    "resource_shift_signature"
+  ],
+  "method_priority": [
+    "directions",
+    "solars",
+    "transits"
+  ],
+  "strong_confirmation": [
+    "multiple_methods",
+    "financial_marker_activation",
+    "material_axis_activation"
+  ],
+  "weak_confirmation": [
+    "single_transit_only",
+    "context_only_confirmation"
+  ],
+  "exclusions": [
+    "relationship_only_signature",
+    "career_only_signature"
+  ],
+  "direction_rules": [
+    {
+      "id": "cusp_2_to_cusp_8",
+      "title": "Directed cusp_2 -> Natal cusp_8",
+      "formula": "Directed cusp_2 -> Natal cusp_8",
+      "rule": "cusp_2_to_cusp_8",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #1",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_cusp_2",
+      "title": "Directed cusp_8 -> Natal cusp_2",
+      "formula": "Directed cusp_8 -> Natal cusp_2",
+      "rule": "cusp_8_to_cusp_2",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #2",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_cusp_11",
+      "title": "Directed cusp_2 -> Natal cusp_11",
+      "formula": "Directed cusp_2 -> Natal cusp_11",
+      "rule": "cusp_2_to_cusp_11",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #3",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_cusp_2",
+      "title": "Directed cusp_11 -> Natal cusp_2",
+      "formula": "Directed cusp_11 -> Natal cusp_2",
+      "rule": "cusp_11_to_cusp_2",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #4",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_cusp_11",
+      "title": "Directed cusp_8 -> Natal cusp_11",
+      "formula": "Directed cusp_8 -> Natal cusp_11",
+      "rule": "cusp_8_to_cusp_11",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #5",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_cusp_8",
+      "title": "Directed cusp_11 -> Natal cusp_8",
+      "formula": "Directed cusp_11 -> Natal cusp_8",
+      "rule": "cusp_11_to_cusp_8",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #6",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_ruler_8",
+      "title": "Directed cusp_2 -> Natal ruler_8",
+      "formula": "Directed cusp_2 -> Natal ruler_8",
+      "rule": "cusp_2_to_ruler_8",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #7",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_cusp_2",
+      "title": "Directed ruler_8 -> Natal cusp_2",
+      "formula": "Directed ruler_8 -> Natal cusp_2",
+      "rule": "ruler_8_to_cusp_2",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #8",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_2_to_cusp_8",
+      "title": "Directed ruler_2 -> Natal cusp_8",
+      "formula": "Directed ruler_2 -> Natal cusp_8",
+      "rule": "ruler_2_to_cusp_8",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #9",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_ruler_2",
+      "title": "Directed cusp_8 -> Natal ruler_2",
+      "formula": "Directed cusp_8 -> Natal ruler_2",
+      "rule": "cusp_8_to_ruler_2",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #10",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_ruler_11",
+      "title": "Directed cusp_2 -> Natal ruler_11",
+      "formula": "Directed cusp_2 -> Natal ruler_11",
+      "rule": "cusp_2_to_ruler_11",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #11",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_11_to_cusp_2",
+      "title": "Directed ruler_11 -> Natal cusp_2",
+      "formula": "Directed ruler_11 -> Natal cusp_2",
+      "rule": "ruler_11_to_cusp_2",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #12",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_2_to_cusp_11",
+      "title": "Directed ruler_2 -> Natal cusp_11",
+      "formula": "Directed ruler_2 -> Natal cusp_11",
+      "rule": "ruler_2_to_cusp_11",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #13",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_ruler_2",
+      "title": "Directed cusp_11 -> Natal ruler_2",
+      "formula": "Directed cusp_11 -> Natal ruler_2",
+      "rule": "cusp_11_to_ruler_2",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #14",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_ruler_11",
+      "title": "Directed cusp_8 -> Natal ruler_11",
+      "formula": "Directed cusp_8 -> Natal ruler_11",
+      "rule": "cusp_8_to_ruler_11",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #15",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_11_to_cusp_8",
+      "title": "Directed ruler_11 -> Natal cusp_8",
+      "formula": "Directed ruler_11 -> Natal cusp_8",
+      "rule": "ruler_11_to_cusp_8",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #16",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_8_to_cusp_11",
+      "title": "Directed ruler_8 -> Natal cusp_11",
+      "formula": "Directed ruler_8 -> Natal cusp_11",
+      "rule": "ruler_8_to_cusp_11",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #17",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_ruler_8",
+      "title": "Directed cusp_11 -> Natal ruler_8",
+      "formula": "Directed cusp_11 -> Natal ruler_8",
+      "rule": "cusp_11_to_ruler_8",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #18",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "jupiter_to_cusp_2",
+      "title": "Directed jupiter -> Natal cusp_2",
+      "formula": "Directed jupiter -> Natal cusp_2",
+      "rule": "jupiter_to_cusp_2",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #19",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "jupiter",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_jupiter",
+      "title": "Directed cusp_2 -> Natal jupiter",
+      "formula": "Directed cusp_2 -> Natal jupiter",
+      "rule": "cusp_2_to_jupiter",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #20",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "Jupiter",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "jupiter_to_cusp_11",
+      "title": "Directed jupiter -> Natal cusp_11",
+      "formula": "Directed jupiter -> Natal cusp_11",
+      "rule": "jupiter_to_cusp_11",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #21",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "jupiter",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_jupiter",
+      "title": "Directed cusp_11 -> Natal jupiter",
+      "formula": "Directed cusp_11 -> Natal jupiter",
+      "rule": "cusp_11_to_jupiter",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #22",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "Jupiter",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "venus_to_cusp_2",
+      "title": "Directed venus -> Natal cusp_2",
+      "formula": "Directed venus -> Natal cusp_2",
+      "rule": "venus_to_cusp_2",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #23",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "venus",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_venus",
+      "title": "Directed cusp_2 -> Natal venus",
+      "formula": "Directed cusp_2 -> Natal venus",
+      "rule": "cusp_2_to_venus",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #24",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "venus_to_cusp_11",
+      "title": "Directed venus -> Natal cusp_11",
+      "formula": "Directed venus -> Natal cusp_11",
+      "rule": "venus_to_cusp_11",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #25",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "venus",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_11_to_venus",
+      "title": "Directed cusp_11 -> Natal venus",
+      "formula": "Directed cusp_11 -> Natal venus",
+      "rule": "cusp_11_to_venus",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #26",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_2",
+      "title": "Directed saturn -> Natal cusp_2",
+      "formula": "Directed saturn -> Natal cusp_2",
+      "rule": "saturn_to_cusp_2",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #27",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_saturn",
+      "title": "Directed cusp_2 -> Natal saturn",
+      "formula": "Directed cusp_2 -> Natal saturn",
+      "rule": "cusp_2_to_saturn",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #28",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "saturn_to_cusp_8",
+      "title": "Directed saturn -> Natal cusp_8",
+      "formula": "Directed saturn -> Natal cusp_8",
+      "rule": "saturn_to_cusp_8",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #29",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "saturn",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_saturn",
+      "title": "Directed cusp_8 -> Natal saturn",
+      "formula": "Directed cusp_8 -> Natal saturn",
+      "rule": "cusp_8_to_saturn",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #30",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_cusp_2",
+      "title": "Directed uranus -> Natal cusp_2",
+      "formula": "Directed uranus -> Natal cusp_2",
+      "rule": "uranus_to_cusp_2",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #31",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "uranus",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_uranus",
+      "title": "Directed cusp_2 -> Natal uranus",
+      "formula": "Directed cusp_2 -> Natal uranus",
+      "rule": "cusp_2_to_uranus",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #32",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_cusp_8",
+      "title": "Directed uranus -> Natal cusp_8",
+      "formula": "Directed uranus -> Natal cusp_8",
+      "rule": "uranus_to_cusp_8",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #33",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "uranus",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_uranus",
+      "title": "Directed cusp_8 -> Natal uranus",
+      "formula": "Directed cusp_8 -> Natal uranus",
+      "rule": "cusp_8_to_uranus",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #34",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_cusp_2",
+      "title": "Directed pluto -> Natal cusp_2",
+      "formula": "Directed pluto -> Natal cusp_2",
+      "rule": "pluto_to_cusp_2",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #35",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "pluto",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_2_to_pluto",
+      "title": "Directed cusp_2 -> Natal pluto",
+      "formula": "Directed cusp_2 -> Natal pluto",
+      "rule": "cusp_2_to_pluto",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #36",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "pluto_to_cusp_8",
+      "title": "Directed pluto -> Natal cusp_8",
+      "formula": "Directed pluto -> Natal cusp_8",
+      "rule": "pluto_to_cusp_8",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #37",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "pluto",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "cusp_8_to_pluto",
+      "title": "Directed cusp_8 -> Natal pluto",
+      "formula": "Directed cusp_8 -> Natal pluto",
+      "rule": "cusp_8_to_pluto",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #38",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "jupiter_to_uranus",
+      "title": "Directed jupiter -> Natal uranus",
+      "formula": "Directed jupiter -> Natal uranus",
+      "rule": "jupiter_to_uranus",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #39",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "jupiter",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "uranus_to_jupiter",
+      "title": "Directed uranus -> Natal jupiter",
+      "formula": "Directed uranus -> Natal jupiter",
+      "rule": "uranus_to_jupiter",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "golden",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #40",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "uranus",
+      "display_target": "Jupiter",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.4,
+      "priority_tier": "golden"
+    },
+    {
+      "id": "ruler_2_to_ruler_8",
+      "title": "Directed ruler_2 -> Natal ruler_8",
+      "formula": "Directed ruler_2 -> Natal ruler_8",
+      "rule": "ruler_2_to_ruler_8",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #41",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_8_to_ruler_2",
+      "title": "Directed ruler_8 -> Natal ruler_2",
+      "formula": "Directed ruler_8 -> Natal ruler_2",
+      "rule": "ruler_8_to_ruler_2",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #42",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_2_to_ruler_11",
+      "title": "Directed ruler_2 -> Natal ruler_11",
+      "formula": "Directed ruler_2 -> Natal ruler_11",
+      "rule": "ruler_2_to_ruler_11",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #43",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_11_to_ruler_2",
+      "title": "Directed ruler_11 -> Natal ruler_2",
+      "formula": "Directed ruler_11 -> Natal ruler_2",
+      "rule": "ruler_11_to_ruler_2",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #44",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_8_to_ruler_11",
+      "title": "Directed ruler_8 -> Natal ruler_11",
+      "formula": "Directed ruler_8 -> Natal ruler_11",
+      "rule": "ruler_8_to_ruler_11",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #45",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_11_to_ruler_8",
+      "title": "Directed ruler_11 -> Natal ruler_8",
+      "formula": "Directed ruler_11 -> Natal ruler_8",
+      "rule": "ruler_11_to_ruler_8",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #46",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_8_to_house_element_2",
+      "title": "Directed cusp_8 -> Natal house_element_2",
+      "formula": "Directed cusp_8 -> Natal house_element_2",
+      "rule": "cusp_8_to_house_element_2",
+      "source": "cusp_8",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #47",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_8"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "cusp_8",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_cusp_8",
+      "title": "Directed house_element_2 -> Natal cusp_8",
+      "formula": "Directed house_element_2 -> Natal cusp_8",
+      "rule": "house_element_2_to_cusp_8",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "cusp_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #48",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "cusp_8"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "cusp_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_8_to_house_element_2",
+      "title": "Directed ruler_8 -> Natal house_element_2",
+      "formula": "Directed ruler_8 -> Natal house_element_2",
+      "rule": "ruler_8_to_house_element_2",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #49",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_ruler_8",
+      "title": "Directed house_element_2 -> Natal ruler_8",
+      "formula": "Directed house_element_2 -> Natal ruler_8",
+      "rule": "house_element_2_to_ruler_8",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #50",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_11_to_house_element_2",
+      "title": "Directed cusp_11 -> Natal house_element_2",
+      "formula": "Directed cusp_11 -> Natal house_element_2",
+      "rule": "cusp_11_to_house_element_2",
+      "source": "cusp_11",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #51",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_11"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "cusp_11",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_cusp_11",
+      "title": "Directed house_element_2 -> Natal cusp_11",
+      "formula": "Directed house_element_2 -> Natal cusp_11",
+      "rule": "house_element_2_to_cusp_11",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "cusp_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #52",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "cusp_11"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "cusp_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_11_to_house_element_2",
+      "title": "Directed ruler_11 -> Natal house_element_2",
+      "formula": "Directed ruler_11 -> Natal house_element_2",
+      "rule": "ruler_11_to_house_element_2",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #53",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_ruler_11",
+      "title": "Directed house_element_2 -> Natal ruler_11",
+      "formula": "Directed house_element_2 -> Natal ruler_11",
+      "rule": "house_element_2_to_ruler_11",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #54",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_cusp_2",
+      "title": "Directed house_element_8 -> Natal cusp_2",
+      "formula": "Directed house_element_8 -> Natal cusp_2",
+      "rule": "house_element_8_to_cusp_2",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #55",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_2_to_house_element_8",
+      "title": "Directed cusp_2 -> Natal house_element_8",
+      "formula": "Directed cusp_2 -> Natal house_element_8",
+      "rule": "cusp_2_to_house_element_8",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #56",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_ruler_2",
+      "title": "Directed house_element_8 -> Natal ruler_2",
+      "formula": "Directed house_element_8 -> Natal ruler_2",
+      "rule": "house_element_8_to_ruler_2",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #57",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_2_to_house_element_8",
+      "title": "Directed ruler_2 -> Natal house_element_8",
+      "formula": "Directed ruler_2 -> Natal house_element_8",
+      "rule": "ruler_2_to_house_element_8",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #58",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_11_to_cusp_2",
+      "title": "Directed house_element_11 -> Natal cusp_2",
+      "formula": "Directed house_element_11 -> Natal cusp_2",
+      "rule": "house_element_11_to_cusp_2",
+      "source": "house_element_11",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #59",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_11"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "house_element_11",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "cusp_2_to_house_element_11",
+      "title": "Directed cusp_2 -> Natal house_element_11",
+      "formula": "Directed cusp_2 -> Natal house_element_11",
+      "rule": "cusp_2_to_house_element_11",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "house_element_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #60",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "house_element_11"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "house_element_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_11_to_ruler_2",
+      "title": "Directed house_element_11 -> Natal ruler_2",
+      "formula": "Directed house_element_11 -> Natal ruler_2",
+      "rule": "house_element_11_to_ruler_2",
+      "source": "house_element_11",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #61",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_11"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "house_element_11",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_2_to_house_element_11",
+      "title": "Directed ruler_2 -> Natal house_element_11",
+      "formula": "Directed ruler_2 -> Natal house_element_11",
+      "rule": "ruler_2_to_house_element_11",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "house_element_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #62",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "house_element_11"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "house_element_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_house_element_8",
+      "title": "Directed house_element_2 -> Natal house_element_8",
+      "formula": "Directed house_element_2 -> Natal house_element_8",
+      "rule": "house_element_2_to_house_element_8",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #63",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_house_element_2",
+      "title": "Directed house_element_8 -> Natal house_element_2",
+      "formula": "Directed house_element_8 -> Natal house_element_2",
+      "rule": "house_element_8_to_house_element_2",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #64",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_house_element_11",
+      "title": "Directed house_element_2 -> Natal house_element_11",
+      "formula": "Directed house_element_2 -> Natal house_element_11",
+      "rule": "house_element_2_to_house_element_11",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "house_element_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #65",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "house_element_11"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "house_element_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_11_to_house_element_2",
+      "title": "Directed house_element_11 -> Natal house_element_2",
+      "formula": "Directed house_element_11 -> Natal house_element_2",
+      "rule": "house_element_11_to_house_element_2",
+      "source": "house_element_11",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #66",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_11"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "house_element_11",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "jupiter_to_house_element_2",
+      "title": "Directed jupiter -> Natal house_element_2",
+      "formula": "Directed jupiter -> Natal house_element_2",
+      "rule": "jupiter_to_house_element_2",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #67",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "jupiter",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_jupiter",
+      "title": "Directed house_element_2 -> Natal jupiter",
+      "formula": "Directed house_element_2 -> Natal jupiter",
+      "rule": "house_element_2_to_jupiter",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #68",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "Jupiter",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "jupiter_to_house_element_11",
+      "title": "Directed jupiter -> Natal house_element_11",
+      "formula": "Directed jupiter -> Natal house_element_11",
+      "rule": "jupiter_to_house_element_11",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "house_element_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #69",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "house_element_11"
+      ],
+      "display_source": "jupiter",
+      "display_target": "house_element_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_11_to_jupiter",
+      "title": "Directed house_element_11 -> Natal jupiter",
+      "formula": "Directed house_element_11 -> Natal jupiter",
+      "rule": "house_element_11_to_jupiter",
+      "source": "house_element_11",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #70",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_11"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "house_element_11",
+      "display_target": "Jupiter",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "venus_to_house_element_2",
+      "title": "Directed venus -> Natal house_element_2",
+      "formula": "Directed venus -> Natal house_element_2",
+      "rule": "venus_to_house_element_2",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #71",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "venus",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_venus",
+      "title": "Directed house_element_2 -> Natal venus",
+      "formula": "Directed house_element_2 -> Natal venus",
+      "rule": "house_element_2_to_venus",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #72",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "venus_to_house_element_11",
+      "title": "Directed venus -> Natal house_element_11",
+      "formula": "Directed venus -> Natal house_element_11",
+      "rule": "venus_to_house_element_11",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "house_element_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #73",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "house_element_11"
+      ],
+      "display_source": "venus",
+      "display_target": "house_element_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_11_to_venus",
+      "title": "Directed house_element_11 -> Natal venus",
+      "formula": "Directed house_element_11 -> Natal venus",
+      "rule": "house_element_11_to_venus",
+      "source": "house_element_11",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #74",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_11"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "house_element_11",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "saturn_to_house_element_2",
+      "title": "Directed saturn -> Natal house_element_2",
+      "formula": "Directed saturn -> Natal house_element_2",
+      "rule": "saturn_to_house_element_2",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #75",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "saturn",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_saturn",
+      "title": "Directed house_element_2 -> Natal saturn",
+      "formula": "Directed house_element_2 -> Natal saturn",
+      "rule": "house_element_2_to_saturn",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #76",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "saturn_to_house_element_8",
+      "title": "Directed saturn -> Natal house_element_8",
+      "formula": "Directed saturn -> Natal house_element_8",
+      "rule": "saturn_to_house_element_8",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #77",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "saturn",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_saturn",
+      "title": "Directed house_element_8 -> Natal saturn",
+      "formula": "Directed house_element_8 -> Natal saturn",
+      "rule": "house_element_8_to_saturn",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #78",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "uranus_to_house_element_2",
+      "title": "Directed uranus -> Natal house_element_2",
+      "formula": "Directed uranus -> Natal house_element_2",
+      "rule": "uranus_to_house_element_2",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #79",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "uranus",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_uranus",
+      "title": "Directed house_element_2 -> Natal uranus",
+      "formula": "Directed house_element_2 -> Natal uranus",
+      "rule": "house_element_2_to_uranus",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #80",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "uranus_to_house_element_8",
+      "title": "Directed uranus -> Natal house_element_8",
+      "formula": "Directed uranus -> Natal house_element_8",
+      "rule": "uranus_to_house_element_8",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #81",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "uranus",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_uranus",
+      "title": "Directed house_element_8 -> Natal uranus",
+      "formula": "Directed house_element_8 -> Natal uranus",
+      "rule": "house_element_8_to_uranus",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #82",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "pluto_to_house_element_2",
+      "title": "Directed pluto -> Natal house_element_2",
+      "formula": "Directed pluto -> Natal house_element_2",
+      "rule": "pluto_to_house_element_2",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #83",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "pluto",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_2_to_pluto",
+      "title": "Directed house_element_2 -> Natal pluto",
+      "formula": "Directed house_element_2 -> Natal pluto",
+      "rule": "house_element_2_to_pluto",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #84",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "pluto_to_house_element_8",
+      "title": "Directed pluto -> Natal house_element_8",
+      "formula": "Directed pluto -> Natal house_element_8",
+      "rule": "pluto_to_house_element_8",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "house_element_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #85",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "house_element_8"
+      ],
+      "display_source": "pluto",
+      "display_target": "house_element_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "house_element_8_to_pluto",
+      "title": "Directed house_element_8 -> Natal pluto",
+      "formula": "Directed house_element_8 -> Natal pluto",
+      "rule": "house_element_8_to_pluto",
+      "source": "house_element_8",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "supporting",
+      "role": "event_confirmation",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #86",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_8"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "house_element_8",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": true,
+      "weight": 1.0,
+      "priority_tier": "supporting"
+    },
+    {
+      "id": "ruler_5_to_ruler_2",
+      "title": "Directed ruler_5 -> Natal ruler_2",
+      "formula": "Directed ruler_5 -> Natal ruler_2",
+      "rule": "ruler_5_to_ruler_2",
+      "source": "ruler_5",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #87",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_5"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_5",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_ruler_5",
+      "title": "Directed ruler_2 -> Natal ruler_5",
+      "formula": "Directed ruler_2 -> Natal ruler_5",
+      "rule": "ruler_2_to_ruler_5",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_5",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #88",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_5"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_5",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_5_to_ruler_8",
+      "title": "Directed ruler_5 -> Natal ruler_8",
+      "formula": "Directed ruler_5 -> Natal ruler_8",
+      "rule": "ruler_5_to_ruler_8",
+      "source": "ruler_5",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #89",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_5"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_5",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_8_to_ruler_5",
+      "title": "Directed ruler_8 -> Natal ruler_5",
+      "formula": "Directed ruler_8 -> Natal ruler_5",
+      "rule": "ruler_8_to_ruler_5",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_5",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #90",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_5"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_5",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_5_to_ruler_11",
+      "title": "Directed ruler_5 -> Natal ruler_11",
+      "formula": "Directed ruler_5 -> Natal ruler_11",
+      "rule": "ruler_5_to_ruler_11",
+      "source": "ruler_5",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #91",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_5"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "ruler_5",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_11_to_ruler_5",
+      "title": "Directed ruler_11 -> Natal ruler_5",
+      "formula": "Directed ruler_11 -> Natal ruler_5",
+      "rule": "ruler_11_to_ruler_5",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "ruler_5",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #92",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "ruler_5"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "ruler_5",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_10_to_ruler_2",
+      "title": "Directed ruler_10 -> Natal ruler_2",
+      "formula": "Directed ruler_10 -> Natal ruler_2",
+      "rule": "ruler_10_to_ruler_2",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #93",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_ruler_10",
+      "title": "Directed ruler_2 -> Natal ruler_10",
+      "formula": "Directed ruler_2 -> Natal ruler_10",
+      "rule": "ruler_2_to_ruler_10",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #94",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_10_to_ruler_11",
+      "title": "Directed ruler_10 -> Natal ruler_11",
+      "formula": "Directed ruler_10 -> Natal ruler_11",
+      "rule": "ruler_10_to_ruler_11",
+      "source": "ruler_10",
+      "source_layer": "directed",
+      "target": "ruler_11",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #95",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_10"
+      ],
+      "target_selectors": [
+        "ruler_11"
+      ],
+      "display_source": "ruler_10",
+      "display_target": "ruler_11",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_11_to_ruler_10",
+      "title": "Directed ruler_11 -> Natal ruler_10",
+      "formula": "Directed ruler_11 -> Natal ruler_10",
+      "rule": "ruler_11_to_ruler_10",
+      "source": "ruler_11",
+      "source_layer": "directed",
+      "target": "ruler_10",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #96",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_11"
+      ],
+      "target_selectors": [
+        "ruler_10"
+      ],
+      "display_source": "ruler_11",
+      "display_target": "ruler_10",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_6_to_ruler_2",
+      "title": "Directed ruler_6 -> Natal ruler_2",
+      "formula": "Directed ruler_6 -> Natal ruler_2",
+      "rule": "ruler_6_to_ruler_2",
+      "source": "ruler_6",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #97",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_6"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "ruler_6",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_ruler_6",
+      "title": "Directed ruler_2 -> Natal ruler_6",
+      "formula": "Directed ruler_2 -> Natal ruler_6",
+      "rule": "ruler_2_to_ruler_6",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "ruler_6",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #98",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "ruler_6"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "ruler_6",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_cusp_2",
+      "title": "Directed moon -> Natal cusp_2",
+      "formula": "Directed moon -> Natal cusp_2",
+      "rule": "moon_to_cusp_2",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "cusp_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #99",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "cusp_2"
+      ],
+      "display_source": "moon",
+      "display_target": "cusp_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "cusp_2_to_moon",
+      "title": "Directed cusp_2 -> Natal moon",
+      "formula": "Directed cusp_2 -> Natal moon",
+      "rule": "cusp_2_to_moon",
+      "source": "cusp_2",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #100",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "cusp_2"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "cusp_2",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_ruler_2",
+      "title": "Directed moon -> Natal ruler_2",
+      "formula": "Directed moon -> Natal ruler_2",
+      "rule": "moon_to_ruler_2",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "ruler_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #101",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "ruler_2"
+      ],
+      "display_source": "moon",
+      "display_target": "ruler_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_2_to_moon",
+      "title": "Directed ruler_2 -> Natal moon",
+      "formula": "Directed ruler_2 -> Natal moon",
+      "rule": "ruler_2_to_moon",
+      "source": "ruler_2",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #102",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_2"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "ruler_2",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "moon_to_house_element_2",
+      "title": "Directed moon -> Natal house_element_2",
+      "formula": "Directed moon -> Natal house_element_2",
+      "rule": "moon_to_house_element_2",
+      "source": "moon",
+      "source_layer": "directed",
+      "target": "house_element_2",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #103",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "moon"
+      ],
+      "target_selectors": [
+        "house_element_2"
+      ],
+      "display_source": "moon",
+      "display_target": "house_element_2",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "house_element_2_to_moon",
+      "title": "Directed house_element_2 -> Natal moon",
+      "formula": "Directed house_element_2 -> Natal moon",
+      "rule": "house_element_2_to_moon",
+      "source": "house_element_2",
+      "source_layer": "directed",
+      "target": "moon",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #104",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "house_element_2"
+      ],
+      "target_selectors": [
+        "moon"
+      ],
+      "display_source": "house_element_2",
+      "display_target": "Moon",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "venus_to_saturn",
+      "title": "Directed venus -> Natal saturn",
+      "formula": "Directed venus -> Natal saturn",
+      "rule": "venus_to_saturn",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #105",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "venus",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_venus",
+      "title": "Directed saturn -> Natal venus",
+      "formula": "Directed saturn -> Natal venus",
+      "rule": "saturn_to_venus",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #106",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "saturn",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "jupiter_to_saturn",
+      "title": "Directed jupiter -> Natal saturn",
+      "formula": "Directed jupiter -> Natal saturn",
+      "rule": "jupiter_to_saturn",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "saturn",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #107",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "saturn"
+      ],
+      "display_source": "jupiter",
+      "display_target": "Saturn",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "saturn_to_jupiter",
+      "title": "Directed saturn -> Natal jupiter",
+      "formula": "Directed saturn -> Natal jupiter",
+      "rule": "saturn_to_jupiter",
+      "source": "saturn",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #108",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "saturn"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "saturn",
+      "display_target": "Jupiter",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "jupiter_to_pluto",
+      "title": "Directed jupiter -> Natal pluto",
+      "formula": "Directed jupiter -> Natal pluto",
+      "rule": "jupiter_to_pluto",
+      "source": "jupiter",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #109",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "jupiter"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "jupiter",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_jupiter",
+      "title": "Directed pluto -> Natal jupiter",
+      "formula": "Directed pluto -> Natal jupiter",
+      "rule": "pluto_to_jupiter",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "jupiter",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #110",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "jupiter"
+      ],
+      "display_source": "pluto",
+      "display_target": "Jupiter",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "uranus_to_venus",
+      "title": "Directed uranus -> Natal venus",
+      "formula": "Directed uranus -> Natal venus",
+      "rule": "uranus_to_venus",
+      "source": "uranus",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #111",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "uranus"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "uranus",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "venus_to_uranus",
+      "title": "Directed venus -> Natal uranus",
+      "formula": "Directed venus -> Natal uranus",
+      "rule": "venus_to_uranus",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "uranus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #112",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "uranus"
+      ],
+      "display_source": "venus",
+      "display_target": "Uranus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "pluto_to_venus",
+      "title": "Directed pluto -> Natal venus",
+      "formula": "Directed pluto -> Natal venus",
+      "rule": "pluto_to_venus",
+      "source": "pluto",
+      "source_layer": "directed",
+      "target": "venus",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #113",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "pluto"
+      ],
+      "target_selectors": [
+        "venus"
+      ],
+      "display_source": "pluto",
+      "display_target": "Venus",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "venus_to_pluto",
+      "title": "Directed venus -> Natal pluto",
+      "formula": "Directed venus -> Natal pluto",
+      "rule": "venus_to_pluto",
+      "source": "venus",
+      "source_layer": "directed",
+      "target": "pluto",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #114",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "venus"
+      ],
+      "target_selectors": [
+        "pluto"
+      ],
+      "display_source": "venus",
+      "display_target": "Pluto",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_7_to_ruler_8",
+      "title": "Directed ruler_7 -> Natal ruler_8",
+      "formula": "Directed ruler_7 -> Natal ruler_8",
+      "rule": "ruler_7_to_ruler_8",
+      "source": "ruler_7",
+      "source_layer": "directed",
+      "target": "ruler_8",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #115",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_7"
+      ],
+      "target_selectors": [
+        "ruler_8"
+      ],
+      "display_source": "ruler_7",
+      "display_target": "ruler_8",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    },
+    {
+      "id": "ruler_8_to_ruler_7",
+      "title": "Directed ruler_8 -> Natal ruler_7",
+      "formula": "Directed ruler_8 -> Natal ruler_7",
+      "rule": "ruler_8_to_ruler_7",
+      "source": "ruler_8",
+      "source_layer": "directed",
+      "target": "ruler_7",
+      "target_layer": "natal",
+      "allowed_aspects": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "aspect": "conjunction",
+      "priority": "context",
+      "role": "context",
+      "meaning": "Imported literal financial-rise-fall v2 formula from Ekaterina draft pack.",
+      "comment": "Imported from Ekaterina V2 source pack on 2026-07-27. Reverse formulas are explicit only; no auto-created mirror rules.",
+      "expert_review_needed": false,
+      "source_note": "15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt block #116",
+      "source_kind": "directed",
+      "target_kind": "natal",
+      "source_selectors": [
+        "ruler_8"
+      ],
+      "target_selectors": [
+        "ruler_7"
+      ],
+      "display_source": "ruler_8",
+      "display_target": "ruler_7",
+      "aspect_types": [
+        "conjunction",
+        "square",
+        "opposition",
+        "trine",
+        "sextile"
+      ],
+      "orb_limit": 1.0,
+      "required": false,
+      "weight": 0.35,
+      "priority_tier": "context"
+    }
+  ],
+  "notes": "Draft sandbox card for financial_rise_fall, built with scripts/card_tool.py. Explicit expert/test selection only; production defaults unchanged.",
+  "draft_import_report": {
+    "source_files": [
+      "C:\\Users\\user\\Downloads\\Telegram Desktop\\15_Карточка_V2_финансовый_взлет,_падение,_резкое_изменение_материального.txt"
+    ],
+    "parsed_entries_count": 116,
+    "imported_formula_count": 116,
+    "imported_tier_counts": {
+      "golden": 40,
+      "supporting": 46,
+      "context": 30,
+      "ambiguity_risk": 0
+    },
+    "duplicate_groups_count": 0,
+    "collapsed_duplicate_entries": 0,
+    "malformed_entries_count": 0,
+    "skipped_malformed_blocks": [],
+    "duplicates_report": [],
+    "conflicts_for_review": [],
+    "conflicts_left_for_review": false,
+    "production_default_changed": false,
+    "explicit_selection_only": true,
+    "event_type_binding": "financial_rise_fall",
+    "import_timestamp_utc": "2026-07-27T17:01:27+00:00",
+    "expected_total": 116,
+    "expected_vs_imported_gap": 0
+  }
+}
