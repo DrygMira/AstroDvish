@@ -4,6 +4,10 @@ services:
     container_name: astrodvish-api
     env_file:
       - .env
+    environment:
+      # Два процесса-воркера: два тяжёлых расчёта идут на разных ядрах.
+      # Третье ядро остаётся интерфейсу и соседним сервисам.
+      API_WORKERS: "2"
     volumes:
       - ./ephe:/opt/ephe
     healthcheck:

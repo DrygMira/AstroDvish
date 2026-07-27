@@ -28,4 +28,11 @@ if ! "${PYTHON_BIN}" -c "import fastapi, uvicorn, swisseph, httpx, pytest, timez
   "${PYTHON_BIN}" -m pip install -r requirements.txt
 fi
 
-exec "${PYTHON_BIN}" -m uvicorn app.main:app --host "${APP_HOST:-0.0.0.0}" --port "${APP_PORT:-8013}"
+# Несколько воркеров = несколько процессов Python, каждый со своим GIL. Без
+# этого два одновременных тяжёлых расчёта толкаются на одном ядре, сколько бы
+# ядер ни было у сервера. Локально по умолчанию один процесс, на сервере число
+# задаётся через API_WORKERS в docker-compose.
+exec "${PYTHON_BIN}" -m uvicorn app.main:app \
+  --host "${APP_HOST:-0.0.0.0}" \
+  --port "${APP_PORT:-8013}" \
+  --workers "${API_WORKERS:-1}"

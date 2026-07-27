@@ -283,6 +283,12 @@ RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_CHUNKS = int(
 RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK = int(
     _env("RECTIFICATION_PRO_CHUNKED_MULTI_CARD_MAX_EVENTS_PER_CHUNK", "4") or "4"
 )
+# Сколько тяжёлых Pro-расчётов разрешено держать одновременно. Один расчёт
+# занимает примерно одно ядро и до ~650 МБ, так что на трёхъядерном сервере
+# двое считают параллельно и ещё остаётся запас под интерфейс и соседей.
+RECTIFICATION_PRO_MAX_CONCURRENT_JOBS = max(
+    1, int(_env("RECTIFICATION_PRO_MAX_CONCURRENT_JOBS", "2") or "2")
+)
 RECTIFICATION_PRO_ACTIVE_JOB_STATUSES = {"queued", "pending", "running", "chunk_running", "partial_completed"}
 RECTIFICATION_PRO_TERMINAL_JOB_STATUSES = {"completed", "failed", "cancelled"}
 _RECTIFICATION_PRO_JOBS: dict[str, dict[str, Any]] = {}
@@ -5515,13 +5521,14 @@ def _get_rectification_pro_job(job_id: str) -> dict[str, Any] | None:
         return dict(job)
 
 
-def _get_active_rectification_pro_job() -> dict[str, Any] | None:
+def _list_active_rectification_pro_jobs() -> list[dict[str, Any]]:
     with _RECTIFICATION_PRO_JOBS_LOCK:
         _cleanup_rectification_pro_jobs()
-        for job in _RECTIFICATION_PRO_JOBS.values():
-            if job.get("status") in RECTIFICATION_PRO_ACTIVE_JOB_STATUSES:
-                return dict(job)
-    return None
+        return [
+            dict(job)
+            for job in _RECTIFICATION_PRO_JOBS.values()
+            if job.get("status") in RECTIFICATION_PRO_ACTIVE_JOB_STATUSES
+        ]
 
 
 def _run_rectification_pro_job(
@@ -6389,19 +6396,22 @@ def rectification_pro_run(payload: RectificationProRunRequest) -> JSONResponse:
 
 @app.post("/api/rectification/pro/run-async")
 def rectification_pro_run_async(payload: RectificationProRunRequest) -> JSONResponse:
-    active_job = _get_active_rectification_pro_job()
-    if active_job is not None:
+    active_jobs = _list_active_rectification_pro_jobs()
+    if len(active_jobs) >= RECTIFICATION_PRO_MAX_CONCURRENT_JOBS:
         raise HTTPException(
             status_code=429,
             detail={
-                "message": "Rectification Pro async job already running",
+                "message": "Rectification Pro async job limit reached",
                 "user_message": (
-                    "Сейчас уже выполняется другой тяжёлый Pro-расчёт. "
+                    f"Сейчас уже выполняется тяжёлых Pro-расчётов: {len(active_jobs)} "
+                    f"(одновременно можно {RECTIFICATION_PRO_MAX_CONCURRENT_JOBS}). "
                     "Дождитесь завершения и запустите снова."
                 ),
                 "reason": "job_already_running",
-                "active_job_id": active_job.get("job_id"),
-                "active_status": active_job.get("status"),
+                "active_job_id": active_jobs[0].get("job_id"),
+                "active_status": active_jobs[0].get("status"),
+                "active_jobs_count": len(active_jobs),
+                "max_concurrent_jobs": RECTIFICATION_PRO_MAX_CONCURRENT_JOBS,
             },
         )
     chunk_plan = _build_rectification_pro_chunk_plan(payload.payload)

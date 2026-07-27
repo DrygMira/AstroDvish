@@ -28,4 +28,7 @@ if ! "${PYTHON_BIN}" -c "import fastapi, uvicorn, swisseph, httpx, pytest, timez
   "${PYTHON_BIN}" -m pip install -r requirements.txt
 fi
 
+# ВНИМАНИЕ: web_ui должен оставаться ОДНИМ процессом -- не добавляй --workers.
+# Реестр Pro-задач живёт в памяти процесса, и с несколькими воркерами
+# опрос статуса попадал бы в чужой процесс, а задачи "терялись" бы.
 exec "${PYTHON_BIN}" -m uvicorn web_ui.main:app --host "${WEB_UI_HOST:-0.0.0.0}" --port "${WEB_UI_PORT:-8014}"

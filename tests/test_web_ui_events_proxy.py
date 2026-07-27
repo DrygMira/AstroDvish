@@ -908,31 +908,70 @@ def test_web_ui_rectification_pro_async_rejects_extreme_multi_card_payload_with_
     assert detail["recommendation"]
 
 
-def test_web_ui_rectification_pro_async_rejects_when_another_job_is_running(monkeypatch) -> None:
-    def fake_create_job(*, base_url: str, payload: dict[str, object], timeout: int) -> str:
-        raise AssertionError("second async job must be rejected before creating a new worker")
-
+def _seed_active_rectification_pro_jobs(count: int) -> None:
     now_ts = time.time()
     with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
-        web_ui_main._RECTIFICATION_PRO_JOBS["job-active"] = {
-            "job_id": "job-active",
-            "status": "running",
-            "result": None,
-            "error": None,
-            "created_at": now_ts,
-            "updated_at": now_ts,
-        }
+        for index in range(count):
+            job_id = f"job-active-{index}"
+            web_ui_main._RECTIFICATION_PRO_JOBS[job_id] = {
+                "job_id": job_id,
+                "status": "running",
+                "result": None,
+                "error": None,
+                "created_at": now_ts,
+                "updated_at": now_ts,
+            }
 
+
+def _post_rectification_pro_async(client: TestClient):
+    return client.post(
+        "/api/rectification/pro/run-async",
+        json={
+            "api_base_url": "http://127.0.0.1:8013",
+            "payload": {"birth_date_local": "1990-05-12"},
+        },
+    )
+
+
+def test_web_ui_rectification_pro_async_allows_second_parallel_job(monkeypatch) -> None:
+    """Два тестера должны считать одновременно.
+
+    Сервер держит 3 ядра, а один расчёт занимает одно — держать глобальный
+    лимит в одну задачу значит зря отказывать второму пользователю.
+    """
+    created: list[str] = []
+
+    def fake_create_job(*, base_url: str, payload: dict[str, object], timeout: int) -> str:
+        created.append("job-second")
+        return "job-second"
+
+    _seed_active_rectification_pro_jobs(1)
     monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
     client = TestClient(web_ui_main.app)
     try:
-        response = client.post(
-            "/api/rectification/pro/run-async",
-            json={
-                "api_base_url": "http://127.0.0.1:8013",
-                "payload": {"birth_date_local": "1990-05-12"},
-            },
-        )
+        response = _post_rectification_pro_async(client)
+    finally:
+        with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+            web_ui_main._RECTIFICATION_PRO_JOBS.clear()
+
+    assert web_ui_main.RECTIFICATION_PRO_MAX_CONCURRENT_JOBS >= 2, (
+        "лимит одновременных Pro-расчётов должен быть минимум 2"
+    )
+    assert response.status_code == 202, response.text
+    assert response.json()["job_id"] == "job-second"
+    assert created == ["job-second"]
+
+
+def test_web_ui_rectification_pro_async_rejects_when_concurrency_limit_reached(monkeypatch) -> None:
+    def fake_create_job(*, base_url: str, payload: dict[str, object], timeout: int) -> str:
+        raise AssertionError("задача сверх лимита должна отсекаться до создания воркера")
+
+    monkeypatch.setattr(web_ui_main, "RECTIFICATION_PRO_MAX_CONCURRENT_JOBS", 2)
+    _seed_active_rectification_pro_jobs(2)
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+    try:
+        response = _post_rectification_pro_async(client)
     finally:
         with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
             web_ui_main._RECTIFICATION_PRO_JOBS.clear()
@@ -940,8 +979,30 @@ def test_web_ui_rectification_pro_async_rejects_when_another_job_is_running(monk
     assert response.status_code == 429
     detail = response.json()["detail"]
     assert detail["reason"] == "job_already_running"
-    assert detail["active_job_id"] == "job-active"
+    assert detail["active_job_id"] == "job-active-0"
+    assert detail["active_jobs_count"] == 2
+    assert detail["max_concurrent_jobs"] == 2
     assert "выполняется" in detail["user_message"]
+
+
+def test_web_ui_rectification_pro_concurrency_limit_is_configurable(monkeypatch) -> None:
+    """Лимит должен опускаться обратно до 1 без правки кода -- на случай слабого сервера."""
+
+    def fake_create_job(*, base_url: str, payload: dict[str, object], timeout: int) -> str:
+        raise AssertionError("при лимите 1 вторая задача должна отсекаться")
+
+    monkeypatch.setattr(web_ui_main, "RECTIFICATION_PRO_MAX_CONCURRENT_JOBS", 1)
+    _seed_active_rectification_pro_jobs(1)
+    monkeypatch.setattr(web_ui_main, "_create_rectification_pro_job", fake_create_job)
+    client = TestClient(web_ui_main.app)
+    try:
+        response = _post_rectification_pro_async(client)
+    finally:
+        with web_ui_main._RECTIFICATION_PRO_JOBS_LOCK:
+            web_ui_main._RECTIFICATION_PRO_JOBS.clear()
+
+    assert response.status_code == 429
+    assert response.json()["detail"]["max_concurrent_jobs"] == 1
 
 
 def test_web_ui_rectification_pro_chunked_job_aggregates_results(monkeypatch) -> None:
