@@ -129,3 +129,18 @@ def test_build_stamp_shape(repo: Path) -> None:
     assert stamp["dirty"] in (True, False)
     assert "commit" in stamp and "short" in stamp and "branch" in stamp
     assert "pushed_to_dryg" in stamp
+
+
+def test_container_entrypoints_use_unix_line_endings() -> None:
+    """Скрипты запуска контейнеров обязаны быть с LF-переносами.
+
+    Артефакт деплоя собирается из БАЙТОВ рабочей копии, а не из git, поэтому
+    windows-переносы не отсекаются нормализацией git и уезжают на сервер.
+    Один \r ломает запуск: bash считает его частью команды, контейнер не
+    поднимается, health-gate валится и срабатывает авто-откат -- ровно так
+    и упал деплой 2026-07-27.
+    """
+    project_root = Path(__file__).resolve().parents[1]
+    checked = [project_root / "Dockerfile", *sorted((project_root / "scripts").glob("*.sh"))]
+    offenders = [path.name for path in checked if b"\r" in path.read_bytes()]
+    assert not offenders, f"windows-переносы (CR) в файлах запуска: {offenders}"
