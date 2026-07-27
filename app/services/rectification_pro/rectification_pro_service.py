@@ -676,6 +676,7 @@ class RectificationProService:
             "long_distance_relocation": "long_distance_relocation",
             "major_accident": "major_accident",
             "surgery": "surgery",
+            "imprisonment": "imprisonment",
         }
         return mapping.get(event_type)
 
@@ -729,5 +730,6 @@ class RectificationProService:
             "long_distance_relocation": {"long_distance_relocation"},
             "major_accident": {"major_accident"},
             "surgery": {"surgery"},
+            "imprisonment": {"imprisonment"},
         }
         return mapping.get(str(raw_event_type), set())

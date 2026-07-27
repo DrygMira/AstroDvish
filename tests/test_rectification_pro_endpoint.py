@@ -538,6 +538,31 @@ def test_rectification_pro_can_select_surgery_v2_draft_card_explicitly(monkeypat
     assert body["formula_refinement_results"]["card_id"] == "RECT_SURGERY_002_DRAFT"
 
 
+def test_rectification_pro_can_select_imprisonment_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
+    client = _build_client(monkeypatch, tmp_path)
+    payload = _payload(1)
+    payload["events"][0]["event_type"] = "imprisonment"
+    payload["events"][0]["title"] = "Imprisonment"
+    payload["settings"]["formula_card_id"] = "RECT_IMPRISONMENT_002_DRAFT"
+
+    with client:
+        response = client.post("/api/v1/rectification/pro/run", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    result = body["formula_test_mode_results"][0]
+    assert result["card_id"] == "RECT_IMPRISONMENT_002_DRAFT"
+    assert result["status"] == "draft"
+    assert result["formulas_count"] == 108
+    assert result["priority_counts"] == {
+        "golden": 36,
+        "supporting": 42,
+        "context": 30,
+        "ambiguity_risk": 0,
+    }
+    assert body["formula_refinement_results"]["card_id"] == "RECT_IMPRISONMENT_002_DRAFT"
+
+
 def test_rectification_pro_can_select_mother_death_v2_draft_card_explicitly(monkeypatch, tmp_path) -> None:
     client = _build_client(monkeypatch, tmp_path)
     payload = _payload(1)
