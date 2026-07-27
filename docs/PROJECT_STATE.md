@@ -1424,3 +1424,15 @@ Every future report must include:
 - C. live/proof (`45.133.18.90`): деплой `8fdfbac` УСПЕХ; `--status` = совпадает; прямой запрос `/static/js/pro.js` с прода подтвердил: `1500000` встречается 3 раза, `620000` отсутствует; regress 8 исходных карточек не сломан
 - F. risks: если реальный расчёт стабильно превышает и 25 минут — стоит рассмотреть переформулировку сообщения об ошибке ("возможно ещё считается на сервере") и/или переподключение к существующей job вместо перезапуска (обсуждалось, не реализовано)
 - G. deploy status: live = `8fdfbac` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
+
+## 50. 14-я и 15-я V2 draft-карточки: military_service, financial_rise_fall (2026-07-27)
+- A. what changed:
+  - `RECT_MILITARY_SERVICE_002_DRAFT` (`military_service`, 106 формул: 36/40/30)
+  - `RECT_FINANCIAL_RISE_FALL_002_DRAFT` (`financial_rise_fall`, 116 формул: 40/46/30)
+  - оба event_type однозначны (свой активный вопрос мастера, своя русская подпись — без коллизии, как было у imprisonment/freedom_restriction)
+  - процесс §48/§49 применён без напоминаний: падающий explicit-select тест на каждую карточку → подтверждён пустой `formula_test_mode_results` → оба типа зарегистрированы в обеих gate-таблицах → тесты прошли
+  - коммит: `a339ec1`
+- B. tests: 2 новых explicit-select теста; самообновляющиеся тесты подхватили 15 карточек без правок; полный `pytest -n auto`: `414 passed, 1 xfailed`
+- C. live/proof (`45.133.18.90`): деплой `a339ec1` УСПЕХ; `--status` = совпадает; `card_tool.py verify --live` на публичном адресе для обеих — реальное совпадение, `formulas_count` 116/106; regress 8 исходных карточек не сломан
+- F. risks: meta-поля не подтверждены Екатериной (тот же паттерн, что и §46/§48)
+- G. deploy status: live = `a339ec1` = локальный HEAD = `dryg/codex/shared-birth-context-ui` (запушено)
