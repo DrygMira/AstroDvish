@@ -1055,7 +1055,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
       }
     }
 
-    async function pollAsyncProJob(jobId, totalTimeoutMs = 620000, pollIntervalMs = 2500) {
+    async function pollAsyncProJob(jobId, totalTimeoutMs = 1500000, pollIntervalMs = 2500) {
       const startedAt = Date.now();
       while ((Date.now() - startedAt) < totalTimeoutMs) {
         const elapsedSeconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
@@ -1262,7 +1262,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
           if (!jobId) {
             throw new Error("Не удалось запустить async Pro-расчёт.");
           }
-          const jsonPayload = await pollAsyncProJob(jobId, 620000, 2500);
+          const jsonPayload = await pollAsyncProJob(jobId, 1500000, 2500);
           if (!jsonPayload) {
             throw new Error("Пустой ответ API");
           }
@@ -1290,7 +1290,7 @@ import { renderWizardProgress, updateWizardContextFromCurrentStates } from "./wi
             api_base_url: document.getElementById("reApiBaseUrl").value.trim(),
             payload,
           }),
-        }, 620000);
+        }, 1500000);
         const { jsonPayload, errorText } = await parseResponseBody(res);
         if (!res.ok) {
           throw new Error(errorText);
